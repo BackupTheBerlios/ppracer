@@ -1,4 +1,6 @@
 
+=== ppracer 0.3.1 ===
+
 2005-02-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/data/translations
 	updated translations
@@ -24,7 +26,7 @@
 2005-02-24  Volker Stroebel <volker@planetpenguin.de>
 	* src/game_over.cpp
 	fix max speed calculation	
-	
+
 2005-02-18  Volker Stroebel <volker@planetpenguin.de>
 	* data/translations/*
 	updated translations
@@ -34,7 +36,7 @@
 	
 	* configure.in
 	added --with-tcl-inc and --with-tcl-lib-name
-	
+
 2005-02-15  Volker Stroebel <volker@planetpenguin.de>
 	* src/course_load.cpp
 	made hud translateable
@@ -66,7 +68,7 @@
 2005-02-08  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp src/textures.cpp src/lopp.cpp
 	added some fixes from ArKay
-	
+
 2005-02-07  Volker Stroebel <volker@planetpenguin.de>
 	* src/translations/*
 	updated and added new translations
