@@ -44,7 +44,7 @@
 #if defined( NATIVE_WIN32_COMPILER )
 /* Need to manually define some things that autoconf defines for
    us in config.h */
-#   define VERSION "0.3.1"
+#   define VERSION "0.3.2-dev"
 #   define HAVE_SDL_MIXER 1
 #   define HAVE_SDL_JOYSTICKOPEN 1
 #   define TCL_HEADER <tcl.h>

@@ -22,12 +22,12 @@ proc tux_theme_init {theme} {
 
     set cwd [pwd]
 
-    if [file exists "$env(HOME)/.ppracer/themes/$theme/courseinit.tcl"] {
-	cd "$env(HOME)/.ppracer/themes/$theme/"
-	source courseinit.tcl
+    if [file exists "$env(HOME)/.ppracer/themes/$theme.tcl"] {
+		cd "$env(HOME)/.ppracer/themes/"
+		source "$theme.tcl"
     } else {
         cd "$tux_data_dir/courses/themes/"
-	source "$theme.tcl"
+		source "$theme.tcl"
     }
 
     source "$tux_data_dir/tux_walk.tcl";
@@ -49,7 +49,8 @@ proc tux_theme_pack_init {type name} {
     global tux_data_dir
     set cwd [pwd]
 
-    cd "$tux_data_dir/courses/themes/$type/$name/";
+    #cd "$tux_data_dir/courses/themes/$type/$name/";
+	cd "$type/$name/";
     source "$type.tcl"
 
     cd $cwd
