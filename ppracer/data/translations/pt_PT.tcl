@@ -2,7 +2,7 @@
 
 #common strings
 pp_translate_string "Back" "Voltar"
-pp_translate_string "PRESS ANY KEY TO START" "PRESSIONE QUALQUER TECLA PARA INICIAR"
+pp_translate_string "PRESS ANY KEY TO START" "PRESSIONE UMA TECLA PARA INICIAR"
 
 #game_type_select
 pp_translate_string "Enter an event" "Entrar num evento"
@@ -35,7 +35,7 @@ pp_translate_string "Shadows:" "Sombras:"
 #video configuration
 pp_translate_string "Video Configuration" "Configuração do vídeo"
 pp_translate_string "Resolution:" "Resolução:"
-pp_translate_string "Bits Per Pixel:" "Bit's por ponto:"
+pp_translate_string "Bits Per Pixel:" "Bits por ponto:"
 pp_translate_string "Fullscreen:" "Ecrã completo:"
 pp_translate_string "Experimental (needs restart)" "Experimental (necessário reiniciar)"
 pp_translate_string "Enable FSAA:" "Activar FSAA:"
@@ -43,12 +43,12 @@ pp_translate_string "Enable FSAA:" "Activar FSAA:"
 #audio configuration
 pp_translate_string "Audio Configuration" "Configuração do áudio"
 pp_translate_string "Sound Effects:" "Efeitos de som:"
-#pp_translate_string "Music:" ""
+pp_translate_string "Music:" "Música"
 pp_translate_string "(needs restart)" "(reiniciar)"
 pp_translate_string "Disable Audio:" "Desactivar som:"
 pp_translate_string "Stereo:" "Estéreo:"
 pp_translate_string "Bits Per Sample:" "Bits por amostra:"
-pp_translate_string "Samples Per Second:" "Amostras por segundo:"
+pp_translate_string "Samples Per Second:" "Amostras / seg.:"
 
 #keyboard configuration
 pp_translate_string "Keyboard Configuration" "Configuração do teclado"

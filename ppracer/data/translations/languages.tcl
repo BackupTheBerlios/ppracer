@@ -7,6 +7,7 @@
 #The translated name should be the name of the language in its own language  
 
 pp_translate_language "eu_ES" "Basque"
+pp_translate_language "ca_ES" "Català"
 pp_translate_language "de_DE" "Deutsch"
 pp_translate_language "en_GB" "English"
 pp_translate_language "es_ES" "Español"
