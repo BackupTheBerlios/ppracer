@@ -1,13 +1,13 @@
 
 #common strings
 pp_translate_string "Back" "Retour"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "APPUYEZ SUR N'IMPORTE QUELLE TOUCHE POUR DEMARRER"
 
 #game_type_select
 pp_translate_string "Enter an event" "Participer a un événement"
 pp_translate_string "Practice" "Entraînement"
 #pp_translate_string "Configuration" "Configuration"
-#pp_translate_string "Credits" "Credits"
+pp_translate_string "Credits" "Crédits"
 pp_translate_string "Quit" "Quitter"
 
 #configuration
@@ -23,7 +23,7 @@ pp_translate_string "Ok" "Valider"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Configuration graphique"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Langue :"
 pp_translate_string "Show UI Snow:" "Neige dans l'interface :"
 pp_translate_string "Display FPS:" "Afficher FPS :"
 pp_translate_string "Display Progress Bar:" "Afficher barre de progression :"
@@ -109,8 +109,8 @@ pp_translate_string "You didn't advance." "Vous n'avez pas avancé"
 
 #HUD
 #Strings are prefixed to prevent collisions with the UI
-pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|FPS: %.1f" "FPS : %.1f"
+pp_translate_string "H|Time:" "Temps :"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"
