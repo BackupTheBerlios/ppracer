@@ -51,7 +51,7 @@ static credit_line_t credit_lines[] =
 	{ NULL, "credits_text", "Helder Correia" },	
 	{ NULL, "credits_text", "Karl Ove Hufthammer" },	
 	{ NULL, "credits_text", "Marco Antonio Blanco" },	
-	{ NULL, "credits_text", "Massimo" },	
+	{ NULL, "credits_text", "Massimo Spazian" },	
 	{ NULL, "credits_text", "Mikel Olasagasti" },	
 	{ NULL, "credits_text", "Spiral" },	
 	{ NULL, "credits_text", "Theo Snelleman" },	
