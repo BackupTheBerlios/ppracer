@@ -19,6 +19,10 @@
 #ifndef _PP_DEFS_H
 #define _PP_DEFS_H
 
+#ifndef M_PI
+#   define M_PI 3.1415926535
+#endif
+
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
