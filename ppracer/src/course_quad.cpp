@@ -43,9 +43,8 @@ static int get_root_level( int nx, int nz )
     check_assertion( nx > 0, "heightmap has x dimension of 0 size" );
     check_assertion( nz > 0, "heightmap has z dimension of 0 size" );
 
-    xlev = (int) ( log( nx ) / log ( 2.0 ) );
-    zlev = (int) ( log( nz ) / log ( 2.0 ) );
-
+    xlev = (int) ( log((double) nx ) / log ((double) 2.0 ) );
+    zlev = (int) ( log((double) nz ) / log ((double) 2.0 ) );
 
     /* Check to see if nx, nz are powers of 2 
      */

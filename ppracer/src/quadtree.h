@@ -46,8 +46,7 @@ struct HeightMapInfo {
 
 };
 
-struct quadsquare;
-
+class quadsquare;
 
 // A structure used during recursive traversal of the tree to hold
 // relevant but transitory data.

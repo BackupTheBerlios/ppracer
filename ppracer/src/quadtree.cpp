@@ -1296,6 +1296,9 @@ inline void quadsquare::MakeNoBlendTri( int a, int b, int c, int terrain )
     }
 }
 
+
+static bool terraintest[NUM_TERRAIN_TYPES];
+
 void
 quadsquare::RenderAux(const quadcornerdata& cd, clip_result_t vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
@@ -1371,7 +1374,7 @@ quadsquare::RenderAux(const quadcornerdata& cd, clip_result_t vis)
 
 	
 	{
-		bool terraintest[num_terrains];
+		//bool terraintest[num_terrains];
 		for (unsigned int i=0; i<num_terrains; i++) terraintest[i]=false;
 		
 		const int	half = 1 << cd.Level;

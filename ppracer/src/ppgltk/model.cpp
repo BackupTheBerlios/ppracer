@@ -21,6 +21,10 @@
 
 #include "model_ac.h"
 
+#ifdef _WIN32
+	#include <WTypes.h>
+#endif
+
 #include <GL/gl.h>
 #include <iostream>
 

@@ -24,6 +24,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <GL/glext.h>
 
 #include "ppgltk/images/image.h"
 

@@ -1,4 +1,12 @@
 
+
+2005-02-26  Volker Stroebel <volker@planetpenguin.de>
+	* src/phys_sim.cpp src/quadtree.* src/string_util.cpp 
+	  src/debug.h src/textures.cpp src/ppgltk/images/png_reader.cpp
+	  src/ppgltk/model.cpp src/ppgltk/model_ac.cpp
+	  src/ppgltk/font.cpp src/course_quad.cpp
+	several code fixes from ArKay
+
 2005-02-24  Volker Stroebel <volker@planetpenguin.de>
 	* src/game_over.cpp
 	fix max speed calculation	

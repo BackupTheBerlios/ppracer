@@ -1638,7 +1638,7 @@ void solve_ode_system( Player& plyr, float dtime )
 			failed = true;
 			h *=  MAX( 0.5, 0.8 *
 				   pow( tol/err, 
-					solver.time_step_exponent() ) );
+					float(solver.time_step_exponent()) ) );
 		    } else {
 			h *= 0.5;
 		    }
@@ -1676,8 +1676,8 @@ void solve_ode_system( Player& plyr, float dtime )
 
 	/* If no failures, compute a new h */
 	if ( !failed && solver.estimate_error != NULL ) {
-	    double temp = 1.25 * pow(err / tol, solver.time_step_exponent());
-	    if ( temp > 0.2 ) {
+		double temp = 1.25 * pow((double)err / tol,(double)solver.time_step_exponent());
+		if ( temp > 0.2 ) {
 		h = h / temp;
 	    } else {
 		h = 5.0 * h;

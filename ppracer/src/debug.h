@@ -22,6 +22,8 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
+#include "ppracer.h"
+
 typedef enum {
     DEBUG_ODE,
     DEBUG_QUADTREE,
