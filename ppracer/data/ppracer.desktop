@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=PlanetPenguin Racer
+Type=Application
+Exec=ppracer
+Icon=ppracer.png
+Terminal=false
+Name[de]=PlanetPenguin Racer
+Comment=An OpenGL racing game featuring Tux, the Linux mascot
+Comment[de]=Ein OpenGL-Rennen mit Tux, dem Linux-Maskottchen
+Categories=Application;Game;ArcadeGame;
+StartupNotify=false

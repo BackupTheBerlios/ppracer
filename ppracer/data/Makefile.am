@@ -283,3 +283,10 @@ nobase_dist_ppdata_DATA = \
 		terrains.png \
 		ppracer_init.tcl \
 		tux_walk.tcl
+
+
+desktopdir = $(datadir)/applications
+dist_desktop_DATA = ppracer.desktop
+
+icondir = $(datadir)/pixmaps
+dist_icon_DATA = ppracer.png

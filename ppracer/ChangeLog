@@ -1,4 +1,8 @@
 
+2005-03-06  Volker Stroebel <volker@planetpenguin.de>
+	* data/makefile.am data/*
+	added ppracer.png and ppracer.desktop
+
 2005-03-05  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	implemented OpenGL wrapper
