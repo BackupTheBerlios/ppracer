@@ -29,11 +29,10 @@ namespace draw {
 void
 rect(pp::Color color, pp::Vec2d startPos, pp::Vec2d endPos)
 {
-	glDisable( GL_TEXTURE_2D );
-    glColor3dv( (double*)&color );
-    glRectf( startPos.x, startPos.y,
-	     	 endPos.x,endPos.y );
-	glEnable( GL_TEXTURE_2D );
+	gl::Disable( GL_TEXTURE_2D );
+    gl::Color(color);
+    gl::Rect(startPos, endPos);
+	gl::Enable( GL_TEXTURE_2D );
 }	
 	
 void
@@ -45,29 +44,29 @@ rect(const char* binding, pp::Vec2d pos, pp::Vec2d size )
 		texobj = 0;
     }
 		
-    glPushMatrix();
+    gl::PushMatrix();
     {	
-		glBindTexture( GL_TEXTURE_2D, texobj );
-		glEnable( GL_TEXTURE_2D );
-		glColor4f( 1.0, 1.0, 1.0, 1.0 );
-		glTranslatef( pos.x, pos.y, 0.0 );
-		glBegin( GL_QUADS );
+		gl::BindTexture( GL_TEXTURE_2D, texobj );
+		gl::Enable( GL_TEXTURE_2D );
+		gl::Color(pp::Color::white);
+		gl::Translate(pos);
+		gl::Begin( GL_QUADS );
 		{
-	    	glTexCoord2f( 0.0, 0.0 );
-	    	glVertex2f( 0.0, 0.0 );
+	    	gl::TexCoord( 0.0, 0.0 );
+	    	gl::Vertex( 0.0, 0.0 );
 	    
-	    	glTexCoord2f( 1.0, 0.0 );
-			glVertex2f( size.x, 0.0 );
+	    	gl::TexCoord( 1.0, 0.0 );
+			gl::Vertex( size.x, 0.0 );
 	    
-	    	glTexCoord2f( 1.0, 1.0 );
-	    	glVertex2f( size.x, size.y );
+	    	gl::TexCoord( 1.0, 1.0 );
+	    	gl::Vertex( size.x, size.y );
 	    
-	    	glTexCoord2f( 0.0, 1.0 );
-	    	glVertex2f( 0.0, size.y );
+	    	gl::TexCoord( 0.0, 1.0 );
+	    	gl::Vertex( 0.0, size.y );
 		}
-		glEnd();
+		gl::End();
     }
-    glPopMatrix();
+    gl::PopMatrix();
 }
 
 } //namespace draw

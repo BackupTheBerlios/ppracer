@@ -261,7 +261,7 @@ int tux_material( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] 
 
     errmsg = create_material(mat_name,pp::Color(diffuse),
                 pp::Color(specular), spec_exp);
-
+	
     /* report error, if any */
     if (errmsg) {
         Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );

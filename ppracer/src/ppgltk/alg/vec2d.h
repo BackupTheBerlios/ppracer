@@ -32,11 +32,18 @@ public:
 	Vec2d(const double x, const double y);
 	Vec2d(const double *v);	
 
-	double x;   
-	double y;	
+	union{
+		struct{
+			double x,y;
+		};
+		double values[2];
+	};
 		
 	friend Vec2d operator+(const Vec2d& vec1,const Vec2d& vec2);
-	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2);				
+	friend Vec2d operator+(const Vec2d& vec1,const double value);
+	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2);
+	friend Vec2d operator-(const Vec2d& vec1,const double value);
+
 };
 
 

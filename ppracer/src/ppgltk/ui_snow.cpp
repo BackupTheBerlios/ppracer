@@ -31,6 +31,7 @@
 #include "stuff.h"
 
 #include "ppgltk/alg/defs.h"
+#include "ppgltk/alg/glhelper.h"
 
 #define MAX_NUM_PARTICLES 10000
 #define BASE_NUM_PARTICLES 400
@@ -61,7 +62,7 @@ typedef struct _particle_t {
 
 static particle_t particles[MAX_NUM_PARTICLES];
 static int num_particles = BASE_NUM_PARTICLES;
-static GLfloat particleColor[4] = { 1, 1, 1, 0.4 };
+static pp::Color particleColor(1, 1, 1, 0.4);
 static pp::Vec2d push_position(0,0);
 static pp::Vec2d last_push_position;
 static double last_update_time = -1;
@@ -85,17 +86,17 @@ static void make_particle( int i, double x, double y )
     particles[i].vel.y = -BASE_VELOCITY-p_dist*VELOCITY_RANGE;
     type = (int) (frand() * (4.0 - EPS));
     if (type == 0) {
-	particles[i].tex_min = pp::Vec2d( 0.0, 0.0 );
-	particles[i].tex_max = pp::Vec2d( 0.5, 0.5 );
+		particles[i].tex_min = pp::Vec2d( 0.0, 0.0 );
+		particles[i].tex_max = pp::Vec2d( 0.5, 0.5 );
     } else if (type == 1) {
-	particles[i].tex_min = pp::Vec2d( 0.5, 0.0 );
-	particles[i].tex_max = pp::Vec2d( 1.0, 0.5 );
+		particles[i].tex_min = pp::Vec2d( 0.5, 0.0 );
+		particles[i].tex_max = pp::Vec2d( 1.0, 0.5 );
     } else if (type == 2) {
-	particles[i].tex_min = pp::Vec2d( 0.5, 0.5 );
-	particles[i].tex_max = pp::Vec2d( 1.0, 1.0 );
+		particles[i].tex_min = pp::Vec2d( 0.5, 0.5 );
+		particles[i].tex_max = pp::Vec2d( 1.0, 1.0 );
     } else {
-	particles[i].tex_min = pp::Vec2d( 0.0, 0.5 );
-	particles[i].tex_max = pp::Vec2d( 0.5, 1.0 );
+		particles[i].tex_min = pp::Vec2d( 0.0, 0.5 );
+		particles[i].tex_max = pp::Vec2d( 0.5, 1.0 );
     }
 }
 
@@ -123,10 +124,10 @@ void update_ui_snow( double time_step, bool windy )
     push_vector.y = 0;
     push_timestep = 0;
 	
-    if ( push_position_initialized ) {
-	push_vector.x = push_position.x - last_push_position.x;
-	push_vector.y = push_position.y - last_push_position.y;
-	push_timestep = time - last_update_time;
+    if (push_position_initialized){
+		push_vector.x = push_position.x - last_push_position.x;
+		push_vector.y = push_position.y - last_push_position.y;
+		push_timestep = time - last_update_time;
     }
     last_push_position = push_position;
     last_update_time = time;
@@ -209,7 +210,7 @@ void update_ui_snow( double time_step, bool windy )
 
 void draw_ui_snow( void )
 {
-    GLuint   texture_id;
+	GLuint   texture_id;
     char *binding;
     pp::Vec2d *pt, *tex_min, *tex_max;
     double size;
@@ -223,49 +224,45 @@ void draw_ui_snow( void )
 
     binding = "ui_snow_particle";
     if (!get_texture_binding( "ui_snow_particle", &texture_id ) ) {
-	print_warning( IMPORTANT_WARNING,
+		print_warning( IMPORTANT_WARNING,
 		       "Couldn't get texture for binding %s", 
 		       binding );
-	texture_id = 0;
+		texture_id = 0;
     } 
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-    glBindTexture( GL_TEXTURE_2D, texture_id );
+    gl::BindTexture( GL_TEXTURE_2D, texture_id );
 
-    glColor4f( particleColor[0], 
-	       particleColor[1], 
-	       particleColor[2],
-	       particleColor[3] );
+    gl::Color(particleColor);
 
-    glPushMatrix();
+    gl::PushMatrix();
     {
 	for ( i=0; i<num_particles; i++) {
 	    pt = &particles[i].pt;
 	    size = particles[i].size;
 	    tex_min = &particles[i].tex_min;
 	    tex_max = &particles[i].tex_max;
-	    glPushMatrix();
+	    gl::PushMatrix();
 	    {
-		glTranslatef( pt->x*xres, pt->y*yres, 0 );
-		glBegin( GL_QUADS );
+		gl::Translate(pt->x*xres, pt->y*yres);
+		gl::Begin(GL_QUADS);
 		{
-		    glTexCoord2f( tex_min->x, tex_min->y );
-		    glVertex2f( 0, 0 );
-		    glTexCoord2f( tex_max->x, tex_min->y );
-		    glVertex2f( size, 0 );
-		    glTexCoord2f( tex_max->x, tex_max->y );
-		    glVertex2f( size, size );
-		    glTexCoord2f( tex_min->x, tex_max->y );
-		    glVertex2f( 0, size );
+		    gl::TexCoord(tex_min->x, tex_min->y);
+		    gl::Vertex(0, 0);
+		    gl::TexCoord(tex_max->x, tex_min->y);
+		    gl::Vertex(size, 0);
+		    gl::TexCoord(tex_max->x, tex_max->y);
+		    gl::Vertex(size, size);
+		    gl::TexCoord(tex_min->x, tex_max->y);
+		    gl::Vertex(0, size);
 		}
-		glEnd();
+		gl::End();
 	    }
-	    glPopMatrix();
+	    gl::PopMatrix();
 	} 
     }
-    glPopMatrix();
-
+    gl::PopMatrix();
 } 
 
 void
@@ -291,7 +288,7 @@ push_ui_snow( pp::Vec2d pos )
     push_position = pp::Vec2d( pos.x/(double)xres,
 				  pos.y/(double)yres );
     if ( !push_position_initialized ) {
-	last_push_position = push_position;
+		last_push_position = push_position;
     }
     push_position_initialized = true;
 }
@@ -304,7 +301,7 @@ make_ui_snow( pp::Vec2d pos ) {
     yres = getparam_y_resolution();
 
     if ( num_particles < MAX_NUM_PARTICLES ) {
-	make_particle( num_particles, pos.x/xres, pos.y/yres );
-	num_particles++;
+		make_particle( num_particles, pos.x/xres, pos.y/yres );
+		num_particles++;
     }
 }

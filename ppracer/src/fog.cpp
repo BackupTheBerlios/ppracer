@@ -36,31 +36,30 @@ FogPlane::reset()
     m_density = 0.005;
     m_start = 0.0;
     m_end = getparam_forward_clip_distance();
-    init_glfloat_array( 4, m_color, 1.0, 1.0, 1.0, 1.0 );
+	m_color = pp::Color::white;
 }
 
 void 
 FogPlane::setup()
 {
     if ( !m_isOn || getparam_disable_fog() ) {
-		glDisable( GL_FOG );
+		gl::Disable(GL_FOG);
 		return;	
     }
 
-    glEnable( GL_FOG );
+    gl::Enable(GL_FOG);
 
-    glFogi( GL_FOG_MODE, m_mode );
-    glFogf( GL_FOG_DENSITY, m_density );
-    glFogf( GL_FOG_START, m_start );
-    glFogf( GL_FOG_END, m_end );
-    glFogfv( GL_FOG_COLOR, m_color );
+    gl::Fog(GL_FOG_MODE, m_mode);
+    gl::Fog(GL_FOG_DENSITY, m_density);
+    gl::Fog(GL_FOG_START, m_start);
+    gl::Fog(GL_FOG_END, m_end);
+    gl::Fog(GL_FOG_COLOR, m_color.colors);
 
     if ( getparam_nice_fog() ) {
-		glHint( GL_FOG_HINT, GL_NICEST );
+		gl::Hint(GL_FOG_HINT, GL_NICEST);
     } else {
-		glHint( GL_FOG_HINT, GL_FASTEST );
+		gl::Hint(GL_FOG_HINT, GL_FASTEST);
     }
-	
 }
 
 static int fog_cb (ClientData cd, Tcl_Interp *ip, 
@@ -144,7 +143,9 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
 			error = true;
 			break;
 	    }
-	    copy_to_glfloat_array( fogPlane.getColor(), tmp_arr, 4 );
+		
+		pp::Color color(tmp_arr[0],tmp_arr[1],tmp_arr[2],tmp_arr[3]);
+		fogPlane.setColor(color);
 	} else {
 	    print_warning( TCL_WARNING, "tux_fog: unrecognized "
 			   "parameter `%s'", *argv );
@@ -173,5 +174,5 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
 void
 FogPlane::registerCallbacks( Tcl_Interp *ip )
 {
-    Tcl_CreateCommand (ip, "tux_fog", fog_cb,  0,0);
+	Tcl_CreateCommand (ip, "tux_fog", fog_cb,  0,0);
 }

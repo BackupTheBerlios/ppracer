@@ -160,12 +160,12 @@ Reset::loop(float timeStep)
     }
 
     if (tux_visible) { 
-	draw_tux();
-	draw_tux_shadow();
+		draw_tux();
+		draw_tux_shadow();
     } 
     if (++tux_visible_count > 3) {
-	tux_visible = (bool) !tux_visible;
-	tux_visible_count = 0;
+		tux_visible = (bool) !tux_visible;
+		tux_visible_count = 0;
     }
 
     HUD1.draw(players[0]);

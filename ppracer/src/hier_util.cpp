@@ -23,6 +23,7 @@
 #include "hier.h"
 
 #include "ppgltk/alg/defs.h"
+#include "ppgltk/alg/glwrappers.h"
 
 #include "game_config.h"
 
@@ -31,8 +32,7 @@
 
 #if USE_GLUSPHERE
 
-/* Draws a sphere using gluSphere
- */
+// Draws a sphere using gluSphere
 void draw_sphere( int num_divisions )
 {
     GLUquadricObj *qobj;
@@ -70,37 +70,35 @@ void draw_sphere( int num_divisions )
 	cos_phi = cos( phi );
 	sin_phi_d_phi = sin( phi + d_phi );
 	cos_phi_d_phi = cos( phi + d_phi );
-        
-        if ( phi <= eps ) {
+      
+	if ( phi <= eps ) {
+		gl::Begin( GL_TRIANGLE_FAN );
+		gl::Normal(0.0f, 0.0f, 1.0f);
+		gl::Vertex(0.0f, 0.0f, 1.0f);
 
-            glBegin( GL_TRIANGLE_FAN );
-                glNormal3f( 0.0, 0.0, 1.0 );
-                glVertex3f( 0.0, 0.0, 1.0 );
+		for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
+			sin_theta = sin( theta );
+			cos_theta = cos( theta );
 
-                for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
-
-                    x = cos_theta * sin_phi_d_phi;
-		    y = sin_theta * sin_phi_d_phi;
-                    z = cos_phi_d_phi;
-                    glNormal3f( x, y, z );
-                    glVertex3f( x, y, z );
-
-                } 
+			x = cos_theta * sin_phi_d_phi;
+			y = sin_theta * sin_phi_d_phi;
+			z = cos_phi_d_phi;
+			gl::Normal(x, y, z);
+			gl::Vertex(x, y, z);
+		} 
 
 		x = sin_phi_d_phi;
 		y = 0.0;
 		z = cos_phi_d_phi;
-                glNormal3f( x, y, z );
-                glVertex3f( x, y, z );
-            glEnd();
+		gl::Normal(x, y, z);
+		gl::Vertex(x, y, z);
+		gl::End();
 
         } else if ( phi + d_phi + eps >= M_PI ) {
             
-            glBegin( GL_TRIANGLE_FAN );
-                glNormal3f( 0.0, 0.0, -1.0 );
-                glVertex3f( 0.0, 0.0, -1.0 );
+            gl::Begin( GL_TRIANGLE_FAN );
+                gl::Normal(0.0f, 0.0f, -1.0f);
+                gl::Vertex(0.0f, 0.0f, -1.0f);
 
                 for ( theta = twopi; theta - eps > 0; theta -= d_theta ) {
 		    sin_theta = sin( theta );
@@ -109,19 +107,19 @@ void draw_sphere( int num_divisions )
                     x = cos_theta * sin_phi;
                     y = sin_theta * sin_phi;
                     z = cos_phi;
-                    glNormal3f( x, y, z );
-                    glVertex3f( x, y, z );
+                    gl::Normal(x, y, z);
+                    gl::Vertex(x, y, z);
                 } 
                 x = sin_phi;
                 y = 0.0;
                 z = cos_phi;
-                glNormal3f( x, y, z );
-                glVertex3f( x, y, z );
-            glEnd();
+                gl::Normal(x, y, z);
+                gl::Vertex(x, y, z);
+            gl::End();
 
         } else {
             
-            glBegin( GL_TRIANGLE_STRIP );
+            gl::Begin( GL_TRIANGLE_STRIP );
                 
                 for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
 		    sin_theta = sin( theta );
@@ -130,34 +128,34 @@ void draw_sphere( int num_divisions )
                     x = cos_theta * sin_phi;
                     y = sin_theta * sin_phi;
                     z = cos_phi;
-                    glNormal3f( x, y, z );
-                    glVertex3f( x, y, z );
+                    gl::Normal(x, y, z);
+                    gl::Vertex(x, y, z);
 
                     x = cos_theta * sin_phi_d_phi;
                     y = sin_theta * sin_phi_d_phi;
                     z = cos_phi_d_phi;
-                    glNormal3f( x, y, z );
-                    glVertex3f( x, y, z );
+                    gl::Normal(x, y, z);
+                    gl::Vertex(x, y, z);
                 } 
                 x = sin_phi;
                 y = 0.0;
                 z = cos_phi;
-                glNormal3f( x, y, z );
-                glVertex3f( x, y, z );
+                gl::Normal(x, y, z);
+                gl::Vertex(x, y, z);
 
                 x = sin_phi_d_phi;
                 y = 0.0;
                 z = cos_phi_d_phi;
-                glNormal3f( x, y, z );
-                glVertex3f( x, y, z );
+                gl::Normal(x, y, z);
+                gl::Vertex(x, y, z);
 
-            glEnd();
+            gl::End();
 
         } 
     } 
 } 
 
-#endif /* USE_GLUSPHERE */
+#endif // USE_GLUSPHERE 
 
 static GLuint get_sphere_display_list( int divisions ) {
     static bool initialized = false;
@@ -189,10 +187,10 @@ static GLuint get_sphere_display_list( int divisions ) {
 
     if ( display_lists[idx] == 0 ) {
 	/* Initialize the sphere display list */
-	display_lists[idx] = glGenLists(1);
-	glNewList( display_lists[idx], GL_COMPILE );
+	display_lists[idx] = gl::GenLists(1);
+	gl::NewList( display_lists[idx], GL_COMPILE );
 	draw_sphere( divisions );
-	glEndList();
+	gl::EndList();
     }
 
     return display_lists[idx];
@@ -209,9 +207,9 @@ void traverse_dag( scene_node_t *node, material_t *mat )
     scene_node_t *child;
 
     check_assertion( node != NULL, "node is NULL" );
-    glPushMatrix();
+    gl::PushMatrix();
 
-    glMultMatrixd( (double *) node->trans.data );
+    gl::MultMatrix(node->trans);
 
     if ( node->mat != NULL ) {
         mat = node->mat;
@@ -222,7 +220,7 @@ void traverse_dag( scene_node_t *node, material_t *mat )
                      mat->specular_exp );
 
 	if ( getparam_use_sphere_display_list() ) {
-	    glCallList( get_sphere_display_list( 
+	    gl::CallList( get_sphere_display_list( 
 		node->param.sphere.divisions ) );
 	} else {
 	    draw_sphere( node->param.sphere.divisions );
@@ -235,7 +233,7 @@ void traverse_dag( scene_node_t *node, material_t *mat )
         child = child->next;
     } 
 
-    glPopMatrix();
+    gl::PopMatrix();
 } 
 
 /*--------------------------------------------------------------------------*/

@@ -22,8 +22,13 @@
 
 namespace pp{
 
-Color::Color(const double red, const double green, const double blue, const double alpha)
+Color::Color(const float red, const float green, const float blue, const float alpha)
  : r(red), g(green), b(blue), a(alpha)
+{
+}
+
+Color::Color(const float *color)
+ : r(color[0]), g(color[1]), b(color[2]), a(1.0)
 {
 }
 
@@ -32,7 +37,25 @@ Color::Color(const double *color)
 {
 }
 
-const Color Color::black(0.0,0.0,0.0);
-const Color Color::white(1.0,1.0,1.0);
+void
+Color::set(const float *color)
+{
+	r=color[0];
+	g=color[1];
+	b=color[2];
+	a=color[3];
+}
+
+void
+Color::set(const double *color)
+{
+	r=color[0];
+	g=color[1];
+	b=color[2];
+	a=color[3];
+}
+
+const Color Color::black(0.0f,0.0f,0.0f);
+const Color Color::white(1.0f,1.0f,1.0f);
 
 } //namespace pp

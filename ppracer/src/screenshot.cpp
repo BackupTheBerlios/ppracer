@@ -23,6 +23,7 @@
 #include "ppracer.h"
 #include "screenshot.h"
 #include "ppgltk/images/image.h"
+#include "ppgltk/alg/glwrappers.h"
 
 static int screenshot_num = 0;
 
@@ -38,8 +39,8 @@ void screenshot()
 bool take_screenshot ( char* fileName ) {
 
 	int viewport[4];
-	glGetIntegerv( GL_VIEWPORT, viewport );
-	glReadBuffer( GL_FRONT );
+	gl::GetValue(GL_VIEWPORT, viewport);
+	gl::ReadBuffer(GL_FRONT);
 	
 	pp::Image image(viewport[2],viewport[3],3);
 	
@@ -48,7 +49,7 @@ bool take_screenshot ( char* fileName ) {
 	image.depth=3;
 	
 	for (int i=0; i<viewport[3]; i++){
-		glReadPixels(viewport[0], viewport[1]+viewport[3]-1-i,
+		gl::ReadPixels(viewport[0], viewport[1]+viewport[3]-1-i,
 			viewport[2], 1, GL_RGB, 
 			GL_UNSIGNED_BYTE, image.data+viewport[2]*i*3
 			);

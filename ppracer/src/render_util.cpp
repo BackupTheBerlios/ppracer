@@ -28,6 +28,7 @@
 #include "stuff.h"
 
 #include "ppgltk/ui_theme.h"
+#include "ppgltk/alg/glhelper.h"
 
 /*
  * Constants 
@@ -45,73 +46,54 @@ void reshape( int w, int h )
 
     setparam_x_resolution( w );
     setparam_y_resolution( h );
-    glViewport( 0, 0, (GLint) w, (GLint) h );
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
+    gl::Viewport(0, 0, (GLint) w, (GLint) h );
+    gl::MatrixMode( GL_PROJECTION );
+    gl::LoadIdentity();
 
     far_clip_dist = getparam_forward_clip_distance() + FAR_CLIP_FUDGE_AMOUNT;
 
     gluPerspective( getparam_fov(), (double)w/h, NEAR_CLIP_DIST, 
 		    far_clip_dist );
 
-    glMatrixMode( GL_MODELVIEW );
+    gl::MatrixMode( GL_MODELVIEW );
 } 
 
 void flat_mode()
 {
     set_gl_options( TEXT );
 
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( -0.5, 639.5, -0.5, 479.5, -1.0, 1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+    gl::MatrixMode( GL_PROJECTION );
+    gl::LoadIdentity();
+    gl::Ortho( -0.5, 639.5, -0.5, 479.5, -1.0, 1.0 );
+    gl::MatrixMode( GL_MODELVIEW );
+    gl::LoadIdentity();
 }
 
 void draw_overlay() {
-    glColor4f( 0.0, 0.0, 1.0, 0.1 );
-    glRecti( 0, 0, 640, 480 );
+    gl::Color(0.0, 0.0, 1.0, 0.1);
+    gl::Rect(0, 0, 640, 480);
 } 
 
 void clear_rendering_context()
 {
-    glDepthMask( GL_TRUE );
-    glClearColor( theme.background.r,
-		  theme.background.g,
-		  theme.background.b,
-		  theme.background.a );
-    glClearStencil( 0 );
-    glClear( GL_COLOR_BUFFER_BIT 
+    gl::DepthMask( GL_TRUE );
+    gl::ClearColor(theme.background);
+    gl::ClearStencil(0);
+    gl::Clear( GL_COLOR_BUFFER_BIT 
 	     | GL_DEPTH_BUFFER_BIT 
 	     | GL_STENCIL_BUFFER_BIT );
 }
 
-/* 
- * Sets the material properties
- */
 void set_material( const pp::Color diffuse, const pp::Color specular,
 			 const double specular_exp )
+///Sets the material properties
 {
-  GLfloat mat_amb_diff[4];
-  GLfloat mat_specular[4];
-
-  /* Set material color (used when lighting is on) */
-  mat_amb_diff[0] = diffuse.r;
-  mat_amb_diff[1] = diffuse.g;
-  mat_amb_diff[2] = diffuse.b;
-  mat_amb_diff[3] = diffuse.a; 
-  glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff );
-
-  mat_specular[0] = specular.r;
-  mat_specular[1] = specular.g;
-  mat_specular[2] = specular.b;
-  mat_specular[3] = specular.a;
-  glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular );
-
-  glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, specular_exp );
-
-  /* Set standard color */
-  glColor4f( diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+  // Set material color (used when lighting is on)
+  gl::Material(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffuse);
+  gl::Material(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+  gl::Material(GL_FRONT_AND_BACK, GL_SHININESS, specular_exp);
+  // Set standard color
+  gl::Color(diffuse);
 } 
 
 
@@ -130,38 +112,38 @@ void draw_billboard( Player& plyr,
     x_vec.z = plyr.view.inv_view_mat.data[0][2];
 
     if ( use_world_y_axis ) {
-	y_vec = pp::Vec3d( 0, 1, 0 );
-	x_vec = projectIntoPlane( y_vec, x_vec );
-	x_vec.normalize();
-	z_vec = x_vec^y_vec;
+		y_vec = pp::Vec3d( 0, 1, 0 );
+		x_vec = projectIntoPlane( y_vec, x_vec );
+		x_vec.normalize();
+		z_vec = x_vec^y_vec;
     } else {
-	y_vec.x = plyr.view.inv_view_mat.data[1][0];
-	y_vec.y = plyr.view.inv_view_mat.data[1][1];
-	y_vec.z = plyr.view.inv_view_mat.data[1][2];
-	z_vec.x = plyr.view.inv_view_mat.data[2][0];
-	z_vec.y = plyr.view.inv_view_mat.data[2][1];
-	z_vec.z = plyr.view.inv_view_mat.data[2][2];
+		y_vec.x = plyr.view.inv_view_mat.data[1][0];
+		y_vec.y = plyr.view.inv_view_mat.data[1][1];
+		y_vec.z = plyr.view.inv_view_mat.data[1][2];
+		z_vec.x = plyr.view.inv_view_mat.data[2][0];
+		z_vec.y = plyr.view.inv_view_mat.data[2][1];
+		z_vec.z = plyr.view.inv_view_mat.data[2][2];
     }
 
-    glBegin( GL_QUADS );
+    gl::Begin(GL_QUADS);
     {
-	pt = center_pt+((-width/2.0)*x_vec);
-	pt = pt+((-height/2.0)*y_vec);
-	glNormal3f( z_vec.x, z_vec.y, z_vec.z );
-	glTexCoord2f( min_tex_coord.x, min_tex_coord.y );
-	glVertex3f( pt.x, pt.y, pt.z );
+		pt = center_pt+((-width/2.0)*x_vec);
+		pt = pt+((-height/2.0)*y_vec);
+		gl::Normal(z_vec);
+		gl::TexCoord(min_tex_coord);
+		gl::Vertex(pt);
 
-	pt = pt + (width*x_vec);
-	glTexCoord2f( max_tex_coord.x, min_tex_coord.y );
-	glVertex3f( pt.x, pt.y, pt.z );
+		pt = pt + (width*x_vec);
+		gl::TexCoord(max_tex_coord.x, min_tex_coord.y);
+		gl::Vertex(pt);
 
-	pt = pt - (height*y_vec);
-	glTexCoord2f( max_tex_coord.x, max_tex_coord.y );
-	glVertex3f( pt.x, pt.y, pt.z );
+		pt = pt - (height*y_vec);
+		gl::TexCoord(max_tex_coord);
+		gl::Vertex(pt);
 
-	pt = pt - (-width *x_vec);
-	glTexCoord2f( min_tex_coord.x, max_tex_coord.y );
-	glVertex3f( pt.x, pt.y, pt.z );
-    }
-    glEnd();
+		pt = pt - (-width *x_vec);
+		gl::TexCoord(min_tex_coord.x, max_tex_coord.y);
+		gl::Vertex(pt);
+	}
+    gl::End();
 }

@@ -17,11 +17,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef UTILS_DRAW_H
-#define UTILS_DRAW_H
+#ifndef _PP_GL_HELPER_H
+#define _PP_GL_HELPER_H
 
 #include "color.h"
 #include "vec2d.h"
+#include "vec3d.h"
+
+#include "glwrappers.h"
 
 namespace ppGL {
 
@@ -36,7 +39,4 @@ void rect(const char* binding, pp::Vec2d startPos, pp::Vec2d size);
 	
 } //namespace ppGL
 
-
-
-
-#endif // GLUTILS_DRAW_H
+#endif // _PP_GL_HELPER_H

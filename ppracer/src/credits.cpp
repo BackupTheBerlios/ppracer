@@ -168,45 +168,37 @@ Credits::drawText( float timeStep )
     }
 
     // Draw strips at the top and bottom to clip out text 
-    glDisable( GL_TEXTURE_2D );
+    gl::Disable(GL_TEXTURE_2D);
 
-    glColor4dv( (double*)&theme.background );
+	gl::Color(theme.background);
+    gl::Rect(0, 0, w, CREDITS_MIN_Y);
 
-    glRectf( 0, 0, w, CREDITS_MIN_Y );
-
-    glBegin( GL_QUADS );
+    gl::Begin(GL_QUADS);
     {
-	glVertex2f( 0, CREDITS_MIN_Y );
-	glVertex2f( w, CREDITS_MIN_Y );
-	glColor4f( theme.background.r, 
-		   theme.background.g,
-		   theme.background.b,
-		   0 );
-	glVertex2f( w, CREDITS_MIN_Y + 30 );
-	glVertex2f( 0, CREDITS_MIN_Y + 30 );
+		gl::Vertex(0, CREDITS_MIN_Y);
+		gl::Vertex(w, CREDITS_MIN_Y);
+		gl::Color(theme.background, 0.0f);
+		gl::Vertex(w, CREDITS_MIN_Y + 30);
+		gl::Vertex(0, CREDITS_MIN_Y + 30);
     }
-    glEnd();
+    gl::End();
 
-    glColor4dv( (double*)&theme.background );
+    gl::Color(theme.background);
+    gl::Rect(0, h+CREDITS_MAX_Y, w, h);
 
-    glRectf( 0, h+CREDITS_MAX_Y, w, h );
-
-    glBegin( GL_QUADS );
+    gl::Begin(GL_QUADS);
     {
-	glVertex2f( w, h+CREDITS_MAX_Y );
-	glVertex2f( 0, h+CREDITS_MAX_Y );
-	glColor4f( theme.background.r, 
-		   theme.background.g,
-		   theme.background.b,
-		   0 );
-	glVertex2f( 0, h+CREDITS_MAX_Y - 30 );
-	glVertex2f( w, h+CREDITS_MAX_Y - 30 );
+		gl::Vertex(w, h+CREDITS_MAX_Y);
+		gl::Vertex(0, h+CREDITS_MAX_Y);
+		gl::Color(theme.background, 0.0f);
+		gl::Vertex(0, h+CREDITS_MAX_Y - 30);
+		gl::Vertex(w, h+CREDITS_MAX_Y - 30);
     }
-    glEnd();
+    gl::End();
 
-    glColor4f( 1, 1, 1, 1 );
+    gl::Color(pp::Color::white);
 
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable(GL_TEXTURE_2D);
 }
 
 bool

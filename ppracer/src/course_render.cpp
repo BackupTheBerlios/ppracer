@@ -594,13 +594,9 @@ void draw_fog_plane()
     pp::Vec3d left_vec, right_vec;
     double height;
 
-    GLfloat *fogColor;
-
     if ( fogPlane.isEnabled() == false ) {
-	return;
+		return;
     }
-
-    //set_gl_options( FOG_PLANE );
 
     get_course_dimensions( &course_width, &course_length );
     course_angle = get_course_angle();
@@ -637,31 +633,31 @@ void draw_fog_plane()
     if ( !pp::Plane::intersect( bottom_plane, far_clip_plane, right_clip_plane,
 			    &right_pt ) )
     {
-	return;
+		return;
     }
 
     if ( !pp::Plane::intersect( top_plane, far_clip_plane, left_clip_plane,
 			    &top_left_pt ) )
     {
-	return;
+		return;
     }
 
     if ( !pp::Plane::intersect( top_plane, far_clip_plane, right_clip_plane,
 			    &top_right_pt ) )
     {
-	return;
+		return;
     }
 
     if ( !pp::Plane::intersect( bottom_clip_plane, far_clip_plane, 
 			    left_clip_plane, &bottom_left_pt ) )
     {
-	return;
+		return;
     }
 
     if ( !pp::Plane::intersect( bottom_clip_plane, far_clip_plane, 
 			    right_clip_plane, &bottom_right_pt ) )
     {
-	return;
+		return;
     }
 
     left_vec = top_left_pt - left_pt;
@@ -672,28 +668,28 @@ void draw_fog_plane()
 
     set_gl_options( FOG_PLANE );
 
-    fogColor = fogPlane.getColor();
+    pp::Color &fogColor = fogPlane.getColor();
 
-    glColor4fv( fogColor );
+    gl::Color(fogColor);
 
-    glBegin( GL_QUAD_STRIP );
+    gl::Begin(GL_QUAD_STRIP);
 
     glVertex3f( bottom_left_pt.x, bottom_left_pt.y, bottom_left_pt.z );
     glVertex3f( bottom_right_pt.x, bottom_right_pt.y, bottom_right_pt.z );
     glVertex3f( left_pt.x, left_pt.y, left_pt.z );
     glVertex3f( right_pt.x, right_pt.y, right_pt.z );
 
-    glColor4f( fogColor[0], fogColor[1], fogColor[2], 0.9 );
+    gl::Color(fogColor, 0.9);
     glVertex3f( top_left_pt.x, top_left_pt.y, top_left_pt.z );
     glVertex3f( top_right_pt.x, top_right_pt.y, top_right_pt.z );
 
-    glColor4f( fogColor[0], fogColor[1], fogColor[2], 0.3 );
+    gl::Color(fogColor, 0.3);
     pt = top_left_pt + left_vec ;
     glVertex3f( pt.x, pt.y, pt.z );
     pt = top_right_pt + right_vec;
     glVertex3f( pt.x, pt.y, pt.z );
 		
-    glColor4f( fogColor[0], fogColor[1], fogColor[2], 0.0 );
+    gl::Color(fogColor, 0.0 );
     pt = top_left_pt + left_vec*3.0;
     glVertex3f( pt.x, pt.y, pt.z );
     pt = top_right_pt + right_vec*3.0;

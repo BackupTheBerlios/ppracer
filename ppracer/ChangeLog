@@ -1,4 +1,9 @@
 
+2005-03-05  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	implemented OpenGL wrapper
+	changed code to use new OpenGL wrapper
+
 2005-03-01  Volker Stroebel <volker@planetpenguin.de>
 	* src/configuration.*
 	fixed keyhandling in configuration

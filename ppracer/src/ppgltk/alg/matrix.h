@@ -32,7 +32,12 @@ class Quat;
 class Matrix
 {
 public:
-	double data[4][4];
+	
+	union{
+		double data[4][4];
+		double rawdata[16];
+	};
+
 	Matrix(void){};
 	Matrix(const Quat quat);	
 

@@ -27,6 +27,7 @@
 #include <GL/glext.h>
 
 #include "ppgltk/images/image.h"
+#include "ppgltk/alg/glwrappers.h"
 
 static std::map<std::string,texture_node_t> textureTable;
 static std::map<std::string,texture_node_t> bindingTable;
@@ -94,32 +95,32 @@ bool load_texture( const char *texname, const char *filename, int repeatable )
 		tex = &it->second;
 		print_debug(DEBUG_TEXTURE, "Found texture %s with id: %d", 
 		    texname, it->second.texture_id);
-        glDeleteTextures( 1, &(tex->texture_id) );
+        gl::DeleteTextures(1, &(tex->texture_id));
 	}else{
 		tex = &textureTable[texname];
 		tex->ref_count = 0;
 	}
     
     tex->repeatable = repeatable;
-    glGenTextures( 1, &(tex->texture_id) );
-    glBindTexture( GL_TEXTURE_2D, tex->texture_id );
+    gl::GenTextures(1, &(tex->texture_id));
+    gl::BindTexture(GL_TEXTURE_2D, tex->texture_id);
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    gl::PixelStore(GL_UNPACK_ALIGNMENT, 4);
 
 
     if ( repeatable ) {
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
     } else {
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
     }
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+    gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
                      get_min_filter() );
 		
-    /* Check if we need to scale image */
-    glGetIntegerv( GL_MAX_TEXTURE_SIZE, &max_texture_size );
+    // Check if we need to scale image
+    gl::GetValue( GL_MAX_TEXTURE_SIZE, &max_texture_size );
     if ( texImage->width > max_texture_size ||
 	 texImage->height > max_texture_size ) 
     {
@@ -232,8 +233,8 @@ bool unbind_texture( const char *binding )
 
 void get_current_texture_dimensions( int *width, int *height )
 {
-    glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, width );
-    glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, height );
+    gl::GetTexLevelParameter( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, width );
+    gl::GetTexLevelParameter( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, height );
 }
 
 bool flush_textures(void)

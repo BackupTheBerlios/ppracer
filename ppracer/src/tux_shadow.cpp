@@ -46,9 +46,9 @@ void draw_tux_shadow()
  	*/
 	
 	if(getparam_stencil_buffer()){
-    	glColor4f( 0.0,0.0,0.0,0.3 );
+    	gl::Color(0.0f,0.0f,0.0f,0.3f);
 	}else{
-    	glColor4f( 0.0,0.0,0.0,0.1 );
+    	gl::Color(0.0f,0.0f,0.0f,0.1f);
 	}
 	
     model_matrix.makeIdentity();
@@ -128,7 +128,7 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
 
         } else if ( phi + d_phi + eps >= M_PI ) {
             
-            glBegin( GL_TRIANGLE_FAN );
+            gl::Begin( GL_TRIANGLE_FAN );
 		draw_shadow_vertex( 0., 0., -1., model_matrix );
 
                 for ( theta = twopi; theta - eps > 0; theta -= d_theta ) {
@@ -144,11 +144,11 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
                 y = 0.0;
                 z = cos_phi;
 		draw_shadow_vertex( x, y, z, model_matrix );
-            glEnd();
+            gl::End();
 
         } else {
             
-            glBegin( GL_TRIANGLE_STRIP );
+            gl::Begin( GL_TRIANGLE_STRIP );
                 
                 for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
 		    sin_theta = sin( theta );
@@ -174,7 +174,7 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
                 z = cos_phi_d_phi;
 		draw_shadow_vertex( x, y, z, model_matrix );
 
-            glEnd();
+            gl::End();
 
         } 
     } 
@@ -199,6 +199,6 @@ void draw_shadow_vertex( double x, double y, double z,
     if ( pt.y > old_y ) 
 	pt.y = old_y;
 
-    glNormal3f( nml.x, nml.y, nml.z );
-    glVertex3f( pt.x, pt.y, pt.z );
+    gl::Normal( nml.x, nml.y, nml.z );
+    gl::Vertex( pt.x, pt.y, pt.z );
 }

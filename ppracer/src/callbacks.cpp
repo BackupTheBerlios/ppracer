@@ -76,12 +76,14 @@ pp_register_font_cb ( ClientData cd, Tcl_Interp *ip,
 		error = true;
 		break;
 	    }
-	    if ( get_tcl_tuple( ip, *argv, (double*)&color, 4 ) == 
+		double tmp_color[4];
+	    if ( get_tcl_tuple( ip, *argv, tmp_color, 4 ) == 
 		 TCL_ERROR ) 
 	    {
 		error = true;
 		break;
 	    }
+		color.set(tmp_color);
 		
 	} else {
 	    print_warning( TCL_WARNING, "pp_load_font: unrecognized "
@@ -139,14 +141,17 @@ pp_bind_font_cb ( ClientData cd, Tcl_Interp *ip,
 			break;
 	    }
 		
-		color = new pp::Color;
+		double tmp_color[4];		
 		
-	    if ( get_tcl_tuple( ip, *argv, (double*)color, 4 ) == 
+	    if ( get_tcl_tuple( ip, *argv, tmp_color, 4 ) == 
 		 TCL_ERROR ) 
 	    {
 			error = true;
 			break;
 	    }
+		
+		color = new pp::Color(tmp_color);	
+		
 	} else {
 	    print_warning( TCL_WARNING, "pp_bind_font: unrecognized "
 			   "parameter `%s'", *argv );

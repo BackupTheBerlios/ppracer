@@ -25,10 +25,12 @@
 
 #if defined( HAVE_GL_GLX_H )
 #   include <GL/glx.h>
-#endif /* defined( HAVE_GL_GLX_H ) */
+#endif // defined( HAVE_GL_GLX_H ) 
 
 #include "gl_util.h"
 #include "game_config.h"
+
+#include "ppgltk/alg/glhelper.h"
 
 void set_gl_options( const RenderMode mode ) 
 {
@@ -60,290 +62,290 @@ void set_gl_options( const RenderMode mode )
      */
     switch( mode ) {
     case GUI:
-        glEnable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
-		glDisable( GL_FOG );
+        gl::Enable(GL_TEXTURE_2D);
+        gl::Disable(GL_DEPTH_TEST);
+        gl::Disable(GL_CULL_FACE);
+		gl::Disable(GL_LIGHTING);
+		gl::Disable(GL_NORMALIZE);
+		gl::Disable(GL_ALPHA_TEST);
+        gl::Enable(GL_BLEND);
+		gl::Disable(GL_STENCIL_TEST);
+		gl::Disable(GL_TEXTURE_GEN_S);
+		gl::Disable(GL_TEXTURE_GEN_T);
+		gl::Disable(GL_COLOR_MATERIAL);
+		gl::DepthMask(GL_TRUE);
+		gl::ShadeModel(GL_SMOOTH);
+		gl::DepthFunc(GL_LESS);
+		gl::Disable(GL_FOG);
         break;
     case GAUGE_BARS:
-        glEnable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glEnable( GL_TEXTURE_GEN_S );
-		glEnable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Enable(GL_TEXTURE_2D);
+        gl::Disable(GL_DEPTH_TEST);
+        gl::Disable(GL_CULL_FACE);
+		gl::Disable(GL_LIGHTING);
+		gl::Disable(GL_NORMALIZE);
+		gl::Disable(GL_ALPHA_TEST);
+        gl::Enable(GL_BLEND);
+		gl::Disable(GL_STENCIL_TEST);
+		gl::Enable(GL_TEXTURE_GEN_S);
+		gl::Enable(GL_TEXTURE_GEN_T);
+		gl::Disable(GL_COLOR_MATERIAL);
+		gl::DepthMask(GL_TRUE);
+		gl::ShadeModel(GL_SMOOTH);
+		gl::DepthFunc(GL_LESS);
 
-		glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		gl::TexGen(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+		gl::TexGen(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
         break;
 
     case TEXFONT:
-        glEnable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Enable(GL_TEXTURE_2D);
+        gl::Disable(GL_DEPTH_TEST);
+        gl::Disable(GL_CULL_FACE);
+		gl::Disable(GL_LIGHTING);
+		gl::Disable(GL_NORMALIZE);
+		gl::Disable(GL_ALPHA_TEST);
+        gl::Enable(GL_BLEND);
+		gl::Disable(GL_STENCIL_TEST);
+		gl::Disable(GL_TEXTURE_GEN_S);
+		gl::Disable(GL_TEXTURE_GEN_T);
+		gl::Disable(GL_COLOR_MATERIAL);
+		gl::DepthMask(GL_TRUE);
+		gl::ShadeModel(GL_SMOOTH);
+		gl::DepthFunc(GL_LESS);
         break;
 
     case TEXT:
-        glDisable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Disable(GL_TEXTURE_2D);
+        gl::Disable(GL_DEPTH_TEST);
+        gl::Disable(GL_CULL_FACE);
+		gl::Disable(GL_LIGHTING);
+		gl::Disable(GL_NORMALIZE);
+		gl::Disable(GL_ALPHA_TEST);
+        gl::Enable(GL_BLEND);
+		gl::Disable(GL_STENCIL_TEST);
+		gl::Disable(GL_TEXTURE_GEN_S);
+		gl::Disable(GL_TEXTURE_GEN_T);
+		gl::Disable(GL_COLOR_MATERIAL);
+		gl::DepthMask(GL_TRUE);
+		gl::ShadeModel(GL_SMOOTH);
+		gl::DepthFunc(GL_LESS);
         break;
 
     case SPLASH_SCREEN:
-        glDisable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Disable( GL_TEXTURE_2D );
+        gl::Disable( GL_DEPTH_TEST );
+        gl::Disable( GL_CULL_FACE );
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+        gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
         break;
 
     case COURSE:
-		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-		glEnable( GL_CULL_FACE );
-		glEnable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-		glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glEnable( GL_TEXTURE_GEN_S );
-		glEnable( GL_TEXTURE_GEN_T );
-		glEnable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LEQUAL );
+		gl::Enable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+		gl::Enable( GL_CULL_FACE );
+		gl::Enable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+		gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Enable( GL_TEXTURE_GEN_S );
+		gl::Enable( GL_TEXTURE_GEN_T );
+		gl::Enable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LEQUAL );
 
-		glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		gl::TexGen( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		gl::TexGen( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
 		break;
 
     case TREES:
-		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glEnable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-        glEnable( GL_ALPHA_TEST );
-		glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+		gl::Enable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+        gl::Disable( GL_CULL_FACE );
+		gl::Enable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+        gl::Enable( GL_ALPHA_TEST );
+		gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
 
-        glAlphaFunc( GL_GEQUAL, 0.5 );
+        gl::AlphaFunc( GL_GEQUAL, 0.5 );
         break;
         
     case PARTICLES:
-        glEnable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glEnable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Enable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+        gl::Disable( GL_CULL_FACE );
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Enable( GL_ALPHA_TEST );
+        gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
 
-        glAlphaFunc( GL_GEQUAL, 0.5 );
+        gl::AlphaFunc( GL_GEQUAL, 0.5 );
         break;    
         
     case PARTICLE_SHADOWS:
-        glDisable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Disable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+        gl::Disable( GL_CULL_FACE );
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+        gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
         break;
 
     case SKY:
-		glEnable( GL_TEXTURE_2D );
-		glDisable( GL_DEPTH_TEST );
-		glDisable( GL_CULL_FACE ); 
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-		glDisable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_FALSE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
-		glDepthFunc( GL_ALWAYS );
+		gl::Enable( GL_TEXTURE_2D );
+		gl::Disable( GL_DEPTH_TEST );
+		gl::Disable( GL_CULL_FACE ); 
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+		gl::Disable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_FALSE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
+		gl::DepthFunc( GL_ALWAYS );
 		break;
  	
     case FOG_PLANE:
-		glDisable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-		glDisable( GL_CULL_FACE ); 
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-		glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+		gl::Disable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+		gl::Disable( GL_CULL_FACE ); 
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+		gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
 		break;
 
     case TUX:
-        glDisable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-		glEnable( GL_CULL_FACE );
-        glEnable( GL_LIGHTING );
-		glEnable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-		glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Disable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+		gl::Enable( GL_CULL_FACE );
+        gl::Enable( GL_LIGHTING );
+		gl::Enable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+		gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
         break;
 
     case TUX_SHADOW:
 		if(getparam_stencil_buffer()){
-			glDisable( GL_TEXTURE_2D );
-			glEnable( GL_DEPTH_TEST );
-			glDisable( GL_CULL_FACE );
-			glDisable( GL_LIGHTING );
-			glDisable( GL_NORMALIZE );
-			glDisable( GL_ALPHA_TEST );
-			glEnable( GL_BLEND );
-			glEnable( GL_STENCIL_TEST );
-			glDisable( GL_COLOR_MATERIAL );
-			glDepthMask( GL_FALSE );
-			glShadeModel( GL_SMOOTH );
-			glDepthFunc( GL_LESS );
-			glStencilFunc( GL_EQUAL, 0, ~0 );
-			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+			gl::Disable( GL_TEXTURE_2D );
+			gl::Enable( GL_DEPTH_TEST );
+			gl::Disable( GL_CULL_FACE );
+			gl::Disable( GL_LIGHTING );
+			gl::Disable( GL_NORMALIZE );
+			gl::Disable( GL_ALPHA_TEST );
+			gl::Enable( GL_BLEND );
+			gl::Enable( GL_STENCIL_TEST );
+			gl::Disable( GL_COLOR_MATERIAL );
+			gl::DepthMask( GL_FALSE );
+			gl::ShadeModel( GL_SMOOTH );
+			gl::DepthFunc( GL_LESS );
+			gl::StencilFunc( GL_EQUAL, 0, ~0 );
+			gl::StencilOp( GL_KEEP, GL_KEEP, GL_INCR );
 		}else{
-			glDisable( GL_TEXTURE_2D );
-			glEnable( GL_DEPTH_TEST );
-			glEnable( GL_CULL_FACE );
-			glDisable( GL_LIGHTING );
-			glDisable( GL_NORMALIZE );
-			glDisable( GL_ALPHA_TEST );
-			glEnable( GL_BLEND );
-			glDisable( GL_STENCIL_TEST );
-			glDisable( GL_COLOR_MATERIAL );
-			glDepthMask( GL_TRUE );
-			glShadeModel( GL_SMOOTH );
-			glDepthFunc( GL_LESS );
+			gl::Disable( GL_TEXTURE_2D );
+			gl::Enable( GL_DEPTH_TEST );
+			gl::Enable( GL_CULL_FACE );
+			gl::Disable( GL_LIGHTING );
+			gl::Disable( GL_NORMALIZE );
+			gl::Disable( GL_ALPHA_TEST );
+			gl::Enable( GL_BLEND );
+			gl::Disable( GL_STENCIL_TEST );
+			gl::Disable( GL_COLOR_MATERIAL );
+			gl::DepthMask( GL_TRUE );
+			gl::ShadeModel( GL_SMOOTH );
+			gl::DepthFunc( GL_LESS );
 		}
 		break;
 
     case TRACK_MARKS:
-		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
-		glDisable( GL_CULL_FACE );
-		glEnable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glDisable( GL_ALPHA_TEST );
-		glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_COLOR_MATERIAL );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDepthMask( GL_FALSE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LEQUAL );
+		gl::Enable( GL_TEXTURE_2D );
+		gl::Enable( GL_DEPTH_TEST );
+		gl::Disable( GL_CULL_FACE );
+		gl::Enable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Disable( GL_ALPHA_TEST );
+		gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::DepthMask( GL_FALSE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LEQUAL );
 		break;
 
     case OVERLAYS:
-        glEnable( GL_TEXTURE_2D );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_NORMALIZE );
-		glEnable( GL_ALPHA_TEST );
-        glEnable( GL_BLEND );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_TEXTURE_GEN_S );
-		glDisable( GL_TEXTURE_GEN_T );
-		glDisable( GL_COLOR_MATERIAL );
-		glDepthMask( GL_TRUE );
-		glShadeModel( GL_SMOOTH );
-		glDepthFunc( GL_LESS );
+        gl::Enable( GL_TEXTURE_2D );
+        gl::Disable( GL_DEPTH_TEST );
+        gl::Disable( GL_CULL_FACE );
+		gl::Disable( GL_LIGHTING );
+		gl::Disable( GL_NORMALIZE );
+		gl::Enable( GL_ALPHA_TEST );
+        gl::Enable( GL_BLEND );
+		gl::Disable( GL_STENCIL_TEST );
+		gl::Disable( GL_TEXTURE_GEN_S );
+		gl::Disable( GL_TEXTURE_GEN_T );
+		gl::Disable( GL_COLOR_MATERIAL );
+		gl::DepthMask( GL_TRUE );
+		gl::ShadeModel( GL_SMOOTH );
+		gl::DepthFunc( GL_LESS );
 
-        glAlphaFunc( GL_GEQUAL, 0.5 );
+        gl::AlphaFunc( GL_GEQUAL, 0.5 );
         break;
 
     default:
-	code_not_reached();
+		code_not_reached();
     } 
 } 
 
@@ -359,30 +361,27 @@ void check_gl_error()
     GLenum error;
     error = glGetError();
     if ( error != GL_NO_ERROR ) {
-	print_warning( CRITICAL_WARNING, 
+		print_warning( CRITICAL_WARNING, 
 		       "OpenGL Error: %s", gluErrorString( error ) );
-	fflush( stderr );
+		fflush( stderr );
     }
 }
 #endif /* defined( TUXRACER_NO_ASSERT ) */
 
 void copy_to_glfloat_array( GLfloat dest[], double src[], int n )
 {
-    int i;
-    for (i=0; i<n; i++) {
-	dest[i] = src[i];
+    for (int i=0; i<n; i++) {
+		dest[i] = src[i];
     }
 }
 
 void init_glfloat_array( int num, GLfloat arr[], ... )
 {
-    int i;
     va_list args;
-
     va_start( args, arr );
 
-    for (i=0; i<num; i++) {
-	arr[i] = va_arg(args, double);
+    for (int i=0; i<num; i++) {
+		arr[i] = va_arg(args, double);
     }
 
     va_end( args );
@@ -401,24 +400,24 @@ void init_opengl_extensions()
     get_gl_proc = (get_gl_proc_fptr_t) SDL_GL_GetProcAddress;
 
     if ( get_gl_proc ) {
-	glLockArraysEXT_p = (PFNGLLOCKARRAYSEXTPROC) 
-	    (*get_gl_proc)( (GLubyte*) "glLockArraysEXT" );
-	glUnlockArraysEXT_p = (PFNGLUNLOCKARRAYSEXTPROC) 
-	    (*get_gl_proc)( (GLubyte*) "glUnlockArraysEXT" );
+		glLockArraysEXT_p = (PFNGLLOCKARRAYSEXTPROC) 
+				(*get_gl_proc)( (GLubyte*) "glLockArraysEXT" );
+		glUnlockArraysEXT_p = (PFNGLUNLOCKARRAYSEXTPROC) 
+				(*get_gl_proc)( (GLubyte*) "glUnlockArraysEXT" );
 	
-	if ( glLockArraysEXT_p != NULL && glUnlockArraysEXT_p != NULL ) {
-	    print_debug( DEBUG_GL_EXT, 
-			 "GL_EXT_compiled_vertex_array extension "
-			 "supported" );
-	} else {
-	    print_debug( DEBUG_GL_EXT, 
-			 "GL_EXT_compiled_vertex_array extension "
-			 "NOT supported" );
-	    glLockArraysEXT_p = NULL;
-	    glUnlockArraysEXT_p = NULL;
-	}
+		if ( glLockArraysEXT_p != NULL && glUnlockArraysEXT_p != NULL ) {
+			print_debug( DEBUG_GL_EXT, 
+				 "GL_EXT_compiled_vertex_array extension "
+				 "supported" );
+		} else {
+			print_debug( DEBUG_GL_EXT, 
+				 "GL_EXT_compiled_vertex_array extension "
+				 "NOT supported" );
+			glLockArraysEXT_p = NULL;
+			glUnlockArraysEXT_p = NULL;
+		}
     } else {
-	print_debug( DEBUG_GL_EXT, 
+		print_debug( DEBUG_GL_EXT, 
 		     "No function available for obtaining GL proc addresses" );
     }
 }
@@ -463,20 +462,20 @@ void print_gl_info()
 
     fprintf( stderr,
 	     "  vendor: %s\n", 
-	     glGetString( GL_VENDOR ) );
+	     gl::GetString(GL_VENDOR) );
 
     fprintf( stderr,
 	     "  renderer: %s\n", 
-	     glGetString( GL_RENDERER ) );
+	     gl::GetString(GL_RENDERER) );
 
     fprintf( stderr,
 	     "  version: %s\n", 
-	     glGetString( GL_VERSION ) );
+	     gl::GetString(GL_VERSION) );
 
 	//extensions = string_copy( (char*) glGetString( GL_EXTENSIONS ) );
 	//oldp = extensions;
 	
-	extensions = (char*) glGetString( GL_EXTENSIONS );
+	extensions = (char*) gl::GetString(GL_EXTENSIONS);
 
 	oldp = new char[strlen(extensions)+1];
 	extensions = oldp;
@@ -501,17 +500,17 @@ void print_gl_info()
 
 	switch( gl_values[i].type ) {
 	case GL_INT:
-	    glGetIntegerv( gl_values[i].value, &int_val );
+	    gl::GetValue(gl_values[i].value, &int_val);
 	    fprintf( stderr, "%d", int_val );
 	    break;
 
 	case GL_FLOAT:
-	    glGetFloatv( gl_values[i].value, &float_val );
+	    gl::GetValue(gl_values[i].value, &float_val);
 	    fprintf( stderr, "%f", float_val );
 	    break;
 
 	case GL_UNSIGNED_BYTE:
-	    glGetBooleanv( gl_values[i].value, &boolean_val );
+	    gl::GetValue(gl_values[i].value, &boolean_val);
 	    fprintf( stderr, "%d", boolean_val );
 	    break;
 

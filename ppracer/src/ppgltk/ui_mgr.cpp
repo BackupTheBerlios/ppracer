@@ -52,15 +52,14 @@ UIManager::setDirty()
 void
 UIManager::setupDisplay()
 {
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0, getparam_x_resolution(), 
-	     	0, getparam_y_resolution(), -1.0, 1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    glTranslatef( 0.0, 0.0, -1.0 );
-
-    glColor4f( 1.0, 1.0, 1.0, 1.0 );
+    gl::MatrixMode( GL_PROJECTION );
+    gl::LoadIdentity();
+    gl::Ortho(	0, getparam_x_resolution(),
+				0, getparam_y_resolution(), -1.0, 1.0 );
+    gl::MatrixMode( GL_MODELVIEW );
+    gl::LoadIdentity();
+    gl::Translate(0.0, 0.0, -1.0);
+    gl::Color(pp::Color::white);
 }
 	
 void
@@ -82,33 +81,28 @@ UIManager::drawCursor()
 
     binding = "mouse_cursor";
     if ( !get_texture_binding( binding, &texobj ) ) {
-	texobj = 0;
+		texobj = 0;
     }
 
     setupDisplay();
 
-    glBindTexture( GL_TEXTURE_2D, texobj );
+    gl::BindTexture(GL_TEXTURE_2D, texobj);
 
-    glBegin( GL_QUADS );
+    gl::Begin(GL_QUADS);
     {
-	glTexCoord2f( 0, 1 );
-	glVertex2f( cursorPos.x, 
-		    cursorPos.y );
+	gl::TexCoord(0, 1);
+	gl::Vertex(cursorPos);
 
-	glTexCoord2f( 0, 0 );
-	glVertex2f( cursorPos.x, 
-		    cursorPos.y - 32 );
+	gl::TexCoord(0, 0);
+	gl::Vertex(cursorPos.x, cursorPos.y - 32);
 
-	glTexCoord2f( 1, 0 );
-	glVertex2f( cursorPos.x + 32, 
-		    cursorPos.y - 32 );
+	gl::TexCoord(1, 0);
+	gl::Vertex( cursorPos.x + 32, cursorPos.y - 32);
 
-	glTexCoord2f( 1, 1 );
-	glVertex2f( cursorPos.x + 32, 
-		    cursorPos.y );
-
+	gl::TexCoord(1, 1);
+	gl::Vertex(cursorPos.x + 32, cursorPos.y);
     }
-    glEnd();
+    gl::End();
 }
 
 void 

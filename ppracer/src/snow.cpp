@@ -26,17 +26,6 @@
 #include "loop.h"
 
 
-/*static double frand() 
-{
-    return (double)rand()/RAND_MAX;
-} 
-
-static void make_particle( int i, double x, double y,  double z)
-{
-   
-}
-*/
-
 void init_snow( pp::Vec3d eyepoint )
 {
  

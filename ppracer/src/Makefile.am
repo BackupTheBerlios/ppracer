@@ -37,11 +37,17 @@ ppracer_SOURCES =				\
 	ppgltk/alg/vec2d.h			\
 	ppgltk/alg/vec3d.cpp			\
 	ppgltk/alg/vec3d.h			\
+	ppgltk/alg/vec3f.cpp			\
+	ppgltk/alg/vec3f.h			\
+	ppgltk/alg/vec4f.cpp			\
+	ppgltk/alg/vec4f.h			\
 	ppgltk/alg/plane.h			\
 	ppgltk/alg/plane.cpp			\
 	ppgltk/alg/glhelper.h			\
 	ppgltk/alg/gaus.h			\
 	ppgltk/alg/glhelper.cpp			\
+	ppgltk/alg/glwrappers.cpp		\
+	ppgltk/alg/glwrappers.h			\
 	ppgltk/alg/poly.h			\
 	ppgltk/alg/poly.cpp			\
 	ppgltk/alg/signal.h			\

@@ -97,10 +97,10 @@ quadsquare::quadsquare(quadcornerdata* pcd)
     Vertex[4] = 0.5 * (pcd->Verts[2] + pcd->Verts[3]);
 
     for (i = 0; i < 2; i++) {
-	Error[i] = 0;
+		Error[i] = 0;
     }
     for (i = 0; i < 4; i++) {
-	Error[i+2] = fabs((Vertex[0] + pcd->Verts[i]) - (Vertex[i+1] + Vertex[((i+1)&3) + 1])) * 0.25;
+		Error[i+2] = fabs((Vertex[0] + pcd->Verts[i]) - (Vertex[i+1] + Vertex[((i+1)&3) + 1])) * 0.25;
     }
 
     // Compute MinY/MaxY based on corner verts.
@@ -1009,7 +1009,7 @@ quadsquare::DrawTris(int terrain)
 			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1 ); 
     }
 
-    glDrawElements( GL_TRIANGLES, VertexArrayCounter[terrain],
+    gl::DrawElements( GL_TRIANGLES, VertexArrayCounter[terrain],
 		    GL_UNSIGNED_INT, VertexArrayIndices[terrain] );
 
     if ( glUnlockArraysEXT_p && getparam_use_cva()) {
@@ -1022,15 +1022,14 @@ quadsquare::DrawEnvmapTris(GLuint MapTexId, int terrain)
 {
     if ( VertexArrayCounter[terrain] > 0 ) {
 	
-		glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP );
-		glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP );
+		gl::TexGen(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+		gl::TexGen(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 
-		glBindTexture( GL_TEXTURE_2D, MapTexId);
-
+		gl::BindTexture(GL_TEXTURE_2D, MapTexId);
 		DrawTris(terrain);
 
-		glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		gl::TexGen(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+		gl::TexGen(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 	} 
 }
 
@@ -1077,19 +1076,18 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 			colorval(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
 
-		glBindTexture( GL_TEXTURE_2D, terrain_texture[(*it)].texbind );
+		gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
 		DrawTris((*it));
 
 		if ( terrain_texture[(*it)].envmapbind != 0  && getparam_terrain_envmap() ) {
 		    /* Render Ice with environment map */
-		    glDisableClientState( GL_COLOR_ARRAY );
-		    glColor4f( 1.0, 1.0, 1.0, ENV_MAP_ALPHA / 255.0 );
+		    gl::DisableClientState(GL_COLOR_ARRAY);
+		    gl::Color(1.0f, 1.0f, 1.0f, ENV_MAP_ALPHA / 255.0f );
 
 		    DrawEnvmapTris(terrain_texture[(*it)].envmapbind, (*it));	
 
-		    glEnableClientState( GL_COLOR_ARRAY );
+		    gl::EnableClientState(GL_COLOR_ARRAY);
 		}
-
     }
 
     /*
@@ -1107,7 +1105,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	
 	if ( VertexArrayCounter[0] != 0 ) {
 	    /* Render black triangles */
-	    glDisable( GL_FOG );
+	    gl::Disable( GL_FOG );
 	    
 	    /* Set triangle vertices to black */
 	    for (i=0; i<(int)VertexArrayCounter[0]; i++) {
@@ -1118,16 +1116,16 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	    }
 	    
 	    /* Draw the black triangles */
-	    glBindTexture( GL_TEXTURE_2D, terrain_texture[0].texbind);
+	    gl::BindTexture(GL_TEXTURE_2D, terrain_texture[0].texbind);
 	    DrawTris(0);
 	    
 	    /* Now we draw the triangle once for each texture */
 	    if (fog_on) {
-			glEnable( GL_FOG );
+			gl::Enable(GL_FOG);
 	    }
 
 	    /* Use additive blend function */
-	    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	    /* First set triangle colors to white */
 	    for (i=0; i<(int)VertexArrayCounter[0]; i++) {
@@ -1139,7 +1137,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 		//for (int j=0; j<(int)num_terrains; j++) {
 		for(it=usedTerrains.begin(); it != usedTerrains.end(); it++){
 			
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
+			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
 
 			/* Set alpha values */
 			for (i=0; i<(int)VertexArrayCounter[0]; i++) {
@@ -1154,7 +1152,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 	    /* Render Ice with environment map */
 	    if ( getparam_terrain_envmap() ) {
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    
 		/* Need to set alpha values for ice */
 			
@@ -1178,7 +1176,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	}
     }
 
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 clip_result_t

@@ -22,11 +22,10 @@
 #include "ssbutton.h"
 
 #include "textures.h"
-
 #include "render_util.h"
-
 #include "ui_mgr.h"
 
+#include "ppgltk/alg/glhelper.h"
 
 namespace pp {
 	
@@ -89,7 +88,7 @@ SSButton::draw()
 {
 	GLuint texobj;
 	
-	glEnable( GL_TEXTURE_2D );
+	gl::Enable(GL_TEXTURE_2D);
 	
 	if ( !get_texture_binding( m_regions[m_currentState].binding, &texobj ) ) {
 		print_warning( IMPORTANT_WARNING,
@@ -98,25 +97,25 @@ SSButton::draw()
 	    texobj = 0;
 	}
 
-	glBindTexture( GL_TEXTURE_2D, texobj );
+	gl::BindTexture(GL_TEXTURE_2D, texobj);
 
-	glColor4dv( (double*) &m_regions[m_currentState].color );
+	gl::Color(m_regions[m_currentState].color );
 
-	glBegin( GL_QUADS );
+	gl::Begin( GL_QUADS );
 	{
-	    glTexCoord2f( m_regions[m_currentState].ll.x, m_regions[m_currentState].ll.y );
-	    glVertex3f( m_position.x, m_position.y, 0 );
+	    gl::TexCoord(m_regions[m_currentState].ll);
+	    gl::Vertex(m_position);
 
-	    glTexCoord2f( m_regions[m_currentState].ur.x, m_regions[m_currentState].ll.y );
-	    glVertex3f( m_position.x + m_size.x, m_position.y, 0 );
+	    gl::TexCoord(m_regions[m_currentState].ur.x, m_regions[m_currentState].ll.y);
+	    gl::Vertex(m_position.x + m_size.x, m_position.y);
 
-	    glTexCoord2f( m_regions[m_currentState].ur.x, m_regions[m_currentState].ur.y );
-	    glVertex3f( m_position.x + m_size.x, m_position.y + m_size.y, 0 );
+	    gl::TexCoord(m_regions[m_currentState].ur);
+	    gl::Vertex(m_position + m_size);
 
-	    glTexCoord2f( m_regions[m_currentState].ll.x, m_regions[m_currentState].ur.y );
-	    glVertex3f( m_position.x, m_position.y + m_size.y, 0 );
+	    gl::TexCoord(m_regions[m_currentState].ll.x, m_regions[m_currentState].ur.y);
+	    gl::Vertex(m_position.x, m_position.y + m_size.y);
 	}
-	glEnd();
+	gl::End();
 
 }
 	

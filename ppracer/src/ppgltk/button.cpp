@@ -121,7 +121,7 @@ Button::draw()
     texture_region_t *tex;
 	pp::Font *font=mp_font;
 
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable(GL_TEXTURE_2D);
 
     tex = NULL;
     
@@ -171,25 +171,25 @@ Button::draw()
 	    texobj = 0;
 	}
 
-	glBindTexture( GL_TEXTURE_2D, texobj );
+	gl::BindTexture(GL_TEXTURE_2D, texobj);
 
-	glColor4dv( (double*) &tex->color );
+	gl::Color(tex->color);
 
-	glBegin( GL_QUADS );
+	gl::Begin( GL_QUADS );
 	{
-	    glTexCoord2f( tex->ll.x, tex->ll.y );
-	    glVertex3f( m_position.x, m_position.y, 0 );
+	    gl::TexCoord(tex->ll.x, tex->ll.y);
+	    gl::Vertex(m_position.x, m_position.y);
 
-	    glTexCoord2f( tex->ur.x, tex->ll.y );
-	    glVertex3f( m_position.x + m_size.x, m_position.y, 0 );
+	    gl::TexCoord(tex->ur.x, tex->ll.y);
+	    gl::Vertex( m_position.x + m_size.x, m_position.y);
 
-	    glTexCoord2f( tex->ur.x, tex->ur.y );
-	    glVertex3f( m_position.x + m_size.x, m_position.y + m_size.y, 0 );
+	    gl::TexCoord(tex->ur.x, tex->ur.y);
+	    gl::Vertex(m_position.x + m_size.x, m_position.y + m_size.y);
 
-	    glTexCoord2f( tex->ll.x, tex->ur.y );
-	    glVertex3f( m_position.x, m_position.y + m_size.y, 0 );
+	    gl::TexCoord(tex->ll.x, tex->ur.y);
+	    gl::Vertex(m_position.x, m_position.y + m_size.y);
 	}
-	glEnd();
+	gl::End();
     }
 
 	if(mp_font!=NULL){

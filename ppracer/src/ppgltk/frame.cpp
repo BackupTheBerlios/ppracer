@@ -22,6 +22,7 @@
 #include "ui_theme.h"
 #include "ppracer.h"
 #include "render_util.h"
+#include "alg/glhelper.h"
 
 namespace pp{
 
@@ -43,23 +44,15 @@ Frame::~Frame()
 void
 Frame::draw()
 {
-	glDisable( GL_TEXTURE_2D );
+	gl::Disable(GL_TEXTURE_2D);
 
-    glColor3dv( (double*)&theme.foreground);
+    gl::Color(theme.foreground);
+    gl::Rect(m_position, m_position + m_size);
 
-    glRectf( m_position.x, 
-	     m_position.y,
-	     m_position.x + m_size.x,
-	     m_position.y + m_size.y );
+    gl::Color(theme.background);
+    gl::Rect(m_position + 4, m_position + m_size - 4);
 
-    glColor3dv( (double*)&theme.background );
-
-    glRectf( m_position.x + 4, 
-	     m_position.y + 4,
-	     m_position.x + m_size.x - 4,
-	     m_position.y + m_size.y - 4 );
-
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable(GL_TEXTURE_2D);
 }
 	
 } //namespace pp

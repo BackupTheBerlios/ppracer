@@ -29,6 +29,7 @@
 #include "course_mgr.h"
 
 #include "ppgltk/alg/defs.h"
+#include "ppgltk/alg/glwrappers.h"
 
 
 #define MAX_ARM_ANGLE 30.0
@@ -140,12 +141,10 @@ void adjust_tux_joints( double turnFact, bool isBraking,
 
 void draw_tux()
 {
-    GLfloat dummyColor[]  = { 0.0, 0.0, 0.0, 1.0 };
-
     /* XXX: For some reason, inserting this call here makes Tux render
      * with correct lighting under Mesa 3.1. I'm guessing it's a Mesa bug.
      */
-    glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, dummyColor );
+    gl::Material( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, pp::Color::black);
 
     set_gl_options( TUX );
 

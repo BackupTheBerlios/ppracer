@@ -349,23 +349,18 @@ Textarea::drawTextLines()
 void
 Textarea::draw()
 {
-	glDisable( GL_TEXTURE_2D );
+	gl::Disable(GL_TEXTURE_2D);
 
-    glColor3dv( (double*)&m_borderColor );
+    gl::Color(m_borderColor);
 
-    glRectf( m_position.x, 
-	     m_position.y,
-	     m_position.x + m_size.x,
-	     m_position.y + m_size.y );
+    gl::Rect(m_position, m_position + m_size);
 
-    glColor3dv( (double*)&m_backgroundColor );
+    gl::Color(m_backgroundColor);
 
-    glRectf( m_position.x + m_borderWidth, 
-	     m_position.y + m_borderWidth,
-	     m_position.x + m_size.x - m_borderWidth,
-	     m_position.y + m_size.y - m_borderWidth );
+    gl::Rect(m_position + m_borderWidth, 
+			 m_position + m_size - m_borderWidth);
 
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable(GL_TEXTURE_2D);
 
 	drawTextLines();
 

@@ -27,8 +27,7 @@
 #endif
 
 #include "FT/FTFont.h"
-#include "alg/color.h"
-#include "alg/vec2d.h"
+#include "alg/glhelper.h"
 
 namespace pp{
 	

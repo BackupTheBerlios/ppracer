@@ -23,6 +23,8 @@
 
 #include "model_ac.h"
 
+#include "alg/glhelper.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -294,7 +296,7 @@ void
 ModelAC::setSimpleColor(long matno)
 {
     Material *m = getMaterialFromPalette(matno);
-    glColor3dv((double*)&m->diffuse);
+    gl::Color(m->diffuse);
 }
 
 int

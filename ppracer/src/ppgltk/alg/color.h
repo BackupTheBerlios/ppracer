@@ -27,19 +27,20 @@ namespace pp {
 class Color
 {
 public:
-	/// red
-	double r;
-	/// green
-	double g;
-	/// blue
-	double b;
-	/// alpha
-	double a;
-
-	Color(void) : r(0.0), g(0.0), b(0.0), a(1.0){};
-	Color(const double red, const double green, const double blue, const double alpha=1.0);	
+	union{
+		struct{
+			float r,g,b,a;
+		};
+		float colors[4];		
+	};
+	
+	Color(const float red = 0.0f, const float green = 0.0f, const float blue = 0.0f, const float alpha=1.0f);	
+	Color(const float *color);
 	Color(const double *color);
 		
+	void set(const float *color);
+	void set(const double *color);
+	
 	static const pp::Color black;
 	static const pp::Color white;
 };

@@ -32,60 +32,52 @@ light_t* get_course_lights() {
 
 void reset_lights()
 {
-    int i;
-    GLfloat black[] = { 0., 0., 0., 1. };
-    for (i=0; i<NUM_COURSE_LIGHTS; i++) {
-	/* Note: we initialize the lights to default OpenGL values
-           EXCEPT that light 0 isn't treated differently than the
-           others */
-	course_lights[i].is_on = false;
-	init_glfloat_array( 4, course_lights[i].ambient, 0., 0., 0., 1. );
-	init_glfloat_array( 4, course_lights[i].diffuse, 0., 0., 0., 1. );
-	init_glfloat_array( 4, course_lights[i].specular, 0., 0., 0., 1. );
-	init_glfloat_array( 4, course_lights[i].position, 0., 0., 1., 0. );
-	init_glfloat_array( 3, course_lights[i].spot_direction, 0., 0., -1. );
-	course_lights[i].spot_exponent = 0.0;
-	course_lights[i].spot_cutoff = 180.0;
-	course_lights[i].constant_attenuation = 1.0;
-	course_lights[i].linear_attenuation = 0.0;
-	course_lights[i].quadratic_attenuation = 0.0;
+    for (int i=0; i<NUM_COURSE_LIGHTS; i++) {
+		// Note: we initialize the lights to default OpenGL values
+        // EXCEPT that light 0 isn't treated differently than the
+        // others 
+		course_lights[i].is_on = false;
+		course_lights[i].spot_direction.z=-1.0;
+		course_lights[i].spot_exponent = 0.0;
+		course_lights[i].spot_cutoff = 180.0;
+		course_lights[i].constant_attenuation = 1.0;
+		course_lights[i].linear_attenuation = 0.0;
+		course_lights[i].quadratic_attenuation = 0.0;
     }
 
-    /* Turn off global ambient light */
-    glLightModelfv( GL_LIGHT_MODEL_AMBIENT, black );
+    // Turn off global ambient light
+    gl::LightModel(GL_LIGHT_MODEL_AMBIENT, pp::Color::black);
 }
 
 void setup_course_lighting()
 {
-    int i;
     light_t *course_lights;
 
     course_lights = get_course_lights();
 
-    for (i=0; i<NUM_COURSE_LIGHTS; i++) {
-	if ( ! course_lights[i].is_on ) {
-	    glDisable( GL_LIGHT0 + i );
-	    continue;
-	}
-	glEnable( GL_LIGHT0 + i );
+    for (int i=0; i<NUM_COURSE_LIGHTS; i++) {
+		if ( !course_lights[i].is_on ) {
+			gl::Disable( GL_LIGHT0 + i );
+			continue;
+		}
+		gl::Enable( GL_LIGHT0 + i );
 
-	glLightfv( GL_LIGHT0 + i, GL_AMBIENT, course_lights[i].ambient );
-	glLightfv( GL_LIGHT0 + i, GL_DIFFUSE, course_lights[i].diffuse );
-	glLightfv( GL_LIGHT0 + i, GL_SPECULAR, course_lights[i].specular );
-	glLightfv( GL_LIGHT0 + i, GL_POSITION, course_lights[i].position );
-	glLightfv( GL_LIGHT0 + i, GL_SPOT_DIRECTION, 
-		   course_lights[i].spot_direction );
-	glLightf( GL_LIGHT0 + i, GL_SPOT_EXPONENT, 
-		  course_lights[i].spot_exponent );
-	glLightf( GL_LIGHT0 + i, GL_SPOT_CUTOFF, 
-		  course_lights[i].spot_cutoff );
-	glLightf( GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 
-		  course_lights[i].constant_attenuation );
-	glLightf( GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 
-		  course_lights[i].linear_attenuation );
-	glLightf( GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 
-		  course_lights[i].quadratic_attenuation );
-    }
+		gl::Light( GL_LIGHT0 + i, GL_AMBIENT, course_lights[i].ambient );
+		gl::Light( GL_LIGHT0 + i, GL_DIFFUSE, course_lights[i].diffuse );
+		gl::Light( GL_LIGHT0 + i, GL_SPECULAR, course_lights[i].specular );
+		gl::Light( GL_LIGHT0 + i, GL_POSITION, course_lights[i].position );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_DIRECTION, course_lights[i].spot_direction );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_EXPONENT, 
+			  course_lights[i].spot_exponent );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_CUTOFF, 
+			  course_lights[i].spot_cutoff );
+		gl::Light( GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 
+			  course_lights[i].constant_attenuation );
+		gl::Light( GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 
+			  course_lights[i].linear_attenuation );
+		gl::Light( GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 
+			  course_lights[i].quadratic_attenuation );
+	}
 }
 
 static int course_light_cb (ClientData cd, Tcl_Interp *ip, 
@@ -127,8 +119,8 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
 		error = true;
 		break;
 	    }
-	    copy_to_glfloat_array( course_lights[light_num].ambient, 
-				   tmp_arr, 4 );
+		course_lights[light_num].ambient.set(tmp_arr);
+		
 	} else if ( strcmp( "-diffuse", *argv ) == 0 ) {
 	    NEXT_ARG;
 	    if ( argc == 0 ) {
@@ -139,8 +131,8 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
 		error = true;
 		break;
 	    }
-	    copy_to_glfloat_array( course_lights[light_num].diffuse, 
-				   tmp_arr, 4 );
+		course_lights[light_num].diffuse.set(tmp_arr);
+
 	} else if ( strcmp( "-specular", *argv ) == 0 ) {
 	    NEXT_ARG;
 	    if ( argc == 0 ) {
@@ -151,32 +143,32 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
 		error = true;
 		break;
 	    }
-	    copy_to_glfloat_array( course_lights[light_num].specular, 
-				   tmp_arr, 4 );
+		course_lights[light_num].specular.set(tmp_arr);
+		
 	} else if ( strcmp( "-position", *argv ) == 0 ) {
 	    NEXT_ARG;
 	    if ( argc == 0 ) {
-		error = true;
-		break;
+			error = true;
+			break;
 	    }
 	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-		error = true;
-		break;
+			error = true;
+			break;
 	    }
-	    copy_to_glfloat_array( course_lights[light_num].position, 
-				   tmp_arr, 4 );
+		course_lights[light_num].position.set(tmp_arr);
+		
 	} else if ( strcmp( "-spot_direction", *argv ) == 0 ) {
 	    NEXT_ARG;
 	    if ( argc == 0 ) {
-		error = true;
-		break;
+			error = true;
+			break;
 	    }
 	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 3 ) == TCL_ERROR ) {
-		error = true;
-		break;
+			error = true;
+			break;
 	    }
-	    copy_to_glfloat_array( course_lights[light_num].spot_direction, 
-				   tmp_arr, 3 );
+		course_lights[light_num].spot_direction.set(tmp_arr);
+
 	} else if ( strcmp( "-spot_exponent", *argv ) == 0 ) {
 	    NEXT_ARG;
 	    if ( argc == 0 ) {

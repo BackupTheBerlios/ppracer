@@ -32,9 +32,12 @@ public:
 	Vec3d(const double x, const double y, const double z);
 	Vec3d(const double *v);	
 
-	double x;
-	double y;
-	double z;
+	union {
+		struct{
+			double x,y,z;
+		};
+		double values[3];
+	};
 		
 	double normalize();
 	double length() const;
@@ -51,4 +54,4 @@ public:
 
 } //namespace pp
 
-#endif /* _PP_VEC3D_H */
+#endif // _PP_VEC3D_H

@@ -27,6 +27,8 @@
 #include "ppgltk/alg/color.h"
 #include "ppgltk/alg/vec2d.h"
 #include "ppgltk/alg/vec3d.h"
+#include "ppgltk/alg/vec3f.h"
+#include "ppgltk/alg/vec4f.h"
 #include "ppgltk/alg/matrix.h"
 
 typedef struct {
@@ -51,11 +53,13 @@ typedef struct {
 
 typedef struct {
     bool is_on;
-    GLfloat ambient[4];
-    GLfloat diffuse[4];
-    GLfloat specular[4];
-    GLfloat position[4];
-    GLfloat spot_direction[3];
+
+	pp::Color ambient;
+    pp::Color diffuse;
+    pp::Color specular;
+    pp::Vec4f position;
+	pp::Vec3f spot_direction;
+	
     GLfloat spot_exponent;
     GLfloat spot_cutoff;
     GLfloat constant_attenuation;

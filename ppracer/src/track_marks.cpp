@@ -110,32 +110,31 @@ static void draw_tri( triangle_t *tri, double alpha )
 /*    set_material_alpha( white, black, 1.0, alpha ); */
     set_material_alpha( white, black, 1.0, 1.0 );  
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
+    gl::Material(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
 
-    glBegin(GL_TRIANGLES);
+    gl::Begin(GL_TRIANGLES);
 
     nml = find_course_normal( tri->p[0].x, tri->p[0].z );
-    glNormal3f( nml.x, nml.y, nml.z );
-    glTexCoord2f( tri->t[0].x, tri->t[0].y );
-    glVertex3f( tri->p[0].x, tri->p[0].y, tri->p[0].z );
+    gl::Normal( nml.x, nml.y, nml.z );
+    gl::TexCoord( tri->t[0].x, tri->t[0].y );
+    gl::Vertex( tri->p[0].x, tri->p[0].y, tri->p[0].z );
     
     nml = find_course_normal( tri->p[1].x, tri->p[1].z );
-    glNormal3f( nml.x, nml.y, nml.z );
-    glTexCoord2f( tri->t[1].x, tri->t[1].y );
-    glVertex3f( tri->p[1].x, tri->p[1].y, tri->p[1].z );
+    gl::Normal( nml.x, nml.y, nml.z );
+    gl::TexCoord( tri->t[1].x, tri->t[1].y );
+    gl::Vertex( tri->p[1].x, tri->p[1].y, tri->p[1].z );
     
     nml = find_course_normal( tri->p[2].x, tri->p[2].z );
-    glNormal3f( nml.x, nml.y, nml.z );
-    glTexCoord2f( tri->t[2].x, tri->t[2].y );
-    glVertex3f( tri->p[2].x, tri->p[2].y, tri->p[2].z );
+    gl::Normal( nml.x, nml.y, nml.z );
+    gl::TexCoord( tri->t[2].x, tri->t[2].y );
+    gl::Vertex( tri->p[2].x, tri->p[2].y, tri->p[2].z );
 
-    glEnd();
+    gl::End();
 }
 
 static void draw_tri_tracks( void )
 {
     GLuint texid[NUM_TRACK_TYPES];
-    int i;
 
     set_gl_options( TRACK_MARKS ); 
 
@@ -145,15 +144,15 @@ static void draw_tri_tracks( void )
     get_texture_binding( "track_mark", &texid[TRACK_MARK] );
     get_texture_binding( "track_tail", &texid[TRACK_TAIL] );
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     set_material( white, black, 1.0 );
     setup_course_lighting();
 
-    for( i = 0; i < track_tris.num_tris; i++ ) {
-	glBindTexture( GL_TEXTURE_2D, 
+    for(int i = 0; i < track_tris.num_tris; i++ ) {
+		gl::BindTexture( GL_TEXTURE_2D, 
 		       texid[*track_tris.track_type[(track_tris.first_mark+i)%MAX_TRIS]] );
-	draw_tri( &track_tris.tri[(track_tris.first_mark+i)%MAX_TRIS],
-		  *track_tris.alpha[(track_tris.first_mark+i)%MAX_TRIS] );
+		draw_tri( &track_tris.tri[(track_tris.first_mark+i)%MAX_TRIS],
+			  *track_tris.alpha[(track_tris.first_mark+i)%MAX_TRIS] );
     }
 }
 
@@ -361,13 +360,13 @@ void draw_track_marks(void)
 
     set_gl_options( TRACK_MARKS ); 
 
-    glColor4f( 0, 0, 0, 1);
+    gl::Color(pp::Color::black);
 
     //get_texture_binding( "track_head", &texid[TRACK_HEAD] );
     //get_texture_binding( "track_mark", &texid[TRACK_MARK] );
     //get_texture_binding( "track_tail", &texid[TRACK_TAIL] );
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     set_material( pp::Color::white, pp::Color::black, 1.0 );
     setup_course_lighting();
 
@@ -388,70 +387,70 @@ void draw_track_marks(void)
 	
 	switch (q->track_type){
 		case TRACK_HEAD:
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.head);
+			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.head);
 			break;
 		case TRACK_MARK:
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
+			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
 			break;
 		case TRACK_TAIL:
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.tail);
+			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.tail);
 			break;		
 		default:
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
+			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
 			break;	
 	}
 
 	if ((q->track_type == TRACK_HEAD) || (q->track_type == TRACK_TAIL)) { 
-	    glBegin(GL_QUADS);
+	    gl::Begin(GL_QUADS);
 	    
-	    glNormal3f( q->n1.x, q->n1.y, q->n1.z );
-	    glTexCoord2f( q->t1.x, q->t1.y );
-	    glVertex3f( q->v1.x, q->v1.y, q->v1.z );
+	    gl::Normal( q->n1.x, q->n1.y, q->n1.z );
+	    gl::TexCoord( q->t1.x, q->t1.y );
+	    gl::Vertex( q->v1.x, q->v1.y, q->v1.z );
 	
-	    glNormal3f( q->n2.x, q->n2.y, q->n2.z );
-	    glTexCoord2f( q->t2.x, q->t2.y );
-	    glVertex3f( q->v2.x, q->v2.y, q->v2.z );
+	    gl::Normal( q->n2.x, q->n2.y, q->n2.z );
+	    gl::TexCoord( q->t2.x, q->t2.y );
+	    gl::Vertex( q->v2.x, q->v2.y, q->v2.z );
 
-	    glNormal3f( q->n4.x, q->n4.y, q->n4.z );
-	    glTexCoord2f( q->t4.x, q->t4.y );
-	    glVertex3f( q->v4.x, q->v4.y, q->v4.z );
+	    gl::Normal( q->n4.x, q->n4.y, q->n4.z );
+	    gl::TexCoord( q->t4.x, q->t4.y );
+	    gl::Vertex( q->v4.x, q->v4.y, q->v4.z );
 	
-	    glNormal3f( q->n3.x, q->n3.y, q->n3.z );
-	    glTexCoord2f( q->t3.x, q->t3.y );
-	    glVertex3f( q->v3.x, q->v3.y, q->v3.z );
+	    gl::Normal( q->n3.x, q->n3.y, q->n3.z );
+	    gl::TexCoord( q->t3.x, q->t3.y );
+	    gl::Vertex( q->v3.x, q->v3.y, q->v3.z );
 	
-	    glEnd();
+	    gl::End();
 
 	} else {
 	      
-	    glBegin(GL_QUAD_STRIP);
+	    gl::Begin(GL_QUAD_STRIP);
 
-	    glNormal3f( q->n2.x, q->n2.y, q->n2.z );
-	    glTexCoord2f( q->t2.x, q->t2.y );
-	    glVertex3f( q->v2.x, q->v2.y, q->v2.z );
+	    gl::Normal( q->n2.x, q->n2.y, q->n2.z );
+	    gl::TexCoord( q->t2.x, q->t2.y );
+	    gl::Vertex( q->v2.x, q->v2.y, q->v2.z );
 
-	    glNormal3f( q->n1.x, q->n1.y, q->n1.z );
-	    glTexCoord2f( q->t1.x, q->t1.y );
-	    glVertex3f( q->v1.x, q->v1.y, q->v1.z );
+	    gl::Normal( q->n1.x, q->n1.y, q->n1.z );
+	    gl::TexCoord( q->t1.x, q->t1.y );
+	    gl::Vertex( q->v1.x, q->v1.y, q->v1.z );
 
-	    glNormal3f( q->n4.x, q->n4.y, q->n4.z );
-	    glTexCoord2f( q->t4.x, q->t4.y );
-	    glVertex3f( q->v4.x, q->v4.y, q->v4.z );
+	    gl::Normal( q->n4.x, q->n4.y, q->n4.z );
+	    gl::TexCoord( q->t4.x, q->t4.y );
+	    gl::Vertex( q->v4.x, q->v4.y, q->v4.z );
 
-	    glNormal3f( q->n3.x, q->n3.y, q->n3.z );
-	    glTexCoord2f( q->t3.x, q->t3.y );
-	    glVertex3f( q->v3.x, q->v3.y, q->v3.z );
-		glEnd();
-		glBegin(GL_QUADS);
+	    gl::Normal( q->n3.x, q->n3.y, q->n3.z );
+	    gl::TexCoord( q->t3.x, q->t3.y );
+	    gl::Vertex( q->v3.x, q->v3.y, q->v3.z );
+		gl::End();
+		gl::Begin(GL_QUADS);
 		
 	    qnext = &track_marks.quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
 	    while (( qnext->track_type == TRACK_MARK ) && (current_quad+1 < num_quads)) {
 		current_quad++;
 		
 		if (q->terrain != qnext->terrain){
-			glEnd();
-			glBindTexture( GL_TEXTURE_2D, terrain_texture[qnext->terrain].trackmark.mark);
-			glBegin(GL_QUADS);		
+			gl::End();
+			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[qnext->terrain].trackmark.mark);
+			gl::Begin(GL_QUADS);		
 		}
 				
 		q = &track_marks.quads[(first_quad+current_quad)%MAX_TRACK_MARKS];
@@ -459,27 +458,25 @@ void draw_track_marks(void)
 		set_material( trackColor, pp::Color::black, 1.0 );
 		
 
-	    glNormal3f( q->n1.x, q->n1.y, q->n1.z );
-	    glTexCoord2f( q->t1.x, q->t1.y );
-	    glVertex3f( q->v1.x, q->v1.y, q->v1.z );
+	    gl::Normal( q->n1.x, q->n1.y, q->n1.z );
+	    gl::TexCoord( q->t1.x, q->t1.y );
+	    gl::Vertex( q->v1.x, q->v1.y, q->v1.z );
 		
-		glNormal3f( q->n2.x, q->n2.y, q->n2.z );
-	    glTexCoord2f( q->t2.x, q->t2.y );
-	    glVertex3f( q->v2.x, q->v2.y, q->v2.z );	
-		
-		
-			
-		glNormal3f( q->n4.x, q->n4.y, q->n4.z );
-		glTexCoord2f( q->t4.x, q->t4.y );
-		glVertex3f( q->v4.x, q->v4.y, q->v4.z );
+		gl::Normal( q->n2.x, q->n2.y, q->n2.z );
+	    gl::TexCoord( q->t2.x, q->t2.y );
+	    gl::Vertex( q->v2.x, q->v2.y, q->v2.z );	
+					
+		gl::Normal( q->n4.x, q->n4.y, q->n4.z );
+		gl::TexCoord( q->t4.x, q->t4.y );
+		gl::Vertex( q->v4.x, q->v4.y, q->v4.z );
 
-		glNormal3f( q->n3.x, q->n3.y, q->n3.z );
-		glTexCoord2f( q->t3.x, q->t3.y );
-		glVertex3f( q->v3.x, q->v3.y, q->v3.z );
+		gl::Normal( q->n3.x, q->n3.y, q->n3.z );
+		gl::TexCoord( q->t3.x, q->t3.y );
+		gl::Vertex( q->v3.x, q->v3.y, q->v3.z );
 		
 		qnext = &track_marks.quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
 	    }
-	    glEnd();
+	    gl::End();
 	}
 
     }

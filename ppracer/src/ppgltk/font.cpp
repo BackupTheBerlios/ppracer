@@ -65,42 +65,42 @@ Font::~Font()
 void
 Font::draw(const char *string, float x, float y)
 {
-	const wchar_t* u_string;
-	u_string = Font::utf8ToUnicode(string);	
-
-	glPushMatrix();
-	{
-		glColor4dv( (double*)&m_color );
-		glTranslatef(x, y, 0);
-		mp_font->Render(u_string);
-	}
-	glPopMatrix();
-
-	delete u_string;
+	draw(string, pp::Vec2d(x, y));
 }
 
 void
 Font::draw(const char* string, pp::Vec2d position)
 {
-	draw(string, position.x, position.y);
+	const wchar_t* u_string;
+	u_string = Font::utf8ToUnicode(string);	
+
+	gl::PushMatrix();
+	{
+		gl::Color(m_color);
+		gl::Translate(position);
+		mp_font->Render(u_string);
+	}
+	gl::PopMatrix();
+
+	delete u_string;	
 }
 
 void
 Font::draw(const wchar_t *string, float x, float y)
 {
-	glPushMatrix();
-	{
-		glColor4dv( (double*)&m_color );
-		glTranslatef(x, y, 0);
-		mp_font->Render(string);
-	}
-	glPopMatrix();
+	draw(string, pp::Vec2d(x, y));
 }
 
 void
 Font::draw(const wchar_t *string, pp::Vec2d position)
 {
-	draw(string, position.x, position.y);
+	glPushMatrix();
+	{
+		gl::Color(m_color);
+		gl::Translate(position);
+		mp_font->Render(string);
+	}
+	glPopMatrix();	
 }
 
 float

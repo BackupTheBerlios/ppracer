@@ -46,9 +46,21 @@ operator+(const Vec2d& vec1,const Vec2d& vec2)
 }
 
 Vec2d
+operator+(const Vec2d& vec,const double value)
+{
+	return Vec2d(vec.x+value, vec.y+value);
+}
+
+Vec2d
 operator-(const Vec2d& vec1,const Vec2d& vec2)
 {
 	return Vec2d(vec1.x-vec2.x,vec1.y-vec2.y);
+}
+
+Vec2d
+operator-(const Vec2d& vec,const double value)
+{
+	return Vec2d(vec.x-value, vec.y-value);
 }
 
 } //namespace pp

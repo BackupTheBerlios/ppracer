@@ -122,7 +122,7 @@ void read_game_init_script()
 {
     char cwd[BUFF_LEN];
     if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-	handle_system_error( 1, "getcwd failed" );
+		handle_system_error( 1, "getcwd failed" );
     }
 
     if ( chdir( getparam_data_dir() ) != 0 ) {
@@ -189,7 +189,7 @@ int main( int argc, char *argv[] )
     /* Setup the configuration variables and read the ~/.ppracer/options file */
     
 	getopts(argc,argv);
-	
+
 	init_game_configuration();
     read_config_file(cfile);
 
@@ -206,7 +206,7 @@ int main( int argc, char *argv[] )
      * streams
      */
     setup_tcl_std_channels();
-	
+		
     /* 
      * Initialize rendering context, create window
      */
@@ -219,7 +219,7 @@ int main( int argc, char *argv[] )
     /* 
      * Initial OpenGL settings 
      */
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     init_opengl_extensions();
 
@@ -248,11 +248,10 @@ int main( int argc, char *argv[] )
 	register_translation_callbacks( tclInterp );
 	register_common_callbacks( tclInterp );
 	
-	
 	// Setup class for translation
 	translation.getLanguages();
 	translation.load( getparam_ui_language() );
-	
+
     load_tux();
     init_textures();
     init_audio_data();
@@ -273,6 +272,7 @@ int main( int argc, char *argv[] )
 	
 	if(Benchmark::getMode()==Benchmark::NONE){
 		set_game_mode( SPLASH );
+
 	}else{
 		set_game_mode( BENCHMARK );
 	}
@@ -284,6 +284,7 @@ int main( int argc, char *argv[] )
 	/* 
      * ...and off we go!
      */
+
     winsys_process_events();
 
     return 0;

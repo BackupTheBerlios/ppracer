@@ -266,31 +266,29 @@ template <class T>
 void
 Listbox<T>::draw()
 {
-    glDisable( GL_TEXTURE_2D );
+    gl::Disable(GL_TEXTURE_2D);
 
 	if(m_sensitive){
 		if(m_hasFocus){
-			glColor4dv( (double*)&theme.focus );
+			gl::Color(theme.focus);
 		}else{		
-			glColor4dv( (double*)&m_borderColor );
+			gl::Color(m_borderColor);
 		}
 	}else{
-		glColor4dv( (double*)&theme.insensitive );
+		gl::Color(theme.insensitive);
 	}	
 	
-    glRectf( m_position.x, 
-	     m_position.y,
+    gl::Rect(m_position.x,m_position.y,
 	     m_position.x + m_size.x - m_arrowWidth,
 	     m_position.y + m_size.y );
 
-    glColor4dv( (double*)&m_backgroundColor );
-
-    glRectf( m_position.x + m_borderWidth, 
+    gl::Color(m_backgroundColor);
+    gl::Rect(m_position.x + m_borderWidth, 
 	     m_position.y + m_borderWidth,
 	     m_position.x + m_size.x - m_borderWidth - m_arrowWidth,
 	     m_position.y + m_size.y - m_borderWidth );
 
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable(GL_TEXTURE_2D);
 
 	pp::Font *font = mp_font;
 	

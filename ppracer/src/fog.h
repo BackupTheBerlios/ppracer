@@ -24,6 +24,8 @@
 
 #include "ppracer.h"
 
+#include "ppgltk/alg/color.h"
+
 class FogPlane {
 	
 	bool m_isOn;
@@ -31,7 +33,7 @@ class FogPlane {
     GLfloat m_density;
     GLfloat m_start;
     GLfloat m_end;
-    GLfloat m_color[4];
+    pp::Color m_color;
 	
 public:
 	FogPlane(){};
@@ -41,7 +43,8 @@ public:
 	
 	inline bool isEnabled() const {return m_isOn;}
 	inline void setEnabled(const bool state=true){m_isOn=state;}
-	inline GLfloat* getColor() {return m_color;}
+	inline pp::Color& getColor() {return m_color;}
+	inline void setColor(pp::Color color){m_color=color;}
 	inline void setMode(const GLint mode){m_mode=mode;}
 	inline void setDensity(const GLfloat density){m_density=density;}
 	inline void setStart(const GLfloat start){m_start=start;}

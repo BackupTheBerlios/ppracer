@@ -25,6 +25,7 @@
 #include "render_util.h"
 
 #include "ppgltk/audio/audio.h"
+#include "ppgltk/alg/glwrappers.h"
 
 /* Windowing System Abstraction Layer */
 /* Abstracts creation of windows, handling of events, etc. */
@@ -142,7 +143,7 @@ void setup_sdl_video_mode()
 			     SDL_GetError() );
     }
 	
-	glViewport(0,0,width,height);
+	gl::Viewport(0,0,width,height);
 
 }
 

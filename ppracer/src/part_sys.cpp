@@ -58,7 +58,7 @@ typedef struct _Particle {
     struct _Particle *next;
 } Particle;
 
-static GLfloat particleColor[4];
+static pp::Color particleColor;
 
 static Particle* head = NULL;
 static int num_particles = 0;
@@ -78,7 +78,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
 
     /* Debug check to track down infinite particle bug */
     if ( num_particles + num > MAX_PARTICLES ) {
-	check_assertion( 0, "maximum number of particles exceeded" );
+		check_assertion( 0, "maximum number of particles exceeded" );
     } 
 
     for (i=0; i<num; i++) {
@@ -173,13 +173,13 @@ void draw_particles( Player& plyr )
   	} 
  */
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     //glBindTexture( GL_TEXTURE_2D, texture_id );
 	
     for (p=head; p!=NULL; p = p->next) {
         if ( p->age < 0 ) continue;
-	glBindTexture( GL_TEXTURE_2D, p->particle_binding);
+		gl::BindTexture(GL_TEXTURE_2D, p->particle_binding);
 	if ( p->type == 0 || p->type == 1 ) {
 	    min_tex_coord.y = 0;
 	    max_tex_coord.y = 0.5;
@@ -196,10 +196,7 @@ void draw_particles( Player& plyr )
 	    max_tex_coord.x = 1.0;
 	}
 
-	glColor4f( particleColor[0], 
-		   particleColor[1], 
-		   particleColor[2],
-		   particleColor[3] * p->alpha );
+	gl::Color(particleColor, particleColor.a * p->alpha );
 
 	draw_billboard( plyr, p->pt, p->cur_size, p->cur_size,
 			false, min_tex_coord, max_tex_coord );
@@ -223,10 +220,10 @@ void clear_particles()
 }
 
 void reset_particles() {
-    particleColor[0] = 1.0;
-    particleColor[1] = 1.0;
-    particleColor[2] = 1.0;
-    particleColor[3] = 1.0;
+	particleColor.r = 1.0;
+    particleColor.g = 1.0;
+    particleColor.b = 1.0;
+    particleColor.a = 1.0;
 } 
 
 static int particle_color_cb(ClientData cd, Tcl_Interp *ip, 
@@ -240,7 +237,7 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 	if ( get_tcl_tuple ( ip, argv[1], tmp_arr, 4 ) == TCL_ERROR ) {
 	    error = true;
 	} else {
-	    copy_to_glfloat_array( particleColor, tmp_arr, 4 );
+		particleColor.set(tmp_arr);
 	}
     } else {
 	/* Old format */
@@ -271,7 +268,7 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 			error = true;
 			break;
 		    }
-		    copy_to_glfloat_array( particleColor, tmp_arr, 4 );
+			particleColor.set(tmp_arr);
 		} else if ( strcmp( "-specular", *argv ) == 0 ) {
 		    /* Ignore */
 		    NEXT_ARG;

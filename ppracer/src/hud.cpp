@@ -186,38 +186,35 @@ HUD::image(const int i)
 {
 	if(!m_element[i].texture) return;
 
-    glColor3f( 1.0, 1.0, 1.0 );
+    gl::Color(pp::Color::white);
 
-    glBindTexture( GL_TEXTURE_2D, m_element[i].texture );
+    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
 
 	fix_xy( m_element[i].x, m_element[i].y, m_element[i].height, m_element[i].width);
 	
-    glPushMatrix();
+    gl::PushMatrix();
     {
-	glTranslatef( m_element[i].x, m_element[i].y,0);
+	gl::Translate(m_element[i].x, m_element[i].y);
 
-	glBegin( GL_QUADS );
+	gl::Begin( GL_QUADS );
 	{
-	   	glTexCoord2f( 0, 0 );
-	    glVertex2f( 0, 0 );
+	   	gl::TexCoord(0, 0);
+	    gl::Vertex(0, 0);
 
-	    glTexCoord2f( double(m_element[i].width) / m_element[i].size,
-			  0 );
-	    glVertex2f( m_element[i].width, 0 );
+	    gl::TexCoord(double(m_element[i].width) / m_element[i].size,0.0);
+	    gl::Vertex(m_element[i].width, 0);
 
-	    glTexCoord2f( 
+	    gl::TexCoord( 
 			double(m_element[i].width) / m_element[i].size,
 			double(m_element[i].height) / m_element[i].size );
-	    glVertex2f( m_element[i].width, m_element[i].height );
+	    gl::Vertex(m_element[i].width, m_element[i].height);
 
-	    glTexCoord2f( 
-			0,
-			double(m_element[i].height) / m_element[i].size );
-	    glVertex2f( 0, m_element[i].height );
+	    gl::TexCoord(0.0, double(m_element[i].height) / m_element[i].size );
+	    gl::Vertex(0.0, m_element[i].height);
 	}
-	glEnd();
+	gl::End();
     }
-    glPopMatrix();
+    gl::PopMatrix();
 }
 
 void
@@ -265,33 +262,33 @@ HUD::bar(const int i, double percentage)
 	double temp_sin=sin(double(m_element[i].angle)/180.0*M_PI);
 	double temp_cos=cos(double(m_element[i].angle)/180.0*M_PI);
 	
-    glBindTexture( GL_TEXTURE_2D, m_element[i].texture );
+    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
 
 	fix_xy(m_element[i].x,m_element[i].y,int(m_element[i].height));
 	
-    glPushMatrix();
+    gl::PushMatrix();
     {
-	glTranslatef(m_element[i].x, m_element[i].y,0);
+	gl::Translate(m_element[i].x, m_element[i].y,0);
 
-	glBegin( GL_QUADS );
+	gl::Begin(GL_QUADS);
 	{
-		glTexCoord2f(0,0);
-	    glVertex2f(0,0);
+		gl::TexCoord(0,0);
+	    gl::Vertex(0,0);
 
-	    glTexCoord2f(1,0);
-	    glVertex2f(temp_cos*m_element[i].width,temp_sin*m_element[i].width);
+	    gl::TexCoord(1,0);
+	    gl::Vertex(temp_cos*m_element[i].width,temp_sin*m_element[i].width);
 
-    	glTexCoord2f(1,percentage);
-    	glVertex2f(temp_cos*m_element[i].width+temp_sin*m_element[i].height*percentage,
+    	gl::TexCoord(1.0,percentage);
+    	gl::Vertex(temp_cos*m_element[i].width+temp_sin*m_element[i].height*percentage,
 			temp_sin*m_element[i].width-temp_cos*m_element[i].height*percentage);
 
-    	glTexCoord2f(0,percentage);
-    	glVertex2f(temp_sin*m_element[i].height*percentage, (-1)*temp_cos*m_element[i].height*percentage);
+    	gl::TexCoord(0.0,percentage);
+    	gl::Vertex(temp_sin*m_element[i].height*percentage, (-1)*temp_cos*m_element[i].height*percentage);
 
 	}
-	glEnd();
+	gl::End();
     }
-    glPopMatrix();
+    gl::PopMatrix();
 	
 }
 
@@ -310,10 +307,9 @@ HUD::bar(const int i, double percentage)
 #define SPEEDBAR_RED_FRACTION 0.25
 #define SPEED_UNITS_Y_OFFSET 4.0
 
-static GLfloat energy_background_color[] = { 0.2, 0.2, 0.2, 0.5 };
-static GLfloat energy_foreground_color[] = { 0.54, 0.59, 1.00, 0.5 };
-static GLfloat speedbar_background_color[] = { 0.2, 0.2, 0.2, 0.5 };
-static GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+static pp::Color energy_background_color(0.2, 0.2, 0.2, 0.5);
+static pp::Color energy_foreground_color(0.54, 0.59, 1.00, 0.5);
+static pp::Color speedbar_background_color(0.2, 0.2, 0.2, 0.5);
 
 void
 HUD::initGauge()
@@ -352,40 +348,38 @@ HUD::gauge(const int i, const double speed, const double energy)
 	//we reset the mode at the end of the function
     set_gl_options( GAUGE_BARS );
 
-    glTexGenfv( GL_S, GL_OBJECT_PLANE, xplane );
-    glTexGenfv( GL_T, GL_OBJECT_PLANE, yplane );
+    gl::TexGen(GL_S, GL_OBJECT_PLANE, xplane);
+    gl::TexGen(GL_T, GL_OBJECT_PLANE, yplane);
 
-    glPushMatrix();
+    gl::PushMatrix();
     {
-	glTranslatef( getparam_x_resolution() - m_element[i].width,
-		      0,
-		      0 );
+	gl::Translate(getparam_x_resolution() - m_element[i].width,0);
 
-	glColor4fv( energy_background_color );
+	gl::Color(energy_background_color);
 
-	glBindTexture( GL_TEXTURE_2D, m_energymaskTex );
+	gl::BindTexture(GL_TEXTURE_2D, m_energymaskTex);
 
 	y = ENERGY_GAUGE_BOTTOM + energy * m_element[i].height;
 
-	glBegin( GL_QUADS );
+	gl::Begin( GL_QUADS );
 	{
-	    glVertex2f( 0.0, y );
-	    glVertex2f( m_element[i].size, y );
-	    glVertex2f( m_element[i].size, m_element[i].size );
-	    glVertex2f( 0.0, m_element[i].size );
+	    gl::Vertex(0.0, y);
+	    gl::Vertex(m_element[i].size, y);
+	    gl::Vertex(m_element[i].size, m_element[i].size);
+	    gl::Vertex(0.0, m_element[i].size);
 	}
-	glEnd();
+	gl::End();
 
-	glColor4fv( energy_foreground_color );
+	gl::Color(energy_foreground_color);
 
-	glBegin( GL_QUADS );
+	gl::Begin(GL_QUADS);
 	{
-	    glVertex2f( 0.0, 0.0 );
-	    glVertex2f( m_element[i].size, 0.0 );
-	    glVertex2f( m_element[i].size, y );
-	    glVertex2f( 0.0, y );
+	    gl::Vertex(0.0, 0.0);
+	    gl::Vertex(m_element[i].size, 0.0);
+	    gl::Vertex(m_element[i].size, y);
+	    gl::Vertex(0.0, y);
 	}
-	glEnd();
+	gl::End();
 
 	/* Calculate the fraction of the speed bar to fill */
 	speedbar_frac = 0.0;
@@ -417,31 +411,31 @@ HUD::gauge(const int i, const double speed, const double energy)
 		SPEEDBAR_GREEN_FRACTION;
 	}
 
-	glColor4fv( speedbar_background_color );
+	gl::Color(speedbar_background_color);
 
-	glBindTexture( GL_TEXTURE_2D, m_speedmaskTex );
+	gl::BindTexture(GL_TEXTURE_2D, m_speedmaskTex);
 
-	draw_partial_tri_fan( 1.0 );
+	draw_partial_tri_fan(1.0);
 
-	glColor4fv( white );
+	gl::Color(pp::Color::white);
 
 	draw_partial_tri_fan( MIN( 1.0, speedbar_frac ) );
 
-	glColor4fv( white );
+	gl::Color(pp::Color::white);
 
-	glBindTexture( GL_TEXTURE_2D, m_outlineTex );
+	gl::BindTexture(GL_TEXTURE_2D, m_outlineTex);
 
-	glBegin( GL_QUADS );
+	gl::Begin(GL_QUADS);
 	{
-	    glVertex2f( 0.0, 0.0 );
-	    glVertex2f( m_element[i].size, 0.0 );
-	    glVertex2f( m_element[i].size, m_element[i].size );
-	    glVertex2f( 0.0, m_element[i].size );
+	    gl::Vertex(0.0, 0.0);
+	    gl::Vertex(m_element[i].size, 0.0);
+	    gl::Vertex(m_element[i].size, m_element[i].size);
+	    gl::Vertex(0.0, m_element[i].size);
 	}
-	glEnd();
+	gl::End();
 	
     }
-    glPopMatrix();
+    gl::PopMatrix();
 	
 	//we reset this because all other elements need TEXFONT
 	set_gl_options( TEXFONT );
@@ -477,7 +471,7 @@ HUD::draw_partial_tri_fan(const double fraction)
 
 	pt = calc_new_fan_pt( cur_angle );
 
-	glVertex2f( pt.x, pt.y );
+	gl::Vertex(pt.x, pt.y);
     }
 
     if ( cur_angle > angle + EPS ) {
@@ -489,12 +483,12 @@ HUD::draw_partial_tri_fan(const double fraction)
 
 	pt = calc_new_fan_pt( cur_angle );
 
-	glVertex2f( pt.x, pt.y );
+	gl::Vertex(pt.x, pt.y);
     }
 
     if ( trifan ) {
-	glEnd();
-	trifan = false;
+		gl::End();
+		trifan = false;
     }
 }
 
@@ -515,13 +509,12 @@ HUD::start_tri_fan(void)
 {
     pp::Vec2d pt;
 
-    glBegin( GL_TRIANGLE_FAN );
-    glVertex2f( ENERGY_GAUGE_CENTER_X, 
-		ENERGY_GAUGE_CENTER_Y );
+    gl::Begin(GL_TRIANGLE_FAN);
+    gl::Vertex(ENERGY_GAUGE_CENTER_X, ENERGY_GAUGE_CENTER_Y);
 
     pt = calc_new_fan_pt( SPEEDBAR_BASE_ANGLE ); 
 
-    glVertex2f( pt.x, pt.y );
+    gl::Vertex(pt);
 }
 
 void

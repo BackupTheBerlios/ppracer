@@ -21,6 +21,8 @@
 
 #include "model_ac.h"
 
+#include "alg/glhelper.h"
+
 #ifdef _WIN32
 	#include <WTypes.h>
 #endif
@@ -47,7 +49,7 @@ void
 Model::draw()
 {
 	if(m_displayList != -1){
-		glCallList( m_displayList );
+		gl::CallList(m_displayList);
 	}
 }
 
