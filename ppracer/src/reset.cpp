@@ -40,6 +40,7 @@
 #include "hud.h"
 #include "course_load.h"
 #include "winsys.h"
+#include "lights.h"
 
 #include "stuff.h"
 

@@ -40,6 +40,7 @@
 #include "hud.h"
 #include "joystick.h"
 #include "part_sys.h"
+#include "lights.h"
 
 #include "stuff.h"
 #include "game_mgr.h"

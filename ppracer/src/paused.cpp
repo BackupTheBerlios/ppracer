@@ -38,6 +38,7 @@
 #include "part_sys.h"
 #include "joystick.h"
 #include "course_mgr.h"
+#include "lights.h"
 
 #include "game_mgr.h"
 

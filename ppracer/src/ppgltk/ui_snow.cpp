@@ -101,10 +101,8 @@ static void make_particle( int i, double x, double y )
 
 void init_ui_snow( void )
 {
-    int i;
-
-    for( i=0; i<num_particles; i++) {
-	make_particle( i, frand(), frand() );
+    for( int i=0; i<num_particles; i++) {
+		make_particle( i, frand(), frand() );
     }
     push_position = pp::Vec2d( 0.0, 0.0 );
 }

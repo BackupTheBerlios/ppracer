@@ -56,7 +56,7 @@ class EventRaceSelect : public GameMode
 	void updateStates();
 	
 	void setWidgetPositionsAndDrawDecorations();	
-	void drawStatusMsg( int x_org, int y_org, int box_width, int box_height );
+	void drawStatusMsg( int x_org, int y_org );
 
 public:
 	EventRaceSelect();

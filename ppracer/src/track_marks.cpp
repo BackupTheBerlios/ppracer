@@ -29,6 +29,7 @@
 #include "render_util.h"
 #include "game_config.h"
 #include "course_mgr.h"
+#include "lights.h"
 
 #include "ppgltk/alg/defs.h"
 

@@ -43,6 +43,8 @@
 #include "game_config.h"
 #include "winsys.h"
 #include "course_mgr.h"
+#include "lights.h"
+
 
 #include "game_mgr.h"
 

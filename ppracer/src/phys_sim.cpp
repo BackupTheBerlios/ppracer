@@ -886,8 +886,7 @@ static void adjust_for_tree_collision( Player& plyr,
  * Adjusts velocity so that his speed doesn't drop below the minimum 
  * speed
  */
-double adjust_velocity( pp::Vec3d *vel, pp::Vec3d pos, 
-			  pp::Plane surf_plane, float dist_from_surface )
+double adjust_velocity( pp::Vec3d *vel, pp::Plane surf_plane)
 {
     pp::Vec3d surf_nml;
     float speed;
@@ -979,8 +978,7 @@ static pp::Vec3d adjust_surf_nml_for_roll( Player& plyr,
 }
 
 
-void adjust_orientation( Player& plyr, float dtime, 
-			 pp::Vec3d pos, pp::Vec3d vel,
+void adjust_orientation( Player& plyr, float dtime, pp::Vec3d vel,
 			 float dist_from_surface, pp::Vec3d surf_nml )
 {
     pp::Vec3d new_x, new_y, new_z; 
@@ -1740,14 +1738,13 @@ void update_player_pos( Player& plyr, float dtime )
     surf_plane = get_local_course_plane( plyr.pos );
     surf_nml = surf_plane.nml;
     dist_from_surface = surf_plane.distance( plyr.pos );
-    adjust_velocity( &plyr.vel, plyr.pos, surf_plane, 
-		     dist_from_surface );
+    adjust_velocity( &plyr.vel, surf_plane );
     adjust_position( &plyr.pos, surf_plane, dist_from_surface );
 
     speed = tmp_vel.normalize();
 
     set_tux_pos( plyr, plyr.pos );
-    adjust_orientation( plyr, dtime, plyr.pos, plyr.vel, 
+    adjust_orientation( plyr, dtime, plyr.vel, 
 			dist_from_surface, surf_nml );
 
     flap_factor = 0;

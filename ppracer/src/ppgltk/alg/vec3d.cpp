@@ -51,7 +51,7 @@ Vec3d::normalize()
 		z /= len;
 	}                
 	return(len);
-};
+}
 
 double
 Vec3d::length() const

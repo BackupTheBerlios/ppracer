@@ -98,7 +98,8 @@ Quat::Quat(const Matrix matrix)
 
 
 void
-Quat::set(const double x, const double y, const double z, const double w){
+Quat::set(const double x, const double y, const double z, const double w)
+{
 	this->x=x;
 	this->y=y;
 	this->z=z;

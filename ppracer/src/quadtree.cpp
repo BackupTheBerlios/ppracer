@@ -789,7 +789,7 @@ static float DetailThreshold = 100;
 
 
 bool
-quadsquare::VertexTest(int x, float y, int z, float error, const float Viewer[3], int level, vertex_loc_t vertex_loc )
+quadsquare::VertexTest(int x, float y, int z, float error, const float Viewer[3], vertex_loc_t vertex_loc )
 /// Returns true if the vertex at (x,z) with the given world-space error between
 /// its interpolated location and its true location, should be enabled, given that
 /// the viewpoint is located at Viewer[].
@@ -893,7 +893,7 @@ quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], c
     // East vert.
     if ( (EnabledFlags & 1) == 0 && 
 	 VertexTest(cd.xorg + whole, Vertex[1], cd.zorg + half, 
-		    Error[0], ViewerLocation, cd.Level, East) == true ) 
+		    Error[0], ViewerLocation, East) == true ) 
     {
 		EnableEdgeVertex(0, false, cd);	
     }
@@ -901,7 +901,7 @@ quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], c
     // South vert.
     if ( (EnabledFlags & 8) == 0 && 
 	 VertexTest(cd.xorg + half, Vertex[4], cd.zorg + whole, 
-		    Error[1], ViewerLocation, cd.Level, South) == true ) 
+		    Error[1], ViewerLocation, South) == true ) 
     {
 		EnableEdgeVertex(3, false, cd);	
     }
@@ -945,7 +945,7 @@ quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], c
     if ( (EnabledFlags & 1) && 
 	 SubEnabledCount[0] == 0 && 
 	 VertexTest(cd.xorg + whole, Vertex[1], cd.zorg + half, 
-		    Error[0], ViewerLocation, cd.Level, East) == false) 
+		    Error[0], ViewerLocation, East) == false) 
     {
 		EnabledFlags &= ~1;
 		quadsquare*	s = GetNeighbor(0, cd);
@@ -955,7 +955,7 @@ quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], c
     if ( (EnabledFlags & 8) && 
 	 SubEnabledCount[1] == 0 && 
 	 VertexTest(cd.xorg + half, Vertex[4], cd.zorg + whole, 
-		    Error[1], ViewerLocation, cd.Level, South) == false) 
+		    Error[1], ViewerLocation, South) == false) 
     {
 		EnabledFlags &= ~8;
 		quadsquare*	s = GetNeighbor(3, cd);

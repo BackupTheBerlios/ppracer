@@ -133,7 +133,7 @@ private:
     void	SetStatic(const quadcornerdata& cd);
 	int InitVert(const int i, const int x, const int z);
 
-    bool	VertexTest(int x, float y, int z, float error, const float Viewer[3], int level, vertex_loc_t vertex_loc );
+    bool	VertexTest(int x, float y, int z, float error, const float Viewer[3], vertex_loc_t vertex_loc );
     bool	BoxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
     clip_result_t ClipSquare( const quadcornerdata& cd );
 };

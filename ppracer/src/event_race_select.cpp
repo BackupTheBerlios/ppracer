@@ -223,7 +223,7 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 	
 	// Draw text indicating race requirements (if race not completed), 
     //   or results in race if race completed.
-    drawStatusMsg( x_org, y_org, box_width, box_height );
+    drawStatusMsg( x_org, y_org );
 
     // Draw preview
 	std::list<CourseData>::iterator elem;
@@ -269,7 +269,7 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 }
 
 void
-EventRaceSelect::drawStatusMsg( int x_org, int y_org, int box_width, int box_height )
+EventRaceSelect::drawStatusMsg( int x_org, int y_org )
 {
     const char *msg;
     char buff[BUFF_LEN];

@@ -62,7 +62,6 @@ const char         *get_tree_name(int type);
 std::string& get_course_author();
 std::string& get_course_name(); 
 
-light_t      *get_course_lights();
 void          set_course_mirroring( bool state );
 bool        get_course_mirroring( );
 void          fill_gl_arrays();

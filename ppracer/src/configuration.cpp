@@ -141,8 +141,9 @@ Configuration::keyPressEvent(SDLKey key)
 		case 'q':
 			back();
 	    	return true;
+		default:
+			return false;
 	}	
-	return false;
 }
 
 void

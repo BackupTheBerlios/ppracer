@@ -5,6 +5,9 @@
 	
 	* src/ppgltk/font.*
 	fixed windows build
+		
+	* src/*
+	code cleanups	
 	
 === ppracer 0.3.1 ===
 

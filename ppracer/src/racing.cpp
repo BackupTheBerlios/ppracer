@@ -44,6 +44,8 @@
 #include "snow.h"
 #include "game_config.h"
 #include "winsys.h"
+#include "lights.h"
+
 
 #include "game_mgr.h"
 #include "bench.h"
