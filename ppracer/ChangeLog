@@ -1,4 +1,9 @@
 
+2005-03-07  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	fixed compilation with gcc 2.95
+	fixed compilation with tcl<8.4
+
 2005-03-06  Volker Stroebel <volker@planetpenguin.de>
 	* data/makefile.am data/*
 	added ppracer.png and ppracer.desktop
@@ -12,7 +17,7 @@
 	removed old style casts
 
 	* src/textfontmetric.*
-	removed files
+	removed unused files
 	
 	* src/ppgltk/alg/glwrappers.h
 	removed unsave types

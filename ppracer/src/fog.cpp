@@ -53,7 +53,7 @@ FogPlane::setup()
     gl::Fog(GL_FOG_DENSITY, m_density);
     gl::Fog(GL_FOG_START, m_start);
     gl::Fog(GL_FOG_END, m_end);
-    gl::Fog(GL_FOG_COLOR, m_color.colors);
+    gl::Fog(GL_FOG_COLOR, m_color);
 
     if ( getparam_nice_fog() ) {
 		gl::Hint(GL_FOG_HINT, GL_NICEST);

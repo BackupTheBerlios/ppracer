@@ -1323,7 +1323,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    CHECK_ARG( "-normal", err_msg, item_spec_bail );
 
 	    if ( get_tcl_tuple( 
-		ip, *argv, item_types[num_item_types].normal.values, 3 )
+		ip, *argv, reinterpret_cast<double*>(&item_types[num_item_types].normal), 3 )
 		 != TCL_OK )
 	    {
 		err_msg = "Must specify a list of size three for -normal";

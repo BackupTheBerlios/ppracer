@@ -32,12 +32,7 @@ public:
 	Vec4f(const float x, const float y, const float z, const float w);
 	Vec4f(const float *v);	
 
-	union {
-		struct{
-			float x,y,z,w;
-		};
-		float values[4];
-	};
+	float x,y,z,w;
 	
 	void set(const float *v);
 	void set(const double *v);

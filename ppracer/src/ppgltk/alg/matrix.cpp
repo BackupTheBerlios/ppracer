@@ -20,7 +20,6 @@
  
 #include "matrix.h"
 #include "defs.h"
-#include <math.h>
 
 namespace pp {
 	

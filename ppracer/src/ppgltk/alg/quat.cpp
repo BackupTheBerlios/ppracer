@@ -23,8 +23,6 @@
 #include "quat.h"
 #include "defs.h"
 
-#include <math.h>
-
 namespace pp {
 
 	

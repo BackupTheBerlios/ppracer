@@ -32,12 +32,7 @@ public:
 	Vec3f(const float x, const float y, const float z);
 	Vec3f(const float *v);	
 
-	union {
-		struct{
-			float x,y,z;
-		};
-		float values[3];
-	};
+	float x,y,z;
 	
 	void set(const float *v);
 	void set(const double *v);

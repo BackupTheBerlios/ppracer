@@ -330,7 +330,7 @@ void set_param_bool( struct param *p, bool new_val )
         set_param_ ## typename( &( Params.name ), val ); } 
 
 #define FN_PARAM_STRING( name ) \
-    FN_PARAM( name, string, const char* )
+    FN_PARAM( name, string, char* )
 
 #define FN_PARAM_CHAR( name ) \
     FN_PARAM( name, char, char )

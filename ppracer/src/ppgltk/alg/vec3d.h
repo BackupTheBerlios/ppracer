@@ -32,12 +32,7 @@ public:
 	Vec3d(const double x, const double y, const double z);
 	Vec3d(const double *v);	
 
-	union {
-		struct{
-			double x,y,z;
-		};
-		double values[3];
-	};
+	double x,y,z;
 		
 	double normalize();
 	double length() const;

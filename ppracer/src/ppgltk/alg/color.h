@@ -27,12 +27,8 @@ namespace pp {
 class Color
 {
 public:
-	union{
-		struct{
-			float r,g,b,a;
-		};
-		float colors[4];		
-	};
+
+	float r,g,b,a;
 	
 	Color(const float red = 0.0f, const float green = 0.0f, const float blue = 0.0f, const float alpha=1.0f);	
 	Color(const float *color);

@@ -123,7 +123,7 @@ GraphicsConfig::apply()
 {
 	std::list<language_t>::iterator langit = mp_langListBox->getCurrentItem();
 	translation.load((*langit).language.c_str());	
-	setparam_ui_language((*langit).language.c_str());
+	setparam_ui_language(const_cast<char*>((*langit).language.c_str()));
 	setparam_ui_snow(bool( mp_uiSnowBox->getState() ));
 	setparam_display_fps(bool( mp_fpsBox->getState() ));
 	setparam_display_course_percentage(bool( mp_coursePercentageBox->getState() ));

@@ -60,22 +60,22 @@ namespace gl{
 	
 	inline void TexCoord(GLdouble s, GLdouble t){glTexCoord2d(s, t);};
 	inline void TexCoord(GLint s, GLint t){glTexCoord2i(s, t);};
-	inline void TexCoord(pp::Vec2d st){glTexCoord2dv(st.values);};
-	inline void TexCoord(pp::Vec3d st){glTexCoord3dv(st.values);};
+	inline void TexCoord(pp::Vec2d st){glTexCoord2d(st.x, st.y);};
+	inline void TexCoord(pp::Vec3d st){glTexCoord3d(st.x, st.y, st.z);};
 
 	inline void TexParameter(GLenum target, GLenum pname, GLfloat param){glTexParameterf(target, pname, param );};
 	
 	inline void GetTexLevelParameter(GLenum target, GLint level, GLenum pname, GLint *params){glGetTexLevelParameteriv(target, level, pname, params);};
 	
 	inline void Vertex(GLdouble x, GLdouble y){glVertex2d(x, y);};
-	inline void Vertex(pp::Vec2d pos){glVertex2dv(pos.values);};
-	inline void Vertex(pp::Vec3d pos){glVertex3dv(pos.values);};
+	inline void Vertex(pp::Vec2d pos){glVertex2d(pos.x, pos.y);};
+	inline void Vertex(pp::Vec3d pos){glVertex3d(pos.x, pos.y, pos.z);};
 	inline void Vertex(GLfloat x, GLfloat y, GLfloat z){glVertex3f(x, y, z);};
 	
 	inline void Normal(GLfloat nx, GLfloat ny, GLfloat nz){glNormal3f(nx, ny, nz);};
-	inline void Normal(pp::Vec3d normal){glNormal3dv(normal.values);};
+	inline void Normal(pp::Vec3d normal){glNormal3d(normal.x, normal.y, normal.z);};
 		
-	inline void Color(const pp::Color color){glColor4fv(color.colors);};
+	inline void Color(const pp::Color color){glColor4f(color.r, color.g, color.b, color.a);};
 	inline void Color(const pp::Color color, GLfloat alpha){glColor4f(color.r, color.g, color.b, alpha);};
 	inline void Color(const GLfloat *color){glColor4fv(color);};
 	inline void Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a=1.0f){glColor4f(r,g,b,a);};
@@ -101,6 +101,7 @@ namespace gl{
 	inline void Fog(GLenum pname, const GLint *params){glFogiv(pname,params);};
 	inline void Fog(GLenum pname, GLfloat param){glFogf(pname, param);};
 	inline void Fog(GLenum pname, const GLfloat *params ){glFogfv(pname, params);};
+	inline void Fog(GLenum pname, const pp::Color params ){glFogfv(pname, reinterpret_cast<const float*>(&params));};
 
 	inline void Hint(GLenum target, GLenum mode){glHint(target, mode);};
 
@@ -123,11 +124,11 @@ namespace gl{
 	inline void MultMatrix(const GLdouble *m){glMultMatrixd(m);};
 	inline void MultMatrix(pp::Matrix &matrix){glMultMatrixd(matrix.rawdata);};
 	
-	inline void LightModel(GLenum pname, const pp::Color& color){glLightModelfv(pname, color.colors);};
+	inline void LightModel(GLenum pname, const pp::Color& color){glLightModelfv(pname, reinterpret_cast<const float*>(&color));};
 	
-	inline void Light(GLenum light, GLenum pname, const pp::Color color){glLightfv(light, pname, color.colors);};
-	inline void Light(GLenum light, GLenum pname, const pp::Vec3f vec){glLightfv(light, pname, vec.values);};
-	inline void Light(GLenum light, GLenum pname, const pp::Vec4f vec){glLightfv(light, pname, vec.values);};
+	inline void Light(GLenum light, GLenum pname, const pp::Color color){glLightfv(light, pname, reinterpret_cast<const float*>(&color));};
+	inline void Light(GLenum light, GLenum pname, const pp::Vec3f vec){glLightfv(light, pname, reinterpret_cast<const float*>(&vec));};
+	inline void Light(GLenum light, GLenum pname, const pp::Vec4f vec){glLightfv(light, pname, reinterpret_cast<const float*>(&vec));};
 	inline void Light(GLenum light, GLenum pname, GLfloat param){glLightf(light, pname, param);};
 	inline void Light(GLenum light, GLenum pname, GLint param){glLighti(light, pname, param);};
 
@@ -138,7 +139,7 @@ namespace gl{
 	
 	inline void Material(GLenum face, GLenum pname, GLfloat param){glMaterialf(face, pname, param);};
 	inline void Material(GLenum face, GLenum pname, const GLfloat *params){glMaterialfv(face, pname, params);};
-	inline void Material(GLenum face, GLenum pname, const pp::Color color){glMaterialfv(face, pname, color.colors);};
+	inline void Material(GLenum face, GLenum pname, const pp::Color color){glMaterialfv(face, pname, reinterpret_cast<const float*>(&color));};
 	
 	inline void ReadBuffer(GLenum mode){glReadBuffer(mode);};
 	inline void ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels){glReadPixels(x, y, width, height, format, type, pixels);};
