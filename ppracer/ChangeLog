@@ -20,7 +20,12 @@
 	* src/credits.cpp data/languages/*
 	made credits translateable
 	updated translations
-
+	
+	* src/game_over.cpp
+	darken background
+	
+	* data/textures/hud*.* data/courses/themes/huds/common/hud.tcl
+	changed common hud and added new textures
 
 2005-03-05  Volker Stroebel <volker@planetpenguin.de>
 	* src/*

@@ -521,10 +521,10 @@ void
 HUD::fix_xy(int &x, int &y, const int asc, const int width)
 {
 	if(x<0){
-		x=getparam_x_resolution()+x-width;
+		x=getparam_x_resolution()+x-width+1;
 	}
 	if(y<0){
-		y=getparam_y_resolution()+y-asc;
+		y=getparam_y_resolution()+y-asc+1;
 	}
 }
 

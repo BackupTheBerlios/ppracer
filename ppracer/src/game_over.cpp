@@ -221,14 +221,19 @@ GameOver::loop(float timeStep)
 
     draw_tux();
     draw_tux_shadow();
-    set_gl_options( GUI );
+	
+	set_gl_options( GUI );
+    HUD1.draw(players[0]);
 
-    UIMgr.setupDisplay();
+	gl::Disable(GL_TEXTURE_2D);
+    gl::Color(0.0,0.0,0.0,0.5);
+    gl::Rect(0,0,width,height);
+    gl::Enable(GL_TEXTURE_2D);
+	
+	UIMgr.setupDisplay();
 	UIMgr.draw();
 		
-    HUD1.draw(players[0]);
     reshape( width, height );
-
     winsys_swap_buffers();
 }
 

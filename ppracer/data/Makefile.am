@@ -252,6 +252,8 @@ nobase_dist_ppdata_DATA = \
 		textures/mask_outline.png \
 		textures/energymask.png \
 		textures/gaugeoutline.png \
+		textures/hudtl.png \
+		textures/hudtr.png \
 		textures/menu_bottom_right.png \
 		textures/listbox_arrows.png \
 		textures/noicon.png \

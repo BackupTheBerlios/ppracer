@@ -225,12 +225,12 @@ pp_bind_font -binding credits_h2 -font credits_text -color {1.00 0.89 0.01 1.0}
 
 
 #we don't be this because hud fonts need to be fast
-pp_load_font -binding time_label -font fonts/FreeSansBoldOblique.ttf -size 20 -color {0.8 0.7 0.01 1.0}
-pp_load_font -binding herring_count -font fonts/FreeSansBoldOblique.ttf -size 30 -color {0.8 0.7 0.01 1.0}
-pp_load_font -binding fps -font fonts/FreeSansBoldOblique.ttf -size 20 -color {0.8 0.7 0.01 1.0}
-pp_load_font -binding time_value -font fonts/FreeSansBoldOblique.ttf -size 30 -color {0.8 0.7 0.01 1.0}
-pp_load_font -binding speed_digits -font fonts/FreeSansBoldOblique.ttf -size 35 -color {1.00 0.89 0.01 1.0}
-pp_load_font -binding speed_units -font fonts/FreeSansBoldOblique.ttf -size 20 -color {1.00 0.89 0.01 1.0}
+pp_load_font -binding time_label -font fonts/FreeSansBoldOblique.ttf -size 20 -color {1.0 0.89 0.01 1.0}
+pp_load_font -binding herring_count -font fonts/FreeSansBoldOblique.ttf -size 30 -color {1.0 0.89 0.01 1.0}
+pp_load_font -binding fps -font fonts/FreeSansBoldOblique.ttf -size 20 -color {1.0 0.89 0.01 1.0}
+pp_load_font -binding time_value -font fonts/FreeSansBoldOblique.ttf -size 30 -color {1.0 0.89 0.01 1.0}
+pp_load_font -binding speed_digits -font fonts/FreeSansBoldOblique.ttf -size 35 -color {1.0 0.89 0.01 1.0}
+pp_load_font -binding speed_units -font fonts/FreeSansBoldOblique.ttf -size 20 -color {1.0 0.89 0.01 1.0}
 
 # not used
 #pp_load_font -binding time_hundredths -font fonts/FreeSansBoldOblique.ttf -size 20 -color {1.00 0.89 0.01 1.0}
@@ -255,11 +255,12 @@ tux_load_texture energy_mask textures/energymask.png 0
 tux_bind_texture energy_mask energy_mask
 tux_load_texture speed_mask textures/speedmask.png 0
 tux_bind_texture speed_mask speed_mask
-tux_load_texture mask_outline textures/mask_outline.png 0
-tux_bind_texture mask_outline mask_outline
 tux_load_texture mask_outline2 textures/mask_outline2.png 0
 tux_bind_texture mask_outline2 mask_outline2
-
+tux_load_texture hudtl textures/hudtl.png 0
+tux_bind_texture hudtl hudtl
+tux_load_texture hudtr textures/hudtr.png 0
+tux_bind_texture hudtr hudtr
 
 # UI widgets
 tux_load_texture listbox_arrows textures/listbox_arrows.png 0
