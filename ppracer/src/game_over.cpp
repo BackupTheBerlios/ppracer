@@ -83,7 +83,14 @@ GameOver::GameOver()
 			if(m_bestScore) players[0].saveData();
 		}
 	}
-	    
+	
+	{  
+	pp::Vec3d dir = players[0].vel;
+	int speed = int(dir.normalize());
+	//set max_speed
+	if (speed > players[0].max_speed) players[0].max_speed=int(speed);
+	}
+	
 	int width = getparam_x_resolution();
     int height = getparam_y_resolution();
 	

@@ -1,4 +1,8 @@
 
+2005-02-24  Volker Stroebel <volker@planetpenguin.de>
+	* src/game_over.cpp
+	fix max speed calculation	
+	
 2005-02-18  Volker Stroebel <volker@planetpenguin.de>
 	* data/translations/*
 	updated translations
