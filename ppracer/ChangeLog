@@ -7,6 +7,8 @@
 	  src/callbacks.cpp src/ppgltk/label.cpp
 	fixed compilation with --enable-debug
 	
+	* configure.in
+	fixed --disable-debug	
 
 2005-02-26  Volker Stroebel <volker@planetpenguin.de>
 	* src/phys_sim.cpp src/quadtree.* src/string_util.cpp 
