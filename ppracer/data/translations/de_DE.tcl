@@ -43,6 +43,7 @@ pp_translate_string "Enable FSAA:" "Aktiviere FSAA:"
 #audio configuration
 pp_translate_string "Audio Configuration" "Toneinstellungen"
 pp_translate_string "Sound Effects:" "Soundeffekte:"
+pp_translate_string "Music:" "Musik:"
 pp_translate_string "(needs restart)" "(benötigt Neustart)"
 pp_translate_string "Disable Audio:" "Deaktiviere Ton:"
 #pp_translate_string "Stereo:" "Stereo:"

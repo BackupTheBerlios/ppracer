@@ -42,6 +42,7 @@ pp_translate_string "Enable FSAA:" "FSAA Activeren:"
 #audio configuration
 pp_translate_string "Audio Configuration" "Geluidsconfiguratie"
 pp_translate_string "Sound Effects:" "Geluidseffecten:"
+#pp_translate_string "Music:" ""
 pp_translate_string "(needs restart)" "(herstart noodszakelijk)"
 pp_translate_string "Disable Audio:" "geluid uit:"
 pp_translate_string "Stereo:" "Stereo:"
@@ -112,7 +113,7 @@ pp_translate_string "You didn't advance." "Je mag niet door."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Time:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"

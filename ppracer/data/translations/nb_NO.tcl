@@ -4,7 +4,7 @@
 
 #common strings
 pp_translate_string "Back" "Tilbake"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "Trykk en tast for å starte"
 
 #game_type_select
 pp_translate_string "Enter an event" "Kjør et renn"
@@ -13,12 +13,12 @@ pp_translate_string "Configuration" "Konfigurasjon"
 pp_translate_string "Credits" "Kreditering"
 pp_translate_string "Quit" "Avslutt"
 
-#configuration
+#configuration 
 pp_translate_string "Graphics" "Grafikk"
 pp_translate_string "Video" "Bilde"
 pp_translate_string "Audio" "Lyd"
 pp_translate_string "Keyboard" "Tastatur"
-#pp_translate_string "Joystick" ""
+pp_translate_string "Joystick" "Styrespak"
 
 #config mode
 pp_translate_string "Cancel" "Avbryt"
@@ -26,7 +26,7 @@ pp_translate_string "Ok" "OK"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Grafikk-konfigurasjon"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Språk:"
 pp_translate_string "Show UI Snow:" "Vis snø:"
 pp_translate_string "Display FPS:" "Vis FPS:"
 pp_translate_string "Display Progress Bar:" "Vis fremdriftsviser:"
@@ -45,6 +45,7 @@ pp_translate_string "Enable FSAA:" "FSAA"
 #audio configuration
 pp_translate_string "Audio Configuration" "Lydkonfigurasjon"
 pp_translate_string "Sound Effects:" "Lydeffekter:"
+#pp_translate_string "Music:" ""
 pp_translate_string "(needs restart)" "(må restartes)"
 pp_translate_string "Disable Audio:" "Slå av lyd:"
 pp_translate_string "Stereo:" "Stereo:"
@@ -62,8 +63,8 @@ pp_translate_string "Trick:" "Triks:"
 pp_translate_string "Reset:" "Tilbakestill:"
 
 #joystick configuration
-#pp_translate_string "Joystick Configuration" ""
-#pp_translate_string "Enable Joystick" ""
+pp_translate_string "Joystick Configuration" "Styrespaks-konfigurasjon"
+pp_translate_string "Enable Joystick" "Aktiver joystick"
 
 #race select
 pp_translate_string "Race!" "Kjør!"
@@ -113,8 +114,8 @@ pp_translate_string "You didn't advance." "Du avanserte ikke."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
-pp_translate_string "H|km/h" "km/h"
+pp_translate_string "H|Time:" "Tid:"
+pp_translate_string "H|km/h" "km/t"
 #herring counter
 pp_translate_string "H|%03d" "%03d"
 #time counter

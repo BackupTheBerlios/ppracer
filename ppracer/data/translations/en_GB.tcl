@@ -45,6 +45,7 @@
 #audio configuration
 #pp_translate_string "Audio Configuration" ""
 #pp_translate_string "Sound Effects:" ""
+#pp_translate_string "Music:" ""
 #pp_translate_string "(needs restart)" ""
 #pp_translate_string "Disable Audio:" ""
 #pp_translate_string "Stereo:" ""
@@ -113,7 +114,7 @@
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Time:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"
@@ -121,7 +122,4 @@ pp_translate_string "H|%03d" "%03d"
 pp_translate_string "H|%02d:%02d:%02d" "%02d:%02d:%02d"
 #speed counter
 pp_translate_string "H|%.0f" "%.0f"
-
-
-
 

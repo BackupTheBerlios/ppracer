@@ -1,4 +1,8 @@
 
+2005-02-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/data/translations
+	updated translations
+
 2005-02-27  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppgltk/audio/audio_data.cpp src/hier_util.cpp
 	  src/phys_sim.cpp src/ppgltk/textarea.cpp
@@ -8,7 +12,7 @@
 	fixed compilation with --enable-debug
 	
 	* configure.in
-	fixed --disable-debug	
+	fixed --disable-debug
 
 2005-02-26  Volker Stroebel <volker@planetpenguin.de>
 	* src/phys_sim.cpp src/quadtree.* src/string_util.cpp 

@@ -6,10 +6,11 @@
 #07/02/2005 - Updated translation for ppracer 0.3
 #           - Improved translations for several phrases
 #           - Inclusion of Spanish characters thanks to new UTF-8 support
+#21/02/2005 - Updated translation for ppracer 0.3.1
 
 #common strings
 pp_translate_string "Back" "Atrás"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "PULSA UNA TECLA PARA COMENZAR"
 
 #game_type_select
 pp_translate_string "Enter an event" "Participar en un evento"
@@ -31,7 +32,7 @@ pp_translate_string "Ok" "Aceptar"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Configuración de gráficos"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Idioma:"
 pp_translate_string "Show UI Snow:" "Mostrar nieve en menú:"
 pp_translate_string "Display FPS:" "Mostrar FPS:"
 pp_translate_string "Display Progress Bar:" "Mostrar barra de progreso:"
@@ -100,7 +101,7 @@ pp_translate_string "Loading, Please Wait..." "Cargando, espera por favor..."
 
 #paused
 pp_translate_string "Resume" "Continuar"
-pp_translate_string "Paused" "Pausa"
+pp_translate_string "Paused" "En pausa"
 
 #race over
 pp_translate_string "Race Over" "Fin de carrera"
@@ -119,7 +120,7 @@ pp_translate_string "You didn't advance." "No has avanzado a la siguiente carrer
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Tiempo:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"

@@ -1,8 +1,8 @@
-
+# Portuguese translation of Planet Penguin Racer (ppracer) by Helder Correia <helder.correia@netcabo.pt>
 
 #common strings
 pp_translate_string "Back" "Voltar"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "PRESSIONE QUALQUER TECLA PARA INICIAR"
 
 #game_type_select
 pp_translate_string "Enter an event" "Entrar num evento"
@@ -16,7 +16,7 @@ pp_translate_string "Graphics" "Gráficos"
 pp_translate_string "Video" "Vídeo"
 pp_translate_string "Audio" "Áudio"
 pp_translate_string "Keyboard" "Teclado"
-#pp_translate_string "Joystick" ""
+pp_translate_string "Joystick" "Joystick"
 
 #config mode
 pp_translate_string "Cancel" "Cancelar"
@@ -24,7 +24,7 @@ pp_translate_string "Ok" "OK"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Configuração dos gráficos"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Língua"
 pp_translate_string "Show UI Snow:" "Mostrar neve nos menus:"
 pp_translate_string "Display FPS:" "Mostrar imagens por segundo:"
 pp_translate_string "Display Progress Bar:" "Mostrar barra de progresso:"
@@ -35,7 +35,7 @@ pp_translate_string "Shadows:" "Sombras:"
 #video configuration
 pp_translate_string "Video Configuration" "Configuração do vídeo"
 pp_translate_string "Resolution:" "Resolução:"
-pp_translate_string "Bits Per Pixel:" "Bits por ponto:"
+pp_translate_string "Bits Per Pixel:" "Bit's por ponto:"
 pp_translate_string "Fullscreen:" "Ecrã completo:"
 pp_translate_string "Experimental (needs restart)" "Experimental (necessário reiniciar)"
 pp_translate_string "Enable FSAA:" "Activar FSAA:"
@@ -43,6 +43,7 @@ pp_translate_string "Enable FSAA:" "Activar FSAA:"
 #audio configuration
 pp_translate_string "Audio Configuration" "Configuração do áudio"
 pp_translate_string "Sound Effects:" "Efeitos de som:"
+#pp_translate_string "Music:" ""
 pp_translate_string "(needs restart)" "(reiniciar)"
 pp_translate_string "Disable Audio:" "Desactivar som:"
 pp_translate_string "Stereo:" "Estéreo:"
@@ -60,8 +61,8 @@ pp_translate_string "Trick:" "Truque:"
 pp_translate_string "Reset:" "Reiniciar:"
 
 #joystick configuration
-#pp_translate_string "Joystick Configuration" ""
-#pp_translate_string "Enable Joystick" ""
+pp_translate_string "Joystick Configuration" "Configuração do Joystick"
+pp_translate_string "Enable Joystick" "Activar o joystick"
 
 #race select
 pp_translate_string "Race!" "Jogar!"
@@ -110,8 +111,8 @@ pp_translate_string "You didn't advance." "Não avançou."
 
 #HUD
 #Strings are prefixed to prevent collisions with the UI
-pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|FPS: %.1f" "IPS: %.1f"
+pp_translate_string "H|Time:" "Tempo:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"

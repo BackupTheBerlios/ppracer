@@ -112,7 +112,7 @@ pp_translate_string "You didn't advance." "Вы не продвинулись."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Time:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"

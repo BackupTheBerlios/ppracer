@@ -1,10 +1,10 @@
 
 #common strings
 pp_translate_string "Back" "Atzera"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "SAKATU TEKLA BAT HASTEKO"
 
 #game_type_select
-pp_translate_string "Enter an event" "Hasi froba bat"
+pp_translate_string "Enter an event" "Hasi froga bat"
 pp_translate_string "Practice" "Entrenatu"
 pp_translate_string "Configuration" "Konfigurazioa"
 pp_translate_string "Credits" "Kredituak"
@@ -15,7 +15,7 @@ pp_translate_string "Graphics" "Grafikoak"
 pp_translate_string "Video" "Bideoa"
 pp_translate_string "Audio" "Audioa"
 pp_translate_string "Keyboard" "Teklatua"
-#pp_translate_string "Joystick" ""
+pp_translate_string "Joystick" "Joystick-a"
 
 #config mode
 pp_translate_string "Cancel" "Utzi"
@@ -23,7 +23,7 @@ pp_translate_string "Ok" "Ados"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Grafikoen konfigurazioa"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Hizkuntza:"
 pp_translate_string "Show UI Snow:" "Elurra menuan:"
 pp_translate_string "Display FPS:" "FPSak bistaratu:"
 pp_translate_string "Display Progress Bar:" "Progresio barra bistaratu:"
@@ -42,6 +42,7 @@ pp_translate_string "Enable FSAA:" "FSAA aktibatu:"
 #audio configuration
 pp_translate_string "Audio Configuration" "Audio konfigurazioa"
 pp_translate_string "Sound Effects:" "Soinu efektoak:"
+#pp_translate_string "Music:" ""
 pp_translate_string "(needs restart)" "(berrabiaraztea beharrezkoa)"
 pp_translate_string "Disable Audio:" "Ezgaitu audioa:"
 pp_translate_string "Stereo:" "Estereoa:"
@@ -59,8 +60,8 @@ pp_translate_string "Trick:" "Trukoa:"
 pp_translate_string "Reset:" "Berrezarri:"
 
 #joystick configuration
-#pp_translate_string "Joystick Configuration" ""
-#pp_translate_string "Enable Joystick" ""
+pp_translate_string "Joystick Configuration" "Joystick-aren konfigurazioa"
+pp_translate_string "Enable Joystick" "Gaitu joystick-a"
 
 #race select
 pp_translate_string "Race!" "Hasi!"
@@ -110,7 +111,7 @@ pp_translate_string "You didn't advance." "Ez duzu aurreratu."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Denbora:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"

@@ -2,7 +2,7 @@
 
 #common strings
 pp_translate_string "Back" "Indietro"
-#pp_translate_string "PRESS ANY KEY TO START" ""
+pp_translate_string "PRESS ANY KEY TO START" "PREMI UN TASTO PER INIZIARE"
 
 #game_type_select
 pp_translate_string "Enter an event" "Inizia un evento"
@@ -16,7 +16,7 @@ pp_translate_string "Graphics" "Grafica"
 pp_translate_string "Video" "Video"
 pp_translate_string "Audio" "Audio"
 pp_translate_string "Keyboard" "Tastiera"
-#pp_translate_string "Joystick" ""
+pp_translate_string "Joystick" "Joystick"
 
 #config mode
 pp_translate_string "Cancel" "Annulla"
@@ -24,10 +24,10 @@ pp_translate_string "Ok" "Ok"
 
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Configurazione della Grafica"
-#pp_translate_string "Language:" ""
+pp_translate_string "Language:" "Lingua:"
 pp_translate_string "Show UI Snow:" "Mostra Neve sul Menù:"
 pp_translate_string "Display FPS:" "Visualizza FPS:"
-pp_translate_string "Display Progress Bar:" "Visualizza Barra di Avanzamento:"
+pp_translate_string "Display Progress Bar:" "Visualizza Avanzamento:"
 pp_translate_string "Draw Fog:" "Visualizza Nebbia:"
 pp_translate_string "Reflections:" "Riflessi:"
 pp_translate_string "Shadows:" "Ombre:"
@@ -42,7 +42,8 @@ pp_translate_string "Enable FSAA:" "Abilita FSAA:"
 
 #audio configuration
 pp_translate_string "Audio Configuration" "Configurazione dell'Audio"
-pp_translate_string "Sound Effects:" "Effetti sonori"
+pp_translate_string "Sound Effects:" "Effetti sonori:"
+pp_translate_string "Music:" "Musica:"
 pp_translate_string "(needs restart)" "(necessita riavvio)"
 pp_translate_string "Disable Audio:" "Disabilita Audio:"
 pp_translate_string "Stereo:" "Stereo:"
@@ -60,8 +61,8 @@ pp_translate_string "Trick:" "Trucchi:"
 pp_translate_string "Reset:" "Resetta:"
 
 #joystick configuration
-#pp_translate_string "Joystick Configuration" ""
-#pp_translate_string "Enable Joystick" ""
+pp_translate_string "Joystick Configuration" "Configurazione del Joystick"
+pp_translate_string "Enable Joystick" "Abilita Joystick"
 
 #race select
 pp_translate_string "Race!" "Gara!"
@@ -111,7 +112,7 @@ pp_translate_string "You didn't advance." "Non sei passato."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Zeit:"
+pp_translate_string "H|Time:" "Tempo:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"
