@@ -60,6 +60,7 @@ static credit_line_t credit_lines[] =
     { NULL, "credits_text", "" },
 	{ NULL, "credits_h2", "Contributors" },
 	{ NULL, "credits_text", "Peter Reichel" },
+	{ NULL, "credits_text", "Rainer Koschnick" },
 	{ NULL, "credits_text", "Teemu Vesala" },
 	{ NULL, "credits_text", "Theo Snelleman" },
     { NULL, "credits_text", "" },

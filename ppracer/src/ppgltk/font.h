@@ -22,6 +22,10 @@
 #include <map>
 #include <string>
 
+#ifdef _WIN32
+	#include <WTypes.h>
+#endif
+
 #include "FT/FTFont.h"
 #include "alg/color.h"
 #include "alg/vec2d.h"

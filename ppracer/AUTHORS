@@ -15,7 +15,7 @@ Eric Alvarez Llimos
 Helder Correia
 Karl Ove Hufthammer
 Marco Antonio Blanco
-Massimo
+Massimo Spazian
 Mikel Olasagasti
 Spiral
 Theo Snelleman
@@ -24,14 +24,17 @@ Trygve B. Wiig
 
 Additional Contributors
 -------------------------------------------
-Peter Reichel <peter@apps4linux.org>
+Peter Reichel 
 	* simple signal/slot system for the ui widgets
 	
-Teemu Vesala <teme@lysti.net>
+Rainer Koschnick
+	* Windows port
+	
+Teemu Vesala 
 	* "airborne calculation".
 	Outputs how many percent of time the Tux has been flying.
 
-Theo Snelleman <theo@snelleman.net>
+Theo Snelleman 
 	* configuration menu for translations
 
 www.ac3d.org
