@@ -85,7 +85,7 @@ Racing::Racing()
     {
 		setparam_view_mode( ABOVE );
     }
-    set_view_mode( players[0], (view_mode_t)getparam_view_mode() );
+    set_view_mode( players[0], static_cast<view_mode_t>(getparam_view_mode()) );
 
     // We need to reset controls here since callbacks won't have been
     //   called in paused mode. This results in duplication between this
@@ -154,7 +154,7 @@ Racing::loop(float timeStep)
 	if (speed > players[0].max_speed) players[0].max_speed=int(speed);
 
 	
-    airborne = (bool) ( players[0].pos.y > ( find_y_coord(players[0].pos.x, 
+    airborne = ( players[0].pos.y > ( find_y_coord(players[0].pos.x, 
 						       players[0].pos.z) + 
 					  JUMP_MAX_START_HEIGHT ) );
 
@@ -193,7 +193,7 @@ Racing::loop(float timeStep)
 		is_joystick_button_down( getparam_joystick_brake_button() );
 	} 
 	if ( !joy_braking ) {
-	    joy_braking = (bool) ( joy_y > 0.5 );
+	    joy_braking = ( joy_y > 0.5 );
 	}
 
 	if ( getparam_joystick_paddle_button() >= 0 ) {
@@ -201,7 +201,7 @@ Racing::loop(float timeStep)
 		is_joystick_button_down( getparam_joystick_paddle_button() );
 	}
 	if ( !joy_paddling ) {
-	    joy_paddling = (bool) ( joy_y < -0.5 );
+	    joy_paddling = ( joy_y < -0.5 );
 	}
 
 	if ( getparam_joystick_jump_button() >= 0 ) {
@@ -216,7 +216,7 @@ Racing::loop(float timeStep)
     }
 
     // Update braking 
-    players[0].control.is_braking = (bool) ( m_braking || joy_braking );
+    players[0].control.is_braking = ( m_braking || joy_braking );
 
     if ( airborne ) {
 	new_terrain = (1<<4);
@@ -295,7 +295,7 @@ Racing::loop(float timeStep)
     // Turning 
 
     if ( ( m_leftTurn || joy_left_turn )  ^ (m_rightTurn || joy_right_turn ) ) {
-	bool turning_left = (bool) ( m_leftTurn || joy_left_turn );
+	bool turning_left = ( m_leftTurn || joy_left_turn );
 
 	if ( joy_left_turn || joy_right_turn ) {
 	    players[0].control.turn_fact = joy_turn_fact;
@@ -433,22 +433,22 @@ bool
 Racing::keyboardEvent(SDLKey key, bool release)
 {
 	if(key==getparam_turn_left_key()){
-		m_leftTurn = (bool) !release;
+		m_leftTurn = !release;
 		return true;
 	}else if(key==getparam_turn_right_key()){
-		m_rightTurn = (bool) !release;
+		m_rightTurn = !release;
 		return true;
 	}else if(key==getparam_paddle_key()){
-		m_paddling = (bool) !release;
+		m_paddling = !release;
 		return true;
 	}else if(key==getparam_brake_key()){
-		m_braking = (bool) !release;
+		m_braking = !release;
 		return true;
 	}else if(key==getparam_trick_modifier_key()){
-		m_trickModifier = (bool) !release;
+		m_trickModifier = !release;
 		return true;
 	}else if(key==getparam_jump_key()){
-		m_charging = (bool) !release;
+		m_charging = !release;
 		return true;
 	}else{
 		return false;

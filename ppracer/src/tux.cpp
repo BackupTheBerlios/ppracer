@@ -221,7 +221,7 @@ static int head_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
                          "Usage: ", argv[0], " <head joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -237,7 +237,7 @@ static int neck_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <neck joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -252,7 +252,7 @@ static int root_node_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <root node>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -268,7 +268,7 @@ static int left_shoulder_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <left shoulder joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -284,7 +284,7 @@ static int right_shoulder_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <right shoulder joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -300,7 +300,7 @@ static int left_hip_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <left hip joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -316,7 +316,7 @@ static int right_hip_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <right hip joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -332,7 +332,7 @@ static int left_knee_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <left knee joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -348,7 +348,7 @@ static int right_knee_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <right knee joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -364,7 +364,7 @@ static int left_ankle_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <left ankle joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -380,7 +380,7 @@ static int right_ankle_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <right ankle joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -396,7 +396,7 @@ static int tail_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <tail joint>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 

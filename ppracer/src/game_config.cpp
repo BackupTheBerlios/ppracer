@@ -160,9 +160,9 @@ void fetch_param_string( struct param *p )
 
     val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
     if ( val == NULL ) {
-	p->val.string_val = string_copy( p->deflt.string_val );
+		p->val.string_val = string_copy( p->deflt.string_val );
     } else {
-	p->val.string_val = string_copy( val );
+		p->val.string_val = string_copy( val );
     }
     p->loaded = true;
 
@@ -176,13 +176,13 @@ void set_param_string( struct param *p, CONST84 char *new_val )
 		     "configuration parameter type mismatch" );
 
     if ( p->loaded ) {
-	free( p->val.string_val );
+		free( p->val.string_val );
     }
     ret = Tcl_SetVar( tclInterp, p->name, new_val, TCL_GLOBAL_ONLY );
     if ( ret == NULL ) {
-	p->val.string_val = string_copy( p->deflt.string_val );
+		p->val.string_val = string_copy( p->deflt.string_val );
     } else {
-	p->val.string_val = string_copy( new_val );
+		p->val.string_val = string_copy( new_val );
     }
     p->loaded = true;
 
@@ -198,9 +198,9 @@ void fetch_param_char( struct param *p )
     str_val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
     
     if ( str_val == NULL || str_val[0] == '\0' ) {
-	p->val.char_val = p->deflt.char_val;
+		p->val.char_val = p->deflt.char_val;
     } else {
-	p->val.char_val = str_val[0];
+		p->val.char_val = str_val[0];
     }
     p->loaded = true;
 }
@@ -218,9 +218,9 @@ void set_param_char( struct param *p, char new_val )
 
     ret = Tcl_SetVar( tclInterp, p->name, buff, TCL_GLOBAL_ONLY );
     if ( ret == NULL ) {
-	p->val.char_val = p->deflt.char_val;
+		p->val.char_val = p->deflt.char_val;
     } else {
-	p->val.char_val = new_val;
+		p->val.char_val = new_val;
     }
     p->loaded = true;
 
@@ -239,9 +239,9 @@ void fetch_param_int( struct param *p )
     if ( str_val == NULL 
 	 || Tcl_GetInt( tclInterp, str_val, &val) == TCL_ERROR  ) 
     {
-	p->val.int_val = p->deflt.int_val;
+		p->val.int_val = p->deflt.int_val;
     } else {
-	p->val.int_val = val;
+		p->val.int_val = val;
     }
     p->loaded = true;
 }
@@ -258,9 +258,9 @@ void set_param_int( struct param *p, int new_val )
 
     ret = Tcl_SetVar( tclInterp, p->name, buff, TCL_GLOBAL_ONLY );
     if ( ret == NULL ) {
-	p->val.int_val = p->deflt.int_val;
+		p->val.int_val = p->deflt.int_val;
     } else {
-	p->val.int_val = new_val;
+		p->val.int_val = new_val;
     }
     p->loaded = true;
 
@@ -278,19 +278,19 @@ void fetch_param_bool( struct param *p )
     str_val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
     
     if ( str_val == NULL ) {
-	no_val = true;
+		no_val = true;
     } else if ( strcmp( str_val, "false" ) == 0 ) {
-	p->val.bool_val = false;
+		p->val.bool_val = false;
     } else if ( strcmp( str_val, "true" ) == 0 ) {
-	p->val.bool_val = true;
+		p->val.bool_val = true;
     } else if ( Tcl_GetInt( tclInterp, str_val, &val) == TCL_ERROR ) {
-	no_val = true;
+		no_val = true;
     } else {
-	p->val.bool_val = (val == 0) ? false : true ;
+		p->val.bool_val = (val == 0) ? false : true ;
     }
 
     if ( no_val ) {
-	p->val.bool_val = p->deflt.bool_val;
+		p->val.bool_val = p->deflt.bool_val;
     }
 
     p->loaded = true;
@@ -308,9 +308,9 @@ void set_param_bool( struct param *p, bool new_val )
 
     ret = Tcl_SetVar( tclInterp, p->name, buff, TCL_GLOBAL_ONLY );
     if ( ret == NULL ) {
-	p->val.bool_val = p->deflt.bool_val;
+		p->val.bool_val = p->deflt.bool_val;
     } else {
-	p->val.bool_val = new_val;
+		p->val.bool_val = new_val;
     }
     p->loaded = true;
 }
@@ -330,7 +330,7 @@ void set_param_bool( struct param *p, bool new_val )
         set_param_ ## typename( &( Params.name ), val ); } 
 
 #define FN_PARAM_STRING( name ) \
-    FN_PARAM( name, string, char* )
+    FN_PARAM( name, string, const char* )
 
 #define FN_PARAM_CHAR( name ) \
     FN_PARAM( name, char, char )
@@ -962,11 +962,10 @@ int get_config_file_name( char *buff, unsigned int len )
 void clear_config_cache()
 {
     struct param *parm;
-    unsigned int i;
 
-    for (i=0; i<sizeof(Params)/sizeof(struct param); i++) {
-	parm = (struct param*)&Params + i;
-	parm->loaded = false;
+    for (unsigned int i=0; i<sizeof(Params)/sizeof(struct param); i++) {
+		parm = reinterpret_cast<struct param*>(&Params) + i;
+		parm->loaded = false;
     }
 }
 
@@ -1032,7 +1031,6 @@ void write_config_file()
     char config_file[BUFF_LEN];
     char config_dir[BUFF_LEN];
     struct param *parm;
-    unsigned int i;
 	
 	if(sp_config_file==NULL){
 
@@ -1082,8 +1080,8 @@ void write_config_file()
 	     "#\n"
 	);
 
-    for (i=0; i<sizeof(Params)/sizeof(struct param); i++) {
-	parm = (struct param*)&Params + i;
+    for (unsigned int i=0; i<sizeof(Params)/sizeof(struct param); i++) {
+	parm = reinterpret_cast<struct param*>(&Params) + i;
 	if ( parm->comment != NULL ) {
 	    fprintf( config_stream, "\n# %s\n#\n%s\n#\n", 
 		     parm->name, parm->comment );
@@ -1125,59 +1123,59 @@ void write_config_file()
 static int get_param_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[]) 
 {
-    int i;
     int num_params;
     struct param *parm;
 
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <parameter name>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     /* Search for parameter */
     parm = NULL;
     num_params = sizeof(Params)/sizeof(struct param);
-    for (i=0; i<num_params; i++) {
-	parm = (struct param*)&Params + i;
+    int i;
+	for (i=0; i<num_params; i++) {
+		parm = reinterpret_cast<struct param*>(&Params) + i;
 
-	if ( strcmp( parm->name, argv[1] ) == 0 ) {
-	    break;
-	}
+		if ( strcmp( parm->name, argv[1] ) == 0 ) {
+			break;
+		}
     }
 
     /* If can't find parameter, report error */
     if ( parm == NULL || i == num_params ) {
-	Tcl_AppendResult(ip, argv[0], ": invalid parameter `",
-			 argv[1], "'", (char *)0 );
-	return TCL_ERROR;
+		Tcl_AppendResult(ip, argv[0], ": invalid parameter `",
+			 argv[1], "'", NULL );
+		return TCL_ERROR;
     }
 
     /* Get value of parameter */
     switch ( parm->type ) {
-    case PARAM_STRING:
-	fetch_param_string( parm );
-	Tcl_SetObjResult( ip, Tcl_NewStringObj( parm->val.string_val, -1 ) );
-	break;
+		case PARAM_STRING:
+		fetch_param_string( parm );
+		Tcl_SetObjResult( ip, Tcl_NewStringObj( parm->val.string_val, -1 ) );
+		break;
 
     case PARAM_CHAR:
-	fetch_param_char( parm );
-	Tcl_SetObjResult( ip, Tcl_NewStringObj( &parm->val.char_val, 1 ) );
-	break;
+		fetch_param_char( parm );
+		Tcl_SetObjResult( ip, Tcl_NewStringObj( &parm->val.char_val, 1 ) );
+		break;
 
     case PARAM_INT:
-	fetch_param_int( parm );
-	Tcl_SetObjResult( ip, Tcl_NewIntObj( parm->val.int_val ) );
-	break;
+		fetch_param_int( parm );
+		Tcl_SetObjResult( ip, Tcl_NewIntObj( parm->val.int_val ) );
+		break;
 
     case PARAM_BOOL:
-	fetch_param_bool( parm );
-	Tcl_SetObjResult( ip, Tcl_NewBooleanObj( parm->val.bool_val ) );
-	break;
+		fetch_param_bool( parm );
+		Tcl_SetObjResult( ip, Tcl_NewBooleanObj( parm->val.bool_val ) );
+		break;
 
     default:
-	code_not_reached();
+		code_not_reached();
     }
 
     return TCL_OK;
@@ -1189,7 +1187,6 @@ static int get_param_cb ( ClientData cd, Tcl_Interp *ip,
 static int set_param_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[]) 
 {
-    int i;
     int tmp_int;
     int num_params;
     struct param *parm;
@@ -1197,68 +1194,69 @@ static int set_param_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <parameter name> <value>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     /* Search for parameter */
     parm = NULL;
     num_params = sizeof(Params)/sizeof(struct param);
-    for (i=0; i<num_params; i++) {
-	parm = (struct param*)&Params + i;
+	int i;
+	for (i=0; i<num_params; i++) {
+		parm = reinterpret_cast<struct param*>(&Params) + i;
 
-	if ( strcmp( parm->name, argv[1] ) == 0 ) {
-	    break;
-	}
+		if ( strcmp( parm->name, argv[1] ) == 0 ) {
+			break;
+		}
     }
 
     /* If can't find parameter, report error */
     if ( parm == NULL || i == num_params ) {
-	Tcl_AppendResult(ip, argv[0], ": invalid parameter `",
-			 argv[1], "'", (char *)0 );
-	return TCL_ERROR;
+		Tcl_AppendResult(ip, argv[0], ": invalid parameter `",
+				 argv[1], "'", NULL );
+		return TCL_ERROR;
     }
 
     /* Set value of parameter */
     switch ( parm->type ) {
     case PARAM_STRING:
-	set_param_string( parm, argv[2] ); 
-	break;
+		set_param_string( parm, argv[2] ); 
+		break;
 
     case PARAM_CHAR:
-	if ( strlen( argv[2] ) > 1 ) {
-	    Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
-			     argv[1], "' must be a single character", 
-			     (char *)0 );
-	    return TCL_ERROR;
-	}
-	set_param_char( parm, argv[2][0] );
-	break;
+		if ( strlen( argv[2] ) > 1 ) {
+			Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
+					 argv[1], "' must be a single character", 
+					 NULL );
+			return TCL_ERROR;
+		}
+		set_param_char( parm, argv[2][0] );
+		break;
 
     case PARAM_INT:
-	if ( Tcl_GetInt( ip, argv[2], &tmp_int ) != TCL_OK ) {
-	    Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
-			     argv[1], "' must be an integer", 
-			     (char *)0 );
-	    return TCL_ERROR;
-	}
-	set_param_int( parm, tmp_int );
-	break;
+		if ( Tcl_GetInt( ip, argv[2], &tmp_int ) != TCL_OK ) {
+			Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
+					 argv[1], "' must be an integer", 
+					 NULL );
+			return TCL_ERROR;
+		}
+		set_param_int( parm, tmp_int );
+		break;
 
     case PARAM_BOOL:
-	if ( Tcl_GetBoolean( ip, argv[2], &tmp_int ) != TCL_OK ) {
-	    Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
-			     argv[1], "' must be a boolean", 
-			     (char *)0 );
-	    return TCL_ERROR;
-	}
-	check_assertion( tmp_int == 0 || tmp_int == 1, 
+		if ( Tcl_GetBoolean( ip, argv[2], &tmp_int ) != TCL_OK ) {
+			Tcl_AppendResult(ip, "\n", argv[0], ": value for `",
+					 argv[1], "' must be a boolean", 
+					 NULL );
+			return TCL_ERROR;
+		}
+		check_assertion( tmp_int == 0 || tmp_int == 1, 
 			 "invalid boolean value" );
-	set_param_bool( parm, (bool) tmp_int );
-	break;
+		set_param_bool( parm, tmp_int );
+		break;
 
     default:
-	code_not_reached();
+		code_not_reached();
     }
 
     return TCL_OK;

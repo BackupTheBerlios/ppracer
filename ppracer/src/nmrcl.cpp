@@ -51,8 +51,8 @@ const double ode45_time_step_exp = 1./5.;
 ode_data_t* euler_new_ode_data()
 {
     euler_data_t *data;
-    data = (euler_data_t*)malloc(sizeof(euler_data_t));
-    return (ode_data_t*) data;
+    data = reinterpret_cast<euler_data_t*>(malloc(sizeof(euler_data_t)));
+    return reinterpret_cast<ode_data_t*>(data);
 }
 
 int euler_num_estimates()
@@ -62,14 +62,14 @@ int euler_num_estimates()
 
 void euler_init_ode_data( ode_data_t *p, double init_val, double h )
 {
-    euler_data_t *data = (euler_data_t*)p;
+    euler_data_t *data = reinterpret_cast<euler_data_t*>(p);
     data->init_val = init_val;
     data->h = h;
 }
 
 double euler_next_time(ode_data_t *p, int step)
 {
-    euler_data_t *data = (euler_data_t*)p;
+    euler_data_t *data = reinterpret_cast<euler_data_t*>(p);
     check_assertion( 0 <= step && step < 2, 
 		     "invalid step number in euler ode solver" );
     return step * data->h;
@@ -77,7 +77,7 @@ double euler_next_time(ode_data_t *p, int step)
 
 double euler_next_val( ode_data_t *p, int step )
 {
-    euler_data_t *data = (euler_data_t*)p;
+    euler_data_t *data = reinterpret_cast<euler_data_t*>(p);
     double val = data->init_val;
 
     if ( step == 1 ) 
@@ -88,13 +88,13 @@ double euler_next_val( ode_data_t *p, int step )
 
 void euler_update_estimate(ode_data_t *p, int step, double val)
 {
-    euler_data_t *data = (euler_data_t*)p;
+    euler_data_t *data = reinterpret_cast<euler_data_t*>(p);
     data->k[step] = data->h * val;
 }
 
 double euler_final_estimate(ode_data_t *p)
 {
-    euler_data_t *data = (euler_data_t*)p;
+    euler_data_t *data = reinterpret_cast<euler_data_t*>(p);
     double val = data->init_val;
 
     val += 0.5 * (data->k[0] + data->k[1] );
@@ -120,8 +120,8 @@ ode_solver_t new_euler_solver()
 ode_data_t* ode23_new_ode_data()
 {
     ode23_data_t *data;
-    data = (ode23_data_t*)malloc(sizeof(ode23_data_t));
-    return (ode_data_t*) data;
+    data = reinterpret_cast<ode23_data_t*>(malloc(sizeof(ode23_data_t)));
+    return reinterpret_cast<ode_data_t*>(data);
 }
 
 int ode23_num_estimates()
@@ -131,21 +131,21 @@ int ode23_num_estimates()
 
 void ode23_init_ode_data( ode_data_t *p, double init_val, double h )
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     data->init_val = init_val;
     data->h = h;
 }
 
 double ode23_next_time(ode_data_t *p, int step)
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     check_assertion( 0 <= step && step < 4, "invalid step for ode23 solver" );
     return ode23_time_step_mat[step] * data->h;
 }
 
 double ode23_next_val( ode_data_t *p, int step )
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     double val = data->init_val;
     int i;
 
@@ -157,13 +157,13 @@ double ode23_next_val( ode_data_t *p, int step )
 
 void ode23_update_estimate(ode_data_t *p, int step, double val)
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     data->k[step] = data->h * val;
 }
 
 double ode23_final_estimate(ode_data_t *p)
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     double val = data->init_val;
     int i;
 
@@ -175,7 +175,7 @@ double ode23_final_estimate(ode_data_t *p)
 
 double ode23_estimate_error(ode_data_t *p)
 {
-    ode23_data_t *data = (ode23_data_t*)p;
+    ode23_data_t *data = reinterpret_cast<ode23_data_t*>(p);
     double err=0.;
     int i;
 
@@ -208,8 +208,8 @@ ode_solver_t new_ode23_solver()
 ode_data_t* ode45_new_ode_data()
 {
     ode45_data_t *data;
-    data = (ode45_data_t*)malloc(sizeof(ode45_data_t));
-    return (ode_data_t*) data;
+    data = reinterpret_cast<ode45_data_t*>(malloc(sizeof(ode45_data_t)));
+    return reinterpret_cast<ode_data_t*>(data);
 }
 
 int ode45_num_estimates()
@@ -219,21 +219,21 @@ int ode45_num_estimates()
 
 void ode45_init_ode_data( ode_data_t *p, double init_val, double h )
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     data->init_val = init_val;
     data->h = h;
 }
 
 double ode45_next_time(ode_data_t *p, int step)
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     check_assertion( 0 <= step && step < 7, "invalid step for ode45 solver" );
     return ode45_time_step_mat[step] * data->h;
 }
 
 double ode45_next_val( ode_data_t *p, int step )
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     double val = data->init_val;
     int i;
 
@@ -245,13 +245,13 @@ double ode45_next_val( ode_data_t *p, int step )
 
 void ode45_update_estimate(ode_data_t *p, int step, double val)
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     data->k[step] = data->h * val;
 }
 
 double ode45_final_estimate(ode_data_t *p)
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     double val = data->init_val;
     int i;
 
@@ -263,7 +263,7 @@ double ode45_final_estimate(ode_data_t *p)
 
 double ode45_estimate_error(ode_data_t *p)
 {
-    ode45_data_t *data = (ode45_data_t*)p;
+    ode45_data_t *data = reinterpret_cast<ode45_data_t*>(p);
     double err=0.;
     int i;
 

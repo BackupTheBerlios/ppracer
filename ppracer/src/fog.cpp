@@ -164,7 +164,7 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
 	    "[-start <value>] "
 	    "[-end <value>] "
 	    "[-color { r g b a }] ",
-	    (char *) 0 );
+	    NULL );
 	return TCL_ERROR;
     }
     

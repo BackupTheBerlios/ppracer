@@ -24,7 +24,7 @@
 
 #include "ppgltk/alg/defs.h"
 
-#define DOT_PRODUCT( v1, v2 ) ((double) (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z))
+#define DOT_PRODUCT( v1, v2 ) (double(v1.x * v2.x + v1.y * v2.y + v1.z * v2.z))
 
 
 static pp::Plane frustum_planes[6];
@@ -42,7 +42,7 @@ static bool p_vertex_code_z[6];
 void setup_view_frustum( Player& plyr, double near_dist, 
 			 double far_dist )
 {
-    double aspect = (double) getparam_x_resolution() /
+    double aspect = double(getparam_x_resolution()) /
 	getparam_y_resolution();
 
     int i;

@@ -59,7 +59,7 @@ const FTPoint& FTTextureGlyph::Render( const FTPoint& pen)
 {
     if( activeTextureID != glTextureID)
     {
-        glBindTexture( GL_TEXTURE_2D, (GLuint)glTextureID);
+        glBindTexture( GL_TEXTURE_2D, GLuint(glTextureID));
         activeTextureID = glTextureID;
     }
     
@@ -81,4 +81,3 @@ const FTPoint& FTTextureGlyph::Render( const FTPoint& pen)
 
     return advance;
 }
-

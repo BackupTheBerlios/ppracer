@@ -76,11 +76,10 @@ quadsquare::quadsquare(quadcornerdata* pcd)
 
     unsigned int	i;
 
-	Child[0] = (quadsquare*) NULL;
-	Child[1] = (quadsquare*) NULL;
-	Child[2] = (quadsquare*) NULL;	
-	Child[3] = (quadsquare*) NULL;
-
+	Child[0] = NULL;
+	Child[1] = NULL;
+	Child[2] = NULL;	
+	Child[3] = NULL;
 
     EnabledFlags = 0;
 	
@@ -127,7 +126,7 @@ quadsquare::~quadsquare()
     // Recursively delete sub-trees.
     for (int i = 0; i < 4; i++) {
 		if (Child[i]) delete Child[i];
-		Child[i] = (quadsquare*) NULL;
+		Child[i] = NULL;
     }
 }
 
@@ -170,8 +169,8 @@ float	quadsquare::GetHeight(const quadcornerdata& cd, const float x, const float
     float	lx = (x - cd.xorg) / float(half);
     float	lz = (z - cd.zorg) / float(half);
 
-    int	ix = (int) floor(lx);
-    int	iz = (int) floor(lz);
+    int	ix = int(floor(lx));
+    int	iz = int(floor(lz));
 
     // Clamp.
     if (ix < 0) ix = 0;
@@ -428,7 +427,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 	for (i=i_min; i<=i_max; i++) {
 	for (j=j_min; j<=j_max; j++) {
 
-	    terrain = (int) Terrain[ i + RowSize*j ];
+	    terrain = int(Terrain[ i + RowSize*j ]);
 	    check_assertion( terrain >= 0 && 
 			     terrain < int(num_terrains),
 			     "Invalid terrain type" );
@@ -1070,7 +1069,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 			continue;
 		} 
 
-		for (i=0; i<(int)VertexArrayCounter[(*it)];i++){
+		for (i=0; i<int(VertexArrayCounter[(*it)]);i++){
 			idx = VertexArrayIndices[(*it)][i];
 			//colorval(idx, 3) =  ( (*it)<= Terrain[idx] ) ? 255 : 0;
 			colorval(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
@@ -1108,7 +1107,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	    gl::Disable( GL_FOG );
 	    
 	    /* Set triangle vertices to black */
-	    for (i=0; i<(int)VertexArrayCounter[0]; i++) {
+	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
 			colorval( VertexArrayIndices[0][i], 0 ) = 0;
 			colorval( VertexArrayIndices[0][i], 1 ) = 0;
 			colorval( VertexArrayIndices[0][i], 2 ) = 0;
@@ -1128,7 +1127,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	    /* First set triangle colors to white */
-	    for (i=0; i<(int)VertexArrayCounter[0]; i++) {
+	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
 			colorval( VertexArrayIndices[0][i], 0 ) = 255;
 			colorval( VertexArrayIndices[0][i], 1 ) = 255;
 			colorval( VertexArrayIndices[0][i], 2 ) = 255;
@@ -1140,7 +1139,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
 
 			/* Set alpha values */
-			for (i=0; i<(int)VertexArrayCounter[0]; i++) {
+			for (i=0; i<int(VertexArrayCounter[0]); i++) {
 				colorval( VertexArrayIndices[0][i], 3 ) = 
 				(Terrain[VertexArrayIndices[0][i]] == int(*it) ) ? 
 				255 : 0;
@@ -1165,7 +1164,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 		*/
 			
 		//the ice stuff should be rewritten...
-		for (i=0; i<(int)VertexArrayCounter[0]; i++) {
+		for (i=0; i<int(VertexArrayCounter[0]); i++) {
 		    colorval( VertexArrayIndices[0][i], 3 ) = 
 			(Terrain[VertexArrayIndices[0][i]] == 0) ? 
 			ENV_MAP_ALPHA : 0;

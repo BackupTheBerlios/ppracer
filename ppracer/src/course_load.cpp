@@ -281,17 +281,17 @@ void fill_gl_arrays()
     glDisableClientState(GL_COLOR_ARRAY);
 
     /* Align vertices and normals on 16-byte intervals (Q3A does this) */
-    vnc_array = (GLubyte*) malloc( STRIDE_GL_ARRAY * nx * ny );
+    vnc_array = reinterpret_cast<GLubyte*>(malloc( STRIDE_GL_ARRAY * nx * ny ));
 
     for (x=0; x<nx; x++) {
 	for (y=0; y<ny; y++) {
 	    idx = STRIDE_GL_ARRAY*(y*nx+x);
 	   
-#define floatval(i) (*(GLfloat*)(vnc_array+idx+(i)*sizeof(GLfloat)))
+#define floatval(i) (*reinterpret_cast<GLfloat*>(vnc_array+idx+(i)*sizeof(GLfloat)))
 
-	    floatval(0) = (GLfloat)x / (nx-1.) * course_width;
+	    floatval(0) = GLfloat(x) / (nx-1.) * course_width;
 	    floatval(1) = ELEV(x,y);
-	    floatval(2) = -(GLfloat)y / (ny-1.) * course_length;
+	    floatval(2) = -GLfloat(y)/ (ny-1.) * course_length;
 
 	    nml = normals[ x + y * nx ];
 	    floatval(4) = nml.x;
@@ -300,7 +300,7 @@ void fill_gl_arrays()
 	    floatval(7) = 1.0f;
 	   
 #undef floatval
-#define byteval(i) (*(GLubyte*)(vnc_array+idx+8*sizeof(GLfloat) +\
+#define byteval(i) (*reinterpret_cast<GLubyte*>(vnc_array+idx+8*sizeof(GLfloat) +\
     i*sizeof(GLubyte)))
 
 	    byteval(0) = 255;
@@ -399,18 +399,18 @@ static int course_dim_cb ( ClientData cd, Tcl_Interp *ip,
     if ( ( argc != 3 ) && ( argc != 5 ) ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <course width> <course length>",
-			 " [<play width> <play length>]", (char *)0 );
+			 " [<play width> <play length>]", NULL );
         return TCL_ERROR;
     }
 
     if ( Tcl_GetDouble( ip, argv[1], &width ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid course width", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
     if ( Tcl_GetDouble( ip, argv[2], &length ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid course length", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -420,12 +420,12 @@ static int course_dim_cb ( ClientData cd, Tcl_Interp *ip,
     if ( argc == 5 ) {
 	if ( Tcl_GetDouble( ip, argv[3], &width ) != TCL_OK ) {
 	    Tcl_AppendResult(ip, argv[0], ": invalid play width", 
-			     (char *)0 );
+			     NULL );
 	    return TCL_ERROR;
 	} 
 	if ( Tcl_GetDouble( ip, argv[4], &length ) != TCL_OK ) {
 	    Tcl_AppendResult(ip, argv[0], ": invalid play length", 
-			     (char *)0 );
+			     NULL );
 	    return TCL_ERROR;
 	} 
 	play_width = width;
@@ -445,7 +445,7 @@ static int angle_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <angle>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -481,7 +481,7 @@ static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <elevation bitmap>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -500,7 +500,7 @@ static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
     nx = elev_img->width;
     ny = elev_img->height;
 
-    elevation = (float *)malloc( sizeof(float)*nx*ny );
+    elevation = reinterpret_cast<float *>(malloc( sizeof(float)*nx*ny ));
 
     if ( elevation == NULL ) {
 		handle_system_error( 1, "malloc failed" );
@@ -516,7 +516,7 @@ static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
 	    ELEV(nx-1-x, ny-1-y) = 
 		( ( elev_img->data[ (x + nx * y) * elev_img->depth + pad ] 
 		    - base_height_value ) / 255.0 ) * elev_scale
-		- (double) (ny-1.-y)/ny * course_length * slope;
+		- double(ny-1.-y)/ny * course_length * slope;
         } 
         //pad += (nx*elev_img->depth) % 4;
     } 
@@ -550,7 +550,7 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <terrain bitmap>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -559,22 +559,22 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
     if ( terrain_img == NULL ) {
 	print_warning( TCL_WARNING, "%s: couldn't load %s", argv[0], argv[1] );
         Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1],
-			 (char *)0 );
-	return TCL_ERROR;
+			 NULL );
+		return TCL_ERROR;
     }
 
     if ( nx != terrain_img->width || ny != terrain_img->height ) {
         Tcl_AppendResult(ip, argv[0], ": terrain bitmap must have same " 
 			 "dimensions as elevation bitmap",
-			 (char *)0 );
+			 NULL );
 
 	return TCL_ERROR;
     }
 
-    terrain = (int *)malloc( sizeof(int)*nx*ny );
+    terrain = reinterpret_cast<int *>(malloc( sizeof(int)*nx*ny ));
 
     if ( terrain == NULL ) {
-	handle_system_error( 1, "malloc failed" );
+		handle_system_error( 1, "malloc failed" );
     }
 	
 	pad = 0;
@@ -616,12 +616,12 @@ static int bgnd_img_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <background image>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if (!load_and_bind_texture( "background", argv[1] )) {
-      Tcl_AppendResult(ip, argv[0], ": could not load texture", (char *) 0);
+      Tcl_AppendResult(ip, argv[0], ": could not load texture", NULL);
       return TCL_ERROR;
 	}
 
@@ -638,7 +638,7 @@ static int terrain_tex_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 cha
 	CONST84 char** indices = 0;
 
 	if (num_terrains>=NUM_TERRAIN_TYPES){
-		Tcl_AppendResult(ip, argv[0], ": max number og terrains reached", (char *)0 );
+		Tcl_AppendResult(ip, argv[0], ": max number og terrains reached", NULL );
         return TCL_ERROR;
 	}
 	
@@ -665,7 +665,7 @@ static int terrain_tex_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 cha
 	
 	} else if ( strcmp( "-texture", argv[i]) == 0 ) {
 		if ( !load_and_bind_texture( text_bind,argv[i+1]) ) {
-     		Tcl_AppendResult(ip, argv[0], ": could not load texture", (char *) 0);
+     		Tcl_AppendResult(ip, argv[0], ": could not load texture", NULL);
 	  		return TCL_ERROR;
     	}
 	   if (!get_texture_binding(text_bind, &terrain_texture[num_terrains].texbind)) {
@@ -676,44 +676,44 @@ static int terrain_tex_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 cha
 	    if ( Tcl_GetInt( ip, argv[i+1],
 		    &terrain_texture[num_terrains].wheight) != TCL_OK ){
 				Tcl_AppendResult(ip, argv[0], ": invalid wheight",
-				 (char *)0 );
+				 NULL );
 			return TCL_ERROR;	
 	    }
 	} else if ( strcmp( "-color", argv[i] ) == 0 ) {
 	    rtn = Tcl_SplitList(ip, argv[i+1], &num_col, &indices);
 	    if( rtn != TCL_OK ) {
 		Tcl_AppendResult(ip, "a list of colors must be provided\n",
-			     (char *) 0);
-		Tcl_Free((char *) indices);
+			     NULL);
+		Tcl_Free(reinterpret_cast<char *>(indices));
 		return TCL_ERROR;
 	    }
 
 	    if (num_col == 3 || num_col == 4) {
 		Tcl_GetInt(ip, indices[0], &convert_temp);
-		terrain_texture[num_terrains].value = (unsigned char) convert_temp;
+		terrain_texture[num_terrains].value = static_cast<unsigned char>(convert_temp);
 		Tcl_GetInt(ip, indices[1], &convert_temp);
-		terrain_texture[num_terrains].value += (unsigned char) convert_temp << 8;
+		terrain_texture[num_terrains].value += static_cast<unsigned char>(convert_temp) << 8;
 		Tcl_GetInt(ip, indices[2], &convert_temp);
-		terrain_texture[num_terrains].value += (unsigned char) convert_temp << 16;
+		terrain_texture[num_terrains].value += static_cast<unsigned char>(convert_temp) << 16;
 			
 	    } else {
 		Tcl_AppendResult(ip, argv[0], ": must specify three colors"
-			" to link with terrain type", (char *) 0);
+			" to link with terrain type", NULL);
 		return TCL_ERROR;
 	    }
-	    Tcl_Free((char *) indices);
+	    Tcl_Free(reinterpret_cast<char *>(indices));
 	}  else if ( strcmp( "-friction", argv[i] ) == 0 ) {
 	    if ( Tcl_GetDouble( ip, argv[i+1],
 		    &terrain_texture[num_terrains].friction) != TCL_OK ) {
 				Tcl_AppendResult(ip, argv[0], ": invalid friction",
-				 (char *)0 );
+				 NULL );
 			return TCL_ERROR;	
 	    }
 	}else if ( strcmp( "-compression", argv[i] ) == 0 ) {
 	    if ( Tcl_GetDouble( ip, argv[i+1],
 		    &terrain_texture[num_terrains].compression) != TCL_OK ) {
 				Tcl_AppendResult(ip, argv[0], ": invalid compression",
-				 (char *)0 );
+				 NULL );
 			return TCL_ERROR;
 	    }
 	}else if ( strcmp( "-particles", argv[i]) == 0 ) {
@@ -758,16 +758,16 @@ static int start_pt_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <x coord> <y coord>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetDouble( ip, argv[1], &xcd ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid x coordinate", (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": invalid x coordinate", NULL );
         return TCL_ERROR;
     } 
     if ( Tcl_GetDouble( ip, argv[2], &ycd ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid y coordinate", (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": invalid y coordinate", NULL );
         return TCL_ERROR;
     } 
 
@@ -797,12 +797,12 @@ static int elev_scale_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <scale>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetDouble( ip, argv[1], &scale ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid scale", (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": invalid scale", NULL );
         return TCL_ERROR;
     } 
 
@@ -820,19 +820,18 @@ static int is_tree( unsigned char pixel[], tree_type_t ** which_type )
 {
 	int min_distance = pixel[0] + pixel[1] + pixel[2];
     
-	int i;
-    int distance;
+	int distance;
  
     *which_type = NULL;
-    for (i = 0; i < num_tree_types; i++) {
-	/* assume red green blue pixel ordering */
-	distance = abs ( tree_types[i].red - pixel[0] ) +
+    for (int i = 0; i < num_tree_types; i++) {
+		// assume red green blue pixel ordering 
+		distance = abs ( tree_types[i].red - pixel[0] ) +
 		    abs ( tree_types[i].green - pixel[1] ) +
 		    abs ( tree_types[i].blue - pixel[2] );
-	if (distance < min_distance) {
-	    min_distance = distance;
-	    *which_type = &tree_types[i];
-	}
+		if (distance < min_distance) {
+			min_distance = distance;
+			*which_type = &tree_types[i];
+		}
     }
     
     return min_distance;
@@ -841,19 +840,18 @@ static int is_tree( unsigned char pixel[], tree_type_t ** which_type )
 static int is_item( unsigned char pixel[], item_type_t ** which_type )
 {
     int      min_distance = pixel[0] + pixel[1] + pixel[2];
-    int i;
     int distance;
  
     *which_type = NULL;
-    for (i = 0; i < num_item_types; i++) {
-	/* assume red green blue pixel ordering */
-	distance = abs ( item_types[i].red - pixel[0] ) +
+    for (int i = 0; i < num_item_types; i++) {
+		// assume red green blue pixel ordering 
+		distance = abs ( item_types[i].red - pixel[0] ) +
 		    abs ( item_types[i].green - pixel[1] ) +
 		    abs ( item_types[i].blue - pixel[2] );
-	if (distance < min_distance) {
-	    min_distance = distance;
-	    *which_type = &item_types[i];
-	}
+		if (distance < min_distance) {
+			min_distance = distance;
+			*which_type = &item_types[i];
+		}
     }
     
     return min_distance;
@@ -873,7 +871,7 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <tree location bitmap>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -882,7 +880,7 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
 	print_warning( TCL_WARNING, "%s: couldn't load %s", 
 		       argv[0], argv[1] );
         Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1], 
-			 (char *)0 );
+			 NULL );
 	return TCL_ERROR;
     }
 
@@ -926,8 +924,8 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
 					which_tree->num_trees += 1;
 										
 					which_tree->pos.push_back(pp::Vec2d(
-						(sx-x)/(double)(sx-1.)*course_width,
-						-(sy-y)/(double)(sy-1.)*course_length));
+						(sx-x)/double(sx-1.)*course_width,
+						-(sy-y)/double(sy-1.)*course_length));
 					
 				} else if ( which_item != NULL ) {
                 	if (num_items+1 == MAX_ITEMS ) {
@@ -939,8 +937,8 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
 					which_item->num_items += 1;
 					
 					which_item->pos.push_back(pp::Vec2d(
-						(sx-x)/(double)(sx-1.)*course_width,
-						-(sy-y)/(double)(sy-1.)*course_length));
+						(sx-x)/double(sx-1.)*course_width,
+						-(sy-y)/double(sy-1.)*course_length));
 					
 					}
         		}
@@ -1023,31 +1021,31 @@ static int friction_cb ( ClientData cd, Tcl_Interp *ip,
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <ice coeff.> <rock coeff.> "
 			 "<snow coeff.> <ramp coeff.>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetDouble( ip, argv[1], &fric[0] ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid ice coefficient",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetDouble( ip, argv[2], &fric[1] ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid rock coefficient",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetDouble( ip, argv[3], &fric[2] ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid snow coefficient",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 	 
 	if ( Tcl_GetDouble( ip, argv[4], &fric[3] ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid ramp coefficient",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 	
@@ -1067,7 +1065,7 @@ static int course_author_cb( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <author's name>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -1082,7 +1080,7 @@ static int course_name_cb( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <course name>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -1099,13 +1097,13 @@ static int base_height_value_cb( ClientData cd, Tcl_Interp *ip,
     if ( argc != 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <base height>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetInt( ip, argv[1], &value ) != TCL_OK ) {
         Tcl_AppendResult(ip, argv[0], ": invalid base height",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -1119,7 +1117,7 @@ static int tree_model_cb( ClientData cd, Tcl_Interp *ip,
 {
 	if ( num_tree_types + 1 >= MAX_TREE_TYPES ) {
 		Tcl_AppendResult(ip, argv[0], ": max number of tree types reached",
-			 (char *)0 );
+			 NULL );
 		return TCL_ERROR;
     }
 	
@@ -1142,14 +1140,14 @@ static int tree_model_cb( ClientData cd, Tcl_Interp *ip,
 	    	if ( Tcl_GetDouble( ip, argv[i+1],
 		   		&tree_types[num_tree_types].height) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid height",
-					(char *)0 );
+					NULL );
 			error = 1;
 	    	}
 		} else if ( strcmp( "-diam", argv[i] ) == 0 ) {
 	    	if ( Tcl_GetDouble( ip, argv[i+1],
 		   		&tree_types[num_tree_types].diam) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid diameter",
-					(char *)0 );
+					NULL );
 			error = 1;
 		
 	    	}
@@ -1165,8 +1163,8 @@ static int tree_model_cb( ClientData cd, Tcl_Interp *ip,
 	    	rtn = Tcl_SplitList(ip, argv[i+1], &num_col, &indices);
 			if( rtn != TCL_OK ) {
 				Tcl_AppendResult(ip, "a list of colors must be provided\n",
-			    		(char *) 0);
-				Tcl_Free((char *) indices);
+			    		NULL);
+				Tcl_Free(reinterpret_cast<char *>(indices));
 				error = 1;
 	    	}
     
@@ -1174,17 +1172,17 @@ static int tree_model_cb( ClientData cd, Tcl_Interp *ip,
 
 	    	if (num_col == 3 || num_col == 4) {
 				Tcl_GetInt(ip, indices[0], &convert_temp);
-				tree_types[num_tree_types].red = (unsigned char) convert_temp;
+				tree_types[num_tree_types].red = static_cast<unsigned char>(convert_temp);
 				Tcl_GetInt(ip, indices[1], &convert_temp);
-				tree_types[num_tree_types].green = (unsigned char) convert_temp;
+				tree_types[num_tree_types].green = static_cast<unsigned char>(convert_temp);
 				Tcl_GetInt(ip, indices[2], &convert_temp);
-				tree_types[num_tree_types].blue = (unsigned char) convert_temp;
+				tree_types[num_tree_types].blue = static_cast<unsigned char>(convert_temp);
 	    	} else {
 				Tcl_AppendResult(ip, argv[0], ": must specify three colors"
-				" to link with tree type", (char *) 0);
+				" to link with tree type", NULL);
 				error = 1;
 	    	}
-	    	Tcl_Free((char *) indices);
+	    	Tcl_Free(reinterpret_cast<char *>(indices));
 		} 
 	}
 	
@@ -1207,7 +1205,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 
     if ( num_item_types + 1 >= MAX_ITEM_TYPES ) {
 	Tcl_AppendResult(ip, argv[0], ": max number of item types reached",
-			 (char *)0 );
+			 NULL );
 	return TCL_ERROR;
     }
 
@@ -1239,7 +1237,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    if ( Tcl_GetDouble( ip, *argv,
 		    &item_types[num_item_types].height) != TCL_OK ) {
 		Tcl_AppendResult(ip, argv[0], ": invalid height\n",
-					(char *) 0);
+					NULL);
 	    }
 
 	} else if ( strcmp( "-diameter", *argv ) == 0 ) {
@@ -1249,7 +1247,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    if ( Tcl_GetDouble( ip, *argv,
 		    &item_types[num_item_types].diam) != TCL_OK ) {
 		Tcl_AppendResult(ip, argv[0], ": invalid diameter\n",
-					(char *) 0);
+					NULL);
 	    }
 	
 	} else if ( strcmp( "-texture", *argv ) == 0 ) {
@@ -1260,7 +1258,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 			item_types[num_item_types].texture = *argv;
 	    } else {
 			Tcl_AppendResult(ip, argv[0], ": specify only one texture\n",
-				(char *)0 );
+				NULL );
 	    }
 
 	} else if ( strcmp( "-above_ground", *argv ) == 0 ) {
@@ -1270,7 +1268,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    if ( Tcl_GetDouble( ip, *argv,
 		    &item_types[num_item_types].above_ground) != TCL_OK ) {
 		Tcl_AppendResult(ip, argv[0], ": invalid height above ground\n",
-					(char *) 0);
+					NULL);
 	    }
 
 	} else if ( strcmp( "-score", *argv ) == 0 ) {
@@ -1280,7 +1278,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    if ( Tcl_GetInt( ip, *argv,
 		    &item_types[num_item_types].score) != TCL_OK ) {
 		Tcl_AppendResult(ip, argv[0], ": invalid score\n",
-					(char *) 0);
+					NULL);
 	    }
 
 	} else if ( strcmp( "-color", *argv ) == 0 ) 
@@ -1296,16 +1294,16 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 
 	    if (num_col == 3 || num_col == 4) {
 		Tcl_GetInt(ip, indices[0], &convert_temp);
-		item_types[num_item_types].red = (unsigned char) convert_temp;
+		item_types[num_item_types].red = static_cast<unsigned char>(convert_temp);
 		Tcl_GetInt(ip, indices[1], &convert_temp);
-		item_types[num_item_types].green = (unsigned char) convert_temp;
+		item_types[num_item_types].green = static_cast<unsigned char>(convert_temp);
 		Tcl_GetInt(ip, indices[2], &convert_temp);
-		item_types[num_item_types].blue = (unsigned char) convert_temp;
+		item_types[num_item_types].blue = static_cast<unsigned char>(convert_temp);
 	    } else {
 		err_msg = "Color specification must have 3 or 4 elements";
 		goto item_spec_bail;
 	    }
-	    Tcl_Free((char *) indices);
+	    Tcl_Free(reinterpret_cast<char *>(indices));
 	    indices = NULL;
 
 	} else if ( strcmp( "-type", *argv ) == 0) {
@@ -1325,7 +1323,7 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 	    CHECK_ARG( "-normal", err_msg, item_spec_bail );
 
 	    if ( get_tcl_tuple( 
-		ip, *argv, (double*)&(item_types[num_item_types].normal), 3 )
+		ip, *argv, item_types[num_item_types].normal.values, 3 )
 		 != TCL_OK )
 	    {
 		err_msg = "Must specify a list of size three for -normal";
@@ -1366,8 +1364,8 @@ static int item_spec_cb( ClientData cd, Tcl_Interp *ip,
 
 item_spec_bail:
     if ( indices ) {
-	Tcl_Free( (char*) indices );
-	indices = NULL;
+		Tcl_Free(reinterpret_cast<char *>(indices));
+		indices = NULL;
     }
 
 	item_types[num_item_types].name.erase();
@@ -1407,7 +1405,7 @@ static int wind_velocity_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 ch
 		    if ( Tcl_GetDouble( ip, *argv,
 			    &scale) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid scale\n",
-						(char *) 0);
+						NULL);
 		    }
 		}else if ( strcmp( "-velocity", *argv ) == 0 ||
 		    strcmp( "-velocity", *argv ) == 0 ){
@@ -1422,16 +1420,16 @@ static int wind_velocity_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 ch
 
 			if (num_col == 3) {
 				Tcl_GetInt(ip, indices[0], &convert_temp);
-				velocity.x = (unsigned char) convert_temp;
+				velocity.x = static_cast<unsigned char>(convert_temp);
 				Tcl_GetInt(ip, indices[1], &convert_temp);
-				velocity.y = (unsigned char) convert_temp;
+				velocity.y = static_cast<unsigned char>(convert_temp);
 				Tcl_GetInt(ip, indices[2], &convert_temp);
-				velocity.z = (unsigned char) convert_temp;
+				velocity.z = static_cast<unsigned char>(convert_temp);
 		    } else {
 				err_msg = "Velocity specification must have 3 elements";
 				goto item_spec_bail;
 	    	}
-			Tcl_Free((char *) indices);
+			Tcl_Free(reinterpret_cast<char *>(indices));
 	    	indices = NULL;
 		}
 
@@ -1443,7 +1441,7 @@ static int wind_velocity_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 ch
 
 item_spec_bail:
     if ( indices ){
-	Tcl_Free( (char*) indices );
+	Tcl_Free(reinterpret_cast<char *>(indices));
 	indices = NULL;
     }
 
@@ -1479,7 +1477,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &hud) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid HUD\n",
-						(char *) 0);
+						NULL);
 		    }
 		}else if ( strcmp( "-element", *argv ) == 0 ) {
 		    NEXT_ARG;
@@ -1488,7 +1486,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &element_num) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid HUD element number\n",
-						(char *) 0);
+						NULL);
 		    }
 		}else if ( strcmp( "-type", *argv ) == 0 ) {
 			NEXT_ARG;
@@ -1538,7 +1536,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 				err_msg = "Position must have 2 elements";
 				goto item_spec_bail;
 	    	}
-			Tcl_Free((char *) indices);
+			Tcl_Free(reinterpret_cast<char *>(indices));
 	    	indices = NULL;
 		} else if ( strcmp( "-texture", *argv ) == 0 ) {
 		    NEXT_ARG;
@@ -1575,7 +1573,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &element.angle) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid angle\n",
-						(char *) 0);
+						NULL);
 		    }
 		} else if ( strcmp( "-width", *argv ) == 0 ) {
 		    NEXT_ARG;
@@ -1584,7 +1582,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &element.width) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid width\n",
-						(char *) 0);
+						NULL);
 		    }
 		} else if ( strcmp( "-height", *argv ) == 0 ) {
 		    NEXT_ARG;
@@ -1593,7 +1591,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &element.height) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid height\n",
-						(char *) 0);
+						NULL);
 		    }
 		} else if ( strcmp( "-size", *argv ) == 0 ) {
 		    NEXT_ARG;
@@ -1602,7 +1600,7 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 		    if ( Tcl_GetInt( ip, *argv,
 			    &element.size) != TCL_OK ) {
 			Tcl_AppendResult(ip, argv[0], ": invalid size\n",
-						(char *) 0);
+						NULL);
 		    }
 		}
 		
@@ -1631,8 +1629,8 @@ static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 
 item_spec_bail:
     if ( indices ){
-	Tcl_Free( (char*) indices );
-	indices = NULL;
+		Tcl_Free(reinterpret_cast<char *>(indices));
+		indices = NULL;
     }
 
     Tcl_AppendResult(

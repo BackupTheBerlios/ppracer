@@ -28,7 +28,7 @@
 
 #define EPS 1e-13
 
-#define ROUND_TO_NEAREST(x) ( (int) ((x)+0.5) )
+#define ROUND_TO_NEAREST(x) ( int((x)+0.5) )
 
 #define ANGLES_TO_RADIANS(x) ( M_PI / 180.0 * (x) )
 #define RADIANS_TO_ANGLES(x) ( 180.0 / M_PI * (x) )

@@ -95,7 +95,7 @@ static int pp_translate_string_cb ( ClientData cd, Tcl_Interp *ip,
 	if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <string> <translated string>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 	
@@ -110,7 +110,7 @@ static int pp_translate_language_cb ( ClientData cd, Tcl_Interp *ip,
 	if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <language> <language-name>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 	

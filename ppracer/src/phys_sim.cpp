@@ -321,8 +321,8 @@ void get_indices_for_point( double x, double z,
     get_course_dimensions( &courseWidth, &courseLength );
     get_course_divisions( &nx, &ny );
     
-    xidx = x / courseWidth * ( (float) nx - 1. );
-    yidx = -z / courseLength * ( (float) ny - 1. );
+    xidx = x / courseWidth * ( float(nx) - 1. );
+    yidx = -z / courseLength * ( float(ny) - 1. );
 
     if (xidx < 0) {
         xidx = 0;
@@ -338,10 +338,10 @@ void get_indices_for_point( double x, double z,
 
     /* I found that ceil(3) was quite slow on at least some architectures, 
        so I've replace it with an approximation */
-    *x0 = (int) (xidx);              /* floor(xidx) */
-    *x1 = (int) ( xidx + 0.9999 );   /* ceil(xidx) */
-    *y0 = (int) (yidx);              /* floor(yidx) */
-    *y1 = (int) ( yidx + 0.9999 );   /* ceil(yidx) */
+    *x0 = int(xidx);              /* floor(xidx) */
+    *x1 = int( xidx + 0.9999 );   /* ceil(xidx) */
+    *y0 = int(yidx);              /* floor(yidx) */
+    *y1 = int( yidx + 0.9999 );   /* ceil(yidx) */
 
     if ( *x0 == *x1 ) {
 	if ( *x1 < nx - 1 ) 
@@ -387,8 +387,8 @@ void find_barycentric_coords( float x, float z,
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / courseWidth * ( (float) nx - 1. );
-    yidx = -z / courseLength * ( (float) ny - 1. );
+    xidx = x / courseWidth * ( float(nx) - 1. );
+    yidx = -z / courseLength * ( float(ny) - 1. );
 
 
     /* The terrain is meshed as follows:
@@ -474,8 +474,8 @@ pp::Vec3d find_course_normal( const float x, const float z )
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / course_width * ( (float) nx - 1. );
-    yidx = -z / course_length * ( (float) ny - 1. );
+    xidx = x / course_width * ( float(nx) - 1. );
+    yidx = -z / course_length * ( float(ny) - 1. );
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
@@ -1050,7 +1050,7 @@ void adjust_orientation( Player& plyr, float dtime, pp::Vec3d vel,
 float adjust_particle_count( float particles ) 
 {
     if ( particles < 1 ) {
-	if ( ( (float) rand() ) / RAND_MAX < particles ) {
+	if ( ( float(rand()) ) / RAND_MAX < particles ) {
 	    return 1.0;
 	} else {
 	    return 0.0;
@@ -1144,9 +1144,9 @@ void generate_particles( Player& plyr, float dtime,
 				       right_part_vel;
 
         create_new_particles( left_part_pt, left_part_vel, 
-			      (int)left_particles, particle_binding );
+			      int(left_particles), particle_binding );
         create_new_particles( right_part_pt, right_part_vel, 
-			      (int)right_particles, particle_binding );
+			      int(right_particles), particle_binding );
     } 
 }
 
@@ -1171,7 +1171,7 @@ pp::Vec3d calc_wind_force( pp::Vec3d player_vel )
 	/* adjust wind_scale with a random walk */
 	if ( last_time_called != gameMgr->time ) {
 	    wind_scale = wind_scale + 
-		(rand()/(double)RAND_MAX-0.50) * 0.15;
+		(rand()/double(RAND_MAX)-0.50) * 0.15;
 	    wind_scale = MIN( 1.0, MAX( 0.0, wind_scale ) );
 	}
 
@@ -1674,11 +1674,11 @@ void solve_ode_system( Player& plyr, float dtime )
 
 	/* If no failures, compute a new h */
 	if ( !failed && solver.estimate_error != NULL ) {
-		double temp = 1.25 * pow((double)err / tol,(double)solver.time_step_exponent());
+		double temp = 1.25 * pow(double(err) / tol,double(solver.time_step_exponent()));
 		if ( temp > 0.2 ) {
-		h = h / temp;
+			h = h / temp;
 	    } else {
-		h = 5.0 * h;
+			h = 5.0 * h;
 	    }
 	}
 

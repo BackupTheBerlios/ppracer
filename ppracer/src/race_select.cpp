@@ -114,7 +114,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_mirrorSSBtn->setState( (int)gameMgr->getCurrentRace().mirrored );
+	mp_mirrorSSBtn->setState( int(gameMgr->getCurrentRace().mirrored) );
 	// conditions
 	mp_conditionsSSBtn = new pp::SSButton( pos,
 					    pp::Vec2d(32, 32),
@@ -139,7 +139,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
 				  pp::Color::white );	
 
-	mp_conditionsSSBtn->setState( (int)gameMgr->getCurrentRace().condition );
+	mp_conditionsSSBtn->setState( int(gameMgr->getCurrentRace().condition) );
 	// wind
 	mp_windSSBtn = new pp::SSButton( pos,
 				      pp::Vec2d(32, 32),
@@ -154,7 +154,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_windSSBtn->setState( (int)gameMgr->getCurrentRace().windy );
+	mp_windSSBtn->setState( int(gameMgr->getCurrentRace().windy) );
 
 	// snow 
 	mp_snowSSBtn = new pp::SSButton( pos,
@@ -170,7 +170,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_snowSSBtn->setState( (int)gameMgr->getCurrentRace().snowing );
+	mp_snowSSBtn->setState( int(gameMgr->getCurrentRace().snowing) );
 	// XXX snow button doesn't do anything, so disable for now 
 	mp_snowSSBtn->setSensitive(false);
 	
@@ -324,10 +324,10 @@ RaceSelect::updateRaceData()
   	gameMgr->getCurrentRace().course = (*curElem).course;
 	gameMgr->getCurrentRace().name = (*curElem).name;
 	gameMgr->getCurrentRace().description = (*curElem).description;
-	gameMgr->getCurrentRace().mirrored = (bool) mp_mirrorSSBtn->getState();
-	gameMgr->getCurrentRace().condition = (race_conditions_t) mp_conditionsSSBtn->getState();
-	gameMgr->getCurrentRace().windy = (bool) mp_windSSBtn->getState();
-	gameMgr->getCurrentRace().snowing = (bool) mp_snowSSBtn->getState();
+	gameMgr->getCurrentRace().mirrored = bool(mp_mirrorSSBtn->getState());
+	gameMgr->getCurrentRace().condition = static_cast<race_conditions_t>(mp_conditionsSSBtn->getState());
+	gameMgr->getCurrentRace().windy = bool(mp_windSSBtn->getState());
+	gameMgr->getCurrentRace().snowing = bool(mp_snowSSBtn->getState());
 }
 
 void

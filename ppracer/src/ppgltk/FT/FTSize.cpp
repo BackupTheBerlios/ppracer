@@ -70,7 +70,7 @@ float FTSize::Height() const
     
     if( FT_IS_SCALABLE((*ftFace)))
     {
-        return ( (*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin) * ( (float)ftSize->metrics.y_ppem / (float)(*ftFace)->units_per_EM);
+        return ( (*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin) * ( float(ftSize->metrics.y_ppem) / float((*ftFace)->units_per_EM));
     }
     else
     {
@@ -101,4 +101,3 @@ float FTSize::Underline() const
 {
     return 0.0f;
 }
-

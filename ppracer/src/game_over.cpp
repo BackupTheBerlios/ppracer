@@ -123,7 +123,7 @@ GameOver::GameOver()
 		mp_scoreLbl = new pp::Label(pos,"race_stats",buff);
 		mp_scoreLbl->alignment.center();
 	
-		int speed = int((double)players[0].max_speed * M_PER_SEC_TO_KM_PER_H);
+		int speed = int(double(players[0].max_speed) * M_PER_SEC_TO_KM_PER_H);
 		sprintf( buff, _("Max speed: %3d km/h"), speed);
 		pos.y-=30;
 		mp_maxspeedLbl = new pp::Label(pos,"race_stats",buff);

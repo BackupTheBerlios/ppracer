@@ -31,10 +31,10 @@ char *string_copy( const char *src )
 
     check_assertion( src != NULL, "string NULL in string_copy" );
 
-    dest = (char *) malloc( sizeof(char) * ( strlen( src ) + 1 ) );
+    dest = reinterpret_cast<char *>(malloc( sizeof(char) * ( strlen( src ) + 1 ) ));
 
     if ( dest == NULL ) {
-	handle_system_error( 1, "malloc failed" );
+		handle_system_error( 1, "malloc failed" );
     }
 
     strcpy( dest, src );

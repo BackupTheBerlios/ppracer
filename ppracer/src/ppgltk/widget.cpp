@@ -95,7 +95,7 @@ Widget::performClickAction()
 bool
 Widget::isInBox(const int x, const int y) const
 {
-    return (bool) (
+    return (
 	( x >= m_position.x ) &&
 	( x <= m_position.x + m_size.x ) &&
 	( y >= m_position.y ) &&

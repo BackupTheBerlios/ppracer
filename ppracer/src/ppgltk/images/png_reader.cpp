@@ -52,8 +52,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
-        png_destroy_read_struct(&png_ptr,
-           (png_infopp)NULL, (png_infopp)NULL);
+        png_destroy_read_struct(&png_ptr, NULL, NULL);
 		fclose(fp);
         return;
     }
@@ -61,8 +60,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
     png_infop end_info = png_create_info_struct(png_ptr);
     if (!end_info)
     {
-        png_destroy_read_struct(&png_ptr, &info_ptr,
-          (png_infopp)NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
         return;
     }
@@ -77,7 +75,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
 	
 	
 	png_get_IHDR(png_ptr, info_ptr, &width, &height,
-       &bit_depth, &color_type, &interlace_type,int_p_NULL, int_p_NULL);
+       &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	
 	if(bit_depth == 16)
         png_set_strip_16(png_ptr);
@@ -88,7 +86,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
 		png_set_expand(png_ptr);
 		png_read_update_info(png_ptr, info_ptr);
 		png_get_IHDR(png_ptr, info_ptr, &width, &height,
-			   &bit_depth, &color_type, &interlace_type,int_p_NULL, int_p_NULL);
+			   &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	}
 	
 	if( color_type == PNG_COLOR_TYPE_GRAY ||
@@ -96,7 +94,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
 		png_set_gray_to_rgb(png_ptr);
 		png_read_update_info(png_ptr, info_ptr);
 		png_get_IHDR(png_ptr, info_ptr, &width, &height,
-			   &bit_depth, &color_type, &interlace_type,int_p_NULL, int_p_NULL);
+			   &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	}
 		
 	this->width=width;
@@ -114,7 +112,7 @@ ReaderPNG::ReaderPNG(const char *fileName)
 	}
 	
 	png_read_end(png_ptr, info_ptr);
-	png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	fclose(fp);
 }
 

@@ -162,22 +162,21 @@ static GLuint get_sphere_display_list( int divisions ) {
     static int num_display_lists;
     static GLuint *display_lists = NULL;
     int base_divisions;
-    int i, idx;
+    int idx;
 
     if ( !initialized ) {
-	initialized = true;
-	base_divisions = getparam_tux_sphere_divisions();
+		initialized = true;
+		base_divisions = getparam_tux_sphere_divisions();
 
-	num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
+		num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
 
-	check_assertion( display_lists == NULL, "display_lists not NULL" );
-	display_lists = (GLuint*) malloc( sizeof(GLuint) * num_display_lists );
+		check_assertion( display_lists == NULL, "display_lists not NULL" );
+		display_lists = reinterpret_cast<GLuint*>(malloc( sizeof(GLuint) * num_display_lists ));
 
-	for (i=0; i<num_display_lists; i++) {
-	    display_lists[i] = 0;
-	}
+		for (int i=0; i<num_display_lists; i++) {
+			display_lists[i] = 0;
+		}
     }
-
 
     idx = divisions - MIN_SPHERE_DIVISIONS;
 
@@ -186,11 +185,11 @@ static GLuint get_sphere_display_list( int divisions ) {
 		     "invalid number of sphere subdivisions" );
 
     if ( display_lists[idx] == 0 ) {
-	/* Initialize the sphere display list */
-	display_lists[idx] = gl::GenLists(1);
-	gl::NewList( display_lists[idx], GL_COMPILE );
-	draw_sphere( divisions );
-	gl::EndList();
+		// Initialize the sphere display list 
+		display_lists[idx] = gl::GenLists(1);
+		gl::NewList( display_lists[idx], GL_COMPILE );
+		draw_sphere( divisions );
+		gl::EndList();
     }
 
     return display_lists[idx];
@@ -303,7 +302,7 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
 
 	/* t is the distance from v0 of the closest point on the line
            to the origin */
-	t = - ( *((pp::Vec3d *) v0)* edge_vec );
+	t = - ( *(reinterpret_cast<pp::Vec3d *>(v0))* edge_vec );
 
 	if ( t < 0 ) {
 	    /* use distance from v0 */
@@ -363,10 +362,9 @@ bool intersect_polyhedron( pp::Polyhedron p )
 
 pp::Polyhedron copy_polyhedron( pp::Polyhedron ph )
 {
-    int i;
     pp::Polyhedron newph = ph;
-    newph.vertices = (pp::Vec3d *) malloc( sizeof(pp::Vec3d) * ph.num_vertices );
-    for (i=0; i<ph.num_vertices; i++) {
+    newph.vertices = reinterpret_cast<pp::Vec3d *>(malloc( sizeof(pp::Vec3d) * ph.num_vertices));
+    for (int i=0; i<ph.num_vertices; i++) {
         newph.vertices[i] = ph.vertices[i];
     } 
     return newph;

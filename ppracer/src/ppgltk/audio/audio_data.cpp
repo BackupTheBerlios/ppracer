@@ -102,7 +102,7 @@ load_sound( const char *name, const char *filename )
 		soundTable.erase(soundit);
 	}
 	
-	data_ptr = (char*) Mix_LoadWAV( filename );
+	data_ptr = reinterpret_cast<char*>(Mix_LoadWAV( filename ));
 
     if ( data_ptr == NULL ) {
 		print_warning( SOUNDFILE_MISSING_WARNING_LEVEL, 
@@ -117,9 +117,9 @@ load_sound( const char *name, const char *filename )
 	
 	sound_record_t *srec = &soundTable[name];
 		
-	srec->data = (Mix_Chunk*) data_ptr;
+	srec->data = reinterpret_cast<Mix_Chunk*>(data_ptr);
 	srec->ref_ctr = ref_ctr;
-	record_ptr = (char*) srec;	
+	record_ptr = reinterpret_cast<char*>(srec);	
 	
 
     /* Make sure it's there */
@@ -189,24 +189,24 @@ load_music( const char *name, const char *filename )
     }
 	*/
 	
-	data_ptr = (char*) Mix_LoadMUS( filename );
+	data_ptr = reinterpret_cast<char*>(Mix_LoadMUS( filename ));
 
     if ( data_ptr == NULL ) {
-	print_warning( SOUNDFILE_MISSING_WARNING_LEVEL, 
+		print_warning( SOUNDFILE_MISSING_WARNING_LEVEL, 
 		       "FAILED to load music file %s: %s", 
 		       filename, Mix_GetError() );
-	return false;
+		return false;
     }
 
     print_debug( DEBUG_SOUND, "Successfully loaded music file %s", 
 		 filename );
 
-	music_record_t *mrec = (music_record_t*)malloc(sizeof(music_record_t));
-	mrec->data = (Mix_Music*) data_ptr;
+	music_record_t *mrec = reinterpret_cast<music_record_t*>(malloc(sizeof(music_record_t)));
+	mrec->data = reinterpret_cast<Mix_Music*>(data_ptr);
 	mrec->ref_ctr = ref_ctr;
 	mrec->playing = false;
 
-	record_ptr = (char*) mrec;
+	record_ptr = reinterpret_cast<char*>(mrec);
 
     musicTable[name] = *mrec;
 
@@ -545,7 +545,7 @@ static int load_sound_cb( ClientData cd, Tcl_Interp *ip,
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <name> <sound file>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -573,7 +573,7 @@ static int load_music_cb( ClientData cd, Tcl_Interp *ip,
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <name> <sound file>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 

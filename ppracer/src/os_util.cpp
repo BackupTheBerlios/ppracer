@@ -211,7 +211,7 @@ int get_os_version( char *buff, unsigned int size )
 	     strlen( utsname.version ) + 3 > size ) 
 	{
 	    if ( size > 0 ) {
-		buff[0] = (char)0;
+			buff[0] = '\0';
 	    }
 	    return 1;
 	}

@@ -318,8 +318,8 @@ void setup_view_matrix( Player& plyr )
     view_mat.data[3][1] = -viewpt_in_view_frame.y;
     view_mat.data[3][2] = -viewpt_in_view_frame.z;
     
-    glLoadIdentity();
-    glMultMatrixd( (double *) view_mat.data );
+    gl::LoadIdentity();
+    gl::MultMatrix( reinterpret_cast<double *>(view_mat.data) );
 }
 
 /*! 

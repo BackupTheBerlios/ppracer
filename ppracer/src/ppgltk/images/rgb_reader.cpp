@@ -56,7 +56,7 @@ ReaderRGB::ReaderRGB(const char* fileName)
   sx = ( (image->sizeX) * (image->sizeZ) + 3) >> 2;
 
   data 
-    = (unsigned char *)malloc( sx * image->sizeY * sizeof(unsigned int));
+    = reinterpret_cast<unsigned char *>(malloc( sx * image->sizeY * sizeof(unsigned int)));
 
   if (data == NULL) 
     {
@@ -76,7 +76,7 @@ ReaderRGB::ImageOpen(const char *fileName)
   unsigned int *rowStart, *rowSize, ulTmp;
   int x, i;
 
-  image = (ImageInfo *)malloc(sizeof(ImageInfo));
+  image = reinterpret_cast<ImageInfo *>(malloc(sizeof(ImageInfo)));
   if (image == NULL) 
     {
       fprintf(stderr, "Out of memory!\n");
@@ -105,7 +105,7 @@ ReaderRGB::ImageOpen(const char *fileName)
 
   for ( i = 0 ; i <= image->sizeZ ; i++ )
     {
-      image->tmp[i] = (unsigned char *)malloc(image->sizeX*256);
+      image->tmp[i] = reinterpret_cast<unsigned char *>(malloc(image->sizeX*256));
       if (image->tmp[i] == NULL ) 
 	{
 	  fprintf(stderr, "Out of memory!\n");
@@ -116,8 +116,8 @@ ReaderRGB::ImageOpen(const char *fileName)
   if ((image->type & 0xFF00) == 0x0100) /* RLE image */
     {
       x = image->sizeY * image->sizeZ * sizeof(int);
-      image->rowStart = (unsigned int *)malloc(x);
-      image->rowSize = (unsigned int *)malloc(x);
+      image->rowStart = reinterpret_cast<unsigned int *>(malloc(x));
+      image->rowSize = reinterpret_cast<unsigned int *>(malloc(x));
       if (image->rowStart == NULL || image->rowSize == NULL) 
 	{
 	  fprintf(stderr, "Out of memory!\n");
@@ -188,7 +188,7 @@ ReaderRGB::ImageGetRow( ImageInfo *image, unsigned char *buf, int y, int z)
   if ((image->type & 0xFF00) == 0x0100)  /* RLE image */
     {
       fseek(image->file, image->rowStart[y+z*image->sizeY], SEEK_SET);
-      fread(image->tmp[0], 1, (unsigned int)image->rowSize[y+z*image->sizeY],
+      fread(image->tmp[0], 1, static_cast<unsigned int>(image->rowSize[y+z*image->sizeY]),
 	    image->file);
 
       iPtr = image->tmp[0];
@@ -196,7 +196,7 @@ ReaderRGB::ImageGetRow( ImageInfo *image, unsigned char *buf, int y, int z)
       while (1) 
 	{
 	  pixel = *iPtr++;
-	  count = (int)(pixel & 0x7F);
+	  count = int(pixel & 0x7F);
 	  if (!count)
 	    return;
 	  if (pixel & 0x80) 

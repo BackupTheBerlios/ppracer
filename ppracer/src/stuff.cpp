@@ -35,9 +35,9 @@ getTimeComponents(	float time,
 					int& seconds,
 					int& hundredths )
 {
-    minutes = (int) (time / 60);
-    seconds = ((int) time) % 60;
-    hundredths = ((int) (time * 100 + 0.5) ) % 100;
+    minutes = int(time / 60);
+    seconds = int(time) % 60;
+    hundredths = int(time * 100 + 0.5) % 100;
 }
 
 float

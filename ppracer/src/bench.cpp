@@ -128,7 +128,7 @@ Benchmark::setRaceCondition(int condition)
 	if (condition > 0 && 
 		condition < RACE_CONDITIONS_NUM_CONDITIONS)
 	{
-		sm_condition = (race_conditions_t) condition;
+		sm_condition = static_cast<race_conditions_t>(condition);
 	}
 }
 

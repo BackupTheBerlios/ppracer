@@ -51,7 +51,7 @@ FTGLTextureFont::FTGLTextureFont( const unsigned char *pBufferBytes, size_t buff
 
 FTGLTextureFont::~FTGLTextureFont()
 {
-    glDeleteTextures( textureIDList.size(), (const GLuint*)&textureIDList[0]);
+    glDeleteTextures( textureIDList.size(), static_cast<const GLuint*>(&textureIDList[0]));
 }
 
 
@@ -99,7 +99,7 @@ void FTGLTextureFont::CalculateTextureSize()
 {
     if( !maximumGLTextureSize)
     {
-        glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&maximumGLTextureSize);
+        glGetIntegerv( GL_MAX_TEXTURE_SIZE, static_cast<GLint*>(&maximumGLTextureSize));
         assert(maximumGLTextureSize); // If you hit this then you have an invalid OpenGL context.
     }
     
@@ -122,7 +122,7 @@ GLuint FTGLTextureFont::CreateTexture()
     memset( textureMemory, 0, totalMemory);
 
     GLuint textID;
-    glGenTextures( 1, (GLuint*)&textID);
+    glGenTextures( 1, static_cast<GLuint*>(&textID));
 
     glBindTexture( GL_TEXTURE_2D, textID);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -142,7 +142,7 @@ bool FTGLTextureFont::FaceSize( const unsigned int size, const unsigned int res)
 {
     if( !textureIDList.empty())
     {
-        glDeleteTextures( textureIDList.size(), (const GLuint*)&textureIDList[0]);
+        glDeleteTextures( textureIDList.size(), static_cast<const GLuint*>(&textureIDList[0]));
         textureIDList.clear();
         remGlyphs = numGlyphs = face.GlyphCount();
     }
@@ -179,4 +179,3 @@ void FTGLTextureFont::Render( const wchar_t* string)
     
     glPopAttrib();
 }
-

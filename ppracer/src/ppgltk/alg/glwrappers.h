@@ -51,15 +51,15 @@ namespace gl{
 	
 	inline void Translate(const pp::Vec2d pos){glTranslated(pos.x, pos.y, 0.0);};
 	inline void Translate(const pp::Vec3d pos){glTranslated(pos.x, pos.y, pos.z);};
-	inline void Translate(double x, double y, double z=0.0){glTranslated(x, y, z);};
+	inline void Translate(GLdouble x, GLdouble y, GLdouble z=0.0){glTranslated(x, y, z);};
 	
 	inline void TexEnv(GLenum target, GLenum pname, GLfloat param){glTexEnvf(target, pname, param);};
 	
-	inline void TexGen(GLenum coord, GLenum pname, const float *params){glTexGenfv(coord, pname, params);};
-	inline void TexGen(GLenum coord, GLenum pname, const int param){glTexGeni(coord, pname, param);};
+	inline void TexGen(GLenum coord, GLenum pname, const GLfloat *params){glTexGenfv(coord, pname, params);};
+	inline void TexGen(GLenum coord, GLenum pname, const GLint param){glTexGeni(coord, pname, param);};
 	
-	inline void TexCoord(double s, double t){glTexCoord2d(s, t);};
-	inline void TexCoord(int s, int t){glTexCoord2i(s, t);};
+	inline void TexCoord(GLdouble s, GLdouble t){glTexCoord2d(s, t);};
+	inline void TexCoord(GLint s, GLint t){glTexCoord2i(s, t);};
 	inline void TexCoord(pp::Vec2d st){glTexCoord2dv(st.values);};
 	inline void TexCoord(pp::Vec3d st){glTexCoord3dv(st.values);};
 
@@ -67,7 +67,7 @@ namespace gl{
 	
 	inline void GetTexLevelParameter(GLenum target, GLint level, GLenum pname, GLint *params){glGetTexLevelParameteriv(target, level, pname, params);};
 	
-	inline void Vertex(double x, double y){glVertex2d(x, y);};
+	inline void Vertex(GLdouble x, GLdouble y){glVertex2d(x, y);};
 	inline void Vertex(pp::Vec2d pos){glVertex2dv(pos.values);};
 	inline void Vertex(pp::Vec3d pos){glVertex3dv(pos.values);};
 	inline void Vertex(GLfloat x, GLfloat y, GLfloat z){glVertex3f(x, y, z);};
@@ -76,23 +76,23 @@ namespace gl{
 	inline void Normal(pp::Vec3d normal){glNormal3dv(normal.values);};
 		
 	inline void Color(const pp::Color color){glColor4fv(color.colors);};
-	inline void Color(const pp::Color color, float alpha){glColor4f(color.r, color.g, color.b, alpha);};
-	inline void Color(const float *color){glColor4fv(color);};
-	inline void Color(float r, float g, float b, float a=1.0f){glColor4f(r,g,b,a);};
+	inline void Color(const pp::Color color, GLfloat alpha){glColor4f(color.r, color.g, color.b, alpha);};
+	inline void Color(const GLfloat *color){glColor4fv(color);};
+	inline void Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a=1.0f){glColor4f(r,g,b,a);};
 
 	inline void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha){glClearColor(red, green, blue, alpha);};
 	inline void ClearColor(pp::Color color){glClearColor(color.r, color.g, color.b, color.a);};
 	inline void Clear(GLbitfield mask){glClear(mask);};
 	
 	inline void Rect(const pp::Vec2d pos1, const pp::Vec2d pos2){glRectd(pos1.x, pos1.y, pos2.x, pos2.y);};
-	inline void Rect(double x1, double y1, double x2, double y2){glRectd(x1, y1, x2, y2);};
-	inline void Rect(int x1, int y1, int x2, int y2){glRecti(x1, y1, x2, y2);};
+	inline void Rect(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2){glRectd(x1, y1, x2, y2);};
+	inline void Rect(GLint x1, GLint y1, GLint x2, GLint y2){glRecti(x1, y1, x2, y2);};
 
 	inline void BindTexture(GLenum target, GLuint texture){glBindTexture(target, texture);};
 	inline void GenTextures(GLsizei n, GLuint *textures){glGenTextures(n, textures);};
 	inline void DeleteTextures(GLsizei n, const GLuint *textures){glDeleteTextures(n, textures);};
 	
-	inline GLuint GenLists(GLsizei range){glGenLists(range);};
+	inline GLuint GenLists(GLsizei range){return glGenLists(range);};
 	inline void NewList(GLuint list, GLenum mode){glNewList(list, mode);};
 	inline void EndList(){glEndList();};	
 	inline void CallList(GLuint list){glCallList(list);};
@@ -113,8 +113,8 @@ namespace gl{
 	inline void StencilOp(GLenum fail, GLenum zfail, GLenum zpass){glStencilOp(fail, zfail, zpass);};
 	inline void ClearStencil(GLint s){glClearStencil(s);};	
 		
-	inline const GLubyte* GetString(GLenum name){return glGetString(name);};
-	
+	inline const char* GetString(GLenum name){return reinterpret_cast<const char*>(glGetString(name));};
+
 	inline void GetValue(GLenum pname, GLboolean *params){glGetBooleanv(pname, params );};
 	inline void GetValue(GLenum pname, GLdouble *params){glGetDoublev(pname, params);};
 	inline void GetValue(GLenum pname, GLfloat *params){glGetFloatv(pname, params);};

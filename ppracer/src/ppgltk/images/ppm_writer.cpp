@@ -34,7 +34,7 @@ WriterPPM::WriterPPM(const char *fileName, const Image& image)
 		<< "\n# height\n" << int(image.height)
 		<< "\n# max component value\n255"<< std::endl;
 
-	file.write((const char*)image.data,image.width*image.height*image.depth);
+	file.write(reinterpret_cast<const char*>(image.data),image.width*image.height*image.depth);
 	file.close();
 }
 

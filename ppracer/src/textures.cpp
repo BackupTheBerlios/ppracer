@@ -45,7 +45,7 @@ bool get_texture_binding( const char *binding, GLuint *texid )
 
 bool load_and_bind_texture( const char *binding, const char *filename )
 {
-    return (bool) ( load_texture( binding, filename, 1 ) &&
+    return ( load_texture( binding, filename, 1 ) &&
 		      bind_texture( binding, binding ) );
 }
 
@@ -124,9 +124,9 @@ bool load_texture( const char *texname, const char *filename, int repeatable )
     if ( texImage->width > max_texture_size ||
 	 texImage->height > max_texture_size ) 
     {
-	char *newdata = (char*)malloc( texImage->depth *
+	char *newdata = reinterpret_cast<char*>(malloc( texImage->depth *
 				       max_texture_size *
-				       max_texture_size );
+				       max_texture_size ));
 
 	check_assertion( newdata != NULL, "out of memory" );
 
@@ -145,7 +145,7 @@ bool load_texture( const char *texname, const char *filename, int repeatable )
 		       newdata );
 
 	free( texImage->data );
-	texImage->data = (unsigned char*) newdata;
+	texImage->data = reinterpret_cast<unsigned char*>(newdata);
 	texImage->width = max_texture_size;
 	texImage->height = max_texture_size;
     }
@@ -260,19 +260,19 @@ static int load_texture_cb ( ClientData cd, Tcl_Interp *ip, int argc,
     if ( ( argc != 3 ) && (argc != 4) ) {
 	Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], "<texture name> <image file>",
-			 " [repeatable]", (char *)0 );
+			 " [repeatable]", NULL );
 	return TCL_ERROR;
     } 
 
     if ( ( argc == 4 ) && ( Tcl_GetInt( ip, argv[3], &repeatable ) != TCL_OK ) ) {
         Tcl_AppendResult(ip, argv[0], ": invalid repeatable flag",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
     
     if (!load_texture(argv[1], argv[2], repeatable)) {
 	Tcl_AppendResult(ip, argv[0], ": Could not load texture ", 
-			 argv[2], (char*)0);
+			 argv[2], NULL);
 	return TCL_ERROR;
     }
 
@@ -285,13 +285,13 @@ static int bind_texture_cb ( ClientData cd, Tcl_Interp *ip, int argc,
     if ( argc != 3 ) {
 	Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], "<object name> <texture name>",
-			 (char *)0 );
+			 NULL );
 	return TCL_ERROR;
     } 
 
     if (!bind_texture(argv[1], argv[2])) {
 	Tcl_AppendResult(ip, argv[0], ": Could not bind texture ", 
-			 argv[2], (char*)0);
+			 argv[2], NULL);
 	return TCL_ERROR;
     }
 

@@ -213,21 +213,21 @@ Font::utf8ToUnicode(const char* string)
 	int j=0;
 		
 	for (int i=0; i < len; ++i, ++j ) {
-		ch = ((const unsigned char *)string)[i];
+		ch = (reinterpret_cast<const unsigned char *>(string))[i];
 		if ( ch >= 0xF0 ) {
-			ch  =  (wchar_t)(string[i]&0x07) << 18;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 12;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x07) << 18;
+			ch |=  wchar_t(string[++i]&0x3F) << 12;
+			ch |=  wchar_t(string[++i]&0x3F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		} else
 		if ( ch >= 0xE0 ) {
-			ch  =  (wchar_t)(string[i]&0x0F) << 12;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x0F) << 12;
+			ch |=  wchar_t(string[++i]&0x3F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		} else
 		if ( ch >= 0xC0 ) {
-			ch  =  (wchar_t)(string[i]&0x1F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x1F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		}
 		u_string[j] = ch;
 	}
@@ -244,21 +244,21 @@ Font::utf8ToUnicode(wchar_t* buff, const char* string)
 	int j=0;
 		
 	for (int i=0; i < len; ++i, ++j ) {
-		ch = ((const unsigned char *)string)[i];
+		ch = (reinterpret_cast<const unsigned char *>(string))[i];
 		if ( ch >= 0xF0 ) {
-			ch  =  (wchar_t)(string[i]&0x07) << 18;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 12;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x07) << 18;
+			ch |=  wchar_t(string[++i]&0x3F) << 12;
+			ch |=  wchar_t(string[++i]&0x3F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		} else
 		if ( ch >= 0xE0 ) {
-			ch  =  (wchar_t)(string[i]&0x0F) << 12;
-			ch |=  (wchar_t)(string[++i]&0x3F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x0F) << 12;
+			ch |=  wchar_t(string[++i]&0x3F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		} else
 		if ( ch >= 0xC0 ) {
-			ch  =  (wchar_t)(string[i]&0x1F) << 6;
-			ch |=  (wchar_t)(string[++i]&0x3F);
+			ch  =  wchar_t(string[i]&0x1F) << 6;
+			ch |=  wchar_t(string[++i]&0x3F);
 		}
 		buff[j] = ch;
 	}

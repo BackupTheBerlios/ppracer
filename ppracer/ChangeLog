@@ -7,6 +7,16 @@
 	added polish translation
 	updated credits
 
+	* src/*
+	code cleanups
+	removed old style casts
+
+	* src/textfontmetric.*
+	removed files
+	
+	* src/ppgltk/alg/glwrappers.h
+	removed unsave types
+
 2005-03-05  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	implemented OpenGL wrapper
@@ -20,7 +30,7 @@
 	fixed windows build
 		
 	* src/*
-	code cleanups	
+	code cleanups
 	
 === ppracer 0.3.1 ===
 

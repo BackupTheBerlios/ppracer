@@ -137,10 +137,10 @@ int
 ModelAC::getDisplayList()
 {
 	int list;
-    list = glGenLists(1);
-    glNewList(list,GL_COMPILE);
+    list = gl::GenLists(1);
+    gl::NewList(list,GL_COMPILE);
 	render(mp_model);
-    glEndList();
+    gl::EndList();
     return(list);
 }
 
@@ -163,18 +163,18 @@ void
 ModelAC::prepareRender()
 {
 
-    glDepthFunc(GL_LESS);
-    glEnable(GL_DEPTH_TEST);
-    glShadeModel(GL_SMOOTH);
+    gl::DepthFunc(GL_LESS);
+    gl::Enable(GL_DEPTH_TEST);
+    gl::ShadeModel(GL_SMOOTH);
 
-    glDisable( GL_COLOR_MATERIAL ); 
+    gl::Disable( GL_COLOR_MATERIAL ); 
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    gl::PixelStore(GL_UNPACK_ALIGNMENT, 1);
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 }
 
@@ -184,52 +184,52 @@ ModelAC::render(ModelObject *ob)
     int n, s, sr;
     int st;
 
-    glPushMatrix();
+    gl::PushMatrix();
 
-    glTranslated(ob->loc.x, ob->loc.y, ob->loc.z);
+    gl::Translate(ob->loc.x, ob->loc.y, ob->loc.z);
 
     if (ob->texture != -1){
 		static int lasttextureset = -1;
  
-		glEnable(GL_TEXTURE_2D);
+		gl::Enable(GL_TEXTURE_2D);
 
 		if (ob->texture != lasttextureset){
-			glBindTexture(GL_TEXTURE_2D, ob->texture);
+			gl::BindTexture(GL_TEXTURE_2D, ob->texture);
 			lasttextureset = ob->texture;
 		}
 	} else {
-        glDisable(GL_TEXTURE_2D);
+        gl::Disable(GL_TEXTURE_2D);
 	}
 
     for (s = 0; s < ob->num_surf; s++){
 		Surface *surf = &ob->surfaces[s];
 
-		glNormal3dv((double*)&surf->normal);
+		gl::Normal(surf->normal);
 
 		if (surf->flags & SURFACE_TWOSIDED){
-			glDisable(GL_CULL_FACE);
+			gl::Disable(GL_CULL_FACE);
 		} else {
-			glEnable(GL_CULL_FACE);
+			gl::Enable(GL_CULL_FACE);
 		}
 		
 		st = surf->flags & 0xf;
 		if (st == SURFACE_TYPE_CLOSEDLINE){
-			glDisable(GL_LIGHTING);
+			gl::Disable(GL_LIGHTING);
 
-			glBegin(GL_LINE_LOOP);
+			gl::Begin(GL_LINE_LOOP);
 			setSimpleColor(surf->mat);
 		} else if (st == SURFACE_TYPE_LINE){
-			glDisable(GL_LIGHTING);
+			gl::Disable(GL_LIGHTING);
 
-			glBegin(GL_LINE_STRIP);
+			gl::Begin(GL_LINE_STRIP);
 			setSimpleColor(surf->mat);
 		} else {
-			glEnable(GL_LIGHTING);
+			gl::Enable(GL_LIGHTING);
 			setColor(surf->mat); 
 			if (surf->numVertices == 3){
-				glBegin(GL_TRIANGLE_STRIP);
+				gl::Begin(GL_TRIANGLE_STRIP);
 			} else {
-				glBegin(GL_POLYGON);
+				gl::Begin(GL_POLYGON);
 			}
 		}
 
@@ -243,15 +243,15 @@ ModelAC::render(ModelObject *ob)
 				double tx = ob->texture_offset_x + tu * ob->texture_repeat_x;
 				double ty = ob->texture_offset_y + tv * ob->texture_repeat_y;
 
-				glTexCoord2f(tx, ty);
+				gl::TexCoord(tx, ty);
 			}
 
 			if (surf->flags & SURFACE_SHADED){
-				glNormal3dv((double *)&v->normal);
+				gl::Normal(v->normal);
 			}
-			glVertex3dv((double *)v);
+			gl::Vertex(v->vec);
 		}
-		glEnd();
+		gl::End();
     }
 
     if (ob->num_kids){
@@ -260,8 +260,8 @@ ModelAC::render(ModelObject *ob)
 		}
 	}
 	
-	glEnable(GL_TEXTURE_2D);
-    glPopMatrix();
+	gl::Enable(GL_TEXTURE_2D);
+    gl::PopMatrix();
 }
 
 void
@@ -281,15 +281,15 @@ ModelAC::setColor(long matno)
 	rgba[2] = m->diffuse.b;
     rgba[3] = 1.0-m->transparency;
     
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, rgba);
+	gl::Material(GL_FRONT_AND_BACK, GL_DIFFUSE, rgba);
 	
     if ( (1.0-m->transparency) < 1.0)
 	    {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_BLEND);
+        gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        gl::Enable(GL_BLEND);
 		}
     else
-        glDisable(GL_BLEND);
+        gl::Disable(GL_BLEND);
 }
 
 void
@@ -378,7 +378,7 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 
 			len = atoi(ma_tokv[1]);
 			if (len > 0){
-			    str = (char *)malloc(len+1);
+			    str = reinterpret_cast<char *>(malloc(len+1));
 			    fread(str, len, 1, f);
 			    str[len] = 0;
 			    fscanf(f, "\n"); m_line++;

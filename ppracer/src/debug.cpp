@@ -46,16 +46,16 @@ static char* debug_desc[ NUM_DEBUG_MODES ] = {
 /* Parse the debug parameter, fill in the debug_setting array */
 void init_debug()
 {
-    char *debug_str, *tmp_str;
-    char *p;
+    char *debug_str;
+    char *p, *tmp_str;
     int i;
     bool new_setting;
 
     for ( i=0; i<NUM_DEBUG_MODES; i++ ) {
-	debug_setting[i] = false;
+		debug_setting[i] = false;
     }
 
-    debug_str = getparam_debug();
+    debug_str = const_cast<char*>(getparam_debug());
     tmp_str = debug_str;
 
     while ( (p = strtok( tmp_str, " " )) != NULL ) {
@@ -184,7 +184,7 @@ void setup_diagnostic_log()
     /* Generate time string */
     t = time( NULL );
     sprintf( time_buff, "%s", asctime( gmtime( &t ) ) );
-    time_buff[ strlen(time_buff)-1 ] = (char)0; /* remove trailing newline */
+    time_buff[ strlen(time_buff)-1 ] = '\0'; /* remove trailing newline */
 
     fprintf( stderr, "Generated:       %s GMT\n", time_buff );
     fprintf( stderr, "PPRacer Version:      %s\n", VERSION );

@@ -252,11 +252,11 @@ VideoConfig::initVideoModes()
 	if(!getparam_disable_videomode_autodetection()){	
 		modes=SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
 	}else{
-		modes=(SDL_Rect **)-1;
+		modes=reinterpret_cast<SDL_Rect **>(-1);
 	}
 	// check if we cannot receive the modes
-	if(	modes == (SDL_Rect **)-1 ||
-		modes == (SDL_Rect **)0 )
+	if(	modes == reinterpret_cast<SDL_Rect **>(-1) ||
+		modes == reinterpret_cast<SDL_Rect **>(0) )
 	{
 		// unable to find modes... fall back to standard modes
 		for (unsigned int i=0; i<sizeof(resolutions)/sizeof(resolution_t); i++) {

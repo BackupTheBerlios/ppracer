@@ -208,8 +208,8 @@ void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, 
     check_assertion( num_sounds > 0, "num_sounds isn't > 0 " );
 
     data->num_sounds = num_sounds;
-    data->sound_names = (char**)malloc( sizeof(char*)*num_sounds );
-    data->chunks = (Mix_Chunk**)malloc( sizeof(Mix_Chunk*)*num_sounds );
+    data->sound_names = reinterpret_cast<char**>(malloc( sizeof(char*)*num_sounds ));
+    data->chunks = reinterpret_cast<Mix_Chunk**>(malloc( sizeof(Mix_Chunk*)*num_sounds ));
     data->loop_count = 0;
     data->channel = 0;
     data->volume = 128;
@@ -346,15 +346,15 @@ static Mix_Chunk* get_Mix_Chunk( sound_context_data_t *data, char **name )
 
     /* pick a random sound */
     
-    i = (int) (((double)data->num_sounds)*rand()/(RAND_MAX+1.0));
+    i = int((double(data->num_sounds))*rand()/(RAND_MAX+1.0));
     if ( data->chunks[i] == NULL ) {
-	bool found;
-	found = get_sound_data( data->sound_names[i], &(data->chunks[i]) );
-	check_assertion( found, "sound name not found" );
-	check_assertion( data->chunks[i]!=NULL, "sound chunk not set" );
+		bool found;
+		found = get_sound_data( data->sound_names[i], &(data->chunks[i]) );
+		check_assertion( found, "sound name not found" );
+		check_assertion( data->chunks[i]!=NULL, "sound chunk not set" );
     }
     if ( name != NULL ) {
-	*name = data->sound_names[i];
+		*name = data->sound_names[i];
     }
 
     return data->chunks[i];
@@ -702,7 +702,7 @@ static int bind_sounds_cb( ClientData cd, Tcl_Interp *ip,
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <sound context> <sound name>"
 			 " [<sound name> ...]",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
@@ -728,14 +728,14 @@ static int bind_music_cb( ClientData cd, Tcl_Interp *ip,
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <music context> <music name> "
 			 "<loops>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 
     if ( Tcl_GetInt( ip, argv[3], &loops ) ) {
-	Tcl_AppendResult(
-	    ip, "invalid value for loops parameter", (char *) 0 );
-	return TCL_ERROR;
+		Tcl_AppendResult(
+	    ip, "invalid value for loops parameter", NULL );
+		return TCL_ERROR;
     }
 
     bind_music_to_context( argv[1], argv[2], loops );

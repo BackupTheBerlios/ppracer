@@ -164,7 +164,7 @@ Reset::loop(float timeStep)
 		draw_tux_shadow();
     } 
     if (++tux_visible_count > 3) {
-		tux_visible = (bool) !tux_visible;
+		tux_visible = !tux_visible;
 		tux_visible_count = 0;
     }
 

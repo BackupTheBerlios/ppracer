@@ -65,7 +65,7 @@ static int num_particles = 0;
 
 double frand() 
 {
-    return (double)rand()/RAND_MAX;
+    return double(rand())/RAND_MAX;
 } 
 
 void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particle_binding) 
@@ -83,7 +83,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
 
     for (i=0; i<num; i++) {
 
-        newp = (Particle*)malloc( sizeof( Particle) );
+        newp = reinterpret_cast<Particle*>(malloc( sizeof( Particle) )	);
 
         if ( newp == NULL ) {
             handle_system_error( 1, "out of memory" );
@@ -98,7 +98,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
         newp->pt.y = loc.y;
         newp->pt.z = loc.z + 2.*(frand() - 0.5) * START_RADIUS;
 
-	newp->type = (int) (frand() * (4.0 - EPS));
+	newp->type = int(frand() * (4.0 - EPS));
 		
 	//get_texture_binding( "snow_particle", &(newp->particle_binding) );	
 	newp->particle_binding = particle_binding;	
@@ -290,7 +290,7 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 	print_warning( TCL_WARNING, "error in call to tux_particle_color" );
 	Tcl_AppendResult(
 	    ip, 
-	    "\nUsage: tux_particle_color {r g b a}", (char *) 0 );
+	    "\nUsage: tux_particle_color {r g b a}", NULL );
 	return TCL_ERROR;
     }
 

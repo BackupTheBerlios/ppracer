@@ -37,7 +37,7 @@ int tux_rotate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
     if (4 != argc) {
         Tcl_AppendResult(ip, argv[0], ": wrong number of arguments\n", 
 			 "Usage: ", argv[0], " <node> [x|y|z] <angle>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -48,14 +48,14 @@ int tux_rotate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
     axis = argv[2][0];
     if ('x' != axis && 'y' != axis && 'z' != axis) {
         Tcl_AppendResult(ip, argv[0], ": invalid rotation axes", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
     
     /* obtain the angle */
     if (TCL_OK != Tcl_GetDouble(ip, argv[3], &angle)) {
         Tcl_AppendResult(ip, argv[0], ": invalid rotation angle", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
     
@@ -63,7 +63,7 @@ int tux_rotate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
   
@@ -80,7 +80,7 @@ int tux_translate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
     if (3 != argc) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <node> { <x> <y> <z> }",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -90,7 +90,7 @@ int tux_translate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
     /* obtain the translation vector */
     if (TCL_OK != get_tcl_tuple(ip,argv[2],vec,3)) {
         Tcl_AppendResult(ip, argv[0], ": invalid translation vector", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
     
@@ -98,7 +98,7 @@ int tux_translate( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
   
@@ -117,7 +117,7 @@ int tux_scale( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <node> { <origin> } "
 			 "{ <translation vector> }",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -127,14 +127,14 @@ int tux_scale( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
     /* obtain the origin point */
     if (TCL_OK != get_tcl_tuple(ip,argv[2],origin,3)) {
         Tcl_AppendResult(ip, argv[0], ": invalid origin point", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
     /* obtain the scale factors */
     if (TCL_OK != get_tcl_tuple(ip,argv[3],factors,3)) {
         Tcl_AppendResult(ip, argv[0], ": invalid scale factors", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
     
@@ -142,7 +142,7 @@ int tux_scale( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
   
@@ -159,7 +159,7 @@ int tux_transform( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
     if (3 != argc) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <parent node> <child node>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -173,7 +173,7 @@ int tux_transform( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -191,7 +191,7 @@ int tux_sphere( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 	Tcl_AppendResult( ip, argv[0], ": wrong number of arguments\n",
 			 "Usage: ", argv[0], " <parent node> <child node> "
 			  "<radius>",
-			  (char*) 0 );
+			  NULL );
         return TCL_ERROR;
     }
 
@@ -203,7 +203,7 @@ int tux_sphere( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     if ( TCL_OK != Tcl_GetDouble( ip, argv[3], &resolution ) ) {
 	Tcl_AppendResult( ip, argv[0], ": resolution is invalid",
-			  (char*) 0 );
+			  NULL );
 	return TCL_ERROR;
     }
 
@@ -211,7 +211,7 @@ int tux_sphere( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -231,7 +231,7 @@ int tux_material( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] 
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <name> { <ambient color> } "
 			 "{ <specular color> } <specular exponent",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -241,21 +241,21 @@ int tux_material( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] 
     /* obtain diffuse color */
     if (TCL_OK != get_tcl_tuple(ip,argv[2],diffuse,3)) {
         Tcl_AppendResult(ip, argv[0], ": invalid diffuse color", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
     /* obtain specular color */
     if (TCL_OK != get_tcl_tuple(ip,argv[3],specular,3)) {
         Tcl_AppendResult(ip, argv[0], ": invalid specular color", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
     /* obtain specular exponent */
     if (TCL_OK != Tcl_GetDouble(ip,argv[4],&spec_exp)) {
         Tcl_AppendResult(ip, argv[0], ": invalid specular exponent", 
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -264,7 +264,7 @@ int tux_material( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] 
 	
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -281,7 +281,7 @@ int tux_surfaceproperty( ClientData cd, Tcl_Interp *ip,
     if (3 != argc) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <node> <material name>",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -295,7 +295,7 @@ int tux_surfaceproperty( ClientData cd, Tcl_Interp *ip,
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -311,7 +311,7 @@ int tux_shadow( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
     if (3 != argc) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <node> [on|off]",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -322,7 +322,7 @@ int tux_shadow( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;
@@ -338,7 +338,7 @@ int tux_eye( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
     if (3 != argc) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " <node> [left|right]",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     }
 
@@ -349,7 +349,7 @@ int tux_eye( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[] )
 
     /* report error, if any */
     if (errmsg) {
-        Tcl_AppendResult(ip, argv[0], ": ", errmsg, (char *)0 );
+        Tcl_AppendResult(ip, argv[0], ": ", errmsg, NULL );
         return TCL_ERROR;
     }
     return TCL_OK;

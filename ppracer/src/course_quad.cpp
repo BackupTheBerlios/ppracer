@@ -26,14 +26,14 @@
 
 #define CULL_DETAIL_FACTOR 25
 
-static quadsquare *root = (quadsquare*) NULL;
-static quadcornerdata root_corner_data = { (quadcornerdata*)NULL };
+static quadsquare *root = NULL;
+static quadcornerdata root_corner_data = { NULL };
 
 
 void reset_course_quadtree()
 {
     delete root;
-    root = (quadsquare*)NULL;
+    root = NULL;
 }
 
 static int get_root_level( int nx, int nz )
@@ -43,8 +43,8 @@ static int get_root_level( int nx, int nz )
     check_assertion( nx > 0, "heightmap has x dimension of 0 size" );
     check_assertion( nz > 0, "heightmap has z dimension of 0 size" );
 
-    xlev = (int) ( log((double) nx ) / log ((double) 2.0 ) );
-    zlev = (int) ( log((double) nz ) / log ((double) 2.0 ) );
+    xlev = int( log(double(nx) ) / log (double(2.0) ) );
+    zlev = int( log(double(nz) ) / log (double(2.0) ) );
 
     /* Check to see if nx, nz are powers of 2 
      */
@@ -87,7 +87,7 @@ void init_course_quadtree( float *elevation, int nx, int nz,
     hm.RowWidth = hm.XSize;
     hm.Scale = 0;
 
-    root_corner_data.Square = (quadsquare*)NULL;
+    root_corner_data.Square = NULL;
     root_corner_data.ChildIndex = 0;
     root_corner_data.Level = get_root_level( nx, nz );
     root_corner_data.xorg = 0;
@@ -129,7 +129,7 @@ void init_course_quadtree( float *elevation, int nx, int nz,
     Vec3fo_float_array( ViewerLoc, view_pos );
 
     for (i = 0; i < 10; i++) {
-	root->Update(root_corner_data, (const float*) ViewerLoc, 
+		root->Update(root_corner_data, reinterpret_cast<const float*>(ViewerLoc), 
 		     detail);
     }
 }

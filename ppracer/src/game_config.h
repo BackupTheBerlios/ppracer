@@ -38,7 +38,7 @@ int get_config_dir_name( char *buff, unsigned int len );
     void setparam_ ## name( type val )
 
 #define PROTO_PARAM_STRING( name ) \
-    PROTO_PARAM( name, char* )
+    PROTO_PARAM( name, const char* )
 
 #define PROTO_PARAM_CHAR( name ) \
     PROTO_PARAM( name, char )

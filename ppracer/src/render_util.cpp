@@ -46,13 +46,13 @@ void reshape( int w, int h )
 
     setparam_x_resolution( w );
     setparam_y_resolution( h );
-    gl::Viewport(0, 0, (GLint) w, (GLint) h );
+    gl::Viewport(0, 0, GLint(w), GLint(h) );
     gl::MatrixMode( GL_PROJECTION );
     gl::LoadIdentity();
 
     far_clip_dist = getparam_forward_clip_distance() + FAR_CLIP_FUDGE_AMOUNT;
 
-    gluPerspective( getparam_fov(), (double)w/h, NEAR_CLIP_DIST, 
+    gluPerspective( getparam_fov(), double(w)/h, NEAR_CLIP_DIST, 
 		    far_clip_dist );
 
     gl::MatrixMode( GL_MODELVIEW );

@@ -64,8 +64,8 @@ static pp::Vec3d eye_pt;
 
 
 /* Macros for converting indices in height map to world coordinates */
-#define XCD(x) (  (double)(x) / (nx-1.) * courseWidth )
-#define ZCD(y) ( -(double)(y) / (ny-1.) * courseLength )
+#define XCD(x) (  double(x) / (nx-1.) * courseWidth )
+#define ZCD(y) ( -double(y) / (ny-1.) * courseLength )
 
 #define NORMAL(x, y) ( nmls[ (x) + nx * (y) ] )
 
@@ -96,9 +96,9 @@ void calc_normals()
         free( nmls );
     } 
 
-    nmls = (pp::Vec3d *)malloc( sizeof(pp::Vec3d)*nx*ny ); 
+    nmls = reinterpret_cast<pp::Vec3d *>(malloc( sizeof(pp::Vec3d)*nx*ny )); 
     if ( nmls == NULL ) {
-	handle_system_error( 1, "malloc failed" );
+		handle_system_error( 1, "malloc failed" );
     }
 
     for ( y=0; y<ny; y++) {

@@ -39,8 +39,8 @@
 #define ELEV(x,y) ( elevation[(x) + nx*(y)] )
 
 /* Convenience acro to create a course vertex */
-#define COURSE_VERTEX(x,y) pp::Vec3d( (float)(x)/(nx-1.)*course_width, \
-                       ELEV((x),(y)), -(float)(y)/(ny-1.)*course_length ) 
+#define COURSE_VERTEX(x,y) pp::Vec3d( float(x)/(nx-1.)*course_width, \
+                       ELEV((x),(y)), -float(y)/(ny-1.)*course_length ) 
 
 void load_course( std::string& course );
 

@@ -70,7 +70,7 @@ static bool push_position_initialized = false;
 
 static double frand()
 {
-    return (double)rand()/RAND_MAX;
+    return double(rand())/RAND_MAX;
 } 
 
 static void make_particle( int i, double x, double y )
@@ -84,7 +84,7 @@ static void make_particle( int i, double x, double y )
     particles[i].size = PARTICLE_MIN_SIZE + (1.0 - p_dist)*PARTICLE_SIZE_RANGE;
     particles[i].vel.x = 0;
     particles[i].vel.y = -BASE_VELOCITY-p_dist*VELOCITY_RANGE;
-    type = (int) (frand() * (4.0 - EPS));
+    type = int(frand() * (4.0 - EPS));
     if (type == 0) {
 		particles[i].tex_min = pp::Vec2d( 0.0, 0.0 );
 		particles[i].tex_max = pp::Vec2d( 0.5, 0.5 );
@@ -272,8 +272,8 @@ reset_ui_snow_cursor_pos( pp::Vec2d pos )
 
     xres = getparam_x_resolution();
     yres = getparam_y_resolution();
-    push_position = pp::Vec2d( pos.x/(double)xres,
-				  pos.y/(double)yres );
+    push_position = pp::Vec2d( pos.x/double(xres),
+				  pos.y/double(yres) );
     last_push_position = push_position;
     push_position_initialized = true;
 }
@@ -285,8 +285,8 @@ push_ui_snow( pp::Vec2d pos )
 
     xres = getparam_x_resolution();
     yres = getparam_y_resolution();
-    push_position = pp::Vec2d( pos.x/(double)xres,
-				  pos.y/(double)yres );
+    push_position = pp::Vec2d( pos.x/double(xres),
+				  pos.y/double(yres) );
     if ( !push_position_initialized ) {
 		last_push_position = push_position;
     }

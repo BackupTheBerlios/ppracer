@@ -247,8 +247,8 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
 	    "[-constant_attenuation <value>] "
 	    "[-linear_attenuation <value>] "
 	    "[-quadratic_attenuation <value>] ",
-	    (char *) 0 );
-	return TCL_ERROR;
+	    NULL );
+		return TCL_ERROR;
     }
     
     return TCL_OK;

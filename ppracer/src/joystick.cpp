@@ -48,19 +48,19 @@ void init_joystick()
     print_debug( DEBUG_JOYSTICK, "Found %d joysticks", num_joysticks );
 
     if ( num_joysticks == 0 ) {
-	joystick = NULL;
-	return;
+		joystick = NULL;
+		return;
     }
 
-    js_name = (char*) SDL_JoystickName( 0 );
+    js_name = const_cast<char*>(SDL_JoystickName(0));
 
     print_debug( DEBUG_JOYSTICK, "Using joystick `%s'", js_name );
 
     joystick = SDL_JoystickOpen( 0 );
 
     if ( joystick == NULL ) {
-	print_debug( DEBUG_JOYSTICK, "Cannot open joystick" );
-	return;
+		print_debug( DEBUG_JOYSTICK, "Cannot open joystick" );
+		return;
     }
 
     /* Get number of buttons */
@@ -79,7 +79,7 @@ bool is_joystick_active()
 {
 	if(getparam_disable_joystick()) return false;
 
-	return (bool) ( joystick != NULL );
+	return ( joystick != NULL );
 	
 }
 
@@ -169,7 +169,7 @@ bool is_joystick_button_down( int button )
 	return false;
     }
 
-    return (bool) SDL_JoystickGetButton( joystick, button );
+    return SDL_JoystickGetButton( joystick, button );
 }
 
 bool is_joystick_continue_button_down()

@@ -37,7 +37,7 @@ pp_register_font_cb ( ClientData cd, Tcl_Interp *ip,
 	if ( argc < 7 ) {
 		Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
 			 "Usage: ", argv[0], " -binding <binding> -font <ttf file> -size <fontsize> [-color <color>]",
-			 (char *)0 );
+			 NULL );
         return TCL_ERROR;
     } 
 	    

@@ -130,13 +130,13 @@ UIManager::mouseEvent( int button, int state, int x, int y )
 	}
 
     if ( button == SDL_BUTTON_LEFT ) {
-		leftMouseButtonDown = (bool) ( state == SDL_PRESSED );
+		leftMouseButtonDown = ( state == SDL_PRESSED );
     }
     if ( button == SDL_BUTTON_MIDDLE ) {
-		middleMouseButtonDown = (bool) ( state == SDL_PRESSED );
+		middleMouseButtonDown = ( state == SDL_PRESSED );
     }
     if ( button == SDL_BUTTON_RIGHT ) {
-		rightMouseButtonDown = (bool) ( state == SDL_PRESSED );
+		rightMouseButtonDown = ( state == SDL_PRESSED );
     }
 
     checkDirty();

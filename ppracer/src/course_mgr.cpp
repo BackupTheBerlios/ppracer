@@ -156,14 +156,14 @@ CourseData* create_open_course_data( Tcl_Interp *ip, CONST84 char *string,
 
     open_course_data->par_time = par_time;
 
-    Tcl_Free( (char*) orig_argv );
+    Tcl_Free(reinterpret_cast<char*>(orig_argv));
 
     return open_course_data;
 
 bail_open_course_data:
 
     if ( orig_argv ) {
-	Tcl_Free( (char*) orig_argv );
+		Tcl_Free(reinterpret_cast<char*>(orig_argv));
     }
 
     if ( open_course_data ) {
@@ -216,7 +216,7 @@ static int open_courses_cb( ClientData cd, Tcl_Interp *ip,
 		openCourseList.push_back(*data);
 	}
 
-    Tcl_Free( (char*) list );
+    Tcl_Free(reinterpret_cast<char*>(list));
     list = NULL;
 
     return TCL_OK;
@@ -379,17 +379,17 @@ CourseData* create_race_data ( Tcl_Interp *ip, CONST84 char *string, char **err_
 	    }
 
 	    if ( i == RACE_CONDITIONS_NUM_CONDITIONS ) {
-		*err_msg = "Invalid value for -conditions in race data";
-		goto bail_race_data;
+			*err_msg = "Invalid value for -conditions in race data";
+			goto bail_race_data;
 	    }
 
-	    race_data->condition = (race_conditions_t)i;
+	    race_data->condition = static_cast<race_conditions_t>(i);
 	} else if ( strcmp( *argv, "-windy" ) == 0 ) {
 	    NEXT_ARG;
 
 	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -windy in race data";
-		goto bail_race_data;
+			*err_msg = "No data supplied for -windy in race data";
+			goto bail_race_data;
 	    }
 
 	    if ( strcmp( *argv, "yes" ) == 0 ) {
@@ -401,8 +401,8 @@ CourseData* create_race_data ( Tcl_Interp *ip, CONST84 char *string, char **err_
 	    NEXT_ARG;
 
 	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -snowing in race data";
-		goto bail_race_data;
+			*err_msg = "No data supplied for -snowing in race data";
+			goto bail_race_data;
 	    }
 
 	    if ( strcmp( *argv, "yes" ) == 0 ) {
@@ -434,13 +434,13 @@ CourseData* create_race_data ( Tcl_Interp *ip, CONST84 char *string, char **err_
 	goto bail_race_data;
     }
 
-    Tcl_Free( (char*) orig_argv );
+    Tcl_Free(reinterpret_cast<char*>(orig_argv));
 
     return race_data;
 
 bail_race_data:
     if ( orig_argv ) {
-	Tcl_Free( (char*) orig_argv );
+	Tcl_Free(reinterpret_cast<char*>(orig_argv));
     }
 
     if ( race_data ) {
@@ -517,7 +517,7 @@ CupData* create_cup_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
 		raceList.push_back(*raceData);
 	    }
 
-	    Tcl_Free( (char*) races );
+	    Tcl_Free(reinterpret_cast<char*>(races));
 	    races = NULL;
 	} else {
 	    sprintf( err_buff, "Unrecognized argument `%s'", *argv );
@@ -550,7 +550,7 @@ CupData* create_cup_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
     cup_data->raceList = raceList;
     bind_texture( cup_data->name.c_str(), cup_data->icon.c_str() );
 
-    Tcl_Free( (char*) orig_argv );
+    Tcl_Free(reinterpret_cast<char*>(orig_argv));
     argv = NULL;
 
     return cup_data;
@@ -558,7 +558,7 @@ CupData* create_cup_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
 bail_cup_data:
 
     if ( orig_argv ) {
-	Tcl_Free( (char*) orig_argv );
+	Tcl_Free(reinterpret_cast<char*>(orig_argv));
     }
 
 /*    if ( name ) {
@@ -570,7 +570,7 @@ bail_cup_data:
     }
 */
     if ( races ) {
-	Tcl_Free( (char*) races );
+		Tcl_Free(reinterpret_cast<char*>(races));
     }
 
     /* Clean out race list */
@@ -654,7 +654,7 @@ EventData* create_event_data( Tcl_Interp *ip, CONST84 char *string, char **err_m
 			cupList.push_back(*cup_data);
 	    }
 
-	    Tcl_Free( (char*) cups );
+	    Tcl_Free(reinterpret_cast<char*>(cups));
 	    cups = NULL;
 	} else {
 	    sprintf( err_buff, "Unrecognized argument `%s'", *argv );
@@ -687,7 +687,7 @@ EventData* create_event_data( Tcl_Interp *ip, CONST84 char *string, char **err_m
 
     bind_texture( event_data->name.c_str(), event_data->icon.c_str() );
 
-    Tcl_Free( (char*) orig_argv );
+    Tcl_Free(reinterpret_cast<char*>(orig_argv));
     argv = NULL;
 
     return event_data;
@@ -695,7 +695,7 @@ EventData* create_event_data( Tcl_Interp *ip, CONST84 char *string, char **err_m
 bail_event_data:
 
     if ( orig_argv ) {
-	Tcl_Free( (char*) orig_argv );
+		Tcl_Free(reinterpret_cast<char*>(orig_argv));
     }
 
 /*    if ( name ) {
@@ -707,7 +707,7 @@ bail_event_data:
     }
 */
     if ( cups ) {
-	Tcl_Free( (char*) cups );
+		Tcl_Free(reinterpret_cast<char*>(cups));
     }
 
     /* Clean out cup list */
@@ -815,14 +815,14 @@ static int events_cb( ClientData cd, Tcl_Interp *ip,
 
 		eventList.push_back(*data);
     }
-    Tcl_Free( (char*) list );
+    Tcl_Free(reinterpret_cast<char*>(list));
     list = NULL;
 
     return TCL_OK;
 
 bail_events:
     if ( list != NULL ) {
-		Tcl_Free( (char*) list );
+		Tcl_Free(reinterpret_cast<char*>(list));
     }
 
     Tcl_AppendResult(

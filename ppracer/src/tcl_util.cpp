@@ -32,33 +32,30 @@ int get_tcl_tuple ( Tcl_Interp *ip, const char *inList, double *p, int n )
     int num_doubles;
     int rtn;
     char s[100];
-    int i;
 
     rtn = Tcl_SplitList(ip, inList, &num_doubles, &indices);
 
     if ((TCL_OK != rtn) || (n != num_doubles)) {
-	sprintf(s,"%d",n);
-	Tcl_AppendResult(ip, 
+		sprintf(s,"%d",n);
+		Tcl_AppendResult(ip, 
 			 "Expected a tuple of ", s, " doubles.\n",
-			 (char *) 0
-	    );
-	Tcl_Free((char *)indices);
-	return TCL_ERROR;
+			 NULL);
+		Tcl_Free(reinterpret_cast<char *>(indices));
+		return TCL_ERROR;
     }
 
-    for (i = 0; i < n; i++) {
-	if (TCL_OK != Tcl_GetDouble(ip, indices[i], &tmp)) {
-	    Tcl_Free((char *)indices);
-	    sprintf(s,"%d",n);
-	    Tcl_AppendResult(ip, 
+    for (int i = 0; i < n; i++) {
+		if (TCL_OK != Tcl_GetDouble(ip, indices[i], &tmp)) {
+			Tcl_Free(reinterpret_cast<char *>(indices));
+			sprintf(s,"%d",n);
+			Tcl_AppendResult(ip, 
 			     "Expected a tuple of ", s, " doubles.\n",
-			     (char *) 0
-		);
+			     NULL);
 	    return TCL_ERROR;
 	}
 	p[i] = tmp;
     }
-    Tcl_Free((char *)indices);
+    Tcl_Free(reinterpret_cast<char *>(indices));
     return TCL_OK;
 
 }
@@ -71,33 +68,32 @@ int get_tcl_int_tuple( Tcl_Interp *ip, const char *inList, int *p, int n )
     int num_ints;
     int rtn;
     char s[100];
-    int i;
 
     rtn = Tcl_SplitList(ip, inList, &num_ints, &indices);
 
     if ((TCL_OK != rtn) || (n != num_ints)) {
-	sprintf(s,"%d",n);
-	Tcl_AppendResult(ip, 
+		sprintf(s,"%d",n);
+		Tcl_AppendResult(ip, 
 			 "Expected a tuple of ", s, " integers.\n",
-			 (char *) 0
+			 NULL
 	    );
-	Tcl_Free((char *)indices);
-	return TCL_ERROR;
+		Tcl_Free(reinterpret_cast<char *>(indices));
+		return TCL_ERROR;
     }
 
-    for (i = 0; i < n; i++) {
-	if (TCL_OK != Tcl_GetInt(ip, indices[i], &tmp)) {
-	    Tcl_Free((char *)indices);
-	    sprintf(s,"%d",n);
-	    Tcl_AppendResult(ip, 
+    for (int i = 0; i < n; i++) {
+		if (TCL_OK != Tcl_GetInt(ip, indices[i], &tmp)) {
+			Tcl_Free(reinterpret_cast<char *>(indices));
+			sprintf(s,"%d",n);
+			Tcl_AppendResult(ip, 
 			     "Expected a tuple of ", s, " integers.\n",
-			     (char *) 0
-		);
-	    return TCL_ERROR;
-	}
-	p[i] = tmp;
+			     NULL
+			);
+			return TCL_ERROR;
+		}
+		p[i] = tmp;
     }
-    Tcl_Free((char *)indices);
+    Tcl_Free(reinterpret_cast<char *>(indices));
     return TCL_OK;
 }
 

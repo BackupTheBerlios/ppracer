@@ -33,7 +33,7 @@ FTFace::FTFace( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
     const FT_Long DEFAULT_FACE_INDEX = 0;
     ftFace = new FT_Face;
 
-    err = FT_New_Memory_Face( *FTLibrary::Instance().GetLibrary(), (FT_Byte *)pBufferBytes, bufferSizeInBytes, DEFAULT_FACE_INDEX, ftFace);
+    err = FT_New_Memory_Face( *FTLibrary::Instance().GetLibrary(), const_cast<FT_Byte *>(pBufferBytes), bufferSizeInBytes, DEFAULT_FACE_INDEX, ftFace);
 
     if( err)
     {
@@ -70,7 +70,7 @@ bool FTFace::Attach( const unsigned char *pBufferBytes, size_t bufferSizeInBytes
     FT_Open_Args open;
 
     open.flags = FT_OPEN_MEMORY;
-    open.memory_base = (FT_Byte *)pBufferBytes;
+    open.memory_base = const_cast<FT_Byte *>(pBufferBytes);
     open.memory_size = bufferSizeInBytes;
 
     err = FT_Attach_Stream( *ftFace, &open);
@@ -140,4 +140,3 @@ FT_GlyphSlot FTFace::Glyph( unsigned int index, FT_Int load_flags)
 
     return (*ftFace)->glyph;
 }
-

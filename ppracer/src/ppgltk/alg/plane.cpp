@@ -67,20 +67,18 @@ Plane::intersect( const Plane& s1, const Plane& s2, const Plane& s3, Vec3d *p )
     A[2][2] =  s3.nml.z;
     A[2][3] = -s3.d;
 
-    retval = gauss( (double*) A, 3, x);
+    retval = gauss( reinterpret_cast<double*>(A), 3, x);
 
     if ( retval != 0 ) {
-	/* Matrix is singular */
-	return false;
+		// Matrix is singular 
+		return false;
     } else {
-	/* Solution found */
-	p->x = x[0];
-	p->y = x[1];
-	p->z = x[2];
-	return true;
+		// Solution found
+		p->x = x[0];
+		p->y = x[1];
+		p->z = x[2];
+		return true;
     }
 }
-
-
 
 } //namespace pp

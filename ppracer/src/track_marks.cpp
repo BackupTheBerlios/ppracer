@@ -496,8 +496,8 @@ void break_track_marks( void )
 	qprev->t2 = pp::Vec2d(1.0, 0.0);
 	qprev->t3 = pp::Vec2d(0.0, 1.0);
 	qprev->t4 = pp::Vec2d(1.0, 1.0);
-	qprevprev->t3.y = MAX((int)(qprevprev->t3.y+0.5), (int)(qprevprev->t1.y+1));
-	qprevprev->t4.y = MAX((int)(qprevprev->t3.y+0.5), (int)(qprevprev->t1.y+1));
+	qprevprev->t3.y = MAX(int(qprevprev->t3.y+0.5), int(qprevprev->t1.y+1));
+	qprevprev->t4.y = MAX(int(qprevprev->t3.y+0.5), int(qprevprev->t1.y+1));
     }
     track_marks.last_mark_time = -99999;
     track_marks.last_mark_pos = pp::Vec3d(-9999, -9999, -9999);

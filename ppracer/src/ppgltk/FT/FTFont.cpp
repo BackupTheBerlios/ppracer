@@ -139,7 +139,7 @@ void FTFont::BBox( const char* string,
 
     if((NULL != string) && ('\0' != *string))
     {
-        const unsigned char* c = (unsigned char*)string;
+        const unsigned char* c = reinterpret_cast<const unsigned char*>(string);
         float advance = 0;
 
         if(CheckGlyph( *c))
@@ -226,7 +226,7 @@ float FTFont::Advance( const wchar_t* string)
 
 float FTFont::Advance( const char* string)
 {
-    const unsigned char* c = (unsigned char*)string;
+    const unsigned char* c = reinterpret_cast<const unsigned char*>(string);
     float width = 0.0f;
 
     while( *c)
@@ -244,7 +244,7 @@ float FTFont::Advance( const char* string)
 
 void FTFont::Render( const char* string )
 {
-    const unsigned char* c = (unsigned char*)string;
+    const unsigned char* c = reinterpret_cast<const unsigned char*>(string);
     pen.X(0); pen.Y(0);
 
     while( *c)
@@ -294,4 +294,3 @@ bool FTFont::CheckGlyph( const unsigned int characterCode)
     
     return true;
 }
-

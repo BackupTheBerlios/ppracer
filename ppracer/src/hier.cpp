@@ -64,7 +64,7 @@ add_scene_node( const char *parent_name, const char *node_name, scene_node_t *no
         sprintf(new_name, "%s:%s", parent_name, node_name);
     }
 
-    node->name = (char*)malloc( strlen(new_name) + 1 );
+    node->name = reinterpret_cast<char*>(malloc( strlen(new_name) + 1 ));
     node->name = strcpy(node->name, new_name);
 
     entry = Tcl_CreateHashEntry(&g_hier_node_table,new_name,&newEntry);
@@ -94,7 +94,7 @@ get_scene_node( const char *node_name, scene_node_t **node )
             return TCL_ERROR;
         }
     } else {
-        *node = (scene_node_t*)Tcl_GetHashValue(entry);
+        *node = reinterpret_cast<scene_node_t*>(Tcl_GetHashValue(entry));
     }
 
     return TCL_OK;
@@ -127,7 +127,7 @@ get_material( const char *mat_name, material_t **mat )
     if (0 == entry) {
         return TCL_ERROR;
     } else {
-        *mat = (material_t*)Tcl_GetHashValue(entry);
+        *mat = reinterpret_cast<material_t*>(Tcl_GetHashValue(entry));
     }
 
     return TCL_OK;
@@ -145,7 +145,7 @@ char* create_scene_node( const char *parent_name, const char *child_name,
     } 
 
     /* Create node */
-    child = (scene_node_t *)malloc( sizeof( scene_node_t ) );
+    child = reinterpret_cast<scene_node_t *>(malloc( sizeof( scene_node_t ) ));
 
     /* Initialize node */
     child->parent = parent;
@@ -382,7 +382,7 @@ create_material( const char *mat, pp::Color diffuse,
 {
     material_t *matPtr;
 
-    matPtr = (material_t *)malloc( sizeof( material_t ) );
+    matPtr = reinterpret_cast<material_t *>(malloc( sizeof( material_t ) ));
 
     matPtr->diffuse.r = diffuse.r;
     matPtr->diffuse.g = diffuse.g;

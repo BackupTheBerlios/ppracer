@@ -397,13 +397,14 @@ void init_opengl_extensions()
 {
     get_gl_proc_fptr_t get_gl_proc;
 
-    get_gl_proc = (get_gl_proc_fptr_t) SDL_GL_GetProcAddress;
+    get_gl_proc = reinterpret_cast<get_gl_proc_fptr_t>(SDL_GL_GetProcAddress);
 
     if ( get_gl_proc ) {
-		glLockArraysEXT_p = (PFNGLLOCKARRAYSEXTPROC) 
-				(*get_gl_proc)( (GLubyte*) "glLockArraysEXT" );
-		glUnlockArraysEXT_p = (PFNGLUNLOCKARRAYSEXTPROC) 
-				(*get_gl_proc)( (GLubyte*) "glUnlockArraysEXT" );
+		glLockArraysEXT_p = reinterpret_cast<PFNGLLOCKARRAYSEXTPROC> 
+		((*get_gl_proc)( reinterpret_cast<const GLubyte*>("glLockArraysEXT") ));
+	
+		glUnlockArraysEXT_p = reinterpret_cast<PFNGLUNLOCKARRAYSEXTPROC> 
+		((*get_gl_proc)( reinterpret_cast<const GLubyte*>("glUnlockArraysEXT") ));
 	
 		if ( glLockArraysEXT_p != NULL && glUnlockArraysEXT_p != NULL ) {
 			print_debug( DEBUG_GL_EXT, 
@@ -453,7 +454,7 @@ gl_value_t gl_values[] = {
 
 void print_gl_info()
 {
-    char *extensions;
+    const char *extensions;
     char *p, *oldp;
     unsigned int i;
     GLint int_val;
@@ -475,7 +476,7 @@ void print_gl_info()
 	//extensions = string_copy( (char*) glGetString( GL_EXTENSIONS ) );
 	//oldp = extensions;
 	
-	extensions = (char*) gl::GetString(GL_EXTENSIONS);
+	extensions = gl::GetString(GL_EXTENSIONS);
 
 	oldp = new char[strlen(extensions)+1];
 	extensions = oldp;

@@ -54,7 +54,7 @@ Loading::Loading()
 	mp_loadingLbl->alignment.center();
 	mp_loadingLbl->alignment.middle();
 	
-	m_loadedCondition = (race_conditions_t)-1;
+	m_loadedCondition = static_cast<race_conditions_t>(-1);
 	play_music( "loading" );
 }
 

@@ -140,7 +140,7 @@ ppracer_SOURCES =				\
 	render_util.cpp				\
 	render_util.h				\
 	reset.h					\
-        reset.cpp				\
+	reset.cpp				\
 	screenshot.cpp				\
 	screenshot.h				\
 	snow.cpp				\
@@ -151,16 +151,14 @@ ppracer_SOURCES =				\
 	string_util.h				\
 	tcl_util.cpp				\
 	tcl_util.h				\
-	tex_font_metrics.cpp			\
-	tex_font_metrics.h			\
 	textures.cpp				\
 	textures.h				\
-        track_marks.cpp				\
-        track_marks.h				\
+	track_marks.cpp				\
+	track_marks.h				\
 	tux.cpp					\
 	tux.h					\
-        tux_shadow.cpp				\
-        tux_shadow.h				\
+	tux_shadow.cpp				\
+	tux_shadow.h				\
 	pp_types.h				\
 	ppracer.h				\
 	view.cpp				\
