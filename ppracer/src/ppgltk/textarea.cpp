@@ -333,8 +333,8 @@ Textarea::drawTextLines()
 	for(it=mi_topLine; it!=m_lines.end(); it++){
 		mp_font->draw(*it, x, y);
 		
-		float desc = mp_font->descender();
-		float asc = mp_font->ascender();
+		//float desc = mp_font->descender();
+		//float asc = mp_font->ascender();
 		
 		y-=asc-desc;
 		if(y < m_position.y + m_borderWidth) {

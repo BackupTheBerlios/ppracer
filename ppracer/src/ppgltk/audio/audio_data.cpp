@@ -123,10 +123,12 @@ load_sound( const char *name, const char *filename )
 	
 
     /* Make sure it's there */
-    check_assertion( get_hash_entry( hash, name, (void*) &temp_record_ptr ) &&
+    /*
+	check_assertion( get_hash_entry( hash, name, (void*) &temp_record_ptr ) &&
 		     ( record_ptr == temp_record_ptr ), 
 		     "failed addition to hash table" );
-    temp_record_ptr = NULL; /* to prevent warnings when assert turned off */
+    */
+	temp_record_ptr = NULL; /* to prevent warnings when assert turned off */
 
 	sound_dirty_ = true;
 
@@ -209,10 +211,11 @@ load_music( const char *name, const char *filename )
     musicTable[name] = *mrec;
 
     /* Make sure it's there */
-    check_assertion( get_hash_entry( hash, name, (void*) &temp_record_ptr ) &&
+    /*check_assertion( get_hash_entry( hash, name, (void*) &temp_record_ptr ) &&
 		     ( record_ptr == temp_record_ptr ), 
 		     "failed addition to hash table" );
-    temp_record_ptr = NULL; /* to prevent warnings when assert turned off */
+    */
+	temp_record_ptr = NULL; /* to prevent warnings when assert turned off */
 
 
 	music_dirty_ = true;
@@ -333,7 +336,7 @@ void incr_sound_data_ref_ctr( const char *name )
 {
    	std::map<std::string,sound_record_t>::iterator srec;
 	if((srec=soundTable.find(name))==soundTable.end()){
-		check_assertion( found, "hashtable entry not found" );
+		//check_assertion( found, "hashtable entry not found" );
 	}
 	
 	srec->second.ref_ctr++;
@@ -355,7 +358,7 @@ void decr_sound_data_ref_ctr( const char *name )
 {
    	std::map<std::string,sound_record_t>::iterator srec;
 	if((srec=soundTable.find(name))==soundTable.end()){
-		check_assertion( found, "hashtable entry not found" );
+		//check_assertion( found, "hashtable entry not found" );
 	}
 	
 	srec->second.ref_ctr--;
@@ -461,7 +464,7 @@ void delete_unused_audio_data()
 bool
 is_sound_data_dirty()
 {
-    check_assertion( initialized_, "audio_data module not initialized" );
+    //check_assertion( initialized_, "audio_data module not initialized" );
 
     return sound_dirty_;
 }
@@ -481,7 +484,7 @@ is_sound_data_dirty()
 bool
 is_music_data_dirty()
 {
-    check_assertion( initialized_, "audio_data module not initialized" );
+//    check_assertion( initialized_, "audio_data module not initialized" );
 
     return music_dirty_;
 }
@@ -499,7 +502,7 @@ is_music_data_dirty()
 void
 mark_sound_data_clean()
 {
-    check_assertion( initialized_, "audio_data module not initialized" );
+//    check_assertion( initialized_, "audio_data module not initialized" );
 
     sound_dirty_ = false;
 }
@@ -517,7 +520,7 @@ mark_sound_data_clean()
 void
 mark_music_data_clean()
 {
-    check_assertion( initialized_, "audio_data module not initialized" );
+//    check_assertion( initialized_, "audio_data module not initialized" );
 
     music_dirty_ = false;
 }
@@ -537,7 +540,7 @@ static int load_sound_cb( ClientData cd, Tcl_Interp *ip,
 {
     Tcl_Obj *result;
 
-    check_assertion( initialized_, "audio_data module not initialized" );
+//    check_assertion( initialized_, "audio_data module not initialized" );
 
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
@@ -565,7 +568,7 @@ static int load_music_cb( ClientData cd, Tcl_Interp *ip,
 {
     Tcl_Obj *result;
 
-    check_assertion( initialized_, "audio_data module not initialized" );
+//    check_assertion( initialized_, "audio_data module not initialized" );
 
     if ( argc != 3 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 

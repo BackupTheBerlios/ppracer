@@ -250,7 +250,7 @@ pp::Vec3d make_normal( pp::Polygon p, pp::Vec3d *v )
     pp::Vec3d normal, v1, v2;
     double old_len;
 
-    check_assertion( p.num_vertices > 2, "number of vertices must be > 2" );
+    check_assertion( p.numVertices > 2, "number of vertices must be > 2" );
 
     v1 = v[p.vertices[1]] - v[p.vertices[0]];
     v2 = v[p.vertices[p.numVertices-1]] - v[p.vertices[0]];

@@ -430,7 +430,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 
 	    terrain = (int) Terrain[ i + RowSize*j ];
 	    check_assertion( terrain >= 0 && 
-			     terrain < num_terrains,
+			     terrain < int(num_terrains),
 			     "Invalid terrain type" );
 	    terrain_count[ terrain ] += 1;
 	}

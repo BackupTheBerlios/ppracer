@@ -224,8 +224,6 @@ RaceSelect::setWidgetPositionsAndDrawDecorations()
     int h = getparam_y_resolution();
     int box_width, box_height, box_max_y;
     int x_org, y_org;
-    const char *string;
-    int text_width, asc, desc;
     GLuint texobj;
 
     // set the dimensions of the box in which all widgets should fit

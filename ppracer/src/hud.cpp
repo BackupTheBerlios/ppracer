@@ -37,11 +37,11 @@ HUD HUD1;
 HUD::Element::Element()
  : type(-1), 
    x(0), y(0),
+   font(NULL),
+   texture(0),
    width(0), height(0),
    size(0),
-   angle(0),
-   font(NULL),
-   texture(0)
+   angle(0)   
 {
 }
 
@@ -237,9 +237,6 @@ HUD::time(const int i)
 		m_element[i].font->draw(m_element[i].u_string, m_element[i].x, m_element[i].y);		
 	
 	}
-	
-	char string[BUFF_LEN];
-	int minutes, seconds, hundredths;
 }
 
 void
@@ -346,12 +343,8 @@ HUD::initGauge()
 void
 HUD::gauge(const int i, const double speed, const double energy)
 {
-	char *binding;
-    GLfloat xplane[4] = { 1.0/m_element[i].size, 0.0, 0.0, 0.0 };
+	GLfloat xplane[4] = { 1.0/m_element[i].size, 0.0, 0.0, 0.0 };
     GLfloat yplane[4] = { 0.0, 1.0/m_element[i].size, 0.0, 0.0 };
-    int w, asc, desc;
-    char *string;
-    char buff[BUFF_LEN];
     double y;
     double speedbar_frac;
 

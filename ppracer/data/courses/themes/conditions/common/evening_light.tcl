@@ -1,7 +1,9 @@
-tux_course_light 0 -on -position { 1 1 0 0 } -diffuse { 0.75 0.45 0.23 1 } \
-     -ambient { 0.45 0.3 0.15 1.0 }
+tux_course_light 0 -on -position { 1 1 0 0 } \
+	-diffuse {0.7 0.6 0.5 1.0} \
+	-ambient {0.4 0.3 0.3 1.0} 
   
-tux_course_light 1 -on -position { 1 1 2 0 } -specular { 0.9 0.6 0.3 1 } 
+tux_course_light 1 -on -position { 1 1 2 0 } \
+	-specular { 0.9 0.6 0.3 1 } 
 
 
 tux_load_texture envmap eveningenv.png 0
@@ -11,7 +13,6 @@ tux_fog -on -mode linear -density 0.005 -color { 0.45 0.3 0.15 1 } -start 0 \
     -end [tux_get_param forward_clip_distance]
 
 tux_particle_color { 0.9 0.7 0.35 1.0 }
-
 
 tux_load_texture sky_front eveningfront.png 0
 tux_load_texture sky_right eveningright.png 0

@@ -1381,9 +1381,9 @@ static pp::Vec3d calc_net_force( Player& plyr, pp::Vec3d pos,
 	if ( fabs( fric_f_mag * sin( ANGLES_TO_RADIANS( steer_angle ) ) ) >
 	     MAX_TURN_PERPENDICULAR_FORCE ) 
 	{
-	    check_assertion( fabs( plyr->control.turn_fact ) > 0,
-			     "steer angle is non-zero when player is not "
-			     "turning" );
+	    //check_assertion( fabs( plyr->control.turn_fact ) > 0,
+		//	     "steer angle is non-zero when player is not "
+		//	     "turning" );
 	    steer_angle = RADIANS_TO_ANGLES( 
 		asin( MAX_TURN_PERPENDICULAR_FORCE / fric_f_mag ) ) * 
 		plyr.control.turn_fact / fabs( plyr.control.turn_fact );

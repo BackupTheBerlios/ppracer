@@ -109,7 +109,6 @@ pp_bind_font_cb ( ClientData cd, Tcl_Interp *ip,
 			  int argc, CONST84 char *argv[])
 {
 	bool error = false;
-	double tmp_dbl;
 
     CONST84 char *binding = NULL;
     CONST84 char *fontName = NULL;

@@ -92,7 +92,7 @@ static credit_line_t credit_lines[] =
 Credits::Credits()
  : m_yOffset(0.0)
 {
-	for (int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
+	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
 		credit_lines[i].font = pp::Font::get(credit_lines[i].binding);		
 	}
 	
@@ -144,7 +144,7 @@ Credits::drawText( float timeStep )
     y = CREDITS_MIN_Y + m_yOffset;
 
 	//loop through all credit lines
-	for (int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
+	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
 	    credit_line_t line = credit_lines[i];
 
 		//get the font and sizes for the binding

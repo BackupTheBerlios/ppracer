@@ -22,8 +22,8 @@
 namespace pp {
 
 Label::Label( pp::Vec2d pos, const char *binding, const char *text )
- : m_text(text),
-   mp_insensitiveFont(NULL)
+ : mp_insensitiveFont(NULL),
+   m_text(text)
 {
 	m_position = pos;
 	mp_font = pp::Font::get(binding);

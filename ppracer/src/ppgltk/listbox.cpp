@@ -37,8 +37,8 @@ template <class T>
 Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size, 
 				const char *binding, 
 				listType_t& itemList)
- : m_items(itemList),
-   mp_insensitiveFont(NULL)
+ : mp_insensitiveFont(NULL),
+   m_items(itemList)
 {
     char *tempbinding;
     pp::Vec2d ll;
