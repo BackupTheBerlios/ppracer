@@ -134,7 +134,7 @@ Configuration::setWidgetPositions()
 }
 
 bool
-Configuration::keyPressEvent(unsigned int key)
+Configuration::keyPressEvent(SDLKey key)
 {
 	switch (key){
 		case 27:

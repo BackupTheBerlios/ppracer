@@ -42,7 +42,7 @@ public:
 	void loop(float timeStep);
 	void setWidgetPositions();
 
-	bool keyPressEvent(unsigned int key);
+	bool keyPressEvent(SDLKey key);
 
 	void back();
 	void graphics();

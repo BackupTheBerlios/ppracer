@@ -1,4 +1,8 @@
 
+2005-03-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/configuration.*
+	fix keyhandling in configuration
+
 === ppracer 0.3.1 ===
 
 2005-02-28  Volker Stroebel <volker@planetpenguin.de>
