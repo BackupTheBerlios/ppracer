@@ -21,9 +21,17 @@
 #define _CREDITS_H_
 
 #include "loop.h"
+#include "ppgltk/font.h"
 
 class Credits : public GameMode
 {	
+	typedef struct {
+		pp::Font *font;
+		const char *text;
+	}c_line_t;
+
+	c_line_t *lines;
+
 	double m_yOffset;
 	
 	void drawText( float timeStep );

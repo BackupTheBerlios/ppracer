@@ -123,3 +123,10 @@ pp_translate_string "H|%02d:%02d:%02d" "%02d:%02d:%02d"
 #speed counter
 pp_translate_string "H|%.0f" "%.0f"
 
+#Credits
+#pp_translate_string "Development Team" ""
+#pp_translate_string "Translators" ""
+#pp_translate_string "Contributors" ""
+#pp_translate_string "Tux Racer Development Team" ""
+#pp_translate_string "Music" ""
+#pp_translate_string "Thanks To:" ""

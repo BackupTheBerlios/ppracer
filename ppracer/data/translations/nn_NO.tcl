@@ -83,7 +83,7 @@ pp_translate_string "You didn't advance." "Du kom ikkje vidare."
 #HUD
 #Strings are prefixed to prevent collisions with the UI
 pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
-pp_translate_string "H|Time:" "Time:"
+pp_translate_string "H|Time:" "Tid:"
 pp_translate_string "H|km/h" "km/h"
 #herring counter
 pp_translate_string "H|%03d" "%03d"
@@ -91,3 +91,12 @@ pp_translate_string "H|%03d" "%03d"
 pp_translate_string "H|%02d:%02d:%02d" "%02d:%02d:%02d"
 #speed counter
 pp_translate_string "H|%.0f" "%.0f"
+
+#Credits
+#pp_translate_string "Development Team" ""
+#pp_translate_string "Translators" ""
+#pp_translate_string "Contributors" ""
+#pp_translate_string "Tux Racer Development Team" ""
+#pp_translate_string "Music" ""
+#pp_translate_string "Thanks To:" ""
+

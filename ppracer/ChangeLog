@@ -16,6 +16,11 @@
 	
 	* src/ppgltk/alg/glwrappers.h
 	removed unsave types
+	
+	* src/credits.cpp data/languages/*
+	made credits translateable
+	updated translations
+
 
 2005-03-05  Volker Stroebel <volker@planetpenguin.de>
 	* src/*

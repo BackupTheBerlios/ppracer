@@ -23,80 +23,84 @@
 #include "credits.h"
 
 #include "ppgltk/audio/audio.h"
-#include "ppgltk/font.h"
 
+#include "translation.h"
 
 #define CREDITS_MAX_Y -140
 #define CREDITS_MIN_Y 64
 
 typedef struct {
-    pp::Font *font;
-	char *binding;
-    char *text;
+    bool translateable;
+	const char *binding;
+    const char *text;
 } credit_line_t;
 
 static credit_line_t credit_lines[] = 
 {
-	{ NULL, "credits_h1", "PlanetPenguin Racer" },
-    { NULL, "credits_text", "http://racer.planetpenguin.de" },
-	{ NULL, "credits_text", "PlanetPenguin Racer is based on Tux Racer" },
-    { NULL, "credits_text", "Tux Racer is a Sunspire Studios Production" },
-    { NULL, "credits_text", "www.sunspirestudios.com" },
-    { NULL, "credits_text", "" },
-    { NULL, "credits_h2", "Development Team" },
-    { NULL, "credits_text", "Volker Ströbel" },
-    { NULL, "credits_text", "" },
-	{ NULL, "credits_h2", "Translators" },
-	{ NULL, "credits_text", "Alexander Aksenov" },	
-	{ NULL, "credits_text", "Eric Alvarez Llimos" },	
-	{ NULL, "credits_text", "Helder Correia" },	
-	{ NULL, "credits_text", "Jan Karwowski" },	
-	{ NULL, "credits_text", "Karl Ove Hufthammer" },	
-	{ NULL, "credits_text", "Marco Antonio Blanco" },	
-	{ NULL, "credits_text", "Massimo Spazian" },	
-	{ NULL, "credits_text", "Mikel Olasagasti" },	
-	{ NULL, "credits_text", "Pascal Garcia" },	
-	{ NULL, "credits_text", "Theo Snelleman" },	
-	{ NULL, "credits_text", "Trygve B. Wiig" },
-    { NULL, "credits_text", "" },
-	{ NULL, "credits_h2", "Contributors" },
-	{ NULL, "credits_text", "Peter Reichel" },
-	{ NULL, "credits_text", "Rainer Koschnick" },
-	{ NULL, "credits_text", "Teemu Vesala" },
-	{ NULL, "credits_text", "Theo Snelleman" },
-    { NULL, "credits_text", "" },
-    { NULL, "credits_h2", "Tux Racer Development Team" },
-    { NULL, "credits_text_small", "(Alphabetical Order)" },
-    { NULL, "credits_text", "Patrick \"Pog\" Gilhuly" },
-    { NULL, "credits_text", "Eric \"Monster\" Hall" },
-    { NULL, "credits_text", "Rick Knowles" },
-    { NULL, "credits_text", "Vincent Ma" },
-    { NULL, "credits_text", "Jasmin Patry" },
-    { NULL, "credits_text", "Mark Riddell" },
-    { NULL, "credits_text", "" },
-    { NULL, "credits_h2", "Music" },
-    { NULL, "credits_text", "Joseph Toscano" },
-    { NULL, "credits_text", "" },
-    { NULL, "credits_h2", "Thanks To:" },
-    { NULL, "credits_text_small", "(In No Particular Order)" },
-    { NULL, "credits_text", "Larry Ewing" },
-    { NULL, "credits_text", "Thatcher Ulrich" },
-    { NULL, "credits_text", "Steve Baker" },
-    { NULL, "credits_text", "Ingo Ruhnke" },
-    { NULL, "credits_text", "James Barnard" },
-    { NULL, "credits_text", "Alan Levy" },
-    { NULL, "credits_text", "University of Waterloo Computer Graphics Lab" },
-    { NULL, "credits_text", "" },
-    { NULL, "credits_text_small", "Tux Racer is a trademark of Jasmin F. Patry" },
-	{ NULL, "credits_text_small", "PlanetPenguin Racer is copyright 2004, 2005 The PPRacer team" },
-    { NULL, "credits_text_small", "Tux Racer is copyright 1999, 2000, 2001 Jasmin F. Patry" },
+	{false, "credits_h1", "PlanetPenguin Racer" },
+    {false, "credits_text", "http://racer.planetpenguin.de" },
+	{false, "credits_text", "" },
+    {true, "credits_h2", "Development Team" },
+    {false, "credits_text", "Volker Ströbel" },
+    {false, "credits_text", "" },
+	{true, "credits_h2", "Translators" },
+	{false, "credits_text", "Alexander Aksenov" },	
+	{false, "credits_text", "Eric Alvarez Llimos" },	
+	{false, "credits_text", "Helder Correia" },	
+	{false, "credits_text", "Jan Karwowski" },	
+	{false, "credits_text", "Karl Ove Hufthammer" },	
+	{false, "credits_text", "Marco Antonio Blanco" },	
+	{false, "credits_text", "Massimo Spazian" },	
+	{false, "credits_text", "Mikel Olasagasti" },	
+	{false, "credits_text", "Pascal Garcia" },	
+	{false, "credits_text", "Theo Snelleman" },	
+	{false, "credits_text", "Trygve B. Wiig" },
+    {false, "credits_text", "" },
+	{true, "credits_h2", "Contributors" },
+	{false, "credits_text", "Peter Reichel" },
+	{false, "credits_text", "Rainer Koschnick" },
+	{false, "credits_text", "Teemu Vesala" },
+	{false, "credits_text", "Theo Snelleman" },
+    {false, "credits_text", "" },
+    {true, "credits_h2", "Tux Racer Development Team" },
+    {false, "credits_text", "Patrick \"Pog\" Gilhuly" },
+    {false, "credits_text", "Eric \"Monster\" Hall" },
+    {false, "credits_text", "Rick Knowles" },
+    {false, "credits_text", "Vincent Ma" },
+    {false, "credits_text", "Jasmin Patry" },
+    {false, "credits_text", "Mark Riddell" },
+    {false, "credits_text", "" },
+    {true, "credits_h2", "Music" },
+    {false, "credits_text", "Joseph Toscano" },
+    {false, "credits_text", "" },
+    {true, "credits_h2", "Thanks To:" },
+    {false, "credits_text", "Larry Ewing" },
+    {false, "credits_text", "Thatcher Ulrich" },
+    {false, "credits_text", "Steve Baker" },
+    {false, "credits_text", "Ingo Ruhnke" },
+    {false, "credits_text", "James Barnard" },
+    {false, "credits_text", "Alan Levy" },
+    {false, "credits_text", "University of Waterloo Computer Graphics Lab" },
+    {false, "credits_text", "" },
+	{false, "credits_text", "PlanetPenguin Racer is based on Tux Racer" },
+    {false, "credits_text", "Tux Racer is a Sunspire Studios Production" },
+    {false, "credits_text_small", "Tux Racer is a trademark of Jasmin F. Patry" },
+	{false, "credits_text_small", "PlanetPenguin Racer is copyright 2004, 2005 The PPRacer team" },
+    {false, "credits_text_small", "Tux Racer is copyright 1999, 2000, 2001 Jasmin F. Patry" },
 };
 
 Credits::Credits()
  : m_yOffset(0.0)
 {
+	lines = new c_line_t[sizeof( credit_lines ) / sizeof( credit_lines[0])];
+	
 	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
-		credit_lines[i].font = pp::Font::get(credit_lines[i].binding);		
+		lines[i].font=pp::Font::get(credit_lines[i].binding);
+		if(credit_lines[i].translateable){
+			lines[i].text=_(credit_lines[i].text);
+		}else{
+			lines[i].text=credit_lines[i].text;
+		}		
 	}
 	
     play_music( "credits_screen" );
@@ -105,6 +109,7 @@ Credits::Credits()
 
 Credits::~Credits()
 {	
+	delete [] lines;
 }
 
 void
@@ -148,7 +153,7 @@ Credits::drawText( float timeStep )
 
 	//loop through all credit lines
 	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
-	    credit_line_t line = credit_lines[i];
+	    c_line_t line = lines[i];
 
 		//get the font and sizes for the binding
 		//pp::Font *font = pp::Font::get(line.binding);
