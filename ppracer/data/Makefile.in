@@ -295,6 +295,7 @@ nobase_dist_ppdata_DATA = \
 		courses/themes/conditions/common/cloudyfront.png \
 		courses/themes/conditions/common/eveningleft.png \
 		courses/themes/conditions/common/eveningright.png \
+		courses/themes/conditions/common/eveningfront.png \
 		courses/themes/conditions/common/evening_light.tcl \
 		courses/themes/conditions/common/foggy_light.tcl \
 		courses/themes/conditions/common/sunnyfront.png \
