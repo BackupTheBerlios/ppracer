@@ -20,10 +20,10 @@
  */
 
 #include "ui_mgr.h"
-#include "textures.h"
 #include "ui_snow.h"
-#include "loop.h"
 #include "game_config.h"
+#include "textures.h"
+#include "loop.h"
 
 pp::UIManager UIMgr;
 

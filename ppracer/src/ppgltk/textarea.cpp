@@ -178,16 +178,6 @@ Textarea::updateButtonPositions()
 void
 Textarea::createLines()
 {
-	/*font_t font;
-
-    if ( !get_font_binding( m_binding, font ) ) {
-		print_warning( IMPORTANT_WARNING,
-		       "Couldn't get font for binding %s", m_binding );
-		return;
-    }
-	*/
-	
-	
 	if ( mp_textLines != NULL ) {
 		delete mp_textLines;
 		mp_textLines = NULL;

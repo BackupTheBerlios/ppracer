@@ -48,7 +48,7 @@ class Button : public Widget {
 	pp::Font *mp_hilitFont;
 	pp::Font *mp_disabledFont;
 	
-    const char *mp_label;
+    std::string m_label;
 
 public:
 	Button( pp::Vec2d pos, pp::Vec2d size,

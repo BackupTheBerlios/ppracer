@@ -1,4 +1,9 @@
+2005-03-11  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppgltk/button.*
+	changed const char* to std::string
 
+	* src/*
+	and again... some cleanups
 
 2005-03-09  Volker Stroebel <volker@planetpenguin.de>
 	* src/*

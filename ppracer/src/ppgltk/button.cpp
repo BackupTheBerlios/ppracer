@@ -30,7 +30,8 @@ Button::Button( pp::Vec2d pos, pp::Vec2d size,
 			 const char *binding, const char *label )
  : 	mp_font(NULL),
 	mp_hilitFont(NULL),
-	mp_disabledFont(NULL)
+	mp_disabledFont(NULL),
+	m_label(label)
 {
     m_position = pos;
     m_size = size;
@@ -44,8 +45,6 @@ Button::Button( pp::Vec2d pos, pp::Vec2d size,
 		mp_font = pp::Font::get(binding);
 	}
 	
-    mp_label = label;
-
     m_clicked = false;
     m_focused = false;
     m_sensitive = true;
@@ -194,11 +193,11 @@ Button::draw()
 
 	if(mp_font!=NULL){
 	
-		float width = font->advance(mp_label);
+		float width = font->advance(m_label.c_str());
 		float asc = font->ascender();
 		float desc = font->descender();
 	
-		font->draw(mp_label,
+		font->draw(m_label.c_str(),
 				m_position.x + m_size.x/2.0 - width/2.0,
 				m_position.y + m_size.y/2.0 - asc/2.0 - desc/2.0);
 	}    

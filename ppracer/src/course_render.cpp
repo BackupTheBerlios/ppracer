@@ -429,7 +429,7 @@ void draw_trees()
     double  fwd_clip_limit, bwd_clip_limit, fwd_tree_detail_limit;
 
     int tree_type = -1;
-    const char *tree_name = 0;
+    const char *tree_name = NULL;
 
     Item    *itemLocs;
     int       numItems;

@@ -131,8 +131,6 @@ typedef struct scene_node_struct {
     pp::Matrix trans;
     pp::Matrix invtrans;   
 
-    /// name of node (for debugging)
-    char *name;
 } scene_node_t;
 
 

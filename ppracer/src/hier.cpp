@@ -64,9 +64,6 @@ add_scene_node( const char *parent_name, const char *node_name, scene_node_t *no
         sprintf(new_name, "%s:%s", parent_name, node_name);
     }
 
-    node->name = reinterpret_cast<char*>(malloc( strlen(new_name) + 1 ));
-    node->name = strcpy(node->name, new_name);
-
     entry = Tcl_CreateHashEntry(&g_hier_node_table,new_name,&newEntry);
 
     if (newEntry) { 

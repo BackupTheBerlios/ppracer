@@ -67,7 +67,6 @@ public:
 	bool keyboardEvent(SDLKey key, SDLMod mod, bool release);
 
 	void grabFocus(pp::Widget* widget,bool focus);
-
 };
 
 } //namespace pp
