@@ -1,4 +1,10 @@
 
+
+2005-03-09  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	added more functions to the glwrappers
+	and changed more code to use glwrappers
+
 2005-03-07  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	fixed compilation with gcc 2.95

@@ -276,9 +276,9 @@ void fill_gl_arrays()
     pp::Vec3d nml;
     int idx;
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+    gl::DisableClientState(GL_VERTEX_ARRAY);
+    gl::DisableClientState(GL_NORMAL_ARRAY);
+    gl::DisableClientState(GL_COLOR_ARRAY);
 
     /* Align vertices and normals on 16-byte intervals (Q3A does this) */
     vnc_array = reinterpret_cast<GLubyte*>(malloc( STRIDE_GL_ARRAY * nx * ny ));
@@ -313,15 +313,15 @@ void fill_gl_arrays()
 	}
     }
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, vnc_array );
+    gl::EnableClientState(GL_VERTEX_ARRAY);
+    gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, vnc_array );
 
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
+    gl::EnableClientState(GL_NORMAL_ARRAY);
+    gl::NormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
 		     vnc_array + 4*sizeof(GLfloat) );
 
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
+    gl::EnableClientState(GL_COLOR_ARRAY);
+    gl::ColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
 		    vnc_array + 8*sizeof(GLfloat) );
 }
 
@@ -418,21 +418,21 @@ static int course_dim_cb ( ClientData cd, Tcl_Interp *ip,
     course_length = length;
 
     if ( argc == 5 ) {
-	if ( Tcl_GetDouble( ip, argv[3], &width ) != TCL_OK ) {
-	    Tcl_AppendResult(ip, argv[0], ": invalid play width", 
-			     NULL );
-	    return TCL_ERROR;
-	} 
-	if ( Tcl_GetDouble( ip, argv[4], &length ) != TCL_OK ) {
-	    Tcl_AppendResult(ip, argv[0], ": invalid play length", 
-			     NULL );
-	    return TCL_ERROR;
-	} 
-	play_width = width;
-	play_length = length;
+		if ( Tcl_GetDouble( ip, argv[3], &width ) != TCL_OK ) {
+			Tcl_AppendResult(ip, argv[0], ": invalid play width", 
+					 NULL );
+			return TCL_ERROR;
+		} 
+		if ( Tcl_GetDouble( ip, argv[4], &length ) != TCL_OK ) {
+			Tcl_AppendResult(ip, argv[0], ": invalid play length", 
+					 NULL );
+			return TCL_ERROR;
+		} 
+		play_width = width;
+		play_length = length;
     } else {
-	play_width = course_width;
-	play_length = course_length;
+		play_width = course_width;
+		play_length = course_length;
     }
 
     return TCL_OK;

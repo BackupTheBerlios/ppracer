@@ -28,16 +28,15 @@
 
 void init_snow( pp::Vec3d eyepoint )
 {
- 
+
 }
 
 void update_snow( double time_step, bool windy, pp::Vec3d eyepoint )
 {
-   
+
 } 
 
 void draw_snow( pp::Vec3d eyepoint )
 {
-  
 
 }

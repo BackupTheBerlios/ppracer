@@ -26,6 +26,6 @@
 
 namespace gl{
 
-	//Nix da :(
+	//Nix da :)
 
 } //namespace g

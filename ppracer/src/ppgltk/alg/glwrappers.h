@@ -55,6 +55,7 @@ namespace gl{
 	
 	inline void TexEnv(GLenum target, GLenum pname, GLfloat param){glTexEnvf(target, pname, param);};
 	
+	inline void TexGen(GLenum coord, GLenum pname, const pp::Vec4f param){glTexGenfv(coord, pname, reinterpret_cast<const float*>(&param));};
 	inline void TexGen(GLenum coord, GLenum pname, const GLfloat *params){glTexGenfv(coord, pname, params);};
 	inline void TexGen(GLenum coord, GLenum pname, const GLint param){glTexGeni(coord, pname, param);};
 	
@@ -145,6 +146,11 @@ namespace gl{
 	inline void ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels){glReadPixels(x, y, width, height, format, type, pixels);};
 
 	inline void PixelStore(GLenum pname, GLint param){glPixelStorei(pname, param);};	
+	
+	inline void VertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *ptr){glVertexPointer(size, type, stride, ptr);};
+	inline void NormalPointer(GLenum type, GLsizei stride, const GLvoid *ptr){glNormalPointer(type, stride, ptr);};
+	inline void ColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *ptr){glColorPointer(size, type, stride, ptr);};
+	
 	
 } //namespace gl
 

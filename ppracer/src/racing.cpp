@@ -391,8 +391,8 @@ Racing::loop(float timeStep)
     draw_trees();
 	
     if ( getparam_draw_particles() ) {
-	update_particles( timeStep );
-	draw_particles( players[0] );
+		update_particles( timeStep );
+		draw_particles( players[0] );
     }
 
     draw_tux();

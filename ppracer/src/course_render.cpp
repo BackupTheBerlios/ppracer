@@ -34,6 +34,7 @@
 #include "game_config.h"
 
 #include "ppgltk/alg/defs.h"
+#include "ppgltk/alg/vec4f.h"
 
 
 /* 
@@ -279,16 +280,11 @@ void calc_normals()
 
 void setup_course_tex_gen()
 {
-    static GLfloat xplane[4] = { 1.0 / TEX_SCALE, 0.0, 0.0, 0.0 };
-    static GLfloat zplane[4] = { 0.0, 0.0, 1.0 / TEX_SCALE, 0.0 };
-    glTexGenfv( GL_S, GL_OBJECT_PLANE, xplane );
-    glTexGenfv( GL_T, GL_OBJECT_PLANE, zplane );
+    static pp::Vec4f xplane(1.0 / TEX_SCALE, 0.0, 0.0, 0.0);
+    static pp::Vec4f zplane(0.0, 0.0, 1.0 / TEX_SCALE, 0.0);
+    gl::TexGen( GL_S, GL_OBJECT_PLANE, xplane );
+    gl::TexGen( GL_T, GL_OBJECT_PLANE, zplane );
 }
-
-#define DRAW_POINT \
-    glNormal3f( nml.x, nml.y, nml.z ); \
-    glVertex3f( pt.x, pt.y, pt.z ); 
-
 
 void render_course()
 {
@@ -299,7 +295,7 @@ void render_course()
 
     setup_course_tex_gen();
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     set_material( pp::Color::white, pp::Color::black, 1.0 );
     
     update_course_quadtree( eye_pt, getparam_course_detail_level() );
@@ -323,103 +319,101 @@ void draw_sky(pp::Vec3d pos)
         get_texture_binding( "sky_right", &texture_id[4] ) && 
         get_texture_binding( "sky_back", &texture_id[5] ) ) ) {
     return;
-  } 
+  }
 
-  glColor4f( 1.0, 1.0, 1.0, 1.0 );
+  gl::Color(pp::Color::white);
 
-  glPushMatrix();
+  gl::PushMatrix();
 
-  glTranslatef(pos.x, pos.y, pos.z);
+  gl::Translate(pos);
 
-  glBindTexture( GL_TEXTURE_2D, texture_id[0] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[0] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f( -1, -1, -1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f(  1, -1, -1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f(  1,  1, -1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f( -1,  1, -1);
-  glEnd();
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex( -1, -1, -1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex(  1, -1, -1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex(  1,  1, -1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex( -1,  1, -1);
+  gl::End();
 
-  glBindTexture( GL_TEXTURE_2D, texture_id[1] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[1] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f( -1,  1, -1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f(  1,  1, -1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f(  1,  1,  1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f( -1,  1,  1);
-  glEnd();
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex( -1,  1, -1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex(  1,  1, -1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex(  1,  1,  1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex( -1,  1,  1);
+  gl::End();
 
-  glBindTexture( GL_TEXTURE_2D, texture_id[2] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[2] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f( -1, -1,  1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f(  1, -1,  1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f(  1, -1, -1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f( -1, -1, -1);
-  glEnd();
-
-
-  glBindTexture( GL_TEXTURE_2D, texture_id[3] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f( -1, -1,  1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f( -1, -1, -1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f( -1,  1, -1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f( -1,  1,  1);
-  glEnd();
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex( -1, -1,  1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex(  1, -1,  1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex(  1, -1, -1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex( -1, -1, -1);
+  gl::End();
 
 
-  glBindTexture( GL_TEXTURE_2D, texture_id[4] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[3] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f(  1, -1, -1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f(  1, -1,  1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f(  1,  1,  1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f(  1,  1, -1);
-  glEnd();
-
-
-  glBindTexture( GL_TEXTURE_2D, texture_id[5] );
-  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  glBegin(GL_QUADS);
-  glTexCoord2f( 0.0, 0.0 );
-  glVertex3f(  1, -1,  1);
-  glTexCoord2f( 1.0, 0.0 );
-  glVertex3f( -1, -1,  1);
-  glTexCoord2f( 1.0, 1.0 );
-  glVertex3f( -1,  1,  1);
-  glTexCoord2f( 0.0, 1.0 );
-  glVertex3f(  1,  1,  1);
-  glEnd();
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex( -1, -1,  1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex( -1, -1, -1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex( -1,  1, -1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex( -1,  1,  1);
+  gl::End();
 
 
-  glPopMatrix();
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[4] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex(  1, -1, -1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex(  1, -1,  1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex(  1,  1,  1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex(  1,  1, -1);
+  gl::End();
+
+  gl::BindTexture( GL_TEXTURE_2D, texture_id[5] );
+  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+  gl::Begin(GL_QUADS);
+  gl::TexCoord( 0.0, 0.0 );
+  gl::Vertex(  1, -1,  1);
+  gl::TexCoord( 1.0, 0.0 );
+  gl::Vertex( -1, -1,  1);
+  gl::TexCoord( 1.0, 1.0 );
+  gl::Vertex( -1,  1,  1);
+  gl::TexCoord( 0.0, 1.0 );
+  gl::Vertex(  1,  1,  1);
+  gl::End();
+
+  gl::PopMatrix();
 
 }
 
@@ -455,7 +449,7 @@ void draw_trees()
 
     set_gl_options( TREES );
 
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     set_material( pp::Color::white, pp::Color::black, 1.0 );
     
     for (i = 0; i< numTrees; i++ ) {
@@ -474,21 +468,18 @@ void draw_trees()
 		    tree_name = get_tree_name(tree_type);
 		}
 
-        glPushMatrix();
+        gl::PushMatrix();
         
-		glTranslatef( treeLocs[i].ray.pt.x,
-				treeLocs[i].ray.pt.y, 
-        		treeLocs[i].ray.pt.z );
+		gl::Translate( treeLocs[i].ray.pt );
 
 		normal = eye_pt - treeLocs[i].ray.pt;
 		normal.normalize();
 
-		glNormal3f( normal.x, normal.y, normal.z );
-		//glCallList( treeLocs[i].getDisplayList() );	
+		gl::Normal( normal );
 		
 		treeLocs[i].getModel()->draw();
 		
-        glPopMatrix();
+        gl::PopMatrix();
     } 
 
     itemLocs = get_item_locs();
@@ -513,57 +504,56 @@ void draw_trees()
 	    item_type = itemLocs[i].type;
 	    item_name = get_item_name(item_type);
 	    if (!get_texture_binding( item_name, &texture_id ) ) {
-		texture_id = 0;
+			texture_id = 0;
 	    }
-	    glBindTexture( GL_TEXTURE_2D, texture_id );
+	    gl::BindTexture( GL_TEXTURE_2D, texture_id );
 	}
 
-        glPushMatrix();
+        gl::PushMatrix();
 	{
-	    glTranslatef( itemLocs[i].ray.pt.x, itemLocs[i].ray.pt.y, 
-			  itemLocs[i].ray.pt.z );
+	    gl::Translate( itemLocs[i].ray.pt );
 
 	    itemRadius = itemLocs[i].diam/2.;
 	    itemHeight = itemLocs[i].height;
 
 	    if ( item_types[item_type].use_normal ) {
-		normal = item_types[item_type].normal;
+			normal = item_types[item_type].normal;
 	    } else {
-		normal = eye_pt - itemLocs[i].ray.pt;
-		normal.normalize();
+			normal = eye_pt - itemLocs[i].ray.pt;
+			normal.normalize();
 	    }
 
 	    if (normal.y == 1.0) {
-		continue;
+			continue;
 	    }
 
-	    glNormal3f( normal.x, normal.y, normal.z );
+	    gl::Normal( normal );
 
 	    normal.y = 0.0;
 	    normal.normalize();
 
-	    glBegin( GL_QUADS );
+	    gl::Begin( GL_QUADS );
 	    {
-		glTexCoord2f( 0., 0. );
-		glVertex3f( -itemRadius*normal.z, 
+		gl::TexCoord( 0., 0. );
+		gl::Vertex( -itemRadius*normal.z, 
 			    0.0, 
 			    itemRadius*normal.x );
-		glTexCoord2f( 1., 0. );
-		glVertex3f( itemRadius*normal.z, 
+		gl::TexCoord( 1., 0. );
+		gl::Vertex( itemRadius*normal.z, 
 			    0.0, 
 			    -itemRadius*normal.x );
-		glTexCoord2f( 1., 1. );
-		glVertex3f( itemRadius*normal.z, 
+		gl::TexCoord( 1., 1. );
+		gl::Vertex( itemRadius*normal.z, 
 			    itemHeight, 
 			    -itemRadius*normal.x );
-		glTexCoord2f( 0., 1. );
-		glVertex3f( -itemRadius*normal.z, 
+		gl::TexCoord( 0., 1. );
+		gl::Vertex( -itemRadius*normal.z, 
 			    itemHeight, 
 			    itemRadius*normal.x );
 	    }
-	    glEnd();
+	    gl::End();
 	}
-        glPopMatrix();
+        gl::PopMatrix();
     } 
 
 } 
@@ -674,26 +664,26 @@ void draw_fog_plane()
 
     gl::Begin(GL_QUAD_STRIP);
 
-    glVertex3f( bottom_left_pt.x, bottom_left_pt.y, bottom_left_pt.z );
-    glVertex3f( bottom_right_pt.x, bottom_right_pt.y, bottom_right_pt.z );
-    glVertex3f( left_pt.x, left_pt.y, left_pt.z );
-    glVertex3f( right_pt.x, right_pt.y, right_pt.z );
+    gl::Vertex(bottom_left_pt);
+    gl::Vertex(bottom_right_pt);
+    gl::Vertex(left_pt);
+    gl::Vertex(right_pt);
 
     gl::Color(fogColor, 0.9);
-    glVertex3f( top_left_pt.x, top_left_pt.y, top_left_pt.z );
-    glVertex3f( top_right_pt.x, top_right_pt.y, top_right_pt.z );
+    gl::Vertex(top_left_pt);
+    gl::Vertex(top_right_pt);
 
     gl::Color(fogColor, 0.3);
     pt = top_left_pt + left_vec ;
-    glVertex3f( pt.x, pt.y, pt.z );
+    gl::Vertex(pt);
     pt = top_right_pt + right_vec;
-    glVertex3f( pt.x, pt.y, pt.z );
+    gl::Vertex(pt);
 		
     gl::Color(fogColor, 0.0 );
     pt = top_left_pt + left_vec*3.0;
-    glVertex3f( pt.x, pt.y, pt.z );
+    gl::Vertex(pt);
     pt = top_right_pt + right_vec*3.0;
-    glVertex3f( pt.x, pt.y, pt.z );
+    gl::Vertex( pt.x, pt.y, pt.z );
 
-    glEnd();
+    gl::End();
 }

@@ -154,7 +154,7 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
     x_org = w/2 - box_width/2;
     y_org = h/2 - box_height/2;
     if ( y_org + box_height > box_max_y ) {
-	y_org = box_max_y - box_height;
+		y_org = box_max_y - box_height;
     }
 
     mp_backBtn->setPosition(pp::Vec2d( x_org + 131 - mp_backBtn->getWidth()/2.0,
@@ -170,10 +170,10 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 	// Draw tux life icons
 	int i;
 	
-	glPushMatrix();
+	gl::PushMatrix();
 	{
 
-	    glTranslatef( x_org + box_width - 4*36 + 4,
+	    gl::Translate( x_org + box_width - 4*36 + 4,
 			  y_org + 181,
 			  0 );
 	    
@@ -182,10 +182,10 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 			     "need to recode this part" );
 
 	    if ( !get_texture_binding( "tux_life", &texobj ) ) {
-		texobj = 0;
+			texobj = 0;
 	    }
 
-	    glBindTexture( GL_TEXTURE_2D, texobj );
+	    gl::BindTexture( GL_TEXTURE_2D, texobj );
 
 	    for ( i=0; i<4; i++ ) {
 		pp::Vec2d ll, ur;
@@ -196,26 +196,26 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 		    ll = pp::Vec2d( 0, 0 );
 		    ur = pp::Vec2d( 1, 0.5 );
 		}
-		glBegin( GL_QUADS );
+		gl::Begin( GL_QUADS );
 		{
-		    glTexCoord2f( ll.x, ll.y );
-		    glVertex2f( 0, 0 );
+		    gl::TexCoord( ll.x, ll.y );
+		    gl::Vertex( 0, 0 );
 
-		    glTexCoord2f( ur.x, ll.y );
-		    glVertex2f( 32, 0 );
+		    gl::TexCoord( ur.x, ll.y );
+		    gl::Vertex( 32, 0 );
 
-		    glTexCoord2f( ur.x, ur.y );
-		    glVertex2f( 32, 32 );
+		    gl::TexCoord( ur.x, ur.y );
+		    gl::Vertex( 32, 32 );
 
-		    glTexCoord2f( ll.x, ur.y );
-		    glVertex2f( 0, 32 );
+		    gl::TexCoord( ll.x, ur.y );
+		    gl::Vertex( 0, 32 );
 		}
-		glEnd();
+		gl::End();
 
-		glTranslatef( 36, 0, 0 );
+		gl::Translate( 36, 0, 0 );
 	    }
 	}
-	glPopMatrix();
+	gl::PopMatrix();
     
     // Draw other stuff
 	
@@ -229,19 +229,19 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 	std::list<CourseData>::iterator elem;
 	elem = mp_raceListbox->getCurrentItem();
 
-    glDisable( GL_TEXTURE_2D );
+    gl::Disable( GL_TEXTURE_2D );
 
-    glColor4f( 1.0, 1.0, 1.0, 1.0 );
-    glBegin( GL_QUADS );
+    gl::Color(pp::Color::white);
+    gl::Begin( GL_QUADS );
     {
-		glVertex2f( x_org+box_width-140, y_org+66 );
-		glVertex2f( x_org+box_width, y_org+66 );
-		glVertex2f( x_org+box_width, y_org+66+107 );
-		glVertex2f( x_org+box_width-140, y_org+66+107 );
+		gl::Vertex( x_org+box_width-140, y_org+66 );
+		gl::Vertex( x_org+box_width, y_org+66 );
+		gl::Vertex( x_org+box_width, y_org+66+107 );
+		gl::Vertex( x_org+box_width-140, y_org+66+107 );
     }
-    glEnd();
+    gl::End();
 
-    glEnable( GL_TEXTURE_2D );
+    gl::Enable( GL_TEXTURE_2D );
 
     if ( !get_texture_binding( (*elem).course.c_str(), &texobj ) ) {
 	if ( !get_texture_binding( "no_preview", &texobj ) ) {
@@ -249,23 +249,23 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 	}
     }
 
-    glBindTexture( GL_TEXTURE_2D, texobj );
+    gl::BindTexture( GL_TEXTURE_2D, texobj );
 
-    glBegin( GL_QUADS );
+    gl::Begin( GL_QUADS );
     {
-	glTexCoord2d( 0, 0);
-	glVertex2f( x_org+box_width-136, y_org+70 );
+	gl::TexCoord( 0, 0);
+	gl::Vertex( x_org+box_width-136, y_org+70 );
 
-	glTexCoord2d( 1, 0);
-	glVertex2f( x_org+box_width-4, y_org+70 );
+	gl::TexCoord( 1, 0);
+	gl::Vertex( x_org+box_width-4, y_org+70 );
 
-	glTexCoord2d( 1, 1);
-	glVertex2f( x_org+box_width-4, y_org+70+99 );
+	gl::TexCoord( 1, 1);
+	gl::Vertex( x_org+box_width-4, y_org+70+99 );
 
-	glTexCoord2d( 0, 1);
-	glVertex2f( x_org+box_width-136, y_org+70+99 );
+	gl::TexCoord( 0, 1);
+	gl::Vertex( x_org+box_width-136, y_org+70+99 );
     }
-    glEnd();
+    gl::End();
 }
 
 void

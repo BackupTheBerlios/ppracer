@@ -138,7 +138,7 @@ static void draw_tri_tracks( void )
 
     set_gl_options( TRACK_MARKS ); 
 
-    glColor4f( 0, 0, 0, 1);
+    gl::Color(pp::Color::black);
 
     get_texture_binding( "track_head", &texid[TRACK_HEAD] );
     get_texture_binding( "track_mark", &texid[TRACK_MARK] );
