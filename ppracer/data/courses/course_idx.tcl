@@ -166,14 +166,16 @@ foreach event [glob -nocomplain *] {
 	   tux_bind_texture events/$event/$course $course
        }
     }
-    source event.tcl
+	if [file exists "event.tcl"] {
+	    source event.tcl
+	}
     cd ..
 }
 
 if [file exists "$env(HOME)/.ppracer/events/"] {
     cd "$env(HOME)/.ppracer/events/"
     foreach event [glob -nocomplain *] {
-    
+	
         cd $event
         foreach course [glob -nocomplain *] {
             if [file exists "$course/preview.rgb"] {
@@ -185,7 +187,9 @@ if [file exists "$env(HOME)/.ppracer/events/"] {
 	        tux_bind_texture events/$event/$course $course
             }
         }
-        source event.tcl
+	if [file exists "event.tcl"] {
+	    source event.tcl
+	}
         cd ..
     }
 }
