@@ -25,7 +25,7 @@ pp_translate_string "Ok" "Ok"
 #graphics configuration
 pp_translate_string "Graphics Configuration" "Configurazione della Grafica"
 pp_translate_string "Language:" "Lingua:"
-pp_translate_string "Show UI Snow:" "Mostra Neve sul Menù:"
+pp_translate_string "Show UI Snow:" "Mostra Neve sul Menu:"
 pp_translate_string "Display FPS:" "Visualizza FPS:"
 pp_translate_string "Display Progress Bar:" "Visualizza Avanzamento:"
 pp_translate_string "Draw Fog:" "Visualizza Nebbia:"
