@@ -63,7 +63,7 @@ RaceSelect::RaceSelect()
 	    gameMgr->getCurrentRace().windy = false;
 	    gameMgr->getCurrentRace().snowing = false;
     }
-
+	
 	mp_titleLbl = new pp::Label(pos, "heading", _("Select a race"));
 	mp_titleLbl->alignment.center();
 	mp_titleLbl->alignment.middle();	
@@ -75,7 +75,6 @@ RaceSelect::RaceSelect()
     mp_backBtn->setHilitFontBinding( "button_label_hilit" );
     mp_backBtn->signalClicked.Connect(pp::CreateSlot(this,&RaceSelect::back));
 
-	
     mp_startBtn = new pp::Button(pos,
 			       pp::Vec2d(150, 40),
 			       "button_label",
@@ -83,23 +82,22 @@ RaceSelect::RaceSelect()
     mp_startBtn->setHilitFontBinding( "button_label_hilit" );
     mp_startBtn->setDisabledFontBinding( "button_label_disabled" );
 	mp_startBtn->signalClicked.Connect(pp::CreateSlot(this,&RaceSelect::start));
-
-  
+ 
 	mp_raceListbox = new pp::Listbox<CourseData>(pos,
 				   pp::Vec2d(460, 44),
 				   "listbox_item",
 				   *courseList);
+	   
     mp_raceListbox->setCurrentItem( curElem );
 	mp_raceListbox->signalChange.Connect(pp::CreateSlot(this,&RaceSelect::listboxItemChange));
     // Create text area 
-     
     mp_descTa = new pp::Textarea( pos,
 			       pp::Vec2d(312, 107),
 			       "race_description",
 			       "" );
 	mp_descTa->setText( (*curElem).description.c_str() );
     // Create state buttons - only if practicing or if cup_complete
-    
+	
 	// mirror 
 	mp_mirrorSSBtn = new pp::SSButton( pos,
 					pp::Vec2d(32, 32),
@@ -173,9 +171,8 @@ RaceSelect::RaceSelect()
 	mp_snowSSBtn->setState( int(gameMgr->getCurrentRace().snowing) );
 	// XXX snow button doesn't do anything, so disable for now 
 	mp_snowSSBtn->setSensitive(false);
-	
-    updateButtonEnabledStates();
 
+	updateButtonEnabledStates();
     play_music( "start_screen" );
 }
 

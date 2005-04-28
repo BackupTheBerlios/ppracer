@@ -40,7 +40,7 @@ Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size,
  : mp_insensitiveFont(NULL),
    m_items(itemList)
 {
-    char *tempbinding;
+	char *tempbinding;
     pp::Vec2d ll;
     pp::Vec2d ur;
 
@@ -55,8 +55,7 @@ Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size,
     m_backgroundColor = theme.background;
 	
 	mp_font = pp::Font::get(binding);	
-	
-
+		
     /* Create up arrow button */
     mp_upButton = new pp::Button( 
 		pp::Vec2d( 0, 0 ), /* position will be set later */
@@ -64,7 +63,7 @@ Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size,
 		NULL,
 		NULL );
 
-    tempbinding = "listbox_arrows";
+	tempbinding = "listbox_arrows";
 
     ll = pp::Vec2d( 2.0/64.0, 17.0/64.0 );
     ur = pp::Vec2d( 29.0/64.0, 32.0/64.0 );
@@ -85,14 +84,13 @@ Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size,
 	mp_upButton->setActive( true );
     mp_upButton->signalClicked.Connect(pp::CreateSlot(this,&Listbox::upButtonClick));
 
-
-    /* Create down arrow button */
+	// Create down arrow button 
     mp_downButton = new pp::Button( 
-		pp::Vec2d( 0, 0 ), /* position will be set later */
+		pp::Vec2d( 0, 0 ), // position will be set later
 		pp::Vec2d(DEFAULT_ARROW_BUTTON_WIDTH,DEFAULT_ARROW_BUTTON_HEIGHT),
 		NULL,
 		NULL );
-
+		
     tempbinding = "listbox_arrows";
 
     ll = pp::Vec2d( 2.0/64.0, 1.0/64.0 );
@@ -123,6 +121,7 @@ Listbox<T>::Listbox(  pp::Vec2d pos, pp::Vec2d size,
 
     updateButtonEnabledStates();
     updateButtonPositions();
+
 }
 
 template <class T>

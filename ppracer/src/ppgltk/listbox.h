@@ -29,7 +29,8 @@ namespace pp {
 
 
 template <class T>
-class Listbox : public Widget {
+class Listbox : public Widget
+{
 	double m_arrowWidth;
     double m_borderWidth;
     double m_textPad;

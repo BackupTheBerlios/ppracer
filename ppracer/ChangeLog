@@ -1,3 +1,12 @@
+2005-04-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/keyboardconfig.cpp
+	added more keybindings
+	fallback for "unknown" keys
+	
+2005-04-27  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppgltk/button.*
+	fixed crash
+
 2005-03-11  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppgltk/button.*
 	changed const char* to std::string
