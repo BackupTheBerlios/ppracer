@@ -30,12 +30,15 @@ Button::Button( pp::Vec2d pos, pp::Vec2d size,
 			 const char *binding, const char *label )
  : 	mp_font(NULL),
 	mp_hilitFont(NULL),
-	mp_disabledFont(NULL),
-	m_label(label)
+	mp_disabledFont(NULL)
 {
     m_position = pos;
     m_size = size;
 
+	if(label){
+		m_label = label;
+	}	
+	
     m_tex.binding = NULL;
     m_hilitTex.binding = NULL;
     m_clickedTex.binding = NULL;
@@ -116,7 +119,7 @@ Button::setDisabledFontBinding( const char *binding )
 void
 Button::draw()
 {
-    GLuint texobj;
+	GLuint texobj;
     texture_region_t *tex;
 	pp::Font *font=mp_font;
 
