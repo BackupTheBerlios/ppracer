@@ -48,7 +48,7 @@ public:
 	void setContent(std::string string);
 	std::string& getContent();
 
-	void setEditable(bool editable){m_editable=editable;};
+	void setEditable(bool editable=true){m_editable=editable;};
 
 	//signals
 	pp::Signal2<pp::Entry*,SDLKey> signalKeyPressed;

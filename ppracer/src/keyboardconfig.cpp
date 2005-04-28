@@ -108,13 +108,12 @@ static KeyMap keymap[] = {
 };
 
 	
-	
 KeyboardConfig::KeyboardConfig()
 {
 	setTitle(_("Keyboard Configuration"));
 	
 	pp::Vec2d pos(0,0);
-	pp::Vec2d size(250,32);
+	pp::Vec2d size(220,32);
 	
 	mp_leftEntry = new pp::Entry(pos, size,
 				     "listbox_item");
@@ -228,39 +227,29 @@ KeyboardConfig::apply()
 void
 KeyboardConfig::setKey(pp::Entry* widget, SDLKey key)
 {
-	std::string content="";
-	
-	if(key==SDLK_BACKSPACE){
-		widget->setContent(content);
-		return;
-	}else{
-		content = getKey(key);
-	}
-	
-	if (content!=""){
-		widget->setContent(content);
-	}
+	widget->setContent(getKey(key));
 }
 
 std::string KeyboardConfig::getKey(SDLKey key)
 {
 	std::string content;
-	if(isprint(key)){
-		content=key;
-	}else{
-		for(unsigned int i=0;i<sizeof(keymap)/sizeof(KeyMap);i++){
-			if(key==keymap[i].key){
-				content=keymap[i].string;
-				break;
-			}
+	
+	for(unsigned int i=0;i<sizeof(keymap)/sizeof(KeyMap);i++){
+		if(key==keymap[i].key){
+			content=keymap[i].string;
+			break;
 		}
 	}
-	
+		
 	if(content.empty()){
-		char temp[10];
-		sprintf(temp,"%d",key);
-		content = "key ";
-		content += temp;
+		if(isprint(key)){
+			content=key;
+		}else{
+			char temp[10];
+			sprintf(temp,"%d",key);
+			content = "key ";
+			content += temp;
+		}
 	}
 	
 	return content;

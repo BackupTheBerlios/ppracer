@@ -101,7 +101,7 @@ Entry::keyboardEvent(SDLKey key, SDLMod mod, bool release)
 						m_content+=key;
 					}
 				}
-			}else if( isdigit(key) ){
+			}else if( isprint(key) ){
 				if(m_content.size()<m_maxchars){
 					m_content+=key;
 				}
@@ -110,8 +110,6 @@ Entry::keyboardEvent(SDLKey key, SDLMod mod, bool release)
 					std::string::iterator it = m_content.end();
 					it--;
 					m_content.erase(it);	
-					//i'm stupid... or g++-2.95?
-					//content.erase( --m_content.end() );
 				}
 			}
 		}else{

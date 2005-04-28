@@ -2,6 +2,7 @@
 	* src/keyboardconfig.cpp
 	added more keybindings
 	fallback for "unknown" keys
+	backspace now usable as a key
 	
 2005-04-27  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppgltk/button.*
