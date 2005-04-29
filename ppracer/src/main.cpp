@@ -247,8 +247,8 @@ int main( int argc, char *argv[] )
 	register_common_callbacks( tclInterp );
 	
 	// Setup class for translation
-	translation.getLanguages();
-	translation.load( getparam_ui_language() );
+	Translation::Instance()->getLanguages();
+	Translation::Instance()->load( getparam_ui_language() );
 
     load_tux();
     init_textures();

@@ -31,7 +31,7 @@ GraphicsConfig::GraphicsConfig()
 	
 	pp::Vec2d pos(0,0);
 
-	m_langList=translation.LanguageList();
+	m_langList=Translation::Instance()->LanguageList();
 	std::list<language_t>::iterator langit,iter;
 	
       	bool found=false;
@@ -122,7 +122,7 @@ void
 GraphicsConfig::apply()
 {
 	std::list<language_t>::iterator langit = mp_langListBox->getCurrentItem();
-	translation.load((*langit).language.c_str());	
+	Translation::Instance()->load((*langit).language.c_str());	
 	setparam_ui_language(const_cast<char*>((*langit).language.c_str()));
 	setparam_ui_snow(bool( mp_uiSnowBox->getState() ));
 	setparam_display_fps(bool( mp_fpsBox->getState() ));

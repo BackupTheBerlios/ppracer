@@ -22,12 +22,21 @@
 #include "ppracer.h"
 #include "game_config.h"
 
+Translation* Translation::instance = NULL;
 
-Translation translation;
+Translation*
+Translation::Instance()
+{
+	if(!instance){
+		instance = new Translation();
+	}
+	return instance;
+}
+
+
 
 Translation::Translation()
 {
- 	//nothing here
 }
 
 void
@@ -89,7 +98,7 @@ Translation::addLanguage(const char* language, const char* name)
 	m_languages.push_back(lang);
 }
 
-static int pp_translate_string_cb ( ClientData cd, Tcl_Interp *ip, 
+int pp_translate_string_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[])
 {
 	if ( argc != 3 ) {
@@ -99,12 +108,12 @@ static int pp_translate_string_cb ( ClientData cd, Tcl_Interp *ip,
         return TCL_ERROR;
     } 
 	
-	translation.setTranslation(argv[1],argv[2]);
+	Translation::Instance()->setTranslation(argv[1],argv[2]);
 	
 	return TCL_OK;
 }
 
-static int pp_translate_language_cb ( ClientData cd, Tcl_Interp *ip, 
+int pp_translate_language_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[])
 {
 	if ( argc != 3 ) {
@@ -114,7 +123,7 @@ static int pp_translate_language_cb ( ClientData cd, Tcl_Interp *ip,
         return TCL_ERROR;
     } 
 	
-	translation.addLanguage(argv[1],argv[2]);
+	Translation::Instance()->addLanguage(argv[1],argv[2]);
 	
 	return TCL_OK;
 }

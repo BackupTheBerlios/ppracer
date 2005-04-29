@@ -35,28 +35,32 @@ typedef struct{
 /// Class for handling translations
 class Translation
 {
+	Translation();
+	
+	void setTranslation(const char* language, const char* name);
+	void addLanguage(const char* language, const char* name);
 	
 	/// the map for storing the translation strings
 	std::map<std::string, std::string> m_translations;	
 	std::list<language_t> m_languages;
 	
-public:
-	Translation();
+	static Translation* instance;
 	
+public:
+	static Translation* Instance();	
+
 	void load(const char* language);
 	const char* getTranslation(const char* string);
-	void setTranslation(const char* language, const char* name);
-	void addLanguage(const char* language, const char* name);
+	
 	void getLanguages();
 	std::list<language_t> LanguageList() {return m_languages;}
 
-
+	friend int pp_translate_language_cb ( ClientData cd, Tcl_Interp *ip,  int argc, CONST84 char *argv[]);
+	friend int pp_translate_string_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]);
 };
 
-extern Translation translation;
-
 ///a gettext like macro that returns the translated string
-#define _(string) translation.getTranslation(string)
+#define _(string) Translation::Instance()->getTranslation(string)
 
 void register_translation_callbacks( Tcl_Interp *ip );
 
