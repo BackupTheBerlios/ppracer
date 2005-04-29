@@ -586,7 +586,7 @@ pp::Plane get_local_course_plane( pp::Vec3d pt )
 static void update_paddling( Player& plyr )
 {
     if ( plyr.control.is_paddling ) {
-		if ( gameMgr->time - plyr.control.paddle_time >= PADDLING_DURATION ) {
+		if ( GameMgr::Instance()->time - plyr.control.paddle_time >= PADDLING_DURATION ) {
 		    print_debug( DEBUG_CONTROL, "paddling off" );
 		    plyr.control.is_paddling = false;
 		}
@@ -1167,9 +1167,9 @@ pp::Vec3d calc_wind_force( pp::Vec3d player_vel )
 
     total_vel = -1*player_vel;
     
-    if ( gameMgr->getCurrentRace().windy ) {
+    if ( GameMgr::Instance()->getCurrentRace().windy ) {
 	/* adjust wind_scale with a random walk */
-	if ( last_time_called != gameMgr->time ) {
+	if ( last_time_called != GameMgr::Instance()->time ) {
 	    wind_scale = wind_scale + 
 		(rand()/double(RAND_MAX)-0.50) * 0.15;
 	    wind_scale = MIN( 1.0, MAX( 0.0, wind_scale ) );
@@ -1193,7 +1193,7 @@ pp::Vec3d calc_wind_force( pp::Vec3d player_vel )
 
     check_assertion( df_mag > 0, "Negative wind force" );
 
-    last_time_called = gameMgr->time;
+    last_time_called = GameMgr::Instance()->time;
 
     return df_mag*total_vel;
 }
@@ -1327,7 +1327,7 @@ static pp::Vec3d calc_net_force( Player& plyr, pp::Vec3d pos,
 	plyr.control.begin_jump = false;
 	if ( dist_from_surface <= 0 ) {
 	    plyr.control.jumping = true;
-	    plyr.control.jump_start_time = gameMgr->time;
+	    plyr.control.jump_start_time = GameMgr::Instance()->time;
 	} else {
 	    plyr.control.jumping = false;
 	}
@@ -1336,7 +1336,7 @@ static pp::Vec3d calc_net_force( Player& plyr, pp::Vec3d pos,
 
     /* Apply jump force in up direction for JUMP_FORCE_DURATION */
     if ( ( plyr.control.jumping ) &&
-	 ( gameMgr->time - plyr.control.jump_start_time < 
+	 ( GameMgr::Instance()->time - plyr.control.jump_start_time < 
 	   JUMP_FORCE_DURATION ) ) 
     {
 	jump_f = pp::Vec3d( 
@@ -1751,7 +1751,7 @@ void update_player_pos( Player& plyr, float dtime )
 
     if ( plyr.control.is_paddling ) {
 	double factor;
-	factor = (gameMgr->time - plyr.control.paddle_time) / PADDLING_DURATION;
+	factor = (GameMgr::Instance()->time - plyr.control.paddle_time) / PADDLING_DURATION;
 	if ( plyr.airborne ) {
 	    paddling_factor = 0;
 	    flap_factor = factor;
@@ -1767,7 +1767,7 @@ void update_player_pos( Player& plyr, float dtime )
     local_force = plyr.orientation.conjugate().rotate(plyr.net_force);
 
     if (plyr.control.jumping) {
-	flap_factor = (gameMgr->time - plyr.control.jump_start_time) / 
+	flap_factor = (GameMgr::Instance()->time - plyr.control.jump_start_time) / 
 	    JUMP_FORCE_DURATION;
     } 
 
@@ -1786,7 +1786,7 @@ void init_physical_simulation()
     pp::Vec3d init_f;
     int i;
 
-    for ( i=0; i<gameMgr->numPlayers; i++ ) {
+    for ( i=0; i<GameMgr::Instance()->numPlayers; i++ ) {
 		plyr = &players[i];
 
 	ycoord = find_y_coord( plyr->pos.x, plyr->pos.z );

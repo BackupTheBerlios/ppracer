@@ -61,23 +61,23 @@ GameOver::GameOver()
 		
     play_music( "game_over" );
 
-    m_aborted = gameMgr->wasRaceAborted();
+    m_aborted = GameMgr::Instance()->wasRaceAborted();
 
 	if ( !m_aborted ) {
-		gameMgr->updatePlayersScores();
+		GameMgr::Instance()->updatePlayersScores();
     }
 		
-    if ( gameMgr->gametype!=GameMgr::PRACTICING ) {
-		m_bestScore = gameMgr->updateCurrentRaceData();		
+    if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
+		m_bestScore = GameMgr::Instance()->updateCurrentRaceData();		
 		
-		if(!gameMgr->wasRaceWon()){
+		if(!GameMgr::Instance()->wasRaceWon()){
 			players[0].decLives();
 		}
     }else{
 		if ( !m_aborted ) {
 			m_bestScore = players[0].updateOpenCourseData(
-									gameMgr->getCurrentRace().name,
-									gameMgr->time,
+									GameMgr::Instance()->getCurrentRace().name,
+									GameMgr::Instance()->time,
 									players[0].herring,
 									players[0].score);
 			
@@ -97,7 +97,7 @@ GameOver::GameOver()
 	
 	pp::Vec2d pos(width/2, height/2 +200);
 	
-	if ( gameMgr->wasRaceAborted() ) {
+	if ( GameMgr::Instance()->wasRaceAborted() ) {
 		mp_raceOverLbl = new pp::Label(pos,"race_over",_("Race aborted"));
 		mp_raceOverLbl->alignment.center();
     }else{	
@@ -107,7 +107,7 @@ GameOver::GameOver()
 		char buff[BUFF_LEN];
 		int minutes, seconds, hundredths;
 
-		getTimeComponents( gameMgr->time, minutes, seconds, hundredths );
+		getTimeComponents( GameMgr::Instance()->time, minutes, seconds, hundredths );
 		sprintf( buff, _("Time: %02d:%02d.%02d"), minutes, seconds, hundredths );	
 		pos.y-=100;
 		mp_timeLbl = new pp::Label(pos,"race_stats", buff);
@@ -129,7 +129,7 @@ GameOver::GameOver()
 		mp_maxspeedLbl = new pp::Label(pos,"race_stats",buff);
 		mp_maxspeedLbl->alignment.center();
 	
-		double percent = (gameMgr->airbornetime / gameMgr->time) * 100.0;
+		double percent = (GameMgr::Instance()->airbornetime / GameMgr::Instance()->time) * 100.0;
 		sprintf( buff, _("Was flying: %.01f %% of time"), percent);
 		pos.y-=30;
 		mp_flyingLbl = new pp::Label(pos,"race_stats",buff);
@@ -138,15 +138,15 @@ GameOver::GameOver()
 	
 		const char *string="";
 	
-		if ( gameMgr->gametype==GameMgr::PRACTICING){
+		if ( GameMgr::Instance()->gametype==GameMgr::PRACTICING){
 			if(m_bestScore){
 				string = _("You beat your best score!");
 			}
-		} else if(gameMgr->wasEventWon()){
+		} else if(GameMgr::Instance()->wasEventWon()){
 			string = _("Congratulations! You won the event!");
-		} else if(gameMgr->wasCupWon()){
+		} else if(GameMgr::Instance()->wasCupWon()){
 			string = _("Congratulations! You won the cup!");
-		} else if(gameMgr->wasRaceWon()){
+		} else if(GameMgr::Instance()->wasRaceWon()){
 			string = _("You advanced to the next race!");
 		} else {
 			string = _("You didn't advance.");
@@ -162,7 +162,7 @@ GameOver::~GameOver()
 {
 	delete mp_raceOverLbl;
 	
-	if ( !gameMgr->wasRaceAborted() ) {
+	if ( !GameMgr::Instance()->wasRaceAborted() ) {
 		delete mp_timeLbl;
 		delete mp_herringLbl;
 		delete mp_scoreLbl;
@@ -185,7 +185,7 @@ GameOver::loop(float timeStep)
 
 	if ( is_joystick_continue_button_down() )
 	{
-	    if ( gameMgr->gametype != GameMgr::PRACTICING ) {
+	    if ( GameMgr::Instance()->gametype != GameMgr::PRACTICING ) {
 			set_game_mode( EVENT_RACE_SELECT );
 		}else{
 			set_game_mode( RACE_SELECT );
@@ -241,7 +241,7 @@ bool
 GameOver::mouseButtonEvent(int button, int x, int y, bool pressed)
 
 {
-	if ( gameMgr->gametype!=GameMgr::PRACTICING ) {
+	if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
 		set_game_mode( EVENT_RACE_SELECT );
 	}else{
 		set_game_mode( RACE_SELECT );
@@ -253,7 +253,7 @@ GameOver::mouseButtonEvent(int button, int x, int y, bool pressed)
 bool
 GameOver::keyPressEvent(SDLKey key)
 {
-	if ( gameMgr->gametype!=GameMgr::PRACTICING ) {
+	if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
 		set_game_mode( EVENT_RACE_SELECT );
 	}else{
 		set_game_mode( RACE_SELECT );

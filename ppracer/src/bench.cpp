@@ -60,8 +60,8 @@ Benchmark::loop(float timeStep)
 	}
 	
 	if( it != openCourseList.end() ){
-		gameMgr->setCurrentRace(it);
-		gameMgr->getCurrentRace().condition = sm_condition;
+		GameMgr::Instance()->setCurrentRace(it);
+		GameMgr::Instance()->getCurrentRace().condition = sm_condition;
 	}else{
 		std::cout << "Benchmark error: unable to set course: " 
 					<< sm_course << std::endl;

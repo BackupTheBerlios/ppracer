@@ -166,8 +166,6 @@ int main( int argc, char *argv[] )
 	     "it under certain conditions.\n"
 	     "See http://www.gnu.org/copyleft/gpl.html for details.\n\n" );
 
-	gameMgr = new GameMgr();
-	
     /* Seed the random number generator */
     srand( time(NULL) );
 
@@ -177,7 +175,7 @@ int main( int argc, char *argv[] )
      */
 
     /* Don't support multiplayer, yet... */
-    gameMgr->numPlayers = 1;
+    GameMgr::Instance()->numPlayers = 1;
 
     /* Create a Tcl interpreter */
     tclInterp = Tcl_CreateInterp();
@@ -277,7 +275,7 @@ int main( int argc, char *argv[] )
 		set_game_mode( BENCHMARK );
 	}
 	
-    gameMgr->difficulty = DIFFICULTY_LEVEL_NORMAL;
+    GameMgr::Instance()->difficulty = DIFFICULTY_LEVEL_NORMAL;
 	
 	winsys_show_cursor( false );
 

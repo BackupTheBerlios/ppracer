@@ -31,8 +31,8 @@
 EventSelect::EventSelect()
 {
 	if(GameMode::prevmode==EVENT_RACE_SELECT){
-		m_curEvent = gameMgr->currentEvent;
-		m_curCup = gameMgr->currentCup;
+		m_curEvent = GameMgr::Instance()->currentEvent;
+		m_curCup = GameMgr::Instance()->currentCup;
 		if(players[0].isCupComplete((*m_curEvent).name,(*m_curCup).name)){
 			if(m_curCup != --(*m_curEvent).cupList.end()){
 				m_curCup++;
@@ -191,7 +191,7 @@ EventSelect::apply()
     m_curEvent = mp_eventListbox->getCurrentItem();
 	m_curCup = mp_cupListbox->getCurrentItem();
 
-	gameMgr->setupEventAndCup(	m_curEvent,
+	GameMgr::Instance()->setupEventAndCup(	m_curEvent,
 								m_curCup );
 
 	if(!getparam_always_save_event_race_data()){	

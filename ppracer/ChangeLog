@@ -1,3 +1,7 @@
+2005-04-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/game_mgr.* src/*
+	gameMgr is now a singleton
+
 2005-04-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/keyboardconfig.cpp
 	added more keybindings

@@ -63,10 +63,10 @@ EventRaceSelect::EventRaceSelect()
 	mp_startBtn->signalClicked.Connect(pp::CreateSlot(this,&EventRaceSelect::start));
 
 	if ( GameMode::prevmode != GAME_OVER ) {
-		curElem = gameMgr->getCurrentCup().raceList.begin();
+		curElem = GameMgr::Instance()->getCurrentCup().raceList.begin();
     } else {
-		if( gameMgr->wasRaceWon() ){
-			if(curElem != --gameMgr->getCurrentCup().raceList.end()){
+		if( GameMgr::Instance()->wasRaceWon() ){
+			if(curElem != --GameMgr::Instance()->getCurrentCup().raceList.end()){
 				curElem++;
 			}
 		}
@@ -75,7 +75,7 @@ EventRaceSelect::EventRaceSelect()
 	mp_raceListbox = new pp::Listbox<CourseData>(pos,
 				   pp::Vec2d(460, 44),
 				   "listbox_item",
-				   gameMgr->getCurrentCup().raceList);
+				   GameMgr::Instance()->getCurrentCup().raceList);
     mp_raceListbox->setCurrentItem( curElem );
 	mp_raceListbox->signalChange.Connect(pp::CreateSlot(this,&EventRaceSelect::listboxItemChange));
     // Create text area 
@@ -360,8 +360,8 @@ EventRaceSelect::updateStates()
 	} else {
 		m_data.won=false;
 		players[0].getCupCourseData(
-				std::string(gameMgr->getCurrentEvent().name),
-				std::string(gameMgr->getCurrentCup().name),
+				std::string(GameMgr::Instance()->getCurrentEvent().name),
+				std::string(GameMgr::Instance()->getCurrentCup().name),
 				std::string((*curElem).name),
 				m_data);
 	
@@ -370,20 +370,20 @@ EventRaceSelect::updateStates()
 			mp_startBtn->setSensitive( false );	
 		}else{
 			
-			difficulty_level_t d = gameMgr->difficulty;
+			difficulty_level_t d = GameMgr::Instance()->difficulty;
 			m_data.time = (*curElem).time_req[d];
 			m_data.herring = (*curElem).herring_req[d];
 			m_data.score = int((*curElem).score_req[d]);
 
-			if(curElem==gameMgr->getCurrentCup().raceList.begin()){
+			if(curElem==GameMgr::Instance()->getCurrentCup().raceList.begin()){
 				state=PLAYABLE;
 				mp_startBtn->setSensitive( true );
 			}else{
 				PlayerCourseData prev;
 				curElem--;
 				players[0].getCupCourseData(
-					std::string(gameMgr->getCurrentEvent().name),
-					std::string(gameMgr->getCurrentCup().name),
+					std::string(GameMgr::Instance()->getCurrentEvent().name),
+					std::string(GameMgr::Instance()->getCurrentCup().name),
 					std::string((*curElem).name),
 					prev);
 				curElem++;
@@ -412,7 +412,7 @@ EventRaceSelect::start()
 {
     mp_startBtn->setHighlight( true );
     loop( 0 );
-	gameMgr->setCurrentRace(curElem);
+	GameMgr::Instance()->setCurrentRace(curElem);
 
     set_game_mode( LOADING );
 }

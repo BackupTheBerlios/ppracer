@@ -164,15 +164,15 @@ void main_loop()
 	
 		// Reset time step clock so that there isn't a sudden
 		//  jump when we start the new mode 
-		gameMgr->resetTimeStep();
+		GameMgr::Instance()->resetTimeStep();
 	}
 	
-	gameMgr->updateTimeStep();
+	GameMgr::Instance()->updateTimeStep();
 	
 	if ( Benchmark::getTimeStep() >0.0 ){
 		GameMode::currentMode->loop(Benchmark::getTimeStep());
 	}else{	
-		GameMode::currentMode->loop( gameMgr->getTimeStep() );
+		GameMode::currentMode->loop( GameMgr::Instance()->getTimeStep() );
 	}
 }
 

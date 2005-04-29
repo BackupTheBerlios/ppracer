@@ -78,7 +78,7 @@ Loading::loop(float timeStep)
 
     UIMgr.setupDisplay();
 
-	drawSnow(timeStep, gameMgr->getCurrentRace().windy);
+	drawSnow(timeStep, GameMgr::Instance()->getCurrentRace().windy);
 	
     theme.drawMenuDecorations();
 
@@ -90,17 +90,17 @@ Loading::loop(float timeStep)
 	
 
     if ( m_loadedCourse.empty() ||
-		m_loadedCourse != gameMgr->getCurrentRace().course ||
-		m_loadedCondition != gameMgr->getCurrentRace().condition ) 
+		m_loadedCourse != GameMgr::Instance()->getCurrentRace().course ||
+		m_loadedCondition != GameMgr::Instance()->getCurrentRace().condition ) 
     {
 	// Load the course
-	load_course( gameMgr->getCurrentRace().course );
+	load_course( GameMgr::Instance()->getCurrentRace().course );
 
-	m_loadedCourse = gameMgr->getCurrentRace().course;
-	m_loadedCondition = gameMgr->getCurrentRace().condition;
+	m_loadedCourse = GameMgr::Instance()->getCurrentRace().course;
+	m_loadedCondition = GameMgr::Instance()->getCurrentRace().condition;
     }
 
-    set_course_mirroring( gameMgr->getCurrentRace().mirrored );
+    set_course_mirroring( GameMgr::Instance()->getCurrentRace().mirrored );
 
     // We're done here, enter INTRO mode
     set_game_mode( INTRO );	

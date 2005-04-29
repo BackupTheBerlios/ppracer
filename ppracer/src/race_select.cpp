@@ -56,12 +56,12 @@ RaceSelect::RaceSelect()
     if ( GameMode::prevmode != GAME_OVER ) {
 		// Initialize the race data 
 		curElem = courseList->begin();
-		gameMgr->setCurrentRace(curElem);
+		GameMgr::Instance()->setCurrentRace(curElem);
 		
-	    gameMgr->getCurrentRace().mirrored = false;
-	    gameMgr->getCurrentRace().condition = RACE_CONDITIONS_SUNNY;
-	    gameMgr->getCurrentRace().windy = false;
-	    gameMgr->getCurrentRace().snowing = false;
+	    GameMgr::Instance()->getCurrentRace().mirrored = false;
+	    GameMgr::Instance()->getCurrentRace().condition = RACE_CONDITIONS_SUNNY;
+	    GameMgr::Instance()->getCurrentRace().windy = false;
+	    GameMgr::Instance()->getCurrentRace().snowing = false;
     }
 	
 	mp_titleLbl = new pp::Label(pos, "heading", _("Select a race"));
@@ -112,7 +112,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_mirrorSSBtn->setState( int(gameMgr->getCurrentRace().mirrored) );
+	mp_mirrorSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().mirrored) );
 	// conditions
 	mp_conditionsSSBtn = new pp::SSButton( pos,
 					    pp::Vec2d(32, 32),
@@ -137,7 +137,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
 				  pp::Color::white );	
 
-	mp_conditionsSSBtn->setState( int(gameMgr->getCurrentRace().condition) );
+	mp_conditionsSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().condition) );
 	// wind
 	mp_windSSBtn = new pp::SSButton( pos,
 				      pp::Vec2d(32, 32),
@@ -152,7 +152,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_windSSBtn->setState( int(gameMgr->getCurrentRace().windy) );
+	mp_windSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().windy) );
 
 	// snow 
 	mp_snowSSBtn = new pp::SSButton( pos,
@@ -168,7 +168,7 @@ RaceSelect::RaceSelect()
 				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
 				  pp::Color::white );
 
-	mp_snowSSBtn->setState( int(gameMgr->getCurrentRace().snowing) );
+	mp_snowSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().snowing) );
 	// XXX snow button doesn't do anything, so disable for now 
 	mp_snowSSBtn->setSensitive(false);
 
@@ -318,13 +318,13 @@ RaceSelect::setWidgetPositionsAndDrawDecorations()
 void
 RaceSelect::updateRaceData()
 {
-  	gameMgr->getCurrentRace().course = (*curElem).course;
-	gameMgr->getCurrentRace().name = (*curElem).name;
-	gameMgr->getCurrentRace().description = (*curElem).description;
-	gameMgr->getCurrentRace().mirrored = bool(mp_mirrorSSBtn->getState());
-	gameMgr->getCurrentRace().condition = static_cast<race_conditions_t>(mp_conditionsSSBtn->getState());
-	gameMgr->getCurrentRace().windy = bool(mp_windSSBtn->getState());
-	gameMgr->getCurrentRace().snowing = bool(mp_snowSSBtn->getState());
+  	GameMgr::Instance()->getCurrentRace().course = (*curElem).course;
+	GameMgr::Instance()->getCurrentRace().name = (*curElem).name;
+	GameMgr::Instance()->getCurrentRace().description = (*curElem).description;
+	GameMgr::Instance()->getCurrentRace().mirrored = bool(mp_mirrorSSBtn->getState());
+	GameMgr::Instance()->getCurrentRace().condition = static_cast<race_conditions_t>(mp_conditionsSSBtn->getState());
+	GameMgr::Instance()->getCurrentRace().windy = bool(mp_windSSBtn->getState());
+	GameMgr::Instance()->getCurrentRace().snowing = bool(mp_snowSSBtn->getState());
 }
 
 void
@@ -412,7 +412,7 @@ void
 RaceSelect::listboxItemChange()
 {
 	curElem=mp_raceListbox->getCurrentItem();
-	gameMgr->setCurrentRace(curElem);	
+	GameMgr::Instance()->setCurrentRace(curElem);	
 	updateRaceData();
 	mp_descTa->setText( (*curElem).description.c_str() );
 	updateButtonEnabledStates();

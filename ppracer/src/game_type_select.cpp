@@ -179,7 +179,7 @@ GameTypeSelect::keyPressEvent(SDLKey key)
 void
 GameTypeSelect::eventSelect()
 {
-	gameMgr->reset(GameMgr::EVENT);
+	GameMgr::Instance()->reset(GameMgr::EVENT);
 
 	set_game_mode( EVENT_SELECT );
 	UIMgr.setDirty();
@@ -195,7 +195,7 @@ GameTypeSelect::credits()
 void
 GameTypeSelect::practice()
 {
-	gameMgr->reset(GameMgr::PRACTICING);
+	GameMgr::Instance()->reset(GameMgr::PRACTICING);
 
 	set_game_mode( RACE_SELECT );
 	UIMgr.setDirty();

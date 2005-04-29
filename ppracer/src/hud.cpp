@@ -224,7 +224,7 @@ HUD::time(const int i)
 		char string[BUFF_LEN];
 		int minutes, seconds, hundredths;
 		    
-		getTimeComponents( gameMgr->time, minutes, seconds, hundredths );
+		getTimeComponents( GameMgr::Instance()->time, minutes, seconds, hundredths );
 		sprintf( string, m_element[i].string.c_str(), minutes, seconds, hundredths);
 		
 		pp::Font::utf8ToUnicode(m_element[i].u_string,string);

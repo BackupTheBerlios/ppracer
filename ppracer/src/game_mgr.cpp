@@ -24,7 +24,17 @@
 
 #include "SDL.h"
 
-GameMgr* gameMgr = NULL;
+
+GameMgr* GameMgr::instance=NULL;
+
+GameMgr*
+GameMgr::Instance()
+{
+	if(!instance){
+		instance = new GameMgr();
+	}
+	return instance;	
+}
 
 GameMgr::GameMgr()
 {

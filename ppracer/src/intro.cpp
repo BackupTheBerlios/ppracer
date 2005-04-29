@@ -63,8 +63,8 @@ Intro::Intro()
 
     players[0].view.initialized = false;
 
-    gameMgr->time = 0.0;
-	gameMgr->airbornetime = 0.0;
+    GameMgr::Instance()->time = 0.0;
+	GameMgr::Instance()->airbornetime = 0.0;
     players[0].herring = 0;
     players[0].score = 0;
 

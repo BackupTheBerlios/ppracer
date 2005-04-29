@@ -855,8 +855,8 @@ static int get_race_conditions_cb( ClientData cd, Tcl_Interp *ip,
     }
 
 	result = Tcl_NewStringObj(
-	race_condition_names[ gameMgr->getCurrentRace().condition ],
-	strlen( race_condition_names[ gameMgr->getCurrentRace().condition ] ) );
+	race_condition_names[ GameMgr::Instance()->getCurrentRace().condition ],
+	strlen( race_condition_names[ GameMgr::Instance()->getCurrentRace().condition ] ) );
 
     Tcl_SetObjResult( ip, result );
 

@@ -178,7 +178,7 @@ Paused::resume()
 void
 Paused::quit()
 {
-	gameMgr->abortRace();
+	GameMgr::Instance()->abortRace();
     set_game_mode( GAME_OVER );
 }
 

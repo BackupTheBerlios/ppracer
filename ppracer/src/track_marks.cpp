@@ -620,7 +620,7 @@ void add_track_mark( Player& plyr )
 	q->v4 = pp::Vec3d( right_wing.x, right_y + TRACK_HEIGHT, right_wing.z );
 	q->n3 = find_course_normal( q->v3.x, q->v3.z);
 	q->n4 = find_course_normal( q->v4.x, q->v4.z);
-	tex_end = speed*gameMgr->getTimeStep()/TRACK_WIDTH;
+	tex_end = speed*GameMgr::Instance()->getTimeStep()/TRACK_WIDTH;
 	if (q->track_type == TRACK_HEAD) {
 	    q->t3= pp::Vec2d(0.0, 1.0);
 	    q->t4= pp::Vec2d(1.0, 1.0);
@@ -638,7 +638,7 @@ void add_track_mark( Player& plyr )
 
     q->alpha = MIN( (2*comp_depth-dist_from_surface)/(4*comp_depth), 1.0 );
 		
-    track_marks.last_mark_time = gameMgr->time;
+    track_marks.last_mark_time = GameMgr::Instance()->time;
     continuing_track = true;
 
 }

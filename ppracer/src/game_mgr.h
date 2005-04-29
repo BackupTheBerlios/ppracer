@@ -27,6 +27,8 @@
 
 class GameMgr
 {
+	GameMgr();
+	
 	std::list<CourseData>::iterator mi_currentRace;
 	
 	bool m_raceAborted;
@@ -35,9 +37,12 @@ class GameMgr
 	bool m_eventWon;
 	
 	double m_lastTicks;
-		
+	
+	static GameMgr* instance;
+			
 public:
-	GameMgr();
+
+	static GameMgr* Instance();
 
 	// should be private
 	// needs some love in event_select.cpp
@@ -86,7 +91,5 @@ public:
 	void updateTimeStep();
 	inline double getTimeStep(){return timeStep;};	
 };
-
-extern GameMgr* gameMgr;
 
 #endif // _GAME_MGR_H_

@@ -106,7 +106,7 @@ Racing::Racing()
 		init_physical_simulation();
     }
 
-    gameMgr->abortRace(false);
+    GameMgr::Instance()->abortRace(false);
 	
 	init_snow(players[0].view.pos);
 		
@@ -283,7 +283,7 @@ Racing::loop(float timeStep)
 	 !players[0].control.jump_charging && !players[0].control.jumping ) 
     {
 		players[0].control.jump_charging = true;
-		m_chargeStartTime = gameMgr->time;
+		m_chargeStartTime = GameMgr::Instance()->time;
     }
 
     if ( ( !m_charging && !joy_charging ) && players[0].control.jump_charging ) {
@@ -324,7 +324,7 @@ Racing::loop(float timeStep)
     //Paddling
     if ( ( m_paddling || joy_paddling ) && players[0].control.is_paddling == false ) {
 		players[0].control.is_paddling = true;
-		players[0].control.paddle_time = gameMgr->time;
+		players[0].control.paddle_time = GameMgr::Instance()->time;
     }
 
     
@@ -405,8 +405,8 @@ Racing::loop(float timeStep)
 
     winsys_swap_buffers();
 
-    gameMgr->time += timeStep;
-	if (airborne) gameMgr->airbornetime += timeStep;
+    GameMgr::Instance()->time += timeStep;
+	if (airborne) GameMgr::Instance()->airbornetime += timeStep;
 		
 	if(Benchmark::getMode() == Benchmark::PAUSED){
 		set_game_mode(PAUSED);
@@ -418,10 +418,10 @@ Racing::calcJumpAmt( double time_step )
 {
     if ( players[0].control.jump_charging ) {
 		players[0].control.jump_amt = MIN( 
-	    MAX_JUMP_AMT, gameMgr->time - m_chargeStartTime );
+	    MAX_JUMP_AMT, GameMgr::Instance()->time - m_chargeStartTime );
     } else if ( players[0].control.jumping ) {
 		players[0].control.jump_amt *= 
-	    ( 1.0 - ( gameMgr->time - players[0].control.jump_start_time ) / 
+	    ( 1.0 - ( GameMgr::Instance()->time - players[0].control.jump_start_time ) / 
 	      JUMP_FORCE_DURATION );
     } else {
 		players[0].control.jump_amt = 0;
@@ -461,7 +461,7 @@ Racing::keyPressEvent(SDLKey key)
 	switch(key){
 		case 'q':
 		case SDLK_ESCAPE: 
-			gameMgr->abortRace();
+			GameMgr::Instance()->abortRace();
     		set_game_mode( GAME_OVER );
 			return true;	
 		case '1':

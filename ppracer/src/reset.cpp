@@ -174,7 +174,7 @@ Reset::loop(float timeStep)
 
     winsys_swap_buffers();
 
-    gameMgr->time += timeStep;
+    GameMgr::Instance()->time += timeStep;
 
     if (elapsed_time > TOTAL_RESET_TIME) {
 		set_game_mode( RACING );
