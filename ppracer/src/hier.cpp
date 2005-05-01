@@ -426,7 +426,7 @@ void draw_scene_graph( char *node )
     scene_node_t *nodePtr;
 
     if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
-        handle_error( 1, "draw_scene_graph: No such node `%s'", node );
+        PP_ERROR( "draw_scene_graph: No such node `%s'", node );
     } 
 
     traverse_dag( nodePtr, &g_hier_default_material );
@@ -442,7 +442,7 @@ bool collide( char *node, pp::Polyhedron ph )
     invmat.makeIdentity();
 
     if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
-        handle_error( 1, "draw_scene_graph: No such node `%s'", node );
+        PP_ERROR( "draw_scene_graph: No such node `%s'", node );
     } 
 
     return check_polyhedron_collision_with_dag( nodePtr, mat, invmat, ph );

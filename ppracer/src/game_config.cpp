@@ -155,7 +155,7 @@ void fetch_param_string( struct param *p )
 {
     const char *val;
 
-    check_assertion( p->type == PARAM_STRING, 
+    PP_REQUIRE( p->type == PARAM_STRING, 
 		     "configuration parameter type mismatch" );
 
     val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
@@ -172,7 +172,7 @@ void set_param_string( struct param *p, CONST84 char *new_val )
 {
     const char *ret;
 
-    check_assertion( p->type == PARAM_STRING, 
+    PP_REQUIRE( p->type == PARAM_STRING, 
 		     "configuration parameter type mismatch" );
 
     if ( p->loaded ) {
@@ -192,7 +192,7 @@ void fetch_param_char( struct param *p )
 {
     const char *str_val;
 
-    check_assertion( p->type == PARAM_CHAR, 
+    PP_REQUIRE( p->type == PARAM_CHAR, 
 		     "configuration parameter type mismatch" );
 
     str_val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
@@ -210,7 +210,7 @@ void set_param_char( struct param *p, char new_val )
     char buff[2];
     const char *ret;
 
-    check_assertion( p->type == PARAM_CHAR, 
+    PP_REQUIRE( p->type == PARAM_CHAR, 
 		     "configuration parameter type mismatch" );
 
     buff[0] = new_val;
@@ -231,7 +231,7 @@ void fetch_param_int( struct param *p )
     CONST84 char *str_val;
     int val;
 
-    check_assertion( p->type == PARAM_INT, 
+    PP_REQUIRE( p->type == PARAM_INT, 
 		     "configuration parameter type mismatch" );
     
     str_val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
@@ -251,7 +251,7 @@ void set_param_int( struct param *p, int new_val )
     char buff[30];
     const char *ret;
 
-    check_assertion( p->type == PARAM_INT, 
+    PP_REQUIRE( p->type == PARAM_INT, 
 		     "configuration parameter type mismatch" );
 
     sprintf( buff, "%d", new_val );
@@ -272,7 +272,7 @@ void fetch_param_bool( struct param *p )
     int val;
     bool no_val = false;
 
-    check_assertion( p->type == PARAM_BOOL, 
+    PP_REQUIRE( p->type == PARAM_BOOL, 
 		     "configuration parameter type mismatch" );
 
     str_val = Tcl_GetVar( tclInterp, p->name, TCL_GLOBAL_ONLY );
@@ -301,7 +301,7 @@ void set_param_bool( struct param *p, bool new_val )
     char buff[2];
     const char *ret;
 
-    check_assertion( p->type == PARAM_BOOL, 
+    PP_REQUIRE( p->type == PARAM_BOOL, 
 		     "configuration parameter type mismatch" );
 
     sprintf( buff, "%d", new_val ? 1 : 0 );
@@ -978,7 +978,7 @@ void read_config_file(std::string& file)
 
 	if( !file.empty()){
 		if ( Tcl_EvalFile( tclInterp, FUCKTCL file.c_str() ) != TCL_OK ) {
-		handle_error( 1, "error evalating %s: %s", file.c_str(),
+		PP_ERROR( "error evalating %s: %s", file.c_str(),
 			      Tcl_GetStringResult( tclInterp ) );
 	    }	
 		sp_config_file = file.c_str();	
@@ -1000,7 +1000,7 @@ void read_config_file(std::string& file)
 	if ( file_exists( config_file ) ) {
 	    /* File exists -- let's try to evaluate it. */
 	    if ( Tcl_EvalFile( tclInterp, config_file ) != TCL_OK ) {
-		handle_error( 1, "error evalating %s: %s", config_file,
+		PP_ERROR( "error evalating %s: %s", config_file,
 			      Tcl_GetStringResult( tclInterp ) );
 	    }
 	}
@@ -1016,7 +1016,7 @@ void read_config_file(std::string& file)
     }
     /* Old file exists -- let's try to evaluate it. */
     if ( Tcl_EvalFile( tclInterp, config_file ) != TCL_OK ) {
-	handle_error( 1, "error evalating deprecated %s: %s", config_file,
+	PP_ERROR( "error evalating deprecated %s: %s", config_file,
 		      Tcl_GetStringResult( tclInterp ) );
     } else {
 	/* Remove old file and save info in new file location */
@@ -1057,8 +1057,7 @@ void write_config_file()
 
     config_stream = fopen( config_file, "w" );
 	if ( config_stream == NULL ) {
-	print_warning( CRITICAL_WARNING, 
-		       "couldn't open %s for writing: %s", 
+	PP_WARNING( "couldn't open %s for writing: %s", 
 		       config_file, strerror(errno) );
 	return;
     }
@@ -1068,8 +1067,7 @@ void write_config_file()
 				  << sp_config_file << std::endl;
 		config_stream = fopen( sp_config_file, "w" );
 		if ( config_stream == NULL ) {
-			print_warning( CRITICAL_WARNING, 
-		       "couldn't open %s for writing: %s", 
+			PP_WARNING( "couldn't open %s for writing: %s", 
 		       sp_config_file, strerror(errno) );
 			return;
     	}
@@ -1108,7 +1106,7 @@ void write_config_file()
 		     parm->name, parm->val.bool_val ? "true" : "false" );
 	    break;
 	default:
-	    code_not_reached();
+	    PP_NOT_REACHED();
 	}
     }
 
@@ -1175,7 +1173,7 @@ static int get_param_cb ( ClientData cd, Tcl_Interp *ip,
 		break;
 
     default:
-		code_not_reached();
+		PP_NOT_REACHED();
     }
 
     return TCL_OK;
@@ -1250,13 +1248,13 @@ static int set_param_cb ( ClientData cd, Tcl_Interp *ip,
 					 NULL );
 			return TCL_ERROR;
 		}
-		check_assertion( tmp_int == 0 || tmp_int == 1, 
+		PP_ENSURE( tmp_int == 0 || tmp_int == 1, 
 			 "invalid boolean value" );
 		set_param_bool( parm, tmp_int );
 		break;
 
     default:
-		code_not_reached();
+		PP_NOT_REACHED();
     }
 
     return TCL_OK;

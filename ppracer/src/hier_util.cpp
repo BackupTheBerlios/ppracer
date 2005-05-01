@@ -170,7 +170,7 @@ static GLuint get_sphere_display_list( int divisions ) {
 
 		num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
 
-		check_assertion( display_lists == NULL, "display_lists not NULL" );
+		PP_ASSERT( display_lists == NULL, "display_lists not NULL" );
 		display_lists = reinterpret_cast<GLuint*>(malloc( sizeof(GLuint) * num_display_lists ));
 
 		for (int i=0; i<num_display_lists; i++) {
@@ -180,7 +180,7 @@ static GLuint get_sphere_display_list( int divisions ) {
 
     idx = divisions - MIN_SPHERE_DIVISIONS;
 
-    check_assertion( idx >= 0 &&
+    PP_ENSURE( idx >= 0 &&
 		     idx < num_display_lists, 
 		     "invalid number of sphere subdivisions" );
 
@@ -205,7 +205,7 @@ void traverse_dag( scene_node_t *node, material_t *mat )
 {
     scene_node_t *child;
 
-    check_assertion( node != NULL, "node is NULL" );
+    PP_CHECK_POINTER( node );
     gl::PushMatrix();
 
     gl::MultMatrix(node->trans);
@@ -244,17 +244,18 @@ void traverse_dag( scene_node_t *node, material_t *mat )
  */
 pp::Vec3d make_normal( pp::Polygon p, pp::Vec3d *v )
 {
-    pp::Vec3d normal, v1, v2;
-    double old_len;
+    PP_REQUIRE( p.numVertices > 2, "number of vertices must be > 2" );
 
-    check_assertion( p.numVertices > 2, "number of vertices must be > 2" );
+	pp::Vec3d normal, v1, v2;
+    double old_len;
 
     v1 = v[p.vertices[1]] - v[p.vertices[0]];
     v2 = v[p.vertices[p.numVertices-1]] - v[p.vertices[0]];
     normal = v1^v2;
 
     old_len = normal.normalize();
-    check_assertion( old_len > 0, "normal vector has length 0" );
+    
+	PP_ENSURE( old_len > 0, "normal vector has length 0" );
 
     return normal;
 } 
@@ -398,7 +399,7 @@ bool check_polyhedron_collision_with_dag(
     pp::Polyhedron newph;
     bool hit = false;
 
-    check_assertion( node != NULL, "node is NULL" );
+    PP_CHECK_POINTER( node );
 
     newModelMatrix=modelMatrix*node->trans;
     newInvModelMatrix=node->invtrans*invModelMatrix;

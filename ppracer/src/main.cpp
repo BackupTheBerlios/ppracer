@@ -52,6 +52,8 @@
 #include "callbacks.h"
 
 #include "tcl_util.h"
+#include "os_util.h"
+
 
 /// instance of tcl interpreter
 Tcl_Interp *tclInterp;
@@ -120,15 +122,14 @@ void cleanup(void)
 
 void read_game_init_script()
 {
-    char cwd[BUFF_LEN];
+	char cwd[BUFF_LEN];
     if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-		handle_system_error( 1, "getcwd failed" );
+		PP_ERROR( "getcwd failed" );
     }
 
     if ( chdir( getparam_data_dir() ) != 0 ) {
 	/* Print a more informative warning since this is a common error */
-	handle_system_error( 
-	    1, "Can't find the PPRacer data "
+		PP_ERROR( "Can't find the PPRacer data "
 	    "directory.  Please check the\nvalue of `data_dir' in "
 	    "~/.ppracer/options and set it to the location where you\n"
 	    "installed the PPRacer-data files.\n\n"
@@ -136,7 +137,7 @@ void read_game_init_script()
     } 
 
     if ( Tcl_EvalFile( tclInterp, GAME_INIT_SCRIPT) == TCL_ERROR ) {
-        handle_error( 1, "error evalating %s/%s: %s\n"
+        PP_ERROR( "error evalating %s/%s: %s\n"
 		      "Please check the value of `data_dir' in ~/.ppracer/options "
 		      "and make sure it\npoints to the location of the "
 		      "latest version of the PPRacer-data files.", 
@@ -144,19 +145,49 @@ void read_game_init_script()
 		      Tcl_GetStringResult( tclInterp ) );
     } 
 
-    check_assertion( !Tcl_InterpDeleted( tclInterp ),
+    PP_ASSERT( !Tcl_InterpDeleted( tclInterp ),
 		     "Tcl interpreter deleted" );
 
     if ( chdir( cwd ) != 0 ) {
-	handle_system_error( 1, "couldn't chdir to %s", cwd );
+	PP_ERROR( "couldn't chdir to %s", cwd );
     } 
 }
 
-    
-
-int main( int argc, char *argv[] ) 
+static
+void init_log()
 {
-    /* Print copyright notice */
+    pp::Log::Instance()->setFilename("diagnostic_log.txt");
+
+	std::ostream* stream;
+	stream = pp::Log::Instance()->getStream();
+	
+	if(stream==NULL){
+		return;
+	}
+	
+	*stream << "PlanetPenguin Racer Diagnostic Log\n" << std::endl;
+		
+	time_t t = time( NULL );
+	*stream << "Generated:       " << asctime( gmtime( &t ) ); 
+	*stream << "PPRacer Version: " << VERSION << std::endl;
+	*stream << "OS:              ";
+	
+	char buff[BUFF_LEN];
+	
+    if ( get_os_version( buff, sizeof( buff ) ) == 0 ) {
+		*stream << buff << "\n" << std::endl;
+    } else {
+		*stream << "Could not determine!\n" << std::endl;
+    }  
+}
+
+
+
+int main( int argc, char *argv[] )
+{
+    try{ // used to catch all unhandled Errors and Assertions
+		
+	/* Print copyright notice */
     fprintf( stderr, "PPRacer " VERSION " --  http://racer.planetpenguin.de "
 	     "\n(c) 2004-2005 The PPRacer team\n"
 	     "(c) 1999-2001 Jasmin F. Patry"
@@ -181,7 +212,7 @@ int main( int argc, char *argv[] )
     tclInterp = Tcl_CreateInterp();
 
     if ( tclInterp == NULL ) {
-		handle_error( 1, "cannot create Tcl interpreter" ); 
+		PP_ERROR( "cannot create Tcl interpreter" ); 
     }
 
     /* Setup the configuration variables and read the ~/.ppracer/options file */
@@ -191,13 +222,11 @@ int main( int argc, char *argv[] )
 	init_game_configuration();
     read_config_file(cfile);
 
-    /* Set up the debugging modes */
-    init_debug();
 
     /* Setup diagnostic log if requested */
     if ( getparam_write_diagnostic_log() ) {
-		setup_diagnostic_log();
-    }
+		init_log();
+	}
 
     /*
      * Setup Tcl stdout and stderr channels to point to C stdout and stderr 
@@ -222,11 +251,10 @@ int main( int argc, char *argv[] )
     init_opengl_extensions();
 
     /* Print OpenGL debugging information if requested */
-    if ( debug_mode_is_active( DEBUG_GL_INFO ) ) {
-		print_debug( DEBUG_GL_INFO, 
-		     "OpenGL information:" );
+    /*if ( debug_mode_is_active( DEBUG_GL_INFO ) ) {
+		PP_LOG( DEBUG_GL_INFO, "OpenGL information:" );
 		print_gl_info();
-    }
+    }*/
 
     /* 
      * Load the game data and initialize game state
@@ -284,6 +312,15 @@ int main( int argc, char *argv[] )
      */
 
     winsys_process_events();
-
+	
     return 0;
+	
+	}catch(pp::Error &e){
+		// some derived classes (ie pp::Assertion)
+		// print an error message
+		e.printMessage();
+		
+		PP_MESSAGE("Aborting :(");	
+		exit(1);
+	}
 }

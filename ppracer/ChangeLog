@@ -1,3 +1,21 @@
+
+2005-05-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppgltk/alg/errors.*
+	reimplemented diagnostig logfile
+	
+	* src/error_utils.* src/debug.cpp
+	removed files
+	
+2005-04-30  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppgltk/alg/errors.*
+	added new error and log system
+	
+	* src/ppgltk/alg/assert.*
+	added exception based assert system
+	
+	* src/*
+	changed code to use new error, log and assertion system
+	
 2005-04-29  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	gameMgr and translation is now a singleton

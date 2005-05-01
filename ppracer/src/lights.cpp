@@ -225,7 +225,7 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
 	    }
 	    course_lights[light_num].quadratic_attenuation = tmp_dbl;
 	} else {
-	    print_warning( TCL_WARNING, "tux_course_light: unrecognized "
+	    PP_WARNING( "tux_course_light: unrecognized "
 			   "parameter `%s'", *argv );
 	}
 
@@ -233,7 +233,7 @@ static int course_light_cb (ClientData cd, Tcl_Interp *ip,
     }
 
     if ( error ) {
-	print_warning( TCL_WARNING, "error in call to tux_course_light" );
+	PP_WARNING(  "error in call to tux_course_light" );
 	Tcl_AppendResult(
 	    ip, 
 	    "\nUsage: tux_course_light <light_number> [-on|-off] "

@@ -81,19 +81,18 @@ bool load_texture( const char *texname, const char *filename, int repeatable )
     int max_texture_size;
 
 
-    print_debug(DEBUG_TEXTURE, "Loading texture %s from file: %s", 
+    PP_LOG(DEBUG_TEXTURE, "Loading texture %s from file: %s", 
 		texname, filename);
 
     if ( texImage == NULL ) {
-    	print_warning( IMPORTANT_WARNING, 
-		       "couldn't load image %s", filename );
+    	PP_WARNING( "couldn't load image %s", filename );
     	return false;
     }
 
 	std::map<std::string,texture_node_t>::iterator it;
     if ( (it = textureTable.find(texname))!=textureTable.end() ){
 		tex = &it->second;
-		print_debug(DEBUG_TEXTURE, "Found texture %s with id: %d", 
+		PP_LOG(DEBUG_TEXTURE, "Found texture %s with id: %d", 
 		    texname, it->second.texture_id);
         gl::DeleteTextures(1, &(tex->texture_id));
 	}else{
@@ -128,9 +127,9 @@ bool load_texture( const char *texname, const char *filename, int repeatable )
 				       max_texture_size *
 				       max_texture_size ));
 
-	check_assertion( newdata != NULL, "out of memory" );
+	PP_ASSERT( newdata != NULL, "out of memory" );
 
-	print_debug( DEBUG_TEXTURE, "Texture `%s' too large -- scaling to "
+	PP_LOG( DEBUG_TEXTURE, "Texture `%s' too large -- scaling to "
 		     "maximum allowed size",
 		     filename );
 
@@ -177,11 +176,11 @@ bool
 del_texture( const char *texname )
 {
     
-	print_debug( DEBUG_TEXTURE, "Deleting texture %s", texname );
+	PP_LOG( DEBUG_TEXTURE, "Deleting texture %s", texname );
 
 	std::map<std::string,texture_node_t>::iterator it;
 	if ( (it = textureTable.find(texname))!= textureTable.end() ){
-		check_assertion( it->second.ref_count == 0,
+		PP_ASSERT( it->second.ref_count == 0,
 			 "Trying to delete texture with non-zero reference "
 				"count" );
 		glDeleteTextures( 1, &(it->second.texture_id) );
@@ -197,14 +196,13 @@ bool bind_texture( const char *binding, const char *texname )
     
 	texture_node_t *tex;
 	
-	print_debug(DEBUG_TEXTURE, "Binding %s to texture name: %s", 
+	PP_LOG(DEBUG_TEXTURE, "Binding %s to texture name: %s", 
 		binding, texname);
 	
 	tex = get_texture( texname );
 	
 	if (tex == NULL){
-		print_warning( IMPORTANT_WARNING, 
-		       "Attempt to bind to Texture unloaded texture: `%s'\n", texname );
+		PP_WARNING( "Attempt to bind to Texture unloaded texture: `%s'\n", texname );
 		return false;
 	}
 
@@ -244,7 +242,7 @@ bool flush_textures(void)
 	for(mapit=textureTable.begin();mapit!=textureTable.end(); mapit++){
 		if (mapit->second.ref_count == 0) {
 			result = del_texture( (*mapit).first.c_str() );
-			check_assertion(result, "Attempt to flush non-existant texture");	
+			PP_ASSERT(result, "Attempt to flush non-existant texture");	
 		    // RK: reset pointer to start of table since mapit got deleted
             mapit = textureTable.begin();
 		}

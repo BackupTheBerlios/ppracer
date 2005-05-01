@@ -78,7 +78,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
 
     /* Debug check to track down infinite particle bug */
     if ( num_particles + num > MAX_PARTICLES ) {
-		check_assertion( 0, "maximum number of particles exceeded" );
+		PP_ERROR( "maximum number of particles exceeded" );
     } 
 
     for (i=0; i<num; i++) {
@@ -86,7 +86,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
         newp = reinterpret_cast<Particle*>(malloc( sizeof( Particle) )	);
 
         if ( newp == NULL ) {
-            handle_system_error( 1, "out of memory" );
+            PP_ERROR( "out of memory" );
         } 
 
         num_particles += 1;
@@ -247,7 +247,7 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 
 	    NEXT_ARG;
 
-	    print_warning( DEPRECATION_WARNING,
+	    PP_WARNING( 
 			   "This format for tux_particle_color is deprecated."
 			   "  The new format is:\n"
 			   "\ttux_particle_color {r g b a}" );
@@ -276,8 +276,7 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 		    /* Ignore */
 		    NEXT_ARG;
 		} else {
-		    print_warning( TCL_WARNING, 
-				   "tux_particle_color: unrecognized "
+		    PP_WARNING( "tux_particle_color: unrecognized "
 				   "parameter `%s'", *argv );
 		}
 		
@@ -287,11 +286,11 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
     }
 
     if ( error ) {
-	print_warning( TCL_WARNING, "error in call to tux_particle_color" );
-	Tcl_AppendResult(
-	    ip, 
-	    "\nUsage: tux_particle_color {r g b a}", NULL );
-	return TCL_ERROR;
+		PP_WARNING( "error in call to tux_particle_color" );
+		Tcl_AppendResult(
+	    	ip, 
+	    	"\nUsage: tux_particle_color {r g b a}", NULL );
+		return TCL_ERROR;
     }
 
     return TCL_OK;

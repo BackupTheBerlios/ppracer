@@ -57,38 +57,37 @@ am_ppracer_OBJECTS = ssbutton.$(OBJEXT) checkbox.$(OBJEXT) \
 	matrix.$(OBJEXT) quat.$(OBJEXT) vec2d.$(OBJEXT) \
 	vec3d.$(OBJEXT) vec3f.$(OBJEXT) vec4f.$(OBJEXT) \
 	plane.$(OBJEXT) glhelper.$(OBJEXT) glwrappers.$(OBJEXT) \
-	poly.$(OBJEXT) audio.$(OBJEXT) audio_data.$(OBJEXT) \
-	image.$(OBJEXT) png_reader.$(OBJEXT) rgb_reader.$(OBJEXT) \
-	ppm_writer.$(OBJEXT) course_load.$(OBJEXT) \
-	course_mgr.$(OBJEXT) course_quad.$(OBJEXT) \
-	course_render.$(OBJEXT) credits.$(OBJEXT) debug.$(OBJEXT) \
-	error_util.$(OBJEXT) event_select.$(OBJEXT) \
-	file_util.$(OBJEXT) fog.$(OBJEXT) fps.$(OBJEXT) \
-	game_config.$(OBJEXT) game_type_select.$(OBJEXT) \
-	game_over.$(OBJEXT) gl_util.$(OBJEXT) hier.$(OBJEXT) \
-	hier_cb.$(OBJEXT) hier_util.$(OBJEXT) hud.$(OBJEXT) \
-	intro.$(OBJEXT) joystick.$(OBJEXT) keyframe.$(OBJEXT) \
-	lights.$(OBJEXT) loading.$(OBJEXT) loop.$(OBJEXT) \
-	main.$(OBJEXT) mirror_course.$(OBJEXT) player.$(OBJEXT) \
-	nmrcl.$(OBJEXT) os_util.$(OBJEXT) part_sys.$(OBJEXT) \
-	paused.$(OBJEXT) phys_sim.$(OBJEXT) quadtree.$(OBJEXT) \
-	race_select.$(OBJEXT) event_race_select.$(OBJEXT) \
-	racing.$(OBJEXT) render_util.$(OBJEXT) reset.$(OBJEXT) \
-	screenshot.$(OBJEXT) snow.$(OBJEXT) splash_screen.$(OBJEXT) \
-	string_util.$(OBJEXT) tcl_util.$(OBJEXT) textures.$(OBJEXT) \
-	track_marks.$(OBJEXT) tux.$(OBJEXT) tux_shadow.$(OBJEXT) \
-	view.$(OBJEXT) viewfrustum.$(OBJEXT) winsys.$(OBJEXT) \
-	videoconfig.$(OBJEXT) audioconfig.$(OBJEXT) \
-	configmode.$(OBJEXT) configuration.$(OBJEXT) \
-	graphicsconfig.$(OBJEXT) joystickconfig.$(OBJEXT) \
-	keyboardconfig.$(OBJEXT) stuff.$(OBJEXT) game_mgr.$(OBJEXT) \
-	bench.$(OBJEXT) callbacks.$(OBJEXT) translation.$(OBJEXT) \
-	alignment.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT) \
-	font.$(OBJEXT) label.$(OBJEXT) FTCharmap.$(OBJEXT) \
-	FTFace.$(OBJEXT) FTFont.$(OBJEXT) FTGLTextureFont.$(OBJEXT) \
-	FTGlyph.$(OBJEXT) FTGlyphContainer.$(OBJEXT) \
-	FTLibrary.$(OBJEXT) FTPoint.$(OBJEXT) FTSize.$(OBJEXT) \
-	FTTextureGlyph.$(OBJEXT)
+	poly.$(OBJEXT) assert.$(OBJEXT) errors.$(OBJEXT) \
+	audio.$(OBJEXT) audio_data.$(OBJEXT) image.$(OBJEXT) \
+	png_reader.$(OBJEXT) rgb_reader.$(OBJEXT) ppm_writer.$(OBJEXT) \
+	course_load.$(OBJEXT) course_mgr.$(OBJEXT) \
+	course_quad.$(OBJEXT) course_render.$(OBJEXT) \
+	credits.$(OBJEXT) event_select.$(OBJEXT) file_util.$(OBJEXT) \
+	fog.$(OBJEXT) fps.$(OBJEXT) game_config.$(OBJEXT) \
+	game_type_select.$(OBJEXT) game_over.$(OBJEXT) \
+	gl_util.$(OBJEXT) hier.$(OBJEXT) hier_cb.$(OBJEXT) \
+	hier_util.$(OBJEXT) hud.$(OBJEXT) intro.$(OBJEXT) \
+	joystick.$(OBJEXT) keyframe.$(OBJEXT) lights.$(OBJEXT) \
+	loading.$(OBJEXT) loop.$(OBJEXT) main.$(OBJEXT) \
+	mirror_course.$(OBJEXT) player.$(OBJEXT) nmrcl.$(OBJEXT) \
+	os_util.$(OBJEXT) part_sys.$(OBJEXT) paused.$(OBJEXT) \
+	phys_sim.$(OBJEXT) quadtree.$(OBJEXT) race_select.$(OBJEXT) \
+	event_race_select.$(OBJEXT) racing.$(OBJEXT) \
+	render_util.$(OBJEXT) reset.$(OBJEXT) screenshot.$(OBJEXT) \
+	snow.$(OBJEXT) splash_screen.$(OBJEXT) string_util.$(OBJEXT) \
+	tcl_util.$(OBJEXT) textures.$(OBJEXT) track_marks.$(OBJEXT) \
+	tux.$(OBJEXT) tux_shadow.$(OBJEXT) view.$(OBJEXT) \
+	viewfrustum.$(OBJEXT) winsys.$(OBJEXT) videoconfig.$(OBJEXT) \
+	audioconfig.$(OBJEXT) configmode.$(OBJEXT) \
+	configuration.$(OBJEXT) graphicsconfig.$(OBJEXT) \
+	joystickconfig.$(OBJEXT) keyboardconfig.$(OBJEXT) \
+	stuff.$(OBJEXT) game_mgr.$(OBJEXT) bench.$(OBJEXT) \
+	callbacks.$(OBJEXT) translation.$(OBJEXT) alignment.$(OBJEXT) \
+	model.$(OBJEXT) model_ac.$(OBJEXT) font.$(OBJEXT) \
+	label.$(OBJEXT) FTCharmap.$(OBJEXT) FTFace.$(OBJEXT) \
+	FTFont.$(OBJEXT) FTGLTextureFont.$(OBJEXT) FTGlyph.$(OBJEXT) \
+	FTGlyphContainer.$(OBJEXT) FTLibrary.$(OBJEXT) \
+	FTPoint.$(OBJEXT) FTSize.$(OBJEXT) FTTextureGlyph.$(OBJEXT)
 ppracer_OBJECTS = $(am_ppracer_OBJECTS)
 ppracer_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -102,8 +101,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/FTLibrary.Po ./$(DEPDIR)/FTPoint.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FTSize.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FTTextureGlyph.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/alignment.Po ./$(DEPDIR)/audio.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/audio_data.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/alignment.Po ./$(DEPDIR)/assert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/audio.Po ./$(DEPDIR)/audio_data.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/audioconfig.Po ./$(DEPDIR)/bench.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/button.Po ./$(DEPDIR)/callbacks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/checkbox.Po ./$(DEPDIR)/color.Po \
@@ -113,8 +112,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/course_mgr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/course_quad.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/course_render.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/credits.Po ./$(DEPDIR)/debug.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/entry.Po ./$(DEPDIR)/error_util.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/credits.Po ./$(DEPDIR)/entry.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/errors.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/event_race_select.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/event_select.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/file_util.Po ./$(DEPDIR)/fog.Po \
@@ -328,6 +327,10 @@ ppracer_SOURCES = \
 	ppgltk/alg/poly.h			\
 	ppgltk/alg/poly.cpp			\
 	ppgltk/alg/signal.h			\
+	ppgltk/alg/assert.cpp			\
+	ppgltk/alg/assert.h			\
+	ppgltk/alg/errors.cpp			\
+	ppgltk/alg/errors.h			\
 	ppgltk/audio/audio.cpp			\
 	ppgltk/audio/audio.h			\
 	ppgltk/audio/audio_data.cpp		\
@@ -350,10 +353,7 @@ ppracer_SOURCES = \
 	course_render.h				\
 	credits.cpp				\
 	credits.h				\
-	debug.cpp				\
 	debug.h					\
-	error_util.cpp				\
-	error_util.h				\
 	event_select.cpp			\
 	event_select.h				\
 	file_util.cpp				\
@@ -589,6 +589,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTSize.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTTextureGlyph.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alignment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audioconfig.Po@am__quote@
@@ -604,9 +605,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/course_quad.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/course_render.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/credits.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/errors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event_race_select.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event_select.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_util.Po@am__quote@
@@ -1035,6 +1035,38 @@ poly.obj: ppgltk/alg/poly.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/poly.Po' tmpdepfile='$(DEPDIR)/poly.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o poly.obj `if test -f 'ppgltk/alg/poly.cpp'; then $(CYGPATH_W) 'ppgltk/alg/poly.cpp'; else $(CYGPATH_W) '$(srcdir)/ppgltk/alg/poly.cpp'; fi`
+
+assert.o: ppgltk/alg/assert.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assert.o -MD -MP -MF "$(DEPDIR)/assert.Tpo" -c -o assert.o `test -f 'ppgltk/alg/assert.cpp' || echo '$(srcdir)/'`ppgltk/alg/assert.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assert.Tpo" "$(DEPDIR)/assert.Po"; else rm -f "$(DEPDIR)/assert.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ppgltk/alg/assert.cpp' object='assert.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assert.Po' tmpdepfile='$(DEPDIR)/assert.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assert.o `test -f 'ppgltk/alg/assert.cpp' || echo '$(srcdir)/'`ppgltk/alg/assert.cpp
+
+assert.obj: ppgltk/alg/assert.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assert.obj -MD -MP -MF "$(DEPDIR)/assert.Tpo" -c -o assert.obj `if test -f 'ppgltk/alg/assert.cpp'; then $(CYGPATH_W) 'ppgltk/alg/assert.cpp'; else $(CYGPATH_W) '$(srcdir)/ppgltk/alg/assert.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assert.Tpo" "$(DEPDIR)/assert.Po"; else rm -f "$(DEPDIR)/assert.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ppgltk/alg/assert.cpp' object='assert.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assert.Po' tmpdepfile='$(DEPDIR)/assert.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assert.obj `if test -f 'ppgltk/alg/assert.cpp'; then $(CYGPATH_W) 'ppgltk/alg/assert.cpp'; else $(CYGPATH_W) '$(srcdir)/ppgltk/alg/assert.cpp'; fi`
+
+errors.o: ppgltk/alg/errors.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT errors.o -MD -MP -MF "$(DEPDIR)/errors.Tpo" -c -o errors.o `test -f 'ppgltk/alg/errors.cpp' || echo '$(srcdir)/'`ppgltk/alg/errors.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/errors.Tpo" "$(DEPDIR)/errors.Po"; else rm -f "$(DEPDIR)/errors.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ppgltk/alg/errors.cpp' object='errors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/errors.Po' tmpdepfile='$(DEPDIR)/errors.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o errors.o `test -f 'ppgltk/alg/errors.cpp' || echo '$(srcdir)/'`ppgltk/alg/errors.cpp
+
+errors.obj: ppgltk/alg/errors.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT errors.obj -MD -MP -MF "$(DEPDIR)/errors.Tpo" -c -o errors.obj `if test -f 'ppgltk/alg/errors.cpp'; then $(CYGPATH_W) 'ppgltk/alg/errors.cpp'; else $(CYGPATH_W) '$(srcdir)/ppgltk/alg/errors.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/errors.Tpo" "$(DEPDIR)/errors.Po"; else rm -f "$(DEPDIR)/errors.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ppgltk/alg/errors.cpp' object='errors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/errors.Po' tmpdepfile='$(DEPDIR)/errors.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o errors.obj `if test -f 'ppgltk/alg/errors.cpp'; then $(CYGPATH_W) 'ppgltk/alg/errors.cpp'; else $(CYGPATH_W) '$(srcdir)/ppgltk/alg/errors.cpp'; fi`
 
 audio.o: ppgltk/audio/audio.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT audio.o -MD -MP -MF "$(DEPDIR)/audio.Tpo" -c -o audio.o `test -f 'ppgltk/audio/audio.cpp' || echo '$(srcdir)/'`ppgltk/audio/audio.cpp; \

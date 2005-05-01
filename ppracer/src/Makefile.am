@@ -51,6 +51,10 @@ ppracer_SOURCES =				\
 	ppgltk/alg/poly.h			\
 	ppgltk/alg/poly.cpp			\
 	ppgltk/alg/signal.h			\
+	ppgltk/alg/assert.cpp			\
+	ppgltk/alg/assert.h			\
+	ppgltk/alg/errors.cpp			\
+	ppgltk/alg/errors.h			\
 	ppgltk/audio/audio.cpp			\
 	ppgltk/audio/audio.h			\
 	ppgltk/audio/audio_data.cpp		\
@@ -73,10 +77,7 @@ ppracer_SOURCES =				\
 	course_render.h				\
 	credits.cpp				\
 	credits.h				\
-	debug.cpp				\
 	debug.h					\
-	error_util.cpp				\
-	error_util.h				\
 	event_select.cpp			\
 	event_select.h				\
 	file_util.cpp				\

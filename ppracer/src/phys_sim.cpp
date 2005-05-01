@@ -357,14 +357,14 @@ void get_indices_for_point( double x, double z,
 	    (*y0)--;
     } 
 
-    check_assertion( *x0 >= 0, "invalid x0 index" );
-    check_assertion( *x0 < nx, "invalid x0 index" );
-    check_assertion( *x1 >= 0, "invalid x1 index" );
-    check_assertion( *x1 < nx, "invalid x1 index" );
-    check_assertion( *y0 >= 0, "invalid y0 index" );
-    check_assertion( *y0 < ny, "invalid y0 index" );
-    check_assertion( *y1 >= 0, "invalid y1 index" );
-    check_assertion( *y1 < ny, "invalid y1 index" );
+    PP_ENSURE( *x0 >= 0, "invalid x0 index" );
+    PP_ENSURE( *x0 < nx, "invalid x0 index" );
+    PP_ENSURE( *x1 >= 0, "invalid x1 index" );
+    PP_ENSURE( *x1 < nx, "invalid x1 index" );
+    PP_ENSURE( *y0 >= 0, "invalid y0 index" );
+    PP_ENSURE( *y0 < ny, "invalid y0 index" );
+    PP_ENSURE( *y1 >= 0, "invalid y1 index" );
+    PP_ENSURE( *y1 < ny, "invalid y1 index" );
 }
 
 
@@ -587,7 +587,7 @@ static void update_paddling( Player& plyr )
 {
     if ( plyr.control.is_paddling ) {
 		if ( GameMgr::Instance()->time - plyr.control.paddle_time >= PADDLING_DURATION ) {
-		    print_debug( DEBUG_CONTROL, "paddling off" );
+		    PP_LOG( DEBUG_CONTROL, "paddling off" );
 		    plyr.control.is_paddling = false;
 		}
     }
@@ -1191,7 +1191,7 @@ pp::Vec3d calc_wind_force( pp::Vec3d player_vel )
     df_mag = 0.5 * drag_coeff * AIR_DENSITY * ( wind_speed * wind_speed )
 	* ( M_PI * ( TUX_DIAMETER * TUX_DIAMETER ) * 0.25 );
 
-    check_assertion( df_mag > 0, "Negative wind force" );
+    PP_ENSURE( df_mag > 0, "Negative wind force" );
 
     last_time_called = GameMgr::Instance()->time;
 
@@ -1204,7 +1204,7 @@ static pp::Vec3d calc_spring_force( float compression, pp::Vec3d vel,
     float spring_vel; /* velocity perp. to surface (for damping) */
     float spring_f_mag; /* magnitude of force */
 
-   check_assertion( compression >= 0, 
+    PP_REQUIRE( compression >= 0, 
 		    "spring can't have negative compression" );
     
     spring_vel =vel*surf_nml;
@@ -1315,7 +1315,7 @@ static pp::Vec3d calc_net_force( Player& plyr, pp::Vec3d pos,
 	 * Calculate the spring force exterted by his rear end. :-)
 	 */
 	glute_compression = -dist_from_surface - comp_depth;
-	check_assertion( glute_compression >= 0, 
+	PP_ASSERT( glute_compression >= 0, 
 			 "unexpected negative compression" );
 
 	nml_f = calc_spring_force( glute_compression, vel, surf_nml,
@@ -1520,19 +1520,18 @@ void solve_ode_system( Player& plyr, float dtime )
     while (!done) {
 
 	if ( t >= tfinal ) {
-	    print_warning( CRITICAL_WARNING, 
-			   "t >= tfinal in solve_ode_system()" );
+	    PP_WARNING( "t >= tfinal in solve_ode_system()" );
 	    break;
 	}
 
 	/* extend h by up to 10% to reach tfinal */
 	if ( 1.1 * h > tfinal - t ) {
 	    h = tfinal-t;
-	    check_assertion( h >= 0., "integrated past tfinal" );
+	    PP_ASSERT( h >= 0., "integrated past tfinal" );
 	    done = true;
 	}
 
-        print_debug( DEBUG_ODE, "h: %g", h );
+    PP_LOG( DEBUG_ODE, "h: %g", h );
 
 	saved_pos = new_pos;
 	saved_vel = new_vel;
@@ -1615,7 +1614,7 @@ void solve_ode_system( Player& plyr, float dtime )
 		tot_pos_err = sqrt( tot_pos_err );
 		tot_vel_err = sqrt( tot_vel_err );
 
-                print_debug( DEBUG_ODE, "pos_err: %g, vel_err: %g", 
+        PP_LOG( DEBUG_ODE, "pos_err: %g, vel_err: %g", 
 			     tot_pos_err, tot_vel_err );
 
 		if ( tot_pos_err / MAX_POSITION_ERROR >

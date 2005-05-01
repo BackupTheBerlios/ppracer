@@ -318,20 +318,17 @@ HUD::initGauge()
 	
 	binding = "gauge_energy_mask";
     if ( !get_texture_binding( binding, &m_energymaskTex ) ) {
-		print_warning( IMPORTANT_WARNING,
-		       "Couldn't get texture for binding %s", binding );
+		PP_WARNING( "Couldn't get texture for binding %s", binding );
     }
 	
 	binding = "gauge_speed_mask";
     if ( !get_texture_binding( binding, &m_speedmaskTex ) ) {
-		print_warning( IMPORTANT_WARNING,
-		       "Couldn't get texture for binding %s", binding );
+		PP_WARNING( "Couldn't get texture for binding %s", binding );
     }
 	    
 	binding = "gauge_outline";
     if ( !get_texture_binding( binding, &m_outlineTex ) ) {
-		print_warning( IMPORTANT_WARNING,
-		       "Couldn't get texture for binding %s", binding );
+		PP_WARNING( "Couldn't get texture for binding %s", binding );
     }
 }
 

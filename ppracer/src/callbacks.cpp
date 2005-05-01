@@ -86,7 +86,7 @@ pp_register_font_cb ( ClientData cd, Tcl_Interp *ip,
 		color.set(tmp_color);
 		
 	} else {
-	    print_warning( TCL_WARNING, "pp_load_font: unrecognized "
+	    PP_WARNING( "pp_load_font: unrecognized "
 			   "parameter `%s'", *argv );
 	}
 
@@ -153,7 +153,7 @@ pp_bind_font_cb ( ClientData cd, Tcl_Interp *ip,
 		color = new pp::Color(tmp_color);	
 		
 	} else {
-	    print_warning( TCL_WARNING, "pp_bind_font: unrecognized "
+	    PP_WARNING( "pp_bind_font: unrecognized "
 			   "parameter `%s'", *argv );
 	}
 

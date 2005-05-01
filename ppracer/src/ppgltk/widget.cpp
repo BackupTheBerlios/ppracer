@@ -111,13 +111,13 @@ Widget::mouseMotion(int x, int y)
 
     if ( isInBox(x, y) ) {
 		if ( m_focused == false ) {
-			print_debug( DEBUG_UI, "Mouse entered button" );
+			PP_LOG( DEBUG_UI, "Mouse entered button" );
 		    m_focused = true;
 		    UIMgr.setDirty();
 		}
     } else {
 		if ( m_focused == true ) {
-			print_debug( DEBUG_UI, "Mouse left button" );
+			PP_LOG( DEBUG_UI, "Mouse left button" );
 		    m_focused = false;
 		    UIMgr.setDirty();
 		}
@@ -139,7 +139,7 @@ Widget::mouseDown(int button,int x, int y )
     }
 
     if ( m_clicked == false ) {
-		print_debug( DEBUG_UI, "Button is down" );
+		PP_LOG( DEBUG_UI, "Button is down" );
 		m_clicked = true;
 		UIMgr.setDirty();
     }
@@ -158,7 +158,7 @@ Widget::mouseUp(int button, int x, int y )
 
     if ( !isInBox(x, y) ) {
 		if ( m_clicked ) {
-		    print_debug( DEBUG_UI, "Button is up (not clicked)" );
+		    PP_LOG( DEBUG_UI, "Button is up (not clicked)" );
 		    m_clicked = false;
 		    UIMgr.setDirty();
 		}
@@ -167,7 +167,7 @@ Widget::mouseUp(int button, int x, int y )
 
     if ( m_clicked ) {
 		m_clicked = false;
-		print_debug( DEBUG_UI, "Button was clicked" );
+		PP_LOG( DEBUG_UI, "Button was clicked" );
 		performClickAction();
 		UIMgr.setDirty();
     }

@@ -95,7 +95,7 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
 	    } else if ( strcmp( "linear", *argv ) == 0 ) {
 			fogPlane.setMode(GL_LINEAR);
 	    } else {
-			print_warning( TCL_WARNING, "tux_fog: mode must be one of "
+			PP_WARNING( "tux_fog: mode must be one of "
 			       "`exp', `exp2', or `linear'" );
 			error = true;
 	    }
@@ -147,7 +147,7 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
 		pp::Color color(tmp_arr[0],tmp_arr[1],tmp_arr[2],tmp_arr[3]);
 		fogPlane.setColor(color);
 	} else {
-	    print_warning( TCL_WARNING, "tux_fog: unrecognized "
+	    PP_WARNING( "tux_fog: unrecognized "
 			   "parameter `%s'", *argv );
 	}
 
@@ -155,7 +155,7 @@ static int fog_cb (ClientData cd, Tcl_Interp *ip,
     }
 
     if ( error ) {
-	print_warning( TCL_WARNING, "error in call to tux_fog" );
+	PP_WARNING( "error in call to tux_fog" );
 	Tcl_AppendResult(
 	    ip, 
 	    "\nUsage: tux_fog [-on|-off] "

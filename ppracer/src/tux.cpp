@@ -170,13 +170,12 @@ void load_tux()
     initialize_scene_graph();
 
     if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-	handle_system_error( 1, "getcwd failed" );
+		PP_ERROR( "getcwd failed" );
     }
 
     if ( chdir( getparam_data_dir() ) != 0 ) {
 	/* Print a more informative warning since this is a common error */
-	handle_system_error( 
-	    1, "Can't find the ppracer data "
+	PP_ERROR( "Can't find the ppracer data "
 	    "directory.  Please check the\nvalue of `data_dir' in "
 	    "~/.ppracer/options and set it to the location where you\n"
 	    "installed the ppracer-data files.\n\n"
@@ -187,7 +186,7 @@ void load_tux()
     } 
 
     if ( Tcl_EvalFile( tclInterp, "tux.tcl") == TCL_ERROR ) {
-        handle_error( 1, "error evalating %s/tux.tcl: %s\n"
+        PP_ERROR( "error evalating %s/tux.tcl: %s\n"
 		      "Please check the value of `data_dir' in ~/.ppracer/options "
 		      "and make sure it\npoints to the location of the "
 		      "latest version of the ppracer-data files.", 
@@ -195,11 +194,11 @@ void load_tux()
 		      Tcl_GetStringResult( tclInterp ) );
     } 
 
-    check_assertion( !Tcl_InterpDeleted( tclInterp ),
+    PP_ASSERT( !Tcl_InterpDeleted( tclInterp ),
 		     "Tcl interpreter deleted" );
 
     if ( chdir( cwd ) != 0 ) {
-	handle_system_error( 1, "couldn't chdir to %s", cwd );
+		PP_ERROR( "couldn't chdir to %s", cwd );
     } 
 } 
 

@@ -56,7 +56,7 @@ void draw_tux_shadow()
     tux_root_node_name = get_tux_root_node();
 
     if ( get_scene_node( tux_root_node_name, &tux_root_node ) != TCL_OK ) {
-	check_assertion( 0, "couldn't find tux's root node" );
+		PP_ERROR( "couldn't find tux's root node" );
     } 
 
     traverse_dag_for_shadow( tux_root_node, model_matrix );
@@ -67,7 +67,7 @@ void traverse_dag_for_shadow( scene_node_t *node, pp::Matrix model_matrix )
     pp::Matrix new_model_matrix;
     scene_node_t *child;
 
-    check_assertion( node != NULL, "node is NULL" );
+    PP_CHECK_POINTER( node );
 
     new_model_matrix=model_matrix*node->trans;
 

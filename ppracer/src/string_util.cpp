@@ -20,7 +20,8 @@
  */
 
 #include "debug.h"
-#include "error_util.h"
+#include "ppgltk/alg/assert.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -29,12 +30,12 @@ char *string_copy( const char *src )
 {
     char *dest;
 
-    check_assertion( src != NULL, "string NULL in string_copy" );
+    PP_CHECK_POINTER( src );
 
     dest = reinterpret_cast<char *>(malloc( sizeof(char) * ( strlen( src ) + 1 ) ));
 
     if ( dest == NULL ) {
-		handle_system_error( 1, "malloc failed" );
+		PP_ERROR( "malloc failed" );
     }
 
     strcpy( dest, src );

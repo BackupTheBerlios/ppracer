@@ -224,8 +224,7 @@ void draw_ui_snow( void )
 
     binding = "ui_snow_particle";
     if (!get_texture_binding( "ui_snow_particle", &texture_id ) ) {
-		print_warning( IMPORTANT_WARNING,
-		       "Couldn't get texture for binding %s", 
+		PP_WARNING("Couldn't get texture for binding %s", 
 		       binding );
 		texture_id = 0;
     } 

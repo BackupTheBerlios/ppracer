@@ -53,7 +53,7 @@ static char *race_condition_names[RACE_CONDITIONS_NUM_CONDITIONS] =
 */
 void init_course_manager() 
 {
-    check_assertion( initialized == false,
+    PP_REQUIRE( initialized == false,
 		     "Attempt to initialize course manager twice" );
 
     initialized = true;
@@ -126,8 +126,7 @@ CourseData* create_open_course_data( Tcl_Interp *ip, CONST84 char *string,
 
 	    if ( *argv == NULL ) {
 		par_time = 120.0;
-		print_warning( PEDANTIC_WARNING,
-			       "No data supplied for -par_time in open course "
+		PP_MESSAGE("No data supplied for -par_time in open course "
 			       "data.  Using %g seconds.", par_time );
 	    } else if ( Tcl_GetDouble( ip, *argv, &par_time ) != TCL_OK ) {
 		*err_msg = "Invalid value for -par_time in open course data";
@@ -183,15 +182,14 @@ bail_open_course_data:
 static int open_courses_cb( ClientData cd, Tcl_Interp *ip,
 			    int argc, CONST84 char **argv )
 {
-    char *err_msg;
+	PP_REQUIRE( initialized, "course_mgr module not initialized" );
+	
+	char *err_msg;
     CONST84 char **list = NULL;
     int num_courses;
     std::list<CourseData>::iterator lastElem;
     int i;
 	
-	check_assertion( initialized,
-		     "course_mgr module not initialized" );
-
     if ( argc != 2 ) {
 		err_msg = "Wrong number of arguments";
 		goto bail_open_courses;
@@ -545,7 +543,7 @@ CupData* create_cup_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
     }
 
     /* Create a new cup data object */
-    check_assertion( cup_data != NULL, "out of memory" );
+    PP_ASSERT( cup_data, "out of memory" );
 
     cup_data->raceList = raceList;
     bind_texture( cup_data->name.c_str(), cup_data->icon.c_str() );
@@ -782,13 +780,14 @@ tux_events {
 static int events_cb( ClientData cd, Tcl_Interp *ip,
 		      int argc, CONST84 char **argv )
 {
-    char *err_msg;
+    PP_REQUIRE( initialized, "course_mgr module not initialized" );
+		
+	char *err_msg;
     CONST84 char **list = NULL;
     int num_events;
     int i;
-    // Make sure module has been initialized
-    check_assertion( initialized,
-		     "course_mgr module not initialized" );
+
+
 
     if ( argc != 2 ) {
 		err_msg = "Incorrect number of arguments";

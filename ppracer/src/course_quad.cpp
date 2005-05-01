@@ -38,10 +38,10 @@ void reset_course_quadtree()
 
 static int get_root_level( int nx, int nz )
 {
-    int xlev, zlev;
-
-    check_assertion( nx > 0, "heightmap has x dimension of 0 size" );
-    check_assertion( nz > 0, "heightmap has z dimension of 0 size" );
+    PP_REQUIRE( nx > 0, "heightmap has x dimension of 0 size" );
+    PP_REQUIRE( nz > 0, "heightmap has z dimension of 0 size" );
+	
+	int xlev, zlev;
 
     xlev = int( log(double(nx) ) / log (double(2.0) ) );
     zlev = int( log(double(nz) ) / log (double(2.0) ) );
@@ -106,18 +106,18 @@ void init_course_quadtree( float *elevation, int nx, int nz,
 
     // Debug info.
     //print_debug( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
-    print_debug( DEBUG_QUADTREE, "max error = %g\n", 
+    PP_LOG( DEBUG_QUADTREE, "max error = %g\n", 
 		 root->RecomputeError(root_corner_data));
 
     // Get rid of unnecessary nodes in flat-ish areas.
-    print_debug( DEBUG_QUADTREE, 
+    PP_LOG( DEBUG_QUADTREE, 
 		 "Culling unnecessary nodes (detail factor = %d)...\n",
 		 CULL_DETAIL_FACTOR);
     root->StaticCullData(root_corner_data, CULL_DETAIL_FACTOR);
 
     // Post-cull debug info.
-    print_debug( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
-    print_debug( DEBUG_QUADTREE, "max error = %g\n", 
+    PP_LOG( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
+    PP_LOG( DEBUG_QUADTREE, "max error = %g\n", 
 		 root->RecomputeError(root_corner_data));
 
 

@@ -76,7 +76,7 @@ static pp::Vec3d   tux_view_pt;
 void set_view_mode( Player& plyr, view_mode_t mode )
 {
     plyr.view.mode = mode;
-    print_debug( DEBUG_VIEW, "View mode: %d", plyr.view.mode );
+    PP_LOG( DEBUG_VIEW, "View mode: %d", plyr.view.mode );
 } 
 
 view_mode_t get_view_mode( Player& plyr )
@@ -89,7 +89,7 @@ void traverse_dag_for_view_point( scene_node_t *node, pp::Matrix trans )
     pp::Matrix new_trans;
     scene_node_t *child;
 
-    check_assertion( node != NULL, "node is NULL" );
+    PP_CHECK_POINTER( node );
 
     new_trans=trans*node->trans;
 
@@ -116,7 +116,7 @@ pp::Vec3d get_tux_view_pt( Player& plyr )
     tux_root_node_name = get_tux_root_node();
 
     if ( get_scene_node( tux_root_node_name, &tux_root_node ) != TCL_OK ) {
-	check_assertion(0, "couldn't load tux's root node" );
+		PP_ERROR( "couldn't load tux's root node" );
     } 
 
     traverse_dag_for_view_point( tux_root_node, trans );
@@ -580,7 +580,7 @@ void update_view( Player& plyr, double dt )
     }
 
     default:
-	code_not_reached();
+	PP_NOT_REACHED();
     } 
 
     /* Create view matrix */

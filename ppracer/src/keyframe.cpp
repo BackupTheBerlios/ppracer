@@ -116,7 +116,7 @@ void update_key_frame( Player& plyr, double dt )
     reset_scene_node( neck );
     reset_scene_node( tail );
 
-    check_assertion( idx > 0, "invalid keyframe index" );
+    PP_ASSERT( idx > 0, "invalid keyframe index" );
 
     if ( fabs( frames[idx-1].time - frames[idx].time ) < EPS ) {
 	frac = 1.;
@@ -168,12 +168,11 @@ static int key_frame_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char 
     pp::Vec2d start_pt = get_start_pt();
 
     if (numFrames == MAX_NUM_KEY_FRAMES ) {
-        print_warning( TCL_WARNING, 
-		       "%s: max. num. of frames reached", argv[0] );
+        PP_WARNING( "%s: max. num. of frames reached", argv[0] );
     } 
 
     if ( argc != 11 ) {
-	print_warning( TCL_WARNING, "wrong number of args to %s", argv[0] );
+	PP_WARNING( "wrong number of args to %s", argv[0] );
         return TCL_ERROR;
     } 
 

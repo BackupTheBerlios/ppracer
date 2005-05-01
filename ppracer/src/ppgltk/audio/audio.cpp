@@ -58,7 +58,7 @@ static std::map<std::string,sound_context_data_t> soundTable;
 static std::map<std::string,music_context_data_t> musicTable;
 
 
-static bool initialized_ = false;
+static bool initialized = false;
 
 /* Data related to currently-playing music */
 static Mix_Music *current_music_data_ = NULL;
@@ -75,12 +75,11 @@ void init_audio()
     int hz, channels, buffer;
     Uint16 format;
 
-    check_assertion( !initialized_,
-		     "init_audio called twice" );
+    PP_REQUIRE( !initialized, "init_audio called twice" );
 
     //sound_contexts_ = create_hash_table();
     //music_contexts_ = create_hash_table();
-    initialized_ = true;
+    initialized = true;
 
     /*
      * Init SDL Audio 
@@ -88,7 +87,7 @@ void init_audio()
     if ( getparam_no_audio() == false ) {
 
 	if ( SDL_Init( SDL_INIT_AUDIO ) < 0 ) {
-	    handle_error( 1, "Couldn't initialize SDL: %s", SDL_GetError() );
+	    PP_ERROR( "Couldn't initialize SDL: %s", SDL_GetError() );
 	}
 
 	/* Open the audio device */
@@ -128,14 +127,12 @@ void init_audio()
 	buffer = getparam_audio_buffer_size();
 
 	if ( Mix_OpenAudio(hz, format, channels, buffer) < 0 ) {
-	    print_warning( 1,
-			   "Warning: Couldn't set %d Hz %d-bit audio\n"
-			   "  Reason: %s\n", 
+	    PP_WARNING("Couldn't set %d Hz %d-bit audio: Reason: %s", 
 			   hz,  
 			   getparam_audio_format_mode() == 0 ? 8 : 16,
 			   SDL_GetError());
 	} else {
-	    print_debug( DEBUG_SOUND,
+	    PP_LOG( DEBUG_SOUND,
 			 "Opened audio device at %d Hz %d-bit audio",
 			 hz, 
 			 getparam_audio_format_mode() == 0 ? 8 : 16 );
@@ -182,7 +179,7 @@ void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, 
     int i;
     sound_context_data_t *data;
 
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
 	std::map<std::string,sound_context_data_t>::iterator it;
 	
@@ -205,7 +202,7 @@ void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, 
 
 	data = &soundTable[sound_context];
 
-    check_assertion( num_sounds > 0, "num_sounds isn't > 0 " );
+    PP_ASSERT( num_sounds > 0, "num_sounds isn't > 0 " );
 
     data->num_sounds = num_sounds;
     data->sound_names = reinterpret_cast<char**>(malloc( sizeof(char*)*num_sounds ));
@@ -240,9 +237,8 @@ void bind_music_to_context( CONST84 char *music_context, CONST84 char *name, int
 {
     music_context_data_t *data;
 	std::map<std::string,music_context_data_t>::iterator it;
-
 	
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
 	if((it=musicTable.find(music_context))!=musicTable.end()){
 		/* Entry for this context already exists; decrement ref count &
@@ -255,7 +251,7 @@ void bind_music_to_context( CONST84 char *music_context, CONST84 char *name, int
 	    	Mix_HaltMusic();
 	    	current_music_name_ = NULL;
 	    	current_music_data_ = NULL;
-	    	check_assertion( get_music_playing_status( it->second.music_name ),
+	    	PP_ASSERT( get_music_playing_status( it->second.music_name ),
 				"inconsistent music playing status info" );
 	    	set_music_playing_status( it->second.music_name, false );
 		}
@@ -337,7 +333,7 @@ static Mix_Chunk* get_Mix_Chunk( sound_context_data_t *data, char **name )
 {
     int i;
 
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( is_sound_data_dirty() ) {
 	flush_cached_sound_chunks();
@@ -350,8 +346,8 @@ static Mix_Chunk* get_Mix_Chunk( sound_context_data_t *data, char **name )
     if ( data->chunks[i] == NULL ) {
 		bool found;
 		found = get_sound_data( data->sound_names[i], &(data->chunks[i]) );
-		check_assertion( found, "sound name not found" );
-		check_assertion( data->chunks[i]!=NULL, "sound chunk not set" );
+		PP_ASSERT( found, "sound name not found" );
+		PP_ASSERT( data->chunks[i]!=NULL, "sound chunk not set" );
     }
     if ( name != NULL ) {
 		*name = data->sound_names[i];
@@ -379,7 +375,7 @@ static Mix_Chunk* get_Mix_Chunk( sound_context_data_t *data, char **name )
 static void get_music_context_data( char *music_context, Mix_Music **music,
 				    char **name, int *loop )
 {
-    check_assertion( music != NULL, "music is null" );
+    PP_CHECK_POINTER( music );
 
     if ( is_music_data_dirty() ) {
 		flush_cached_music();
@@ -392,8 +388,8 @@ static void get_music_context_data( char *music_context, Mix_Music **music,
 		if ( it->second.music == NULL ) {
 	    	bool found;
 	    	found = get_music_data( it->second.music_name, &(it->second.music) );
-	    	check_assertion( found, "music name not found" );
-	    	check_assertion( it->second.music!=NULL, "music data not set" );
+	    	PP_ASSERT( found, "music name not found" );
+	    	PP_ASSERT( it->second.music!=NULL, "music data not set" );
 		}
 
 		*music = it->second.music;
@@ -425,7 +421,7 @@ static void get_music_context_data( char *music_context, Mix_Music **music,
 bool play_sound( const char *sound_context, int loop )
 {
     Mix_Chunk *chunk;
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( getparam_sound_enabled() == false ) {
 		return false;
@@ -435,7 +431,7 @@ bool play_sound( const char *sound_context, int loop )
 		return false;
     }
 
-    check_assertion( sound_context != NULL, "sound_context is null" );
+    PP_CHECK_POINTER( sound_context );
 
 	std::map<std::string,sound_context_data_t>::iterator it;
 	
@@ -483,7 +479,7 @@ bool halt_sound( const char *sound_context )
 	return false;
     }
 
-    check_assertion( sound_context != NULL, "sound_context is null" );
+    PP_CHECK_POINTER( sound_context );
 
 	std::map<std::string,sound_context_data_t>::iterator it;
 	
@@ -536,8 +532,8 @@ bool set_sound_volume( const char *sound_context, int volume )
 		if ( it->second.chunks[i] == NULL ) {
 			bool found;
 	    	found = get_sound_data( it->second.sound_names[i], &(it->second.chunks[i]) );
-	    	check_assertion( found, "sound name not found" );
-	    	check_assertion( it->second.chunks[i]!=NULL, "sound chunk not set" );
+	    	PP_ASSERT( found, "sound name not found" );
+	    	PP_ASSERT( it->second.chunks[i]!=NULL, "sound chunk not set" );
 		}
 		Mix_VolumeChunk( it->second.chunks[i], it->second.volume );
     }
@@ -564,7 +560,7 @@ bool play_music( char *music_context )
     char *music_name;
     int loop;
 
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( getparam_music_enabled() == false ) {
 	return false;
@@ -622,7 +618,7 @@ update_audio()
 {
     int volume;
 
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( ! is_audio_open() ) {
 	return;
@@ -676,9 +672,9 @@ update_audio()
 bool
 is_music_playing()
 {
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
-    check_assertion( ( current_music_name_ == NULL &&
+    PP_ASSERT( ( current_music_name_ == NULL &&
 		       current_music_data_ == NULL ) ||
 		     ( current_music_name_ != NULL &&
 		       current_music_data_ != NULL ),
@@ -696,7 +692,7 @@ is_music_playing()
 static int bind_sounds_cb( ClientData cd, Tcl_Interp *ip, 
 			   int argc, CONST84 char *argv[]) 
 {
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( argc < 2 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
@@ -722,7 +718,7 @@ static int bind_music_cb( ClientData cd, Tcl_Interp *ip,
 {
     int loops;
 
-    check_assertion( initialized_, "audio module not initialized" );
+    PP_REQUIRE( initialized, "audio module not initialized" );
 
     if ( argc != 4 ) {
         Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 

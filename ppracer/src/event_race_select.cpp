@@ -177,7 +177,7 @@ EventRaceSelect::setWidgetPositionsAndDrawDecorations()
 			  y_org + 181,
 			  0 );
 	    
-	    check_assertion( INIT_NUM_LIVES == 4, 
+	    PP_ASSERT( INIT_NUM_LIVES == 4, 
 			     "Assumption about number of lives invalid -- "
 			     "need to recode this part" );
 

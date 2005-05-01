@@ -154,11 +154,11 @@ void get_play_dimensions( float *width, float *length )
 */
 float get_terrain_base_height( float distance )
 {
-    float slope = tan( ANGLES_TO_RADIANS( course_angle ) );
+    PP_REQUIRE( distance > -EPS, "distance should be positive" );
+	
+	float slope = tan( ANGLES_TO_RADIANS( course_angle ) );
     float base_height;
     
-    check_assertion( distance > -EPS,
-		     "distance should be positive" );
 
     /* This will need to be fixed once we add variably-sloped terrain */
     base_height = -slope * distance - 
@@ -335,29 +335,29 @@ void load_course( std::string& course )
 	
 	
     if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-	handle_system_error( 1, "getcwd failed" );
+	 PP_ERROR( "getcwd failed" );
     }
     if (course[0]=='/'){
 		if ( chdir(course.c_str() ) != 0 ) {	
-			handle_system_error( 1, "Couldn't chdir to %s", course.c_str() );
+			PP_ERROR( "Couldn't chdir to %s", course.c_str() );
     	} 
 	}else{
 		sprintf( buff, "%s/courses/%s", getparam_data_dir(), course.c_str() );
 		if ( chdir( buff ) != 0 ) {
-			handle_system_error( 1, "Couldn't chdir to %s", buff );
+			PP_ERROR( "Couldn't chdir to %s", buff );
     	} 
 	}
 	
     if ( Tcl_EvalFile( tclInterp, "./course.tcl") == TCL_ERROR ) {
-	handle_error( 1, "Error evaluating %s/course.tcl: %s",  
+		PP_ERROR("Error evaluating %s/course.tcl: %s",  
 		      buff, Tcl_GetStringResult( tclInterp ) );
     } 
 
     if ( chdir( cwd ) != 0 ) {
-	handle_system_error( 1, "Couldn't chdir to %s", cwd );
+		PP_ERROR( "Couldn't chdir to %s", cwd );
     } 
 
-    check_assertion( !Tcl_InterpDeleted( tclInterp ),
+    PP_ASSERT( !Tcl_InterpDeleted( tclInterp ),
 		     "Tcl interpreter deleted" );
 
     calc_normals();
@@ -454,13 +454,13 @@ static int angle_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
     } 
 
     if ( angle < MIN_ANGLE ) {
-	print_warning( TCL_WARNING, "course angle is too small. Setting to %f",
+	PP_MESSAGE( "course angle is too small. Setting to %f",
 		       MIN_ANGLE );
 	angle = MIN_ANGLE;
     }
 
     if ( MAX_ANGLE < angle ) {
-	print_warning( TCL_WARNING, "course angle is too large. Setting to %f",
+	PP_MESSAGE( "course angle is too large. Setting to %f",
 		       MAX_ANGLE );
 	angle = MAX_ANGLE;
     }
@@ -486,15 +486,15 @@ static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
     } 
 
     if (course_loaded) {
-	print_warning( TCL_WARNING, "ignoring %s: course already loaded",
+		PP_MESSAGE( "ignoring %s: course already loaded",
 		       argv[0] );
 	return TCL_OK;
     }
 
     elev_img = pp::Image::readFile( argv[1] );
     if ( elev_img == NULL ) {
-	print_warning( TCL_WARNING, "%s: couldn't load %s", argv[0], argv[1] );
-	return TCL_ERROR;
+		PP_WARNING( "%s: couldn't load %s", argv[0], argv[1] );
+		return TCL_ERROR;
     }
 	
     nx = elev_img->width;
@@ -503,7 +503,7 @@ static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv
     elevation = reinterpret_cast<float *>(malloc( sizeof(float)*nx*ny ));
 
     if ( elevation == NULL ) {
-		handle_system_error( 1, "malloc failed" );
+		PP_ERROR( "malloc failed" );
     }
 
     slope = tan( ANGLES_TO_RADIANS( course_angle ) );
@@ -557,7 +557,7 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
     terrain_img = pp::Image::readFile( argv[1] );
 
     if ( terrain_img == NULL ) {
-	print_warning( TCL_WARNING, "%s: couldn't load %s", argv[0], argv[1] );
+		PP_WARNING("%s: couldn't load %s", argv[0], argv[1] );
         Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1],
 			 NULL );
 		return TCL_ERROR;
@@ -574,7 +574,7 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
     terrain = reinterpret_cast<int *>(malloc( sizeof(int)*nx*ny ));
 
     if ( terrain == NULL ) {
-		handle_system_error( 1, "malloc failed" );
+		PP_ERROR( "malloc failed" );
     }
 	
 	pad = 0;
@@ -772,13 +772,13 @@ static int start_pt_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *
     } 
 
     if ( !( xcd > 0 && xcd < course_width ) ) {
-	print_warning( TCL_WARNING, "%s: x coordinate out of bounds, "
+	PP_WARNING( "%s: x coordinate out of bounds, "
 		       "using 0\n", argv[0] );
 	xcd = 0;
     }
 
     if ( !( ycd > 0 && ycd < course_length ) ) {
-	print_warning( TCL_WARNING, "%s: y coordinate out of bounds, "
+	PP_WARNING( "%s: y coordinate out of bounds, "
 		       "using 0\n", argv[0] );
 	ycd = 0;
     }
@@ -807,7 +807,7 @@ static int elev_scale_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char
     } 
 
     if ( scale <= 0 ) {
-	print_warning( TCL_WARNING, "%s: scale must be positive", argv[0] );
+		PP_WARNING( "%s: scale must be positive", argv[0] );
 	return TCL_ERROR;
     }
 
@@ -877,7 +877,7 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
 
     treeImg = pp::Image::readFile( argv[1] );
     if ( treeImg->data == NULL ) {
-	print_warning( TCL_WARNING, "%s: couldn't load %s", 
+		PP_WARNING( "%s: couldn't load %s", 
 		       argv[0], argv[1] );
         Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1], 
 			 NULL );
@@ -885,8 +885,7 @@ static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *arg
     }
 
     if ( num_tree_types == 0 && num_item_types == 0 ) {
-	print_warning( IMPORTANT_WARNING,
-		       "tux_trees callback called with no tree or item "
+	PP_WARNING( "tux_trees callback called with no tree or item "
 		       "types set" );
     }
 

@@ -91,8 +91,7 @@ SSButton::draw()
 	gl::Enable(GL_TEXTURE_2D);
 	
 	if ( !get_texture_binding( m_regions[m_currentState].binding, &texobj ) ) {
-		print_warning( IMPORTANT_WARNING,
-			   "Couldnt get texture object for binding %s",
+		PP_WARNING("Couldnt get texture object for binding %s",
 			   m_regions[m_currentState].binding );
 	    texobj = 0;
 	}

@@ -129,7 +129,11 @@
 
 /* Header files to include by default */
 #include "debug.h"
-#include "error_util.h"
+
+#include "ppgltk/alg/errors.h"
+#include "ppgltk/alg/assert.h"
+
+
 
 #define PROG_NAME "ppracer"
 

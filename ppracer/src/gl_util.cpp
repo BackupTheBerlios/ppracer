@@ -345,7 +345,7 @@ void set_gl_options( const RenderMode mode )
         break;
 
     default:
-		code_not_reached();
+		PP_NOT_REACHED();
     } 
 } 
 
@@ -407,18 +407,18 @@ void init_opengl_extensions()
 		((*get_gl_proc)( reinterpret_cast<const GLubyte*>("glUnlockArraysEXT") ));
 	
 		if ( glLockArraysEXT_p != NULL && glUnlockArraysEXT_p != NULL ) {
-			print_debug( DEBUG_GL_EXT, 
+			PP_LOG( DEBUG_GL_EXT, 
 				 "GL_EXT_compiled_vertex_array extension "
 				 "supported" );
 		} else {
-			print_debug( DEBUG_GL_EXT, 
+			PP_LOG( DEBUG_GL_EXT, 
 				 "GL_EXT_compiled_vertex_array extension "
 				 "NOT supported" );
 			glLockArraysEXT_p = NULL;
 			glUnlockArraysEXT_p = NULL;
 		}
     } else {
-		print_debug( DEBUG_GL_EXT, 
+		PP_LOG( DEBUG_GL_EXT, 
 		     "No function available for obtaining GL proc addresses" );
     }
 }
@@ -516,7 +516,7 @@ void print_gl_info()
 	    break;
 
 	default:
-	    code_not_reached();
+	    PP_NOT_REACHED();
 	}
 
 	fprintf( stderr, "\n" );

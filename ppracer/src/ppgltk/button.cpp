@@ -167,8 +167,7 @@ Button::draw()
 
     if ( tex != NULL ) {
 	if ( !get_texture_binding( tex->binding, &texobj ) ) {
-	    print_warning( IMPORTANT_WARNING,
-			   "Couldnt get texture object for binding %s",
+	    PP_WARNING("Couldnt get texture object for binding %s",
 			   tex->binding );
 	    texobj = 0;
 	}

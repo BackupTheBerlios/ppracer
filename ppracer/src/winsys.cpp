@@ -139,7 +139,7 @@ void setup_sdl_video_mode()
     height = getparam_y_resolution();
 
     if ( ( screen = SDL_SetVideoMode( width, height, bpp, video_flags ) ) ==  NULL ){
-    	handle_system_error( 1, "Couldn't initialize video: %s", 
+    	PP_ERROR( "Couldn't initialize video: %s", 
 			     SDL_GetError() );
     }
 	
@@ -165,7 +165,7 @@ void winsys_init( int *argc, char **argv, char *window_title,
      * Initialize SDL
      */
     if ( SDL_Init( sdl_flags ) < 0 ) {
-	handle_error( 1, "Couldn't initialize SDL: %s", SDL_GetError() );
+		PP_ERROR( "Couldn't initialize SDL: %s", SDL_GetError() );
     }
 
 
@@ -309,7 +309,7 @@ void winsys_process_events()
     }
 
     /* Never exits */
-    code_not_reached();
+    PP_NOT_REACHED();
 }
 
 

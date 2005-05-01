@@ -99,7 +99,7 @@ void calc_normals()
 
     nmls = reinterpret_cast<pp::Vec3d *>(malloc( sizeof(pp::Vec3d)*nx*ny )); 
     if ( nmls == NULL ) {
-		handle_system_error( 1, "malloc failed" );
+		PP_ERROR( "malloc failed" );
     }
 
     for ( y=0; y<ny; y++) {
@@ -132,7 +132,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -143,7 +143,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -155,7 +155,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -166,7 +166,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -178,7 +178,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -189,7 +189,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -201,7 +201,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v1^v2;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -212,7 +212,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v1^v2;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -227,7 +227,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -239,7 +239,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -251,7 +251,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v2^v1;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;
@@ -263,7 +263,7 @@ void calc_normals()
 		    v2 = p2-p0;
 		    n = v1^v2;
 
-		    check_assertion( n.y > 0, "course normal points down" );
+		    PP_ASSERT( n.y > 0, "course normal points down" );
 
 		    n.normalize();
 		    nml = nml+n;

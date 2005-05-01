@@ -22,7 +22,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-#include "ppracer.h"
+#include "ppgltk/alg/errors.h"
 
 typedef enum {
     DEBUG_ODE,
@@ -40,32 +40,5 @@ typedef enum {
     DEBUG_GL_INFO,
     NUM_DEBUG_MODES
 } debug_mode_t;
-
-void init_debug();
-bool debug_mode_is_active( debug_mode_t mode );
-void debug_mode_set_active( debug_mode_t mode, bool active );
-void print_debug( debug_mode_t mode, char *fmt, ... );
-void setup_diagnostic_log();
-
-/* Define assertion macros (these do nothing if TUXRACER_NO_ASSERT
-   is defined) */
-#ifdef TUXRACER_NO_ASSERT
-
-#define check_assertion( condition, desc )  /* noop */
-
-#else
-
-#define check_assertion( condition, desc ) \
-    if ( condition ) {} else { \
-        fprintf( stderr, "!!! " PROG_NAME " unexpected error [%s:%d]: %s\n", \
-		 __FILE__, __LINE__, desc ); \
-        abort(); \
-    }
-
-
-#endif /* TUXRACER_NO_ASSERT */
-
-#define code_not_reached() \
-    check_assertion( 0, "supposedly unreachable code reached!" )
 
 #endif /* _DEBUG_H_ */

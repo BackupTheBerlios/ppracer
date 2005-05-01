@@ -111,7 +111,7 @@ quadsquare::quadsquare(quadcornerdata* pcd)
     }
 
     if ( pcd->Parent == NULL ) {
-		print_debug( DEBUG_QUADTREE, "initializing root node" );
+		PP_LOG( DEBUG_QUADTREE, "initializing root node" );
 		for (int i=0; i< NUM_TERRAIN_TYPES; i++){
 			VertexArrayIndices[0] = NULL;		
 		}
@@ -312,8 +312,8 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 
 	terrain_error = 0.f;
 
-	check_assertion( x >= 0, "x coordinate is negative" );
-	check_assertion( z >= 0, "z coordinate is negative" );
+	PP_ASSERT( x >= 0, "x coordinate is negative" );
+	PP_ASSERT( z >= 0, "z coordinate is negative" );
 
         if ( x < RowSize && z < NumRows ) {
 
@@ -428,7 +428,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 	for (j=j_min; j<=j_max; j++) {
 
 	    terrain = int(Terrain[ i + RowSize*j ]);
-	    check_assertion( terrain >= 0 && 
+	    PP_ASSERT( terrain >= 0 && 
 			     terrain < int(num_terrains),
 			     "Invalid terrain type" );
 	    terrain_count[ terrain ] += 1;
@@ -868,10 +868,11 @@ quadsquare::Update(const quadcornerdata& cd, const float ViewerLocation[3], cons
 void
 quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, clip_result_t vis )
 /// Does the actual work of updating enabled states and tree growing/shrinking.
-{
-    BlockUpdateCount++;	//xxxxx
+{    
+	PP_REQUIRE( vis != NotVisible, "Invalid visibility value" );
+    
+	BlockUpdateCount++;	//xxxxx
 
-    check_assertion( vis != NotVisible, "Invalid visibility value" );
     if ( vis != NoClip ) {
 		vis = ClipSquare( cd );
 		if ( vis == NotVisible ) {

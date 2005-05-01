@@ -74,7 +74,7 @@ bool file_exists( char *filename )
 
     if ( stat( filename_copy, &stat_info ) != 0 ) {
 	if ( errno != ENOENT ) {
-	    handle_system_error(1, "couldn't stat %s", filename_copy);
+	    PP_ERROR( "couldn't stat %s", filename_copy);
 	}
 	file_exists = false;
     } else {
@@ -105,7 +105,7 @@ bool dir_exists( char *dirname )
     }
 
     if ( chdir( curdir ) == -1 ) {
-	handle_system_error( 1, "Couldn't access directory %s", curdir );
+		PP_ERROR("Couldn't access directory %s", curdir );
     }
     return true;
 
@@ -123,7 +123,7 @@ bool dir_exists( char *dirname )
     } 
 
     if ( closedir( d ) != 0 ) {
-	handle_system_error( 1, "Couldn't close directory %s", dirname );
+		PP_ERROR( "Couldn't close directory %s", dirname );
     }
 
     return true;
@@ -142,7 +142,7 @@ std::list<char*>* get_dir_file_list( char *dirname )
     WIN32_FIND_DATA finddata;
 
     if ( getcwd( curdir, BUFF_LEN - 1 ) == NULL ) {
-		handle_system_error( 1, "getcwd failed" );
+		PP_ERROR( "getcwd failed" );
     }
 
     if ( chdir( dirname ) == -1 ) {
@@ -160,11 +160,11 @@ std::list<char*>* get_dir_file_list( char *dirname )
     } while ( FindNextFile( hFind, &finddata ) );
 
     if ( !FindClose( hFind ) ) {
-		handle_system_error( 1, "Couldn't close directory %s", dirname );
+		PP_ERROR( "Couldn't close directory %s", dirname );
     }
 
     if ( chdir( curdir ) == -1 ) {
-		handle_system_error( 1, "Couldn't access directory %s", curdir );
+		PP_ERROR( "Couldn't access directory %s", curdir );
     }
 
     return dirList;
@@ -190,7 +190,7 @@ std::list<char*>* get_dir_file_list( char *dirname )
     }
 
     if ( closedir( dir_stream ) != 0 ) {
-		handle_system_error( 1, "Couldn't close directory %s", dirname );
+		PP_ERROR( "Couldn't close directory %s", dirname );
     }
 
     return dirList;

@@ -40,12 +40,12 @@ void init_joystick()
 
     /* Initialize SDL SDL joystick module */
     if ( SDL_Init( SDL_INIT_JOYSTICK ) < 0 ) {
-	handle_error( 1, "Couldn't initialize SDL: %s", SDL_GetError() );
+		PP_ERROR("Couldn't initialize SDL: %s", SDL_GetError() );
     }
 
     num_joysticks = SDL_NumJoysticks();
 
-    print_debug( DEBUG_JOYSTICK, "Found %d joysticks", num_joysticks );
+    PP_LOG( DEBUG_JOYSTICK, "Found %d joysticks", num_joysticks );
 
     if ( num_joysticks == 0 ) {
 		joystick = NULL;
@@ -54,23 +54,23 @@ void init_joystick()
 
     js_name = const_cast<char*>(SDL_JoystickName(0));
 
-    print_debug( DEBUG_JOYSTICK, "Using joystick `%s'", js_name );
+    PP_LOG( DEBUG_JOYSTICK, "Using joystick `%s'", js_name );
 
     joystick = SDL_JoystickOpen( 0 );
 
     if ( joystick == NULL ) {
-		print_debug( DEBUG_JOYSTICK, "Cannot open joystick" );
+		PP_LOG( DEBUG_JOYSTICK, "Cannot open joystick" );
 		return;
     }
 
     /* Get number of buttons */
     num_buttons = SDL_JoystickNumButtons( joystick );
-    print_debug( DEBUG_JOYSTICK, "Joystick has %d button%s", 
+    PP_LOG( DEBUG_JOYSTICK, "Joystick has %d button%s", 
 		 num_buttons, num_buttons == 1 ? "" : "s" );
 
     /* Get number of axes */
     num_axes = SDL_JoystickNumAxes( joystick );
-    print_debug( DEBUG_JOYSTICK, "Joystick has %d ax%ss", 
+    PP_LOG( DEBUG_JOYSTICK, "Joystick has %d ax%ss", 
 		 num_axes, num_axes == 1 ? "i" : "e" );
 
 }
@@ -97,8 +97,7 @@ double get_joystick_x_axis()
 	static bool warning_given = false;
     int axis;
 
-    check_assertion( joystick != NULL,
-		     "joystick is null" );
+    PP_CHECK_POINTER(joystick);
 
     axis = getparam_joystick_x_axis();
 
@@ -106,8 +105,7 @@ double get_joystick_x_axis()
     if ( axis >= num_axes || axis < 0 ) {
 
 	if ( !warning_given ) {
-	    print_warning( IMPORTANT_WARNING, 
-			   "joystick x axis mapped to axis %d "
+	    PP_WARNING( "joystick x axis mapped to axis %d "
 			   "but joystick only has %d axes", axis, num_axes );
 	    warning_given = true;
 	}
@@ -125,8 +123,7 @@ double get_joystick_y_axis()
     static bool warning_given = false;
     int axis;
 
-    check_assertion( joystick != NULL,
-		     "joystick is null" );
+    PP_CHECK_POINTER( joystick );
 
     axis = getparam_joystick_y_axis();
 
@@ -134,8 +131,7 @@ double get_joystick_y_axis()
     if ( axis >= num_axes || axis < 0 ) {
 
 	if ( !warning_given ) {
-	    print_warning( IMPORTANT_WARNING, 
-			   "joystick y axis mapped to axis %d "
+	    PP_WARNING( "joystick y axis mapped to axis %d "
 			   "but joystick only has %d axes", axis, num_axes );
 	    warning_given = true;
 	}
@@ -152,15 +148,12 @@ bool is_joystick_button_down( int button )
 	
 	static bool warning_given = false;
 
-    check_assertion( joystick != NULL,
-		     "joystick is null" );
-
-    check_assertion( button >= 0, "button is negative" );
+    PP_CHECK_POINTER( joystick );
+    PP_REQUIRE( button >= 0, "button is negative" );
 
     if ( button >= num_buttons ) {
 	if ( !warning_given ) {
-	    print_warning( IMPORTANT_WARNING,
-			   "state of button %d requested, but "
+	    PP_WARNING( "state of button %d requested, but "
 			   "joystick only has %d buttons.  Further warnings "
 			   "of this type will be suppressed", 
 			   button, num_buttons );

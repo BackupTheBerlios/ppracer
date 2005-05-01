@@ -86,8 +86,8 @@ load_sound( const char *name, const char *filename )
     char *temp_record_ptr;
     int ref_ctr = 0;
 
-    check_assertion( name != NULL, "null name" );
-    check_assertion( filename != NULL, "null filename" );
+    PP_CHECK_POINTER( name );
+    PP_CHECK_POINTER( filename );
 
     if ( ! is_audio_open() ) {
 		return false;
@@ -96,7 +96,7 @@ load_sound( const char *name, const char *filename )
 	std::map<std::string,sound_record_t>::iterator soundit;
 	
 	if((soundit=soundTable.find(name))!=soundTable.end()){
-		print_debug( DEBUG_SOUND, "Overwriting sound name %s", name );
+		PP_LOG( DEBUG_SOUND, "Overwriting sound name %s", name );
 				
 		ref_ctr = soundit->second.ref_ctr;
 		soundTable.erase(soundit);
@@ -105,13 +105,12 @@ load_sound( const char *name, const char *filename )
 	data_ptr = reinterpret_cast<char*>(Mix_LoadWAV( filename ));
 
     if ( data_ptr == NULL ) {
-		print_warning( SOUNDFILE_MISSING_WARNING_LEVEL, 
-		       "FAILED to load sound file %s: %s", 
+		PP_WARNING("FAILED to load sound file %s: %s", 
 		       filename, Mix_GetError() );
 		return false;
     }
 
-    print_debug( DEBUG_SOUND, "Successfully loaded sound file %s", 
+    PP_LOG( DEBUG_SOUND, "Successfully loaded sound file %s", 
 		 filename );
 
 	
@@ -152,8 +151,8 @@ load_music( const char *name, const char *filename )
     char *temp_record_ptr;
     int ref_ctr = 0;
 
-    check_assertion( name != NULL, "null name" );
-    check_assertion( filename != NULL, "null filename" );
+    PP_CHECK_POINTER( name );
+    PP_CHECK_POINTER( filename );
 
     if ( ! is_audio_open() ) {
 	return false;
@@ -163,8 +162,7 @@ load_music( const char *name, const char *filename )
 		
 	if((musicit=musicTable.find(name))!=musicTable.end()){
 		if ( musicit->second.playing ) {
-			print_warning( SOUNDFILE_BUSY_WARNING_LEVEL, 
-			       "Can't overwrite music name %s since "
+			PP_WARNING("Can't overwrite music name %s since "
 			       "it is playing", name );
 			return false;
 		}
@@ -192,13 +190,12 @@ load_music( const char *name, const char *filename )
 	data_ptr = reinterpret_cast<char*>(Mix_LoadMUS( filename ));
 
     if ( data_ptr == NULL ) {
-		print_warning( SOUNDFILE_MISSING_WARNING_LEVEL, 
-		       "FAILED to load music file %s: %s", 
+		PP_WARNING( "FAILED to load music file %s: %s", 
 		       filename, Mix_GetError() );
 		return false;
     }
 
-    print_debug( DEBUG_SOUND, "Successfully loaded music file %s", 
+    PP_LOG( DEBUG_SOUND, "Successfully loaded music file %s", 
 		 filename );
 
 	music_record_t *mrec = reinterpret_cast<music_record_t*>(malloc(sizeof(music_record_t)));
@@ -293,7 +290,7 @@ set_music_playing_status( char *name, bool playing )
 	std::map<std::string,music_record_t>::iterator mrec;
 
 	if((mrec=musicTable.find(name))==musicTable.end()){
-		check_assertion(0, "couldn't find music" );
+		PP_ERROR( "couldn't find music" );
 	}
 	
     mrec->second.playing = playing;
@@ -316,7 +313,7 @@ get_music_playing_status( char *name )
 	std::map<std::string,music_record_t>::iterator mrec;
 
 	if((mrec=musicTable.find(name))==musicTable.end()){
-		check_assertion(0, "couldn't find music" );
+		PP_ERROR("couldn't find music" );
 	}
 	
     return mrec->second.playing;
@@ -340,7 +337,7 @@ void incr_sound_data_ref_ctr( const char *name )
 	}
 	
 	srec->second.ref_ctr++;
-	print_debug( DEBUG_SOUND, "incremented reference counter of sound %s "
+	PP_LOG( DEBUG_SOUND, "incremented reference counter of sound %s "
 		 "to %d", name, srec->second.ref_ctr );
 }
 
@@ -362,7 +359,7 @@ void decr_sound_data_ref_ctr( const char *name )
 	}
 	
 	srec->second.ref_ctr--;
-	print_debug( DEBUG_SOUND, "decremented reference counter of sound %s "
+	PP_LOG( DEBUG_SOUND, "decremented reference counter of sound %s "
 		 "to %d", name, srec->second.ref_ctr );
 }
 
@@ -380,11 +377,11 @@ void incr_music_data_ref_ctr( const char *name )
 	std::map<std::string,music_record_t>::iterator mrec;
 
 	if((mrec=musicTable.find(name))==musicTable.end()){
-		check_assertion(0, "couldn't find music" );
+		PP_ERROR("couldn't find music" );
 	}
     mrec->second.ref_ctr++;
 
-    print_debug( DEBUG_SOUND, "incremented reference counter of music %s "
+    PP_LOG( DEBUG_SOUND, "incremented reference counter of music %s "
 		 "to %d", name, mrec->second.ref_ctr );
 }
 
@@ -399,15 +396,17 @@ void incr_music_data_ref_ctr( const char *name )
 */
 void decr_music_data_ref_ctr( const char *name ) 
 {
+	PP_CHECK_POINTER(name);
+	
 	std::map<std::string,music_record_t>::iterator mrec;
 
 	if((mrec=musicTable.find(name))==musicTable.end()){
-		check_assertion(0, "couldn't find music" );
+		PP_ERROR("couldn't find music" );
 	}
 
     mrec->second.ref_ctr--;
 
-    print_debug( DEBUG_SOUND, "decremented reference counter of music %s "
+    PP_LOG( DEBUG_SOUND, "decremented reference counter of music %s "
 		 "to %d", name, mrec->second.ref_ctr );
 }
 
@@ -440,7 +439,7 @@ void delete_unused_audio_data()
 	for(mit=musicTable.begin(); mit!=musicTable.end(); mit++){
 		if ( mit->second.ref_ctr == 0 ) {
 			// we shouldn't be playing music with ref cnt of 0
-			check_assertion( mit->second.playing == false, 
+			PP_ASSERT( mit->second.playing == false, 
 			     "playing music with reference count of 0" );
 			Mix_FreeMusic( mit->second.data );
 			musicTable.erase(mit);
