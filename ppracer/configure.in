@@ -58,7 +58,7 @@ if test "x$enable_debug" = "xyes" ; then
 	TR_CFLAGS="-g -Wall"
 	TR_CXXFLAGS="-g -Wall"
 else
-	TR_CPPFLAGS="$TR_CPPFLAGS -DTUXRACER_NO_ASSERT=1"
+	TR_CPPFLAGS="$TR_CPPFLAGS -DPPGLTK_NO_ASSERT=1"
 fi
 
 AC_ARG_ENABLE(pedantic,  [  --enable-pedantic       Enable -pedantic (and -ansi for C) when compiling], TR_CFLAGS="$TR_CFLAGS -ansi -pedantic"; TR_CXXFLAGS="$TR_CXXFLAGS -pedantic")

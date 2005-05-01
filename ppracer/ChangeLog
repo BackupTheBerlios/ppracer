@@ -6,6 +6,9 @@
 	* src/error_utils.* src/debug.cpp
 	removed files
 	
+	* configure.in
+	fixed assert aktivation
+	
 2005-04-30  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppgltk/alg/errors.*
 	added new error and log system

@@ -4889,7 +4889,7 @@ if test "x$enable_debug" = "xyes" ; then
 	TR_CFLAGS="-g -Wall"
 	TR_CXXFLAGS="-g -Wall"
 else
-	TR_CPPFLAGS="$TR_CPPFLAGS -DTUXRACER_NO_ASSERT=1"
+	TR_CPPFLAGS="$TR_CPPFLAGS -DPPGLTK_NO_ASSERT=1"
 fi
 
 # Check whether --enable-pedantic or --disable-pedantic was given.
