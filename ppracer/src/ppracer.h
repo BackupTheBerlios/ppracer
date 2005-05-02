@@ -128,7 +128,6 @@
 #endif /* S_ISDIR */
 
 /* Header files to include by default */
-#include "debug.h"
 
 #include "ppgltk/alg/errors.h"
 #include "ppgltk/alg/assert.h"
@@ -170,8 +169,6 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 }
 
 
-/* define this to turn off all debugging assertions/checks */
-/* #define TUXRACER_NO_ASSERT */
 
 /* Directory separator */
 #ifdef WIN32
@@ -194,6 +191,29 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 #else
 #	define FUCKTCL
 #endif
+
+/// The custom log modes 
+typedef enum {
+    DEBUG_ODE       = 1,
+    DEBUG_QUADTREE,
+    DEBUG_CONTROL,
+    DEBUG_SOUND,
+    DEBUG_TEXTURE,
+    DEBUG_VIEW,
+    DEBUG_GL_EXT,
+    DEBUG_FONT,
+    DEBUG_UI,
+    DEBUG_GAME_LOGIC,
+    DEBUG_SAVE,
+    DEBUG_JOYSTICK,
+    DEBUG_GL_INFO,
+    NUM_DEBUG_MODES
+} debug_mode_t;
+
+
+
+
+
 
 
 extern Tcl_Interp *tclInterp;

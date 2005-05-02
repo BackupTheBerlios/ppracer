@@ -25,12 +25,17 @@
 #include <iostream>
 
 namespace pp {
-	
+
+// the pointer to the one and only instance (singleton)
 Log* Log::sm_instance = NULL;
 
+	
+/// Returns the one and only instance
 Log*
 Log::Instance()
 {
+	/// check whether there is an instance
+	/// and create a new one if it fails.
 	if(sm_instance==NULL){
 		sm_instance = new Log();
 	}	
@@ -42,15 +47,16 @@ Log::Log()
  : m_level(0),
    mp_logfile(NULL)
 {
-	
 }
 
 
 Log::~Log()
 {
-	
 }
 	
+
+/// Set the file for the log.
+/// You can reset it with NULL.
 void
 Log::setFilename(const char* filename)
 {
@@ -71,6 +77,7 @@ Log::setFilename(const char* filename)
 	}	
 }
 	
+/// Set the logging level
 void
 Log::setLevel(int level)
 {
@@ -78,12 +85,14 @@ Log::setLevel(int level)
 }
 
 
+/// Sends the message to std::cerr or the logfile.
 void 
 Log::message(int mode,
 			const char* file, int line,
 			const char* format,...)
 {
-	if(checkLevel(mode)==false)return;
+	//check if we should handle this message
+	if(checkLevel(mode)==false) return;
 	
 	std::ostream *logstream;
 	
@@ -122,6 +131,7 @@ Log::message(int mode,
 	}	
 }
 
+/// Returns ostream for logging
 std::ostream*
 Log::getStream()
 {
@@ -131,7 +141,6 @@ Log::getStream()
 		return mp_logfile;
 	}
 }
-
 
 bool
 Log::checkLevel(int mode)

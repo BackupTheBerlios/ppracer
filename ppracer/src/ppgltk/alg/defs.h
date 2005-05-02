@@ -32,7 +32,14 @@
 
 #define ROUND_TO_NEAREST(x) ( int((x)+0.5) )
 
+/// convert angles to radians
 #define ANGLES_TO_RADIANS(x) ( M_PI / 180.0 * (x) )
+
+/// convert radioans to angles
 #define RADIANS_TO_ANGLES(x) ( 180.0 / M_PI * (x) )
+
+/// Returns the number of ellements in an array.
+/// This only works for static arrays in the same context
+#define PP_NUM_ELEMENTS(array) (sizeof(array) / sizeof ((array)[0]))
 
 #endif // PP_DEFS_H

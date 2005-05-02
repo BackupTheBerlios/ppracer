@@ -33,8 +33,11 @@
 #include "videoconfig.h"
 
 #include "game_config.h"
-#include "ppgltk/ui_mgr.h"
 #include "winsys.h"
+
+#include "ppgltk/ui_mgr.h"
+#include "ppgltk/alg/defs.h"
+
 
 /// List of default resolitions (only if autodetection fails)
 resolution_t resolutions[] = { 	{"1280 x 1024",1280,1024},
@@ -96,7 +99,7 @@ VideoConfig::VideoConfig()
 	
   	//bpp listbox
 	std::list<bpp_t>::iterator bppit;
-	for (unsigned int i=0; i < sizeof(bpps)/sizeof(bpp_t) ; i++) {
+	for (unsigned int i=0; i < PP_NUM_ELEMENTS(bpps); i++) {
 		m_bppList.push_back(bpps[i]);
 		if(bpps[i].data==getparam_bpp_mode()){
 			bppit = --m_bppList.end();
@@ -118,7 +121,7 @@ VideoConfig::VideoConfig()
 	//multisample listbox
 	found=false;
 	std::list<multisample_t>::iterator multiit;
-	for (unsigned int i=0; i < sizeof(multisamples)/sizeof(multisample_t) ; i++) {
+	for (unsigned int i=0; i < PP_NUM_ELEMENTS(multisamples); i++) {
 		m_multisampleList.push_back(multisamples[i]);
 		if(multisamples[i].data==getparam_multisamples()){
 			multiit = --m_multisampleList.end();
@@ -259,7 +262,7 @@ VideoConfig::initVideoModes()
 		modes == reinterpret_cast<SDL_Rect **>(0) )
 	{
 		// unable to find modes... fall back to standard modes
-		for (unsigned int i=0; i<sizeof(resolutions)/sizeof(resolution_t); i++) {
+		for (unsigned int i=0; i<PP_NUM_ELEMENTS(resolutions); i++){
 			m_resolutionList.push_back(resolutions[i]);
 		}	
 	}else{

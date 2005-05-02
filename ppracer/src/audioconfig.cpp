@@ -21,6 +21,7 @@
 
 #include "game_config.h"
 #include "ppgltk/ui_mgr.h"
+#include "ppgltk/alg/defs.h"
 
 
 bps_t bps[] = { 	{"8",0},
@@ -52,7 +53,7 @@ AudioConfig::AudioConfig()
 	std::list<freq_t>::iterator freqit;
 	bool found=false;
 	
-	for (unsigned int i=0; i<sizeof(freqs)/sizeof(freq_t); i++) {
+	for (unsigned int i=0; i<PP_NUM_ELEMENTS(freqs); i++) {
 		m_freqList.push_back(freqs[i]);	
 		if (freqs[i].data==getparam_audio_freq_mode()){
 			freqit = --m_freqList.end();
@@ -71,7 +72,7 @@ AudioConfig::AudioConfig()
 	std::list<freq_t>::iterator bpsit;
 	found=false;
 	
-	for (unsigned int i=0; i<sizeof(bps)/sizeof(bps_t); i++) {
+	for (unsigned int i=0; i<PP_NUM_ELEMENTS(bps); i++) {
 		m_bpsList.push_back(bps[i]);	
 		if (bps[i].data==getparam_audio_format_mode()){
 			bpsit = --m_bpsList.end();

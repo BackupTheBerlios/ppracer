@@ -351,7 +351,7 @@ void set_gl_options( const RenderMode mode )
 
 /* Checking for GL errors is really just another type of assertion, so we
    turn off the check if TUXRACER_NO_ASSERT is defined */
-#if defined( TUXRACER_NO_ASSERT )
+#if defined( PPGLTK_NO_ASSERT )
 void check_gl_error()
 {
 }
@@ -361,12 +361,10 @@ void check_gl_error()
     GLenum error;
     error = glGetError();
     if ( error != GL_NO_ERROR ) {
-		print_warning( CRITICAL_WARNING, 
-		       "OpenGL Error: %s", gluErrorString( error ) );
-		fflush( stderr );
+		PP_WARNING( "OpenGL Error: %s", gluErrorString( error ) );
     }
 }
-#endif /* defined( TUXRACER_NO_ASSERT ) */
+#endif // defined( PPGLTK_NO_ASSERT )
 
 void copy_to_glfloat_array( GLfloat dest[], double src[], int n )
 {

@@ -1,4 +1,8 @@
 
+2005-05-02  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	several fixes
+
 2005-05-01  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppgltk/alg/errors.*
 	reimplemented diagnostig logfile

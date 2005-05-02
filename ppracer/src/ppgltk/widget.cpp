@@ -20,7 +20,7 @@
 
 #include "widget.h"
 
-#include "debug.h"
+#include "ppracer.h"
 #include "ui_mgr.h"
 
 #include <iostream>

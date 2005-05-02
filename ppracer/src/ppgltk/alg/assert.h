@@ -31,59 +31,71 @@ namespace pp {
 class Assertion : public pp::Error
 {
 public:
+	
+	/// The available types of the assertions
 	enum Type{
 		Assert,
 		Require,
 		Ensure,
-		Implies,
 		CheckPointer
 	};
 	
 	Assertion(Type type, const char* reason,
-			  const char* file, int line, const char* description);
-
+			  const char* file, int line, const char* description, ...);
+	virtual ~Assertion();
+	
+	
 	void printMessage();
 		
 private:
+	
+	/// the type of the assertion 
 	Type m_type;
+	
+	/// a string that holds the type and expression
 	const char* m_reason;
+	
+	/// the file from which the assertion gets thrown
 	const char* m_file;
+
+	/// the line in the file the assertion gets thrown
 	int m_line;
-	const char* m_description;
+
+	/// the description of the assertion
+	char* m_description;
 
 };	
 
 } //namespace pp
 
-#define PP_ASSERTION(type, expression, description)	\
-throw pp::Assertion(pp::Assertion::type, #type"("expression")", __FILE__, __LINE__, description)
+#define PP_ASSERTION(type, expression, ...)	\
+throw pp::Assertion(pp::Assertion::type, #type"("expression")", __FILE__, __LINE__, __VA_ARGS__)
 
 
 #ifndef PPGLTK_NO_ASSERT
 
-	#define PP_ASSERT(expression, description)	\
-		if(!(expression)) {PP_ASSERTION(Assert, #expression, description);}else{;}	
+	/// A normal assertion
+	#define PP_ASSERT(expression, ...)	\
+		if(!(expression)) {PP_ASSERTION(Assert, #expression,  __VA_ARGS__);}else{;}	
 
-	#define PP_REQUIRE(expression, description)	\
-		if(!(expression)) {PP_ASSERTION(Require, #expression, description);}else{;}
+	/// A precondition
+	#define PP_REQUIRE(expression, ...)	\
+		if(!(expression)) {PP_ASSERTION(Require, #expression, __VA_ARGS__);}else{;}
 	
-	#define PP_ENSURE(expression, description)	\
-		if(!(expression)) {PP_ASSERTION(Ensure, #expression, description);}else{;}	
+	/// A postcondition
+	#define PP_ENSURE(expression, ...)	\
+		if(!(expression)) {PP_ASSERTION(Ensure, #expression,  __VA_ARGS__);}else{;}	
 
-	#define PP_IMPLIES(expression1, expression2, description)	\
-		if(!(expression1)){	\
-			if(!(expression1)){PP_ASSERTION(Implies, #expression1","#expression2, description);}else{;}	\
-		}else{;}
-			
+	/// Ensures the pointer is not NULL			
 	#define PP_CHECK_POINTER(ptr)	\
 		if(ptr==NULL) {PP_ASSERTION(CheckPointer, "pointer!=NULL", NULL);}else{;}
 
 #else
-	#define PP_ASSERT(expression, description)
-	#define PP_REQUIRE(expression, description)
-	#define PP_ENSURE(expression, description)
-	#define PP_IMPLIES(expression1, expression2, description)	
-	#define PP_CHECK_PTR(ptr)
+	#define PP_ASSERT(expression, ...)
+	#define PP_REQUIRE(expression, ...)
+	#define PP_ENSURE(expression, ...)
+	#define PP_IMPLIES(expression1, expression2, ...)	
+	#define PP_CHECK_POINTER(ptr)
 #endif
 
 

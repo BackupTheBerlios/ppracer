@@ -77,7 +77,6 @@ ppracer_SOURCES =				\
 	course_render.h				\
 	credits.cpp				\
 	credits.h				\
-	debug.h					\
 	event_select.cpp			\
 	event_select.h				\
 	file_util.cpp				\
