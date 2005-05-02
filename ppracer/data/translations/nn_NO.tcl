@@ -5,7 +5,7 @@ pp_translate_string "PRESS ANY KEY TO START" "TRYKK EIN TAST FOR Å STARTA"
 pp_translate_string "Enter an event" "Køyr renn"
 pp_translate_string "Practice" "Øving"
 pp_translate_string "Configuration" "Oppsett"
-pp_translate_string "Credits" "Takk til"
+pp_translate_string "Credits" "Bidragsytarar"
 pp_translate_string "Quit" "Avslutt"
 pp_translate_string "Graphics" "Grafikk"
 pp_translate_string "Video" "Video"
@@ -30,7 +30,7 @@ pp_translate_string "Experimental (needs restart)" "Eksperimentell (treng omstar
 pp_translate_string "Enable FSAA:" "Bruk kantutjamning:"
 pp_translate_string "Audio Configuration" "Lydoppsett"
 pp_translate_string "Sound Effects:" "Lydeffektar:"
-#pp_translate_string "Music:" ""
+pp_translate_string "Music:" "Musikk:"
 pp_translate_string "(needs restart)" "(treng omstart)"
 pp_translate_string "Disable Audio:" "Slå av lyd:"
 pp_translate_string "Stereo:" "Stereo:"
@@ -67,8 +67,8 @@ pp_translate_string "You can't enter this race yet." "Du kan ikkje spela dette r
 pp_translate_string "Loading, Please Wait..." "Lastar. Vent litt ..."
 pp_translate_string "Resume" "Hald fram"
 pp_translate_string "Paused" "Pause"
-pp_translate_string "Race Over" "Rennet er over"
-pp_translate_string "Time: %02d:%02d.%02d" "Tid: %02d:%02d:%02d"
+pp_translate_string "Race Over" "Rennet er ferdig"
+pp_translate_string "Time: %02d:%02d.%02d" "Tid: %02d.%02d,%02d"
 pp_translate_string "Herring: %3d" "Sild: %3d"
 pp_translate_string "Score: %6d" "Poeng: %6d"
 pp_translate_string "Max speed: %3d km/h" "Maksfart: %3d km/t"
@@ -79,24 +79,15 @@ pp_translate_string "Congratulations! You won the event!" "Gratulerer! Du vann r
 pp_translate_string "Congratulations! You won the cup!" "Gratulerer! Du vann turneringa!"
 pp_translate_string "You advanced to the next race!" "Du kom vidare til neste renn!"
 pp_translate_string "You didn't advance." "Du kom ikkje vidare."
-
-#HUD
-#Strings are prefixed to prevent collisions with the UI
-pp_translate_string "H|FPS: %.1f" "FPS: %.1f"
+pp_translate_string "H|FPS: %.1f" "B/s: %.1f"
 pp_translate_string "H|Time:" "Tid:"
-pp_translate_string "H|km/h" "km/h"
-#herring counter
+pp_translate_string "H|km/h" "km/t"
 pp_translate_string "H|%03d" "%03d"
-#time counter
-pp_translate_string "H|%02d:%02d:%02d" "%02d:%02d:%02d"
-#speed counter
+pp_translate_string "H|%02d:%02d:%02d" "%02d.%02d,%02d"
 pp_translate_string "H|%.0f" "%.0f"
-
-#Credits
-#pp_translate_string "Development Team" ""
-#pp_translate_string "Translators" ""
-#pp_translate_string "Contributors" ""
-#pp_translate_string "Tux Racer Development Team" ""
-#pp_translate_string "Music" ""
-#pp_translate_string "Thanks To:" ""
-
+pp_translate_string "Development Team" "Utviklingslag"
+pp_translate_string "Translators" "Omsetjarar"
+pp_translate_string "Contributors" "Bidragsytarar"
+pp_translate_string "Tux Racer Development Team" "Tux Racer-utviklarane"
+pp_translate_string "Music" "Musikk"
+pp_translate_string "Thanks To:" "Takk til:"
