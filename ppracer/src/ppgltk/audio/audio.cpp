@@ -132,7 +132,7 @@ void init_audio()
 			   getparam_audio_format_mode() == 0 ? 8 : 16,
 			   SDL_GetError());
 	} else {
-	    PP_LOG( DEBUG_SOUND,
+	    PP_LOG( pp::LogSound,
 			 "Opened audio device at %d Hz %d-bit audio",
 			 hz, 
 			 getparam_audio_format_mode() == 0 ? 8 : 16 );
@@ -174,7 +174,7 @@ bool is_audio_open()
   \date    Created:  2000-08-13
   \date    Modified: 2000-08-14
 */
-void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, int num_sounds )
+void bind_sounds_to_context( const char *sound_context, const char **names, int num_sounds )
 {
     int i;
     sound_context_data_t *data;
@@ -233,7 +233,7 @@ void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, 
   \author  jfpatry
   \date    Created:  2000-08-13
   \date Modified: 2000-08-14 */
-void bind_music_to_context( CONST84 char *music_context, CONST84 char *name, int loop )
+void bind_music_to_context( const char *music_context, const char *name, int loop )
 {
     music_context_data_t *data;
 	std::map<std::string,music_context_data_t>::iterator it;
@@ -683,63 +683,6 @@ is_music_playing()
 }
 
 
-/*! 
-  Tcl callback for tux_bind_sounds
-  \author  jfpatry
-  \date    Created:  2000-08-14
-  \date    Modified: 2000-08-14
-*/
-static int bind_sounds_cb( ClientData cd, Tcl_Interp *ip, 
-			   int argc, CONST84 char *argv[]) 
-{
-    PP_REQUIRE( initialized, "audio module not initialized" );
-
-    if ( argc < 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <sound context> <sound name>"
-			 " [<sound name> ...]",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    bind_sounds_to_context( argv[1], argv+2, argc-2 );
-    return TCL_OK;
-} 
-
-
-/*! 
-  Tcl callback for tux_bind_music
-  \author  jfpatry
-  \date    Created:  2000-08-14
-  \date    Modified: 2000-08-14
-*/
-static int bind_music_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    int loops;
-
-    PP_REQUIRE( initialized, "audio module not initialized" );
-
-    if ( argc != 4 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <music context> <music name> "
-			 "<loops>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( Tcl_GetInt( ip, argv[3], &loops ) ) {
-		Tcl_AppendResult(
-	    ip, "invalid value for loops parameter", NULL );
-		return TCL_ERROR;
-    }
-
-    bind_music_to_context( argv[1], argv[2], loops );
-
-    return TCL_OK;
-} 
-
-
 /*---------------------------------------------------------------------------*/
 /*! 
   Deallocates audio resources in preparation for program termination
@@ -754,23 +697,6 @@ void shutdown_audio()
     }
 }
 
-
-/*! 
-  Registers sound module's Tcl callbacks
-  \arg \c  ip Tcl interpreter
-
-  \return  none
-  \author  jfpatry
-  \date    Created:  2000-08-14
-  \date    Modified: 2000-08-14
-*/
-void register_sound_tcl_callbacks( Tcl_Interp *ip )
-{
-    Tcl_CreateCommand (ip, "tux_bind_sounds", bind_sounds_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_bind_music", bind_music_cb,  0,0);
-}
-
-
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
 #else
@@ -781,11 +707,11 @@ void init_audio()
 {
 }
 
-void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, int num_sounds )
+void bind_sounds_to_context( const char *sound_context, const char **names, int num_sounds )
 {
 }
 
-void bind_music_to_context( CONST84 char *music_context, CONST84 char *name, int loop )
+void bind_music_to_context( const char *music_context, const char *name, int loop )
 {
 }
 
@@ -808,23 +734,6 @@ bool is_music_playing()
     return false;
 }
 
-static int bind_sounds_cb( ClientData cd, Tcl_Interp *ip, 
-			   int argc, CONST84 char *argv[]) 
-{
-    return TCL_OK;
-} 
-
-static int bind_music_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    return TCL_OK;
-} 
-
-void register_sound_tcl_callbacks( Tcl_Interp *ip )
-{
-    Tcl_CreateCommand (ip, "tux_bind_sounds", bind_sounds_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_bind_music", bind_music_cb,  0,0);
-}
 
 bool halt_sound( const char *sound_context )
 {

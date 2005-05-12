@@ -22,8 +22,6 @@
 #ifndef AUDIO_DATA_H
 #define AUDIO_DATA_H
 
-#include "../../ppracer.h"
-
 #if defined(HAVE_SDL_MIXER)
    
 #include "SDL.h"
@@ -46,7 +44,6 @@ void decr_sound_data_ref_ctr( const char *name ) ;
 void delete_unused_audio_data();
 bool is_sound_data_dirty();
 void mark_sound_data_clean();
-void register_sound_data_tcl_callbacks( Tcl_Interp *ip );
 
 /* MUSIC */
 bool load_music( const char *name, const char *filename ) ;

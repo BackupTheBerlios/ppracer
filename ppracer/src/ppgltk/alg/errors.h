@@ -34,9 +34,17 @@ namespace pp {
 /// Therefore developers can freely use values >0 for custom modes
 enum{
 	LogUnknown  =  0,
-	LogMessage  = -1,
-	LogWarning  = -2,
-	LogError    = -3,
+	LogMessage  = -1000,
+	
+	LogPPGLTK	= -1001,
+	LogAlg		= -1002,
+	LogSound	= -1003,	
+	LogUI		= -1004,
+	LogFont		= -1005,
+	LogImages	= -1006,	
+	
+	LogWarning  = -2000,
+	LogError    = -3000,
 };
 
 

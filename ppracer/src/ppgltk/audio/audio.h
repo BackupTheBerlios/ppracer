@@ -22,19 +22,17 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#include "../../ppracer.h"
-
 void init_audio();
 
 bool is_audio_open();
 
-void bind_sounds_to_context( CONST84 char *sound_context, CONST84 char **names, int num_sounds );
+void bind_sounds_to_context( const char *sound_context, const char **names, int num_sounds );
 bool play_sound( const char *sound_context, int loop );
 bool halt_sound( const char *sound_context );
 bool set_sound_volume( const char *sound_context, int volume );
     
 
-void bind_music_to_context( CONST84 char *music_context, CONST84 char *name, int loop );
+void bind_music_to_context( const  char *music_context, const char *name, int loop );
 bool play_music( char *music_context );
 bool is_music_playing();
     
@@ -42,6 +40,5 @@ void update_audio();
 
 void shutdown_audio();
 
-void register_sound_tcl_callbacks( Tcl_Interp *ip );
 
 #endif /* AUDIO_H */

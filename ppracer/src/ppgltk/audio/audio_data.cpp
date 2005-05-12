@@ -22,6 +22,9 @@
 #include "audio_data.h"
 #include "audio.h"
 
+#include "../alg/assert.h"
+#include "../alg/errors.h"
+
 #if defined(HAVE_SDL_MIXER)
 
 #include "SDL.h"
@@ -96,7 +99,7 @@ load_sound( const char *name, const char *filename )
 	std::map<std::string,sound_record_t>::iterator soundit;
 	
 	if((soundit=soundTable.find(name))!=soundTable.end()){
-		PP_LOG( DEBUG_SOUND, "Overwriting sound name %s", name );
+		PP_LOG( pp::LogSound, "Overwriting sound name %s", name );
 				
 		ref_ctr = soundit->second.ref_ctr;
 		soundTable.erase(soundit);
@@ -110,7 +113,7 @@ load_sound( const char *name, const char *filename )
 		return false;
     }
 
-    PP_LOG( DEBUG_SOUND, "Successfully loaded sound file %s", 
+    PP_LOG( pp::LogSound, "Successfully loaded sound file %s", 
 		 filename );
 
 	
@@ -171,7 +174,7 @@ load_music( const char *name, const char *filename )
 	}
 	/*
     if ( get_hash_entry( hash, name, (hash_entry_t*) &record_ptr ) ) {
-		print_debug( DEBUG_SOUND, "Overwriting music name %s", name );
+		print_debug( pp::LogSound, "Overwriting music name %s", name );
 
 		// Need to save ref_ctr
 		music_record_t *mrec = (music_record_t*)record_ptr;
@@ -195,7 +198,7 @@ load_music( const char *name, const char *filename )
 		return false;
     }
 
-    PP_LOG( DEBUG_SOUND, "Successfully loaded music file %s", 
+    PP_LOG( pp::LogSound, "Successfully loaded music file %s", 
 		 filename );
 
 	music_record_t *mrec = reinterpret_cast<music_record_t*>(malloc(sizeof(music_record_t)));
@@ -337,7 +340,7 @@ void incr_sound_data_ref_ctr( const char *name )
 	}
 	
 	srec->second.ref_ctr++;
-	PP_LOG( DEBUG_SOUND, "incremented reference counter of sound %s "
+	PP_LOG( pp::LogSound, "incremented reference counter of sound %s "
 		 "to %d", name, srec->second.ref_ctr );
 }
 
@@ -359,7 +362,7 @@ void decr_sound_data_ref_ctr( const char *name )
 	}
 	
 	srec->second.ref_ctr--;
-	PP_LOG( DEBUG_SOUND, "decremented reference counter of sound %s "
+	PP_LOG( pp::LogSound, "decremented reference counter of sound %s "
 		 "to %d", name, srec->second.ref_ctr );
 }
 
@@ -381,7 +384,7 @@ void incr_music_data_ref_ctr( const char *name )
 	}
     mrec->second.ref_ctr++;
 
-    PP_LOG( DEBUG_SOUND, "incremented reference counter of music %s "
+    PP_LOG( pp::LogSound, "incremented reference counter of music %s "
 		 "to %d", name, mrec->second.ref_ctr );
 }
 
@@ -406,7 +409,7 @@ void decr_music_data_ref_ctr( const char *name )
 
     mrec->second.ref_ctr--;
 
-    PP_LOG( DEBUG_SOUND, "decremented reference counter of music %s "
+    PP_LOG( pp::LogSound, "decremented reference counter of music %s "
 		 "to %d", name, mrec->second.ref_ctr );
 }
 
@@ -524,79 +527,6 @@ mark_music_data_clean()
     music_dirty_ = false;
 }
 
-
-/* Name:          load_sound_cb
-   Description:   Tcl callback for tux_sound_load
-   Precondition:  
-   Return value:  Tcl error status
-   Modified args: 
-   Author:        jfpatry
-   Created:       2000-08-13
-   Last Modified: 2000-09-02
-*/
-static int load_sound_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    Tcl_Obj *result;
-
-//    check_assertion( initialized_, "audio_data module not initialized" );
-
-    if ( argc != 3 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <name> <sound file>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    result = Tcl_NewBooleanObj( load_sound( argv[1], argv[2] ) );
-    Tcl_SetObjResult( ip, result );
-    return TCL_OK;
-} 
-
-/* Name:          load_music_cb
-   Description:   Tcl callback for tux_music_load
-   Precondition:  
-   Return value:  Tcl error status
-   Modified args: 
-   Author:        jfpatry
-   Created:       2000-08-13
-   Last Modified: 2000-09-02
-*/
-static int load_music_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    Tcl_Obj *result;
-
-//    check_assertion( initialized_, "audio_data module not initialized" );
-
-    if ( argc != 3 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <name> <sound file>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    result = Tcl_NewBooleanObj( load_music( argv[1], argv[2] ) );
-    Tcl_SetObjResult( ip, result );
-    return TCL_OK;
-} 
-
-
-/* Name:          register_sound_data_tcl_callbacks
-   Description:   register sound data tcl callbacks ;)
-   Precondition:  
-   Return value:  
-   Modified args: 
-   Author:        jfpatry
-   Created:       2000-08-13
-   Last Modified: 2000-08-13
-*/
-void register_sound_data_tcl_callbacks( Tcl_Interp *ip )
-{
-    Tcl_CreateCommand (ip, "tux_load_sound", load_sound_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_load_music", load_music_cb,  0,0);
-}
-
 #else
 
 void 
@@ -680,34 +610,6 @@ mark_sound_data_clean()
 void
 mark_music_data_clean()
 {
-}
-
-
-static int load_sound_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    Tcl_Obj *result;
-
-    result = Tcl_NewBooleanObj( 1 );
-    Tcl_SetObjResult( ip, result );
-    return TCL_OK;
-} 
-
-static int load_music_cb( ClientData cd, Tcl_Interp *ip, 
-			  int argc, CONST84 char *argv[]) 
-{
-    Tcl_Obj *result;
-
-    result = Tcl_NewBooleanObj( 1 );
-    Tcl_SetObjResult( ip, result );
-    return TCL_OK;
-} 
-
-
-void register_sound_data_tcl_callbacks( Tcl_Interp *ip )
-{
-    Tcl_CreateCommand (ip, "tux_load_sound", load_sound_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_load_music", load_music_cb,  0,0);
 }
 
 #endif /* defined(HAVE_SDL_MIXER) */

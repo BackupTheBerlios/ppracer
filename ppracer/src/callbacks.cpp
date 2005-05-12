@@ -22,8 +22,12 @@
 #include "ppgltk/font.h"
 #include "ppgltk/alg/color.h"
 
+#include "ppgltk/audio/audio.h"
+#include "ppgltk/audio/audio_data.h"
+
+
 static int
-pp_register_font_cb ( ClientData cd, Tcl_Interp *ip, 
+register_font_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[])
 {
 	bool error = false;
@@ -107,7 +111,7 @@ pp_register_font_cb ( ClientData cd, Tcl_Interp *ip,
 }
 
 static int
-pp_bind_font_cb ( ClientData cd, Tcl_Interp *ip, 
+bind_font_cb ( ClientData cd, Tcl_Interp *ip, 
 			  int argc, CONST84 char *argv[])
 {
 	bool error = false;
@@ -177,10 +181,108 @@ pp_bind_font_cb ( ClientData cd, Tcl_Interp *ip,
     return TCL_OK;
 }
 
+static int
+load_sound_cb( ClientData cd, Tcl_Interp *ip, 
+			  int argc, CONST84 char *argv[]) 
+{
+	Tcl_Obj *result;
+
+    if ( argc != 3 ) {
+        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
+			 "Usage: ", argv[0], " <name> <sound file>",
+			 NULL );
+        return TCL_ERROR;
+    } 
+
+    result = Tcl_NewBooleanObj( load_sound( argv[1], argv[2] ) );
+    Tcl_SetObjResult( ip, result );
+    return TCL_OK;
+
+} 
+
+static int
+load_music_cb( ClientData cd, Tcl_Interp *ip, 
+			  int argc, CONST84 char *argv[]) 
+{
+    Tcl_Obj *result;
+
+    if ( argc != 3 ) {
+        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
+			 "Usage: ", argv[0], " <name> <sound file>",
+			 NULL );
+        return TCL_ERROR;
+    } 
+
+    result = Tcl_NewBooleanObj( load_music( argv[1], argv[2] ) );
+    Tcl_SetObjResult( ip, result );
+    return TCL_OK;
+}
+
+/*! 
+  Tcl callback for tux_bind_sounds
+  \author  jfpatry
+  \date    Created:  2000-08-14
+  \date    Modified: 2000-08-14
+*/
+static int
+bind_sounds_cb( ClientData cd, Tcl_Interp *ip, 
+			   int argc, CONST84 char *argv[]) 
+{
+    if ( argc < 2 ) {
+        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
+			 "Usage: ", argv[0], " <sound context> <sound name>"
+			 " [<sound name> ...]",
+			 NULL );
+        return TCL_ERROR;
+    } 
+
+    bind_sounds_to_context( argv[1], argv+2, argc-2 );
+    return TCL_OK;
+} 
+
+/*! 
+  Tcl callback for tux_bind_music
+  \author  jfpatry
+  \date    Created:  2000-08-14
+  \date    Modified: 2000-08-14
+*/
+static int
+bind_music_cb( ClientData cd, Tcl_Interp *ip, 
+			  int argc, CONST84 char *argv[]) 
+{
+    int loops;
+
+    if ( argc != 4 ) {
+        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
+			 "Usage: ", argv[0], " <music context> <music name> "
+			 "<loops>",
+			 NULL );
+        return TCL_ERROR;
+    } 
+
+    if ( Tcl_GetInt( ip, argv[3], &loops ) ) {
+		Tcl_AppendResult(
+	    ip, "invalid value for loops parameter", NULL );
+		return TCL_ERROR;
+    }
+
+    bind_music_to_context( argv[1], argv[2], loops );
+
+    return TCL_OK;
+} 
+
+
 
 void
 register_common_callbacks( Tcl_Interp *ip )
 {
-    Tcl_CreateCommand (ip, "pp_load_font", pp_register_font_cb,   0,0);
-    Tcl_CreateCommand (ip, "pp_bind_font", pp_bind_font_cb,   0,0);
+    Tcl_CreateCommand (ip, "pp_load_font", register_font_cb,   0,0);
+    Tcl_CreateCommand (ip, "pp_bind_font", bind_font_cb,   0,0);
+
+	
+	Tcl_CreateCommand (ip, "tux_load_sound", load_sound_cb,  0,0);
+    Tcl_CreateCommand (ip, "tux_load_music", load_music_cb,  0,0);
+
+    Tcl_CreateCommand (ip, "tux_bind_sounds", bind_sounds_cb,  0,0);
+    Tcl_CreateCommand (ip, "tux_bind_music", bind_music_cb,  0,0);	
 }

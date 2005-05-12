@@ -20,7 +20,6 @@
 
 #include "frame.h"
 #include "ui_theme.h"
-#include "ppracer.h"
 #include "render_util.h"
 #include "alg/glhelper.h"
 

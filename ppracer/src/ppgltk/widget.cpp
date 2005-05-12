@@ -20,7 +20,6 @@
 
 #include "widget.h"
 
-#include "ppracer.h"
 #include "ui_mgr.h"
 
 #include <iostream>
@@ -111,13 +110,11 @@ Widget::mouseMotion(int x, int y)
 
     if ( isInBox(x, y) ) {
 		if ( m_focused == false ) {
-			PP_LOG( DEBUG_UI, "Mouse entered button" );
 		    m_focused = true;
 		    UIMgr.setDirty();
 		}
     } else {
 		if ( m_focused == true ) {
-			PP_LOG( DEBUG_UI, "Mouse left button" );
 		    m_focused = false;
 		    UIMgr.setDirty();
 		}
@@ -139,7 +136,6 @@ Widget::mouseDown(int button,int x, int y )
     }
 
     if ( m_clicked == false ) {
-		PP_LOG( DEBUG_UI, "Button is down" );
 		m_clicked = true;
 		UIMgr.setDirty();
     }
@@ -158,7 +154,6 @@ Widget::mouseUp(int button, int x, int y )
 
     if ( !isInBox(x, y) ) {
 		if ( m_clicked ) {
-		    PP_LOG( DEBUG_UI, "Button is up (not clicked)" );
 		    m_clicked = false;
 		    UIMgr.setDirty();
 		}
@@ -167,7 +162,6 @@ Widget::mouseUp(int button, int x, int y )
 
     if ( m_clicked ) {
 		m_clicked = false;
-		PP_LOG( DEBUG_UI, "Button was clicked" );
 		performClickAction();
 		UIMgr.setDirty();
     }

@@ -44,7 +44,7 @@ Log::Instance()
 
 Log::Log()
 
- : m_level(0),
+ : m_level(LogWarning),
    mp_logfile(NULL)
 {
 }

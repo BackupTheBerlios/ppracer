@@ -268,8 +268,6 @@ int main( int argc, char *argv[] )
 	register_course_light_callbacks( tclInterp );
     register_particle_callbacks( tclInterp );
     register_texture_callbacks( tclInterp );
-    register_sound_tcl_callbacks( tclInterp );
-    register_sound_data_tcl_callbacks( tclInterp );
     register_course_manager_callbacks( tclInterp );
 	register_translation_callbacks( tclInterp );
 	register_common_callbacks( tclInterp );
