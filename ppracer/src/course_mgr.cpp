@@ -1,8 +1,6 @@
 /* 
- * PPRacer 
- * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
- *
- * Copyright (C) 1999-2001 Jasmin F. Patry
+ * PlanetPenguin Racer 
+ * Copyright (C) 2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,867 +18,290 @@
  */
 
 #include "course_mgr.h"
-#include "tcl_util.h"
-#include "textures.h"
 
 #include "game_mgr.h"
 
-static char err_buff[BUFF_LEN];
+#include "ppogl/ppogl_script.h"
 
-static bool initialized = false;	/* has module been initialized? */
-
-std::list<CourseData> openCourseList;	/* list of open courses */
-std::list<EventData> eventList;		/* list of events */
+std::list<CourseData> openCourseList;
+std::list<EventData> eventList;
 
 
 
-static char *race_condition_names[RACE_CONDITIONS_NUM_CONDITIONS] =
+
+
+
+std::string&
+CupData::getName()
 {
-    "sunny",
-    "cloudy",
-    "night",
-	"evening"
-};
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Initializes the course manager module
-  \return  None
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-void init_course_manager() 
-{
-    PP_REQUIRE( initialized == false,
-		     "Attempt to initialize course manager twice" );
-
-    initialized = true;
-}
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Creates an open_course_data_t object from a Tcl string.
-  \author  jfpatry
-  \date    Created:  2000-09-21
-  \date    Modified: 2000-09-21
-*/
-CourseData* create_open_course_data( Tcl_Interp *ip, CONST84 char *string, 
-					     char **err_msg )
-{
-    CONST84 char **argv = NULL;
-    CONST84 char **orig_argv = NULL;
-    int argc = 0;
-    
-    double par_time = 120;
-
-    CourseData *open_course_data = new CourseData();
-
-    if ( Tcl_SplitList( ip, string, &argc, &argv ) == TCL_ERROR ) {
-		*err_msg = "open course data is not a list";
-		goto bail_open_course_data;
-    }
-
-    orig_argv = argv;
-
-    while ( *argv != NULL ) {
-	if ( strcmp( *argv, "-course" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -course in open course data";
-		goto bail_open_course_data;
-	    }
-
-	    open_course_data->course = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-name" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -name in open course data";
-		goto bail_open_course_data;
-	    }
-
-	    open_course_data->name = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-description" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -description in open course data";
-		goto bail_open_course_data;
-	    }
-
-	    open_course_data->description = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-contributed" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -contributed in open course data";
-		goto bail_open_course_data;
-	    }
-
-	    open_course_data->contributed = *argv; //string_copy( *argv );
-	}else if ( strcmp( *argv, "-par_time" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		par_time = 120.0;
-		PP_MESSAGE("No data supplied for -par_time in open course "
-			       "data.  Using %g seconds.", par_time );
-	    } else if ( Tcl_GetDouble( ip, *argv, &par_time ) != TCL_OK ) {
-		*err_msg = "Invalid value for -par_time in open course data";
-		goto bail_open_course_data;
-	    }
-	} else {
-	    sprintf( err_buff, "unrecognized option `%s' in open course data",
-		     *argv );
-	    *err_msg = err_buff;
-	    goto bail_open_course_data;
+	std::map<std::string, std::string>::iterator it;
+	std::string lang = ppogl::Config::getInstance().getString("ui_language");
+	
+	if((it=m_names.find(lang))!=m_names.end()){
+		return (*it).second;
+	}else{
+		return m_names["default"];
 	}
-
-	NEXT_ARG;
-    }
-
-    /* Check mandatory arguments */
-    if ( open_course_data->course.empty() ) {
-		*err_msg = "No course specified in open course data";
-		goto bail_open_course_data;
-    }
-
-    if ( open_course_data->name.empty() ) {
-		*err_msg = "No name specified in open course data";
-		goto bail_open_course_data;
-    }
-
-    open_course_data->par_time = par_time;
-
-    Tcl_Free(reinterpret_cast<char*>(orig_argv));
-
-    return open_course_data;
-
-bail_open_course_data:
-
-    if ( orig_argv ) {
-		Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    }
-
-    if ( open_course_data ) {
-		delete open_course_data;
-    }
-
-    return NULL;
 }
 
-/*---------------------------------------------------------------------------*/
-/*! 
-  tux_open_courses Tcl callback
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-static int open_courses_cb( ClientData cd, Tcl_Interp *ip,
-			    int argc, CONST84 char **argv )
+void
+CupData::setName(std::string name, std::string lang)
 {
-	PP_REQUIRE( initialized, "course_mgr module not initialized" );
+	m_names[lang]=name;
+}
+
+std::string&
+EventData::getName()
+{
+	std::map<std::string, std::string>::iterator it;
+	std::string lang = ppogl::Config::getInstance().getString("ui_language");
 	
-	char *err_msg;
-    CONST84 char **list = NULL;
-    int num_courses;
-    std::list<CourseData>::iterator lastElem;
-    int i;
+	if((it=m_names.find(lang))!=m_names.end()){
+		return (*it).second;
+	}else{
+		return m_names["default"];
+	}
+}
+
+void
+EventData::setName(std::string name, std::string lang)
+{
+	m_names[lang]=name;
+}
+
+
+
+static int
+register_course_cb(ppogl::Script *vm) 
+{
+	if(!vm->isTable(1)){
+		PP_WARNING("ppracer.register_course: First argument is no table");
+		return 0;
+	}
 	
-    if ( argc != 2 ) {
-		err_msg = "Wrong number of arguments";
-		goto bail_open_courses;
-    }
-
-    if ( Tcl_SplitList( ip, argv[1], &num_courses, &list ) == TCL_ERROR ) {
-		err_msg = "Argument is not a list";
-		goto bail_open_courses;
-    }
-
-    /* Add items to end of list */
-    lastElem = openCourseList.end();
-
-    for ( i=0; i<num_courses; i++ ) {
-		CourseData *data;
-		data = create_open_course_data( ip, list[i], &err_msg );
-
-		if ( data == NULL ) {
-	    	goto bail_open_courses;
+	CourseData data;	
+	
+	data.course = vm->getStringFromTable("path");
+	data.setName(vm->getStringFromTable("name"));
+	data.setDescription(vm->getStringFromTable("description"));
+	data.author=vm->getStringFromTable("author");
+		
+	vm->pushString("names");
+	if(vm->get(-2) && vm->isTable()){
+		vm->pushNull();
+		while(vm->next(-2)){
+			data.setName(vm->getString(),vm->getString(-2));				
+			vm->pop(2);
 		}
-
-		openCourseList.push_back(*data);
+		vm->pop(2);
 	}
 
-    Tcl_Free(reinterpret_cast<char*>(list));
-    list = NULL;
-
-    return TCL_OK;
-
-bail_open_courses:
-
-    /* We'll leave the data that was successfully added in the list. */
-
-    Tcl_AppendResult(
-	ip,
-	"Error in call to tux_open_courses: ", 
-	err_msg,
-	"\n",
-	"Usage: tux_open_courses { list of open courses }",
-	(NULL) );
-    return TCL_ERROR;
-}
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Creates a race_data_t object from a Tcl string.
-  \return  New race_data_t object if successful, or NULL if error
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-static
-CourseData* create_race_data ( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
-{
-	CONST84 char **argv = NULL;
-    CONST84 char **orig_argv = NULL;
-    int argc = 0;
-
-    bool   herring_req_init = false;
-    bool   time_req_init = false;
-    bool   score_req_init = false;
-
-    CourseData *race_data = new CourseData;
-	
-    if ( Tcl_SplitList( ip, string, &argc, &argv ) == TCL_ERROR ) {
-		*err_msg = "race data is not a list";
-		goto bail_race_data;
-    }
-
-    orig_argv = argv;
-
-	
-    while ( *argv != NULL ) {
-	if ( strcmp( *argv, "-course" ) == 0 ) {
-	    NEXT_ARG;
-	    if ( *argv == NULL ) {
-			*err_msg = "No data supplied for -course in race data";
-			goto bail_race_data;
-	    }
-	    race_data->course = *argv; //string_copy( *argv );
-
-	} else if ( strcmp( *argv, "-name" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -name in race data";
-		goto bail_race_data;
-	    }
-
-	    race_data->name = *argv; //string_copy( *argv );		
-
-	} else if ( strcmp( *argv, "-description" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -description in race data";
-		goto bail_race_data;
-	    }
-
-	    race_data->description = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-herring" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -herring in race data";
-		goto bail_race_data;
-	    }
-
-	    if ( get_tcl_int_tuple( 
-		ip, *argv, race_data->herring_req, 
-		sizeof(race_data->herring_req)/sizeof(race_data->herring_req[0]) ) == TCL_ERROR )
-	    {
-		*err_msg = "Value for -herring is not a list or has "
-		    "the wrong number of elements";
-		goto bail_race_data;
-	    }
-
-	    herring_req_init = true;
-
-	} else if ( strcmp( *argv, "-time" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -time in race data" ;
-		goto bail_race_data;
-	    }
-
-	    if ( get_tcl_tuple( ip, *argv, race_data->time_req, 
-				sizeof(race_data->time_req)/sizeof(race_data->time_req[0]) ) 
-		 == TCL_ERROR ) 
-	    {
-		*err_msg = "Value for -time is not a list or hsa the "
-		    "wrong number of elements";
-		goto bail_race_data;
-	    }
-
-	    time_req_init = true;
-	} else if ( strcmp( *argv, "-score" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -score in race data";
-		goto bail_race_data;
-	    }
-
-	    if ( get_tcl_tuple( ip, *argv, race_data->score_req,
-				sizeof(race_data->score_req)/sizeof(race_data->score_req[0]) )
-		 == TCL_ERROR ) 
-	    {
-		*err_msg = "Value for -score is not a list or has the "
-		    "wrong number of elements";
-		goto bail_race_data;
-	    }
-
-	    score_req_init = true;
-	} else if ( strcmp( *argv, "-mirrored" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -mirrored in race data";
-		goto bail_race_data;
-	    }
-
-	    if ( strcmp( *argv, "yes" ) == 0 ) {
-			race_data->mirrored = true;
-	    } else {
-			race_data->mirrored = false;
-	    }
-	} else if ( strcmp( *argv, "-conditions" ) == 0 ) {
-	    int i;
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -conditions in race data";
-		goto bail_race_data;
-	    }
-
-	    for ( i=0; i<RACE_CONDITIONS_NUM_CONDITIONS; i++ ) {
-		if ( strcmp( race_condition_names[i],
-					 *argv ) == 0 )
-		{
-		    break;
+	vm->pushString("descriptions");
+	if(vm->get(-2) && vm->isTable()){
+		vm->pushNull();
+		while(vm->next(-2)){
+			data.setDescription(vm->getString(),vm->getString(-2));				
+			vm->pop(2);
 		}
-	    }
-
-	    if ( i == RACE_CONDITIONS_NUM_CONDITIONS ) {
-			*err_msg = "Invalid value for -conditions in race data";
-			goto bail_race_data;
-	    }
-
-	    race_data->condition = static_cast<race_conditions_t>(i);
-	} else if ( strcmp( *argv, "-windy" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-			*err_msg = "No data supplied for -windy in race data";
-			goto bail_race_data;
-	    }
-
-	    if ( strcmp( *argv, "yes" ) == 0 ) {
-			race_data->windy = true;
-	    } else {
-			race_data->windy = false;
-	    }
-	} else if ( strcmp( *argv, "-snowing" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-			*err_msg = "No data supplied for -snowing in race data";
-			goto bail_race_data;
-	    }
-
-	    if ( strcmp( *argv, "yes" ) == 0 ) {
-			race_data->snowing = true;
-	    } else {
-			race_data->snowing = false;
-	    }
-	} else {
-	    sprintf( err_buff, "unrecognized option `%s' in race data",
-		     *argv );
-	    *err_msg = err_buff;
-	    goto bail_race_data;
+		vm->pop(2);
 	}
-
-	NEXT_ARG;
-    }
-
-    /* Check mandatory arguments */
-    if ( race_data->course.empty() ) {
-		*err_msg = "No course specified in race data";
-		goto bail_race_data;
-    }
-
-    if ( !herring_req_init ||
-	 !time_req_init ||
-	 !score_req_init ) 
-    {
-	*err_msg = "Must specify requirement for herring, time, and score.";
-	goto bail_race_data;
-    }
-
-    Tcl_Free(reinterpret_cast<char*>(orig_argv));
-
-    return race_data;
-
-bail_race_data:
-    if ( orig_argv ) {
-	Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    }
-
-    if ( race_data ) {
-	delete( race_data );
-    }
-
-    return NULL;
+	
+	if(vm->isKeyInTable("par_time")){
+		data.par_time=vm->getFloatFromTable("par_time");	
+	}
+	
+	openCourseList.push_back(data);
+	
+    return 0;
 }
 
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Creates a CupData object from a Tcl string.
-  \return  New CupData object if successful, or NULL if error
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-static
-CupData* create_cup_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
+std::string&
+CourseData::getName()
 {
-    CONST84 char **argv = NULL;
-    CONST84 char **orig_argv = NULL;
-    int argc = 0;
-
-    std::list<CourseData> raceList;
-    CONST84 char **races = NULL;
-    int num_races = 0;
-    int i;
-
-    CupData* cup_data = new CupData();
-
-    if ( Tcl_SplitList( ip, string, &argc, &argv ) == TCL_ERROR ) {
-		*err_msg = "cup data is not a list";
-		goto bail_cup_data;
-    }
-    orig_argv = argv;
-
-    while ( *argv != NULL ) {
-	if ( strcmp( *argv, "-name" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -name in cup data";
-		goto bail_cup_data;
-	    }
-	    cup_data->name = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-icon" ) == 0 ) {
-	    NEXT_ARG;
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -icon in cup data";
-		goto bail_cup_data;
-	    }
-
-	    cup_data->icon = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-races" ) == 0 ) {
-	    NEXT_ARG;
-	    if ( *argv == NULL ) {
-		*err_msg= "No data supplied for -races in cup data";
-		goto bail_cup_data;
-	    }
-
-	    if ( Tcl_SplitList( ip, *argv, &num_races, &races ) == TCL_ERROR ) {
-		*err_msg = "Race data is not a list in event data";
-		goto bail_cup_data;
-	    }
-	    for ( i=0; i<num_races; i++) {
-		CourseData *raceData;
-			raceData = create_race_data( ip, races[i], err_msg );
-				
-		if ( raceData == NULL ) {
-		    goto bail_cup_data;
-		}
-		raceList.push_back(*raceData);
-	    }
-
-	    Tcl_Free(reinterpret_cast<char*>(races));
-	    races = NULL;
-	} else {
-	    sprintf( err_buff, "Unrecognized argument `%s'", *argv );
-	    *err_msg = err_buff;
-	    goto bail_cup_data;
+	std::map<std::string, std::string>::iterator it;
+	std::string lang = ppogl::Config::getInstance().getString("ui_language");
+	
+	if((it=names.find(lang))!=names.end()){
+		return (*it).second;
+	}else{
+		return names["default"];
 	}
-
-	NEXT_ARG;
-    }
-
-    /* Make sure mandatory fields have been specified */
-    if ( cup_data->name.empty() ) {
-	*err_msg = "Must specify a name in cup data";
-	goto bail_cup_data;
-    }
-
-    if ( cup_data->icon.empty() ) {
-	*err_msg = "Must specify an icon texture in cup data";
-	goto bail_cup_data;
-    }
-
-    if ( raceList.empty() ) {
-		*err_msg = "Must specify a race list in cup data";
-		goto bail_cup_data;
-    }
-
-    /* Create a new cup data object */
-    PP_ASSERT( cup_data, "out of memory" );
-
-    cup_data->raceList = raceList;
-    bind_texture( cup_data->name.c_str(), cup_data->icon.c_str() );
-
-    Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    argv = NULL;
-
-    return cup_data;
-
-bail_cup_data:
-
-    if ( orig_argv ) {
-	Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    }
-
-/*    if ( name ) {
-	free( name );
-    }
-
-    if ( icon ) {
-	free( icon );
-    }
-*/
-    if ( races ) {
-		Tcl_Free(reinterpret_cast<char*>(races));
-    }
-
-    /* Clean out race list */
-   
-    if ( cup_data ) {
-		delete( cup_data );
-    }
-
-    return NULL;
 }
 
-/*---------------------------------------------------------------------------*/
-/*! 
-  Creates an EventData object from a Tcl string.
-  \return  New EventData object if successful, or NULL on error
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-static
-EventData* create_event_data( Tcl_Interp *ip, CONST84 char *string, char **err_msg )
+std::string&
+CourseData::getDescription()
 {
-    CONST84 char **orig_argv = NULL;
-    CONST84 char **argv = NULL;
-    int argc = 0;
+	std::map<std::string, std::string>::iterator it;
+	std::string lang = ppogl::Config::getInstance().getString("ui_language");
+	
+	if((it=descriptions.find(lang))!=descriptions.end()){
+		return (*it).second;
+	}else{
+		return descriptions["default"];
+	}
+}
+		
+void
+CourseData::setName(std::string name, std::string lang)
+{
+	names[lang]=name;
+}
 
-    std::list<CupData> cupList;
-    CONST84 char **cups = NULL;
-    int num_cups = 0;
-    int i;
+void
+CourseData::setDescription(std::string description, std::string lang)
+{
+	descriptions[lang]=description;		
+}
 
-    EventData* event_data = new EventData();
-
-    if ( Tcl_SplitList( ip, string, &argc, &argv ) == TCL_ERROR ) {
-	*err_msg = "event data is not a list";
-	goto bail_event_data;
-    }
-
-    orig_argv = argv;
-
-    while ( *argv != NULL ) {
-	if ( strcmp( *argv, "-name" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -name in event data";
-		goto bail_event_data;
-	    }
-
-	    event_data->name = *argv;		//string_copy( *argv );
-	} else if ( strcmp( *argv, "-icon" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -icon in event data";
-		goto bail_event_data;
-	    }
-
-	    event_data->icon = *argv; //string_copy( *argv );
-	} else if ( strcmp( *argv, "-cups" ) == 0 ) {
-	    NEXT_ARG;
-
-	    if ( *argv == NULL ) {
-		*err_msg = "No data supplied for -cups in event data";
-		goto bail_event_data;
-	    }
-
-	    if ( Tcl_SplitList( ip, *argv, &num_cups, &cups ) == TCL_ERROR ) {
-		*err_msg = "Cup data is not a list in event data";
-		goto bail_event_data;
-	    }
-
-	    for ( i=0; i<num_cups; i++ ) {
-			CupData *cup_data;
-
-			cup_data = create_cup_data( ip, cups[i], err_msg );
-			if ( cup_data == NULL ) {
-			    goto bail_event_data;
+static std::list<CourseData>
+register_courses(ppogl::Script *vm)
+{
+	std::list<CourseData> list;
+	vm->pushString("courses");
+	if(vm->get() && vm->isArray()){
+		vm->pushNull();
+		while(vm->next(-2)){
+			std::string name = vm->getStringFromTable("name");
+			CourseData course;
+			std::list<CourseData>::iterator it;
+			for(it=openCourseList.begin();it!=openCourseList.end();it++){
+				if((*it).course==name){
+					course = (*it);
+					break;
+				}		
+			}
+			
+			vm->pushString("herrings");
+			if(vm->get() && vm->isArray()){
+				vm->pushNull();
+				for(int i=0; i<4; i++){
+					if(!vm->next(-2)) break;
+					course.herring_req[i]=vm->getInt();
+					vm->pop(2);
+				}			
+				vm->pop(2);
 			}
 
-			cupList.push_back(*cup_data);
-	    }
+			vm->pushString("scores");
+			if(vm->get() && vm->isArray()){
+				vm->pushNull();
+				for(int i=0; i<4; i++){
+					if(!vm->next(-2)) break;
+					course.score_req[i]=vm->getInt();
+					vm->pop(2);
+				}			
+				vm->pop(2);
+			}
 
-	    Tcl_Free(reinterpret_cast<char*>(cups));
-	    cups = NULL;
-	} else {
-	    sprintf( err_buff, "Unrecognized argument `%s'", *argv );
-	    *err_msg = err_buff;
-	    goto bail_event_data;
+			vm->pushString("times");
+			if(vm->get() && vm->isArray()){
+				vm->pushNull();
+				for(int i=0; i<4; i++){
+					if(!vm->next(-2)) break;
+					course.time_req[i]=vm->getFloat();
+					vm->pop(2);
+				}			
+				vm->pop(2);
+			}
+			
+			if(vm->isKeyInTable("condition")){
+				std::string condition = vm->getStringFromTable("condition");
+				if(condition=="cloudy"){
+					course.condition=RACE_CONDITIONS_CLOUDY;
+				}else if(condition=="night"){
+					course.condition=RACE_CONDITIONS_NIGHT;
+				}else if(condition=="evening"){
+					course.condition=RACE_CONDITIONS_EVENING;
+				}else{
+					course.condition=RACE_CONDITIONS_SUNNY;
+				}			
+			}
+			
+			if(vm->isKeyInTable("mirrored")){
+				course.mirrored = vm->getBoolFromTable("mirrored");				
+			}
+
+			if(vm->isKeyInTable("windy")){
+				course.windy = vm->getBoolFromTable("windy");				
+			}		
+			
+			if(vm->isKeyInTable("snowing")){
+				course.snowing = vm->getBoolFromTable("snowing");				
+			}
+						
+			list.push_back(course);
+			vm->pop(2);
+		}
+		vm->pop(2);
+	}else{
+		PP_WARNING("ppracer.register_event: Unable to get course list for cup");
 	}
-
-	NEXT_ARG;
-    }
-
-    /* Make sure mandatory fields have been specified */
-    if ( event_data->name.empty() ) {
-		*err_msg = "Must specify a name in event data";
-		goto bail_event_data;
-    }
-
-    if ( event_data->icon.empty() ) {
-		*err_msg = "Must specify an icon texture in event data";
-		goto bail_event_data;
-    }
-
-    if ( cupList.empty() ) {
-		*err_msg = "Must specify a cup list in event data";
-		goto bail_event_data;
-    }
-
-    /* Create new event data object */
-
-    event_data->cupList = cupList;
-
-    bind_texture( event_data->name.c_str(), event_data->icon.c_str() );
-
-    Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    argv = NULL;
-
-    return event_data;
-
-bail_event_data:
-
-    if ( orig_argv ) {
-		Tcl_Free(reinterpret_cast<char*>(orig_argv));
-    }
-
-/*    if ( name ) {
-	free( name );
-    }
-
-    if ( icon ) {
-	free( name );
-    }
-*/
-    if ( cups ) {
-		Tcl_Free(reinterpret_cast<char*>(cups));
-    }
-
-    /* Clean out cup list */
-
-    if ( event_data ) {
-		delete( event_data );
-    }
-
-    return NULL;
+	
+	return list;	
 }
 
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  tux_events Tcl callback
-  Here's a sample call to tux_events:
-
-tux_events {
-    { 
-	-name "Herring Run" -icon noicon -cups {
-	    { 
-		-name "Cup 1" -icon noicon -races {
-		    {
-			-course path_of_daggers \
-				-description "nice long description" \
-				-herring { 15 20 25 30 } \
-				-time { 40.0 35.0 30.0 25.0 } \
-				-score { 0 0 0 0 } \
-				-mirrored yes -conditions cloudy \
-				-windy no -snowing no
-		    }
-		    {
-			-course ingos_speedway \
-				-description "nice long description" \
-				-herring { 15 20 25 30 } \
-				-time { 40.0 35.0 30.0 25.0 } \
-				-score { 0 0 0 0 } \
-				-mirrored yes -conditions cloudy \
-				-windy no -snowing no
-		    }
+static std::list<CupData>
+register_cups(ppogl::Script *vm)
+{
+	std::list<CupData> list;
+	
+	vm->pushString("cups");
+	if(vm->get() && vm->isArray()){
+		vm->pushNull();
+		while(vm->next(-2)){
+			CupData cup;
+			cup.setName(vm->getStringFromTable("name"));
+			cup.raceList = register_courses(vm);
+			vm->pushString("names");
+			if(vm->get(-2) && vm->isTable()){
+				vm->pushNull();
+				while(vm->next(-2)){
+					cup.setName(vm->getString(),vm->getString(-2));				
+					vm->pop(2);
+				}
+				vm->pop(2);
+			}
+			vm->pop(2);
+			list.push_back(cup);
 		}
-		-name "Cup 2" -icon noicon -races {
-		    {
-			-course penguins_cant_fly \
-				-description "nice long description" \
-				-herring { 15 20 25 30 } \
-				-time { 40.0 35.0 30.0 25.0 } \
-				-score { 0 0 0 0 } \
-				-mirrored yes -conditions cloudy \
-				-windy no -snowing no
-		    }
-		    {
-			-course ingos_speedway \
-				-description "nice long description" \
-				-herring { 15 20 25 30 } \
-				-time { 40.0 35.0 30.0 25.0 } \
-				-score { 0 0 0 0 } \
-				-mirrored yes -conditions cloudy \
-				-windy no -snowing no
-		    }
-		}
-	    }
+		vm->pop(2);
+	}else{
+		PP_WARNING("ppracer.register_event: Unable to get cups list for event");
 	}
-    }
+	return list;
 }
 
-  \return  Tcl error code
-  \author  jfpatry
-  \date    Created:  2000-09-19
-  \date    Modified: 2000-09-19
-*/
-static int events_cb( ClientData cd, Tcl_Interp *ip,
-		      int argc, CONST84 char **argv )
+static int
+register_event_cb(ppogl::Script *vm)
 {
-    PP_REQUIRE( initialized, "course_mgr module not initialized" );
-		
-	char *err_msg;
-    CONST84 char **list = NULL;
-    int num_events;
-    int i;
-
-
-
-    if ( argc != 2 ) {
-		err_msg = "Incorrect number of arguments";
-		goto bail_events;
-    }
-
-    if ( Tcl_SplitList( ip, argv[1], &num_events, &list ) == TCL_ERROR ) {
-		err_msg = "Argument is not a list";
-		goto bail_events;
-    }
-
-    //if ( last_event != NULL ) {
-	//err_msg = "tux_events has already been called; it can only be called "
-	//    "once.";
-	//goto bail_events;
-    //}
-
-    for (i=0; i<num_events; i++) {
-		EventData *data = create_event_data( ip, list[i], &err_msg );
-
-		if ( data == NULL ) {
-		    goto bail_events;
+	if(vm->isTable()){
+		EventData event;
+		event.setName(vm->getStringFromTable("name"));
+		event.cupList = register_cups(vm);
+		vm->pushString("names");
+		if(vm->get(-2) && vm->isTable()){
+			vm->pushNull();
+			while(vm->next(-2)){
+				event.setName(vm->getString(),vm->getString(-2));				
+				vm->pop(2);
+			}
+			vm->pop(2);
 		}
-
-		eventList.push_back(*data);
-    }
-    Tcl_Free(reinterpret_cast<char*>(list));
-    list = NULL;
-
-    return TCL_OK;
-
-bail_events:
-    if ( list != NULL ) {
-		Tcl_Free(reinterpret_cast<char*>(list));
-    }
-
-    Tcl_AppendResult(
-	ip,
-	"Error in call to tux_events: ", 
-	err_msg,
-	"\n",
-	"Usage: tux_events { list of event data }",
-	(NULL) );
-	return TCL_ERROR;
+		eventList.push_back(event);
+	}else{
+		PP_WARNING("ppracer.register_event: Argument is no array");
+	}
+	return 0;
 }
 
+static const struct ppogl::Script::Lib ppracerlib[]={
+	{"register_course", register_course_cb},
+	{"register_event", register_event_cb},
+	{NULL, NULL}
+};
 
-/*---------------------------------------------------------------------------*/
-/*! 
-  Returns the current race conditions (sunny, cloudy, etc.)
-  \author  jfpatry
-  \date    Created:  2000-09-25
-  \date    Modified: 2000-09-25
-*/
-static int get_race_conditions_cb( ClientData cd, Tcl_Interp *ip,
-				   int argc, CONST84 char **argv )
+void
+register_course_manager_callbacks()
 {
-    char *err_msg;
-    Tcl_Obj *result;
-
-    if ( argc != 1 ) {
-		err_msg = "Incorrect number of arguments";
-		goto bail_race_conditions;
-    }
-
-	result = Tcl_NewStringObj(
-	race_condition_names[ GameMgr::Instance()->getCurrentRace().condition ],
-	strlen( race_condition_names[ GameMgr::Instance()->getCurrentRace().condition ] ) );
-
-    Tcl_SetObjResult( ip, result );
-
-    return TCL_OK;
-
-bail_race_conditions:
-
-    Tcl_AppendResult(
-	ip,
-	"Error in call to tux_get_race_conditions: ", 
-	err_msg,
-	"\n",
-	"Usage: tux_get_race_conditions",
-	(NULL) );
-    return TCL_ERROR;
+	script.registerLib("ppracer", ppracerlib);	
 }
-
-void register_course_manager_callbacks( Tcl_Interp *ip )
-{
-    Tcl_CreateCommand (ip, "tux_open_courses", open_courses_cb, 0,0);
-    Tcl_CreateCommand (ip, "tux_events", events_cb, 0,0);
-    Tcl_CreateCommand (ip, "tux_get_race_conditions", 
-		       get_race_conditions_cb, 0,0);
-}
-
-
-
-/* EOF */

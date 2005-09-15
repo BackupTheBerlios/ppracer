@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -28,9 +28,8 @@
 #endif // defined( HAVE_GL_GLX_H ) 
 
 #include "gl_util.h"
-#include "game_config.h"
 
-#include "ppgltk/alg/glhelper.h"
+#include "ppogl/base/glwrappers.h"
 
 void set_gl_options( const RenderMode mode ) 
 {
@@ -277,7 +276,7 @@ void set_gl_options( const RenderMode mode )
         break;
 
     case TUX_SHADOW:
-		if(getparam_stencil_buffer()){
+		if(ppogl::Config::getInstance().getBool("stencil_buffer")){
 			gl::Disable( GL_TEXTURE_2D );
 			gl::Enable( GL_DEPTH_TEST );
 			gl::Disable( GL_CULL_FACE );
@@ -361,7 +360,7 @@ void check_gl_error()
     GLenum error;
     error = glGetError();
     if ( error != GL_NO_ERROR ) {
-		PP_WARNING( "OpenGL Error: %s", gluErrorString( error ) );
+		PP_WARNING( "OpenGL Error: " << gluErrorString(error) );
     }
 }
 #endif // defined( PPGLTK_NO_ASSERT )

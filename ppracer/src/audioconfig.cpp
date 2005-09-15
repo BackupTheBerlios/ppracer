@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -19,138 +19,93 @@
  
 #include "audioconfig.h"
 
-#include "game_config.h"
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/alg/defs.h"
-
-
-bps_t bps[] = { 	{"8",0},
-					{"16",1}};
-						
-freq_t freqs[] = { 	{"11025",0},
-					{"22050",1},
-					{"44100",2}};
-
+#include "stuff.h"
+#include "ppogl/base/defs.h"
 
 AudioConfig::AudioConfig()
+ : m_bpsListLbl(_("Bits Per Sample:")),
+   m_freqListLbl(_("Samples Per Second:")),
+   m_audioLbl(_("Disable Audio:")),
+   m_soundLbl(_("Sound Effects:")),
+   m_musicLbl(_("Music:")),
+   m_stereoLbl(_("Stereo:")),
+   m_warningLbl(_("(needs restart)"))
 {
 	setTitle(_("Audio Configuration"));
-	pp::Vec2d pos(0,0);
-	
-	mp_audioBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_audioBox->setState( getparam_no_audio());
-	
-	mp_soundBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_soundBox->setState( getparam_sound_enabled());
-		
-	mp_musicBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_musicBox->setState( getparam_music_enabled());	
-	
-	mp_stereoBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_stereoBox->setState( getparam_audio_stereo());
 
+	ppogl::Vec2d position(40,350);
+	ppogl::Vec2d position2(600,350);
+	
+	m_audioLbl.setPosition(position);
+	m_audioBox.setPosition(position2);
+	m_audioBox.alignment.right();
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_soundLbl.setPosition(position);
+	m_soundBox.setPosition(position2);
+	m_soundBox.alignment.right();
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_musicLbl.setPosition(position);
+	m_musicBox.setPosition(position2);
+	m_musicBox.alignment.right();
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_stereoLbl.setPosition(position);
+	m_stereoBox.setPosition(position2);
+	m_stereoBox.alignment.right();
+	
+	position.y()-=60;
+	position2.y()-=60;
+	
+	m_warningLbl.setPosition(position);
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
 	//frequency
-	std::list<freq_t>::iterator freqit;
-	bool found=false;
+	m_freqListBox.addElement("11025", 0);
+	m_freqListBox.addElement("22050", 1);
+	m_freqListBox.addElement("44100", 2);
+	m_freqListBox.setSelectedData(PPConfig.getInt("audio_freq_mode"));
 	
-	for (unsigned int i=0; i<PP_NUM_ELEMENTS(freqs); i++) {
-		m_freqList.push_back(freqs[i]);	
-		if (freqs[i].data==getparam_audio_freq_mode()){
-			freqit = --m_freqList.end();
-			found=true;
-		}
-    }
-	if(!found) freqit = m_freqList.begin();
-	
-	mp_freqListbox = new pp::Listbox<freq_t>( pos,
-				   pp::Vec2d(150, 32),
-				   "listbox_item",
-				   m_freqList);
-    mp_freqListbox->setCurrentItem( freqit );
-	
+	m_freqListLbl.setPosition(position);
+	m_freqListBox.setPosition(position2);
+	m_freqListBox.alignment.right();
+
+	position.y()-=40;
+	position2.y()-=40;
+
 	//bits per sample
-	std::list<freq_t>::iterator bpsit;
-	found=false;
-	
-	for (unsigned int i=0; i<PP_NUM_ELEMENTS(bps); i++) {
-		m_bpsList.push_back(bps[i]);	
-		if (bps[i].data==getparam_audio_format_mode()){
-			bpsit = --m_bpsList.end();
-			found=true;
-		}
-    }
-	if(!found) bpsit = m_bpsList.begin();
-	
-	mp_bpsListbox = new pp::Listbox<bps_t>( pos,
-				   pp::Vec2d(150, 32),
-				   "listbox_item",
-				   m_bpsList);
-    mp_bpsListbox->setCurrentItem( bpsit );
-
-}
-
-AudioConfig::~AudioConfig()
-{
-	delete mp_audioBox;
-	delete mp_soundBox;
-	delete mp_musicBox;
-	delete mp_stereoBox;
-	delete mp_bpsListbox;
-	delete mp_freqListbox;
-}
-
-void
-AudioConfig::setWidgetPositions()
-{
-	int width = 500;
-	int height = 240;
-
-	pp::Vec2d pos(getparam_x_resolution()/2 - width/2,
-				  getparam_y_resolution()/2 + height/2);
-	
-	pp::Font *font= pp::Font::get("button_label");
-	
-	font->draw(_("Sound Effects:"),pos);
-	mp_soundBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Music:"),pos);
-	mp_musicBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=80;
-	font->draw(_("(needs restart)"),pos);
-	pos.y-=40;
-	font->draw(_("Disable Audio:"),pos);
-	mp_audioBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Stereo:"),pos);
-	mp_stereoBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Bits Per Sample:"),pos);
-	mp_bpsListbox->setPosition(pp::Vec2d(pos.x+width-150,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Samples Per Second:"),pos);
-	mp_freqListbox->setPosition(pp::Vec2d(pos.x+width-150,pos.y));
+	m_bpsListBox.addElement("8", 0);
+	m_bpsListBox.addElement("16",1);
+	m_bpsListBox.setSelectedData(PPConfig.getInt("audio_format_mode"));
+		
+	m_bpsListLbl.setPosition(position);
+	m_bpsListBox.setPosition(position2);
+	m_bpsListBox.alignment.right();
 }
 
 void
 AudioConfig::apply()
 {
-	setparam_no_audio(bool( mp_audioBox->getState() ));
-	setparam_sound_enabled(bool( mp_soundBox->getState() ));
-	setparam_music_enabled(bool( mp_musicBox->getState() ));
-	setparam_audio_stereo(bool( mp_stereoBox->getState() ));
+	PPConfig.setBool("no_audio",m_audioBox.isSelected());
+	PPConfig.setBool("sound_enabled",m_soundBox.isSelected());
+	PPConfig.setBool("music_enabled",m_musicBox.isSelected());
+	PPConfig.setBool("audio_stereo",m_stereoBox.isSelected());
 	
-	std::list<bps_t>::iterator bpsit = mp_bpsListbox->getCurrentItem();
-	setparam_audio_format_mode((*bpsit).data);
+	ppogl::ListBox<int>::iterator bpsit = m_bpsListBox.getSelected();
+	PPConfig.setInt("audio_format_mode",(*bpsit).data);
 		
-	std::list<freq_t>::iterator freqit = mp_freqListbox->getCurrentItem();
-	setparam_audio_freq_mode((*freqit).data);
+	ppogl::ListBox<int>::iterator freqit = m_freqListBox.getSelected();
+	PPConfig.setInt("audio_freq_mode",(*freqit).data);
 		
 	write_config_file();
-	set_game_mode( GameMode::prevmode );
-    UIMgr.setDirty();	
+	setMode( GameMode::prevmode );
 }

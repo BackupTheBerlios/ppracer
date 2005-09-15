@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,9 +22,8 @@
 
 #include "credits.h"
 
-#include "ppgltk/audio/audio.h"
-
-#include "translation.h"
+#include "ppogl/translation.h"
+#include "ppogl/ui.h"
 
 #define CREDITS_MAX_Y -140
 #define CREDITS_MIN_Y 64
@@ -51,8 +50,11 @@ static credit_line_t credit_lines[] =
 	{false, "credits_text", "Karl Ove Hufthammer" },	
 	{false, "credits_text", "Marco Antonio Blanco" },	
 	{false, "credits_text", "Massimo Spazian" },	
-	{false, "credits_text", "Mikel Olasagasti" },	
+	{false, "credits_text", "Mikel Olasagasti" },
+	{false, "credits_text", "Muskovics Gábor" },
+	{false, "credits_text", "Mykola Lynnyk" },
 	{false, "credits_text", "Pascal Garcia" },	
+	{false, "credits_text", "Sergej Kotliar" },	
 	{false, "credits_text", "Theo Snelleman" },	
 	{false, "credits_text", "Trygve B. Wiig" },
     {false, "credits_text", "" },
@@ -92,10 +94,10 @@ static credit_line_t credit_lines[] =
 Credits::Credits()
  : m_yOffset(0.0)
 {
-	lines = new c_line_t[sizeof( credit_lines ) / sizeof( credit_lines[0])];
+	lines = new CLine[sizeof( credit_lines ) / sizeof( credit_lines[0])];
 	
 	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
-		lines[i].font=pp::Font::get(credit_lines[i].binding);
+		lines[i].font=ppogl::FontMgr::getInstance().get(credit_lines[i].binding);
 		if(credit_lines[i].translateable){
 			lines[i].text=_(credit_lines[i].text);
 		}else{
@@ -103,7 +105,7 @@ Credits::Credits()
 		}		
 	}
 	
-    play_music( "credits_screen" );
+    ppogl::AudioMgr::getInstance().playMusic("credits_screen");
 }
 
 
@@ -115,37 +117,37 @@ Credits::~Credits()
 void
 Credits::loop(float timeStep)
 {
-	int width, height;
-    width = getparam_x_resolution();
-    height = getparam_y_resolution();
-
-    update_audio();
-
-    clear_rendering_context();
+    //update_audio();
 
     set_gl_options( GUI );
-
-    UIMgr.setupDisplay();
 
     drawText( timeStep );
 
 	drawSnow(timeStep);
 
-	theme.drawMenuDecorations();
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);	
 
-    UIMgr.draw();
-
-    reshape( width, height );
-
-    winsys_swap_buffers();
+	reshape(resolutionX, resolutionY);
 }
 
 
 void
 Credits::drawText( float timeStep )
 {
-    int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
+    int w = resolutionX;
+    int h = resolutionY;
+	
+	gl::PushMatrix();
+	{
+	gl::MatrixMode(GL_PROJECTION);
+    gl::LoadIdentity();
+    gl::Ortho(0.0, w, 0.0, h, -1.0, 1.0);
+    gl::MatrixMode(GL_MODELVIEW);
+    gl::LoadIdentity();
+    gl::Translate(0.0, 0.0, -1.0);
+    gl::Color(ppogl::Color::white);
+	
     float y;
 
     m_yOffset += timeStep * 30;
@@ -153,10 +155,10 @@ Credits::drawText( float timeStep )
 
 	//loop through all credit lines
 	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
-	    c_line_t line = lines[i];
+	    CLine line = lines[i];
 
 		//get the font and sizes for the binding
-		//pp::Font *font = pp::Font::get(line.binding);
+		//ppogl::Font *font = ppogl::Font::get(line.binding);
 		float width = line.font->advance(line.text);
 		float desc = line.font->descender();
 		float asc = line.font->ascender();
@@ -176,49 +178,50 @@ Credits::drawText( float timeStep )
     // Draw strips at the top and bottom to clip out text 
     gl::Disable(GL_TEXTURE_2D);
 
-	gl::Color(theme.background);
+	gl::Color(ppogl::Color(0.5, 0.6, 0.9));
     gl::Rect(0, 0, w, CREDITS_MIN_Y);
 
     gl::Begin(GL_QUADS);
     {
 		gl::Vertex(0, CREDITS_MIN_Y);
 		gl::Vertex(w, CREDITS_MIN_Y);
-		gl::Color(theme.background, 0.0f);
+		gl::Color(ppogl::Color(0.5, 0.6, 0.9, 0.0));
 		gl::Vertex(w, CREDITS_MIN_Y + 30);
 		gl::Vertex(0, CREDITS_MIN_Y + 30);
     }
     gl::End();
 
-    gl::Color(theme.background);
+    gl::Color(ppogl::Color(0.5, 0.6, 0.9));
     gl::Rect(0, h+CREDITS_MAX_Y, w, h);
 
     gl::Begin(GL_QUADS);
     {
 		gl::Vertex(w, h+CREDITS_MAX_Y);
 		gl::Vertex(0, h+CREDITS_MAX_Y);
-		gl::Color(theme.background, 0.0f);
+		gl::Color(ppogl::Color(0.5, 0.6, 0.9, 0.0));
 		gl::Vertex(0, h+CREDITS_MAX_Y - 30);
 		gl::Vertex(w, h+CREDITS_MAX_Y - 30);
     }
     gl::End();
 
-    gl::Color(pp::Color::white);
+    gl::Color(ppogl::Color::white);
 
     gl::Enable(GL_TEXTURE_2D);
+		
+	}
+	gl::PopMatrix();
 }
 
 bool
 Credits::mouseButtonReleaseEvent(int button, int x, int y)
 {
-	set_game_mode( GAME_TYPE_SELECT );
-    winsys_post_redisplay();
+	setMode(GAME_TYPE_SELECT);
 	return true;
 }
 
 bool
 Credits::keyReleaseEvent(SDLKey key)
 {
-	set_game_mode( GAME_TYPE_SELECT );
-    winsys_post_redisplay();
+	setMode(GAME_TYPE_SELECT);
 	return true;
 }

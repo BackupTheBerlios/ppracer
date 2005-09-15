@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -25,36 +25,32 @@
 #include "phys_sim.h"
 #include "course_quad.h"
 #include "track_marks.h"
-#include "game_config.h"
 #include "course_mgr.h"
+#include "elements.h"
+
+#include <iostream>
 
 static bool mirrored = false;
 
 void mirror_course() 
 {
-    int x, y, i;
+    int x, y;
     int idx1, idx2;
     float tmp;
     int tmp_terrain;
-    pp::Vec3d tmp_vec;
+    ppogl::Vec3d tmp_vec;
     float *elevation;
-    pp::Vec3d *nmls;
+    ppogl::Vec3d *nmls;
     int *terrain;
-    Tree *tree_locs;
-    int num_trees;
-    Item *item_locs;
-    int num_items;
-    pp::Vec2d start_pt;
+    ppogl::Vec2d start_pt;
     int nx, ny;
     float course_width, course_length;
 
-    get_course_dimensions( &course_width, &course_length );
-    get_course_divisions( &nx, &ny );
-    elevation = get_course_elev_data();
-    terrain = get_course_terrain_data();
+    Course::getDimensions( &course_width, &course_length );
+    Course::getDivisions( &nx, &ny );
+    elevation = Course::getElevData();
+    terrain = Course::getTerrainData();
     nmls = get_course_normals();
-    tree_locs = get_tree_locs();
-    item_locs = get_item_locs();
 
     for ( y=0; y<ny; y++ ) {
 	for ( x=0; x<nx/2; x++ ) {
@@ -62,7 +58,7 @@ void mirror_course()
 	    ELEV(x,y) = ELEV(nx-1-x, y);
 	    ELEV(nx-1-x,y) = tmp;
 
-	    /* first column of texture values not used */
+	    // first column of texture values not used
             idx1 = (x+1) + nx*(y);
             idx2 = (nx-1-x) + nx*(y);
 	    tmp_terrain = terrain[idx1];
@@ -74,66 +70,75 @@ void mirror_course()
 	    tmp_vec = nmls[idx1];
 	    nmls[idx1] = nmls[idx2];
 	    nmls[idx2] = tmp_vec;
-	    nmls[idx1].x *= -1;
-	    nmls[idx2].x *= -1;
+	    nmls[idx1].x() *= -1;
+	    nmls[idx2].x() *= -1;
 	}
     }
 
-    num_trees = get_num_trees();
-    for ( i=0; i<num_trees; i++) {
-	tree_locs[i].ray.pt.x = course_width - tree_locs[i].ray.pt.x; 
-	tree_locs[i].ray.pt.y = 
-	    find_y_coord( tree_locs[i].ray.pt.x,
-			  tree_locs[i].ray.pt.z );
+	{
+	std::list<Model>::iterator it;
+	for(it=modelLocs.begin();it!=modelLocs.end();it++) {
+		(*it).getPosition().x() = course_width - (*it).getPosition().x(); 
+		(*it).getPosition().y() = 
+	    find_y_coord((*it).getPosition().x(),
+			  (*it).getPosition().z() ) + (*it).getType()->height;
     }
-
-    num_items = get_num_items();
-    for ( i=0; i<num_items; i++) {
-	item_locs[i].ray.pt.x = course_width - item_locs[i].ray.pt.x; 
-	item_locs[i].ray.pt.y = 
-	    find_y_coord( item_locs[i].ray.pt.x,
-			  item_locs[i].ray.pt.z );
+	}
+	
+	{
+	std::list<Item>::iterator it;
+	for(it=itemLocs.begin();it!=itemLocs.end();it++){
+		(*it).getPosition().x() = course_width - (*it).getPosition().x(); 
+		(*it).getPosition().y() = 
+	    find_y_coord((*it).getPosition().x(),
+			  (*it).getPosition().z() ) + (*it).getItemType()->above_ground;
     }
-
-    fill_gl_arrays();
+	}
+	
+	{
+	std::list<ppogl::Vec2d>::iterator it;
+	for(it=resetLocs.begin();it!=resetLocs.end();it++){
+	(*it).x() = course_width - (*it).x();
+    }
+	}
+	
+    Course::fillGLArrays();
 
     reset_course_quadtree();
     if ( nx > 0 && ny > 0 ) {
 	PP_LOG( DEBUG_QUADTREE, "mirroring quadtree" );
 	init_course_quadtree( elevation, nx, ny, course_width/(nx-1), 
 			      -course_length/(ny-1),
-			      players[0].view.pos, 
-			      getparam_course_detail_level() );
+			      players[0].view.pos);
     }
 
-    start_pt = get_start_pt();
-    start_pt.x = course_width - start_pt.x;
-    set_start_pt( start_pt );
+    start_pt = Course::getStartPt();
+    start_pt.x() = course_width - start_pt.x();
+    Course::setStartPt( start_pt );
 }
 
 void mirror_key_frame()
 {
-    int i;
     float course_width, course_length;
     int num_frames;
-    key_frame_t *frames;
+    KeyFrame *frames;
 
     get_key_frame_data( &frames, &num_frames );
 
-    get_course_dimensions( &course_width, &course_length );
+    Course::getDimensions( &course_width, &course_length );
 
-    for ( i=0; i<num_frames; i++ ) {
-	frames[i].yaw = - frames[i].yaw;
-	frames[i].pos.x = course_width - frames[i].pos.x;
+    for(int i=0; i<num_frames; i++){
+		frames[i].yaw = - frames[i].yaw;
+		frames[i].pos.x() = course_width - frames[i].pos.x();
     }
 }
 
 void set_course_mirroring( bool state )
 {
     if ( mirrored != state ) {
-	mirror_key_frame();
-	mirror_course();
-	init_track_marks();
+		mirror_key_frame();
+		mirror_course();
+		init_track_marks();
     }
     mirrored = state;
     

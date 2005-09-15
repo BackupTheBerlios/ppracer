@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -19,21 +19,26 @@
 
 #include "event_select.h"
 
-#include "ppgltk/audio/audio.h"
-
 #include "course_load.h"
-#include "textures.h"
 #include "joystick.h"
 
 #include "player.h"
 #include "game_mgr.h"
 	
 EventSelect::EventSelect()
+ : m_eventListBox(400,36),
+   m_cupListBox(400,36),
+   m_backBtn(_("Back")),
+   m_continueBtn(_("Continue")),	
+   m_titleLbl(_("Select event and cup"),"menu_label"),
+   m_eventLbl(_("Event:"),"event_and_cup_label"),
+   m_cupLbl(_("Cup:"),"event_and_cup_label"), 
+   m_statusLbl("","cup_status")
 {
 	if(GameMode::prevmode==EVENT_RACE_SELECT){
-		m_curEvent = GameMgr::Instance()->currentEvent;
-		m_curCup = GameMgr::Instance()->currentCup;
-		if(players[0].isCupComplete((*m_curEvent).name,(*m_curCup).name)){
+		m_curEvent = GameMgr::getInstance().currentEvent;
+		m_curCup = GameMgr::getInstance().currentCup;
+		if(players[0].isCupComplete((*m_curEvent).getName(),(*m_curCup).getName())){
 			if(m_curCup != --(*m_curEvent).cupList.end()){
 				m_curCup++;
 			}				
@@ -42,89 +47,76 @@ EventSelect::EventSelect()
 		m_curEvent = eventList.begin();
 		m_curCup = (*m_curEvent).cupList.begin();
 	}
+	
+	
+	{
+		std::list<EventData>::iterator it;
+
+		for(it=eventList.begin(); it!=eventList.end(); it++){
+			m_eventListBox.addElement((*it).getName(), it);		
+		}
+	}
+	
+	{
+		std::list<CupData>::iterator it;
+
+		for(it=(*m_curEvent).cupList.begin(); it!=(*m_curEvent).cupList.end(); it++){
+			m_cupListBox.addElement((*it).getName(), it);		
+		}	
+	}
 		
-	pp::Vec2d pos( getparam_x_resolution()/2,
-				   getparam_y_resolution()/2+150);
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
+
+	ppogl::Vec2d position(320,390);
 	
-	mp_titleLbl = new pp::Label(pos,"menu_label",_("Select event and cup"));
-	mp_titleLbl->alignment.center();
-	
-	
-	pos.x-=200;
-	pos.y-=60;
-	mp_eventLbl = new pp::Label(pos,"event_and_cup_label",_("Event:"));	
-	
-	pos.y-=50;
-	mp_eventListbox = new pp::Listbox<EventData>( pos,
-				   pp::Vec2d(400, 40),
-				   "listbox_item",
-				   eventList);
-	mp_eventListbox->setCurrentItem( m_curEvent );
-	mp_eventListbox->signalChange.Connect(pp::CreateSlot(this,&EventSelect::eventChanged));
-	
-	pos.y-=40;
-	mp_cupLbl = new pp::Label(pos,"event_and_cup_label",_("Cup:"));
+	m_titleLbl.setPosition(position);
+	m_titleLbl.alignment.center();
 		
-	pos.y-=50;
-	mp_cupListbox = new pp::Listbox<CupData>( pos,
-				   pp::Vec2d(400, 40),
-				   "listbox_item",
-				   (*m_curEvent).cupList );
-	mp_cupListbox->setCurrentItem( m_curCup );	
-    mp_cupListbox->signalChange.Connect(pp::CreateSlot(this,&EventSelect::cupChanged));
+	position.x()-=200;
+	position.y()-=65;
+	
+	m_eventLbl.setPosition(position);
+	
+	position.y()-=45;
+	m_eventListBox.setPosition(position);
+	m_eventListBox.setSelectedData(m_curEvent);
+	m_eventListBox.signalChanged.Connect(ppogl::CreateSlot(this,&EventSelect::eventChanged));
+	
+	position.y()-=45;
+	m_cupLbl.setPosition(position);
+		
+	position.y()-=45;
+	m_cupListBox.setPosition(position);
+	m_cupListBox.setSelectedData(m_curCup);	
+    m_cupListBox.signalChanged.Connect(ppogl::CreateSlot(this,&EventSelect::cupChanged));
 
-	pos.y-=30;
-	mp_statusLbl = new pp::Label( pp::Vec2d(pos.x+200,pos.y),
-								  "cup_status","");
-	mp_statusLbl->alignment.center();
+	position.y()-=30;
+	m_statusLbl.setPosition(ppogl::Vec2d(position.x()+200,position.y()));
+	m_statusLbl.alignment.center();
 
-    pos.y-=120;
-	pos.x-=50;	
-	mp_backBtn = new pp::Button( pos,
-			      pp::Vec2d(150, 40), 
-			      "button_label", 
-			      _("Back") );
-    mp_backBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_backBtn->signalClicked.Connect(pp::CreateSlot(this,&EventSelect::back));
+    position.y()-=120;
+	position.x()-=50;	
+	m_backBtn.setPosition(position);
+    m_backBtn.signalClicked.Connect(ppogl::CreateSlot(this,&EventSelect::back));
 
-	pos.x+=350;	
-	mp_continueBtn = new pp::Button( pos,
-			       pp::Vec2d(150, 40),
-			       "button_label",
-			       _("Continue") );
-    mp_continueBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_continueBtn->setDisabledFontBinding( "button_label_disabled" );
-    mp_continueBtn->signalClicked.Connect(pp::CreateSlot(this,&EventSelect::apply));
+	position.x()+=350;	
+	m_continueBtn.setPosition(position);
+    m_continueBtn.signalClicked.Connect(ppogl::CreateSlot(this,&EventSelect::apply));
 	
 	updateCupStates();
 	updateButtonEnabledStates();
 }
 
-EventSelect::~EventSelect()
-{
-	delete mp_backBtn;
-	delete mp_continueBtn;	
-	delete mp_eventListbox;
-	delete mp_cupListbox;
-	
-	delete mp_titleLbl;
-	delete mp_eventLbl;
-	delete mp_cupLbl;	
-	delete mp_statusLbl;
-}
-
 void
 EventSelect::loop(float timeStep)
 {
-    update_audio();
     set_gl_options( GUI );
-    clear_rendering_context();
-    UIMgr.setupDisplay();
 	drawSnow(timeStep);
-    theme.drawMenuDecorations();
-    UIMgr.draw();
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-    winsys_swap_buffers();
+    
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);
+
+    reshape(resolutionX, resolutionY);
 }
 
 void
@@ -133,14 +125,14 @@ EventSelect::updateCupStates()
 	m_curCupComplete=false;
 	m_curCupPlayable=false;
 	
-	if ( players[0].isCupComplete( (*m_curEvent).name, (*m_curCup).name) ) {
+	if ( players[0].isCupComplete( (*m_curEvent).getName(), (*m_curCup).getName()) ) {
 		m_curCupComplete=true;
 		m_curCupPlayable=true;
     } else if ( players[0].isFirstIncompleteCup( m_curEvent, m_curCup ) ) {
 		m_curCupPlayable=true;
     }
 	
-	const char* string;
+	std::string string;
 	if(m_curCupComplete){
 		string = _("You've won this cup!");
 	}else if (m_curCupPlayable){
@@ -148,23 +140,23 @@ EventSelect::updateCupStates()
 	}else{
 		string = _("You cannot enter this cup yet"); 
 	}
-	mp_statusLbl->setText(string);
+	m_statusLbl.setText(string);
 }
 
 void
 EventSelect::updateButtonEnabledStates()
 {
 	if(m_curCupPlayable){
-		mp_continueBtn->setSensitive(true);
+		m_continueBtn.setInsensitive(false);
 	}else{
-		mp_continueBtn->setSensitive(false);
+		m_continueBtn.setInsensitive(true);
 	}
 }
 
 void
 EventSelect::cupChanged()
 {
-	m_curCup = mp_cupListbox->getCurrentItem();
+	m_curCup = m_cupListBox.getSelectedData();
 	updateCupStates();
 	updateButtonEnabledStates();
 }
@@ -172,7 +164,7 @@ EventSelect::cupChanged()
 void
 EventSelect::eventChanged()
 {
-	m_curEvent = mp_eventListbox->getCurrentItem();
+	m_curEvent = m_eventListBox.getSelectedData();
 	m_curCup = (*m_curEvent).cupList.begin();
 	updateCupStates();
 	updateButtonEnabledStates();
@@ -181,27 +173,24 @@ EventSelect::eventChanged()
 void
 EventSelect::back()
 {
-	set_game_mode( GAME_TYPE_SELECT );
-	UIMgr.setDirty();
+	setMode(GAME_TYPE_SELECT);
 }
 
 void
 EventSelect::apply()
 {
-    m_curEvent = mp_eventListbox->getCurrentItem();
-	m_curCup = mp_cupListbox->getCurrentItem();
+    m_curEvent = m_eventListBox.getSelectedData();
+	m_curCup = m_cupListBox.getSelectedData();
 
-	GameMgr::Instance()->setupEventAndCup(	m_curEvent,
-								m_curCup );
+	GameMgr::getInstance().setupEventAndCup(m_curEvent,m_curCup);
 
-	if(!getparam_always_save_event_race_data()){	
-		if(!players[0].isCupComplete((*m_curEvent).name, (*m_curCup).name )){
-			players[0].clearCupData((*m_curEvent).name, (*m_curCup).name);
+	if(!PPConfig.getBool("always_save_event_race_data")){	
+		if(!players[0].isCupComplete((*m_curEvent).getName(), (*m_curCup).getName() )){
+			players[0].clearCupData((*m_curEvent).getName(), (*m_curCup).getName());
 		}
 	}
 	players[0].resetLives();
-    set_game_mode( EVENT_RACE_SELECT );
-    UIMgr.setDirty();
+    setMode( EVENT_RACE_SELECT );
 }
 
 bool
@@ -209,24 +198,28 @@ EventSelect::keyPressEvent(SDLKey key)
 {
 	switch (key){
 		case SDLK_UP:
-			mp_cupListbox->gotoPrevItem();
+			--m_cupListBox;
+			eventChanged();
 	    	return true;
 		case SDLK_DOWN:
-			mp_cupListbox->gotoNextItem();
+			++m_cupListBox;
+			eventChanged();
 	    	return true;
 		case SDLK_LEFT:
-			mp_eventListbox->gotoPrevItem();
-	    	return true;
+			--m_eventListBox;
+	    	eventChanged();
+			return true;
 		case SDLK_RIGHT:
-			mp_eventListbox->gotoPrevItem();
+			++m_eventListBox;
+			eventChanged();
 	    	return true;
-		case SDLK_RETURN: 
-	    	mp_continueBtn->simulateMouseClick();
-			UIMgr.setDirty();
+		case SDLK_RETURN:
+			if(m_curCupPlayable){
+	    		apply();
+			}
 			return true;
 		case SDLK_ESCAPE: 
-	    	mp_backBtn->simulateMouseClick();
-			UIMgr.setDirty();
+	    	back();
 			return true;
 		default:
 			return false;

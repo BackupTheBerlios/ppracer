@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,10 +21,6 @@
 
 #include "loading.h"
 
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/audio/audio.h"
-
-#include "game_config.h"
 #include "gl_util.h"
 #include "fps.h"
 #include "render_util.h"
@@ -35,73 +31,55 @@
 #include "fog.h"
 #include "viewfrustum.h"
 #include "course_mgr.h"
-
-#include "ppgltk/ui_snow.h"
-#include "ppgltk/ui_theme.h"
-
+#include "mirror_course.h"
 #include "joystick.h"
 #include "part_sys.h"
 
 #include "game_mgr.h"
 
 Loading::Loading()
+ : m_loadingLbl(_("Loading, Please Wait..."),"loading")
 {
-    int width = getparam_x_resolution();
-    int height = getparam_y_resolution();
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
+
+	m_loadingLbl.setPosition(ppogl::Vec2d(320,240));
+	m_loadingLbl.alignment.set(0.5,0.5);
 	
-	pp::Vec2d pos(width/2,height/2);	
-	mp_loadingLbl = new pp::Label(pos,"loading",_("Loading, Please Wait..."));
-	mp_loadingLbl->alignment.center();
-	mp_loadingLbl->alignment.middle();
-	
-	m_loadedCondition = static_cast<race_conditions_t>(-1);
-	play_music( "loading" );
+	m_loadedCondition = static_cast<RaceConditions>(-1);
+	ppogl::AudioMgr::getInstance().playMusic("loading");
 }
 
-Loading::~Loading()
-{
-	delete mp_loadingLbl;
-}
+
+extern void updateDisplay();
+
 
 void
 Loading::loop(float timeStep)
 {
-	int width, height;
-    width = getparam_x_resolution();
-    height = getparam_y_resolution();
-
-    update_audio();
-
-    clear_rendering_context();
-
     set_gl_options( GUI );
 
-    UIMgr.setupDisplay();
-
-	drawSnow(timeStep, GameMgr::Instance()->getCurrentRace().windy);
+	drawSnow(timeStep, GameMgr::getInstance().getCurrentRace().windy);
 	
-    theme.drawMenuDecorations();
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);
 
-    reshape( width, height );
-
-	UIMgr.draw();	
+	updateDisplay();
 	
-    winsys_swap_buffers();
-	
-
     if ( m_loadedCourse.empty() ||
-		m_loadedCourse != GameMgr::Instance()->getCurrentRace().course ||
-		m_loadedCondition != GameMgr::Instance()->getCurrentRace().condition ) 
+		m_loadedCourse != GameMgr::getInstance().getCurrentRace().course ||
+		m_loadedCondition != GameMgr::getInstance().getCurrentRace().condition ) 
     {
 	// Load the course
-	load_course( GameMgr::Instance()->getCurrentRace().course );
+	Course::load( GameMgr::getInstance().getCurrentRace().course );
 
-	m_loadedCourse = GameMgr::Instance()->getCurrentRace().course;
-	m_loadedCondition = GameMgr::Instance()->getCurrentRace().condition;
+	m_loadedCourse = GameMgr::getInstance().getCurrentRace().course;
+	m_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;
     }
 
-    set_course_mirroring( GameMgr::Instance()->getCurrentRace().mirrored );
+	set_course_mirroring( GameMgr::getInstance().getCurrentRace().mirrored );
+
+	reshape(resolutionX, resolutionY);
 
     // We're done here, enter INTRO mode
-    set_game_mode( INTRO );	
+    setMode( INTRO );	
 }

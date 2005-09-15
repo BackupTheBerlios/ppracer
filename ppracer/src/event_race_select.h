@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -23,26 +23,37 @@
 #include "loop.h"
 
 #include "course_mgr.h"
-
-#include "ppgltk/ssbutton.h"
-#include "ppgltk/listbox.h"
-#include "ppgltk/textarea.h"
-#include "ppgltk/label.h"
-
 #include "player.h"
 
+#include "ppogl/ui.h"
 
 class EventRaceSelect : public GameMode
 {
-	pp::Label *mp_titleLbl;
-	pp::Textarea *mp_descTa;
-	pp::Listbox<CourseData> *mp_raceListbox;
-	pp::Button *mp_backBtn;
-	pp::Button *mp_startBtn;
-	pp::SSButton *mp_conditionsSSBtn;
-	pp::SSButton *mp_snowSSBtn;
-	pp::SSButton *mp_windSSBtn;
-	pp::SSButton *mp_mirrorSSBtn;
+	ppogl::Label m_titleLbl;
+	ppogl::Textarea m_descTa;
+	
+	ppogl::ListBox< std::list<CourseData>::iterator > m_raceListBox;
+	
+	ppogl::Button m_backBtn;
+	ppogl::Button m_startBtn;
+	
+	ppogl::ImageButton m_livesImg[4];
+	
+	ppogl::ImageButton m_previewImage;
+	
+	ppogl::Label m_authorTitle;
+	ppogl::Label m_authorLbl;
+	
+	ppogl::Label m_timeTitle;
+	ppogl::Label m_timeLbl;
+	
+	ppogl::Label m_herringTitle;
+	ppogl::Label m_herringLbl;
+	
+	ppogl::Label m_scoreTitle;
+	ppogl::Label m_scoreLbl;
+	
+	ppogl::Label m_statusLbl;
 	
 	PlayerCourseData m_data;
 
@@ -54,22 +65,18 @@ class EventRaceSelect : public GameMode
 	} state;
 	
 	void updateStates();
-	
-	void setWidgetPositionsAndDrawDecorations();	
-	void drawStatusMsg( int x_org, int y_org );
+	void updateStatusMsg();
 
 public:
 	EventRaceSelect();
-	~EventRaceSelect();
 
 	void loop(float timeStep);
 
 	void start();
 	void back();
-	void listboxItemChange();
+	void updateData();
 
 	bool keyPressEvent(SDLKey key);
-
 };
 
 #endif // _EVENT_RACE_SELECT_H_

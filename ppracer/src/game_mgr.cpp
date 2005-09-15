@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -18,23 +18,12 @@
  */
 
 #include "game_mgr.h"
-#include "game_config.h"
 
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
 #include "SDL.h"
 
-
-GameMgr* GameMgr::instance=NULL;
-
-GameMgr*
-GameMgr::Instance()
-{
-	if(!instance){
-		instance = new GameMgr();
-	}
-	return instance;	
-}
+PPOGL_SINGLETON(GameMgr);
 
 GameMgr::GameMgr()
 {
@@ -57,7 +46,7 @@ GameMgr::setCurrentRace(std::list<CourseData>::iterator race)
 }
 
 void
-GameMgr::reset(gametype_t type)
+GameMgr::reset(GameType type)
 {
 	gametype=type;
 }
@@ -101,9 +90,9 @@ GameMgr::updateCurrentRaceData()
     }	
 	
 	bool bestScore = players[0].updateCupCourseData(
-					(*currentEvent).name,
-					(*currentCup).name,
-					(*mi_currentRace).name,
+					(*currentEvent).getName(),
+					(*currentCup).getName(),
+					(*mi_currentRace).getName(),
 					time,
 					players[0].herring,
 					players[0].score,
@@ -115,20 +104,20 @@ GameMgr::updateCurrentRaceData()
 		
 		if(mi_currentRace == lastRace){
 			m_cupWon = true;
-			players[0].setCupComplete(	(*currentEvent).name,
-										(*currentCup).name);
+			players[0].setCupComplete(	(*currentEvent).getName(),
+										(*currentCup).getName());
 			std::list<CupData>::iterator lastCup=(*currentEvent).cupList.end();
 			lastCup--;
 			if(currentCup == lastCup){
 				m_eventWon = true;
-				players[0].setEventComplete((*currentEvent).name);
+				players[0].setEventComplete((*currentEvent).getName());
 			}
-			if(!getparam_always_save_event_race_data()){
+			if(!PPConfig.getBool("always_save_event_race_data")){
 				players[0].saveData();
 			}
 		}
 	}
-	if(getparam_always_save_event_race_data()){
+	if(PPConfig.getBool("always_save_event_race_data")){
 		players[0].saveData();
 	}
 	return bestScore;

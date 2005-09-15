@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,15 +24,15 @@
 #include "hier.h"
 #include "loop.h"
 
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
 #define MAX_NUM_KEY_FRAMES 128
 
-static key_frame_t frames[MAX_NUM_KEY_FRAMES];
+static KeyFrame frames[MAX_NUM_KEY_FRAMES];
 static int numFrames = 0;
 static double keyTime;
 
-void get_key_frame_data( key_frame_t **fp, int *n )
+void get_key_frame_data( KeyFrame **fp, int *n )
 {
     *fp = frames;
     *n = numFrames;
@@ -61,35 +61,22 @@ void update_key_frame( Player& plyr, double dt )
 {
     int idx;
     double frac;
-    pp::Vec3d pos;
+    ppogl::Vec3d pos;
     double v;
     pp::Matrix cob_mat, rot_mat;
 
-    char *root;
-    char *lsh;
-    char *rsh;
-    char *lhp;
-    char *rhp;
-    char *lkn;
-    char *rkn;
-    char *lank;
-    char *rank;
-    char *head;
-    char *neck;
-    char *tail;
-
-    root = get_tux_root_node();
-    lsh  = get_tux_left_shoulder_joint();
-    rsh  = get_tux_right_shoulder_joint();
-    lhp  = get_tux_left_hip_joint();
-    rhp  = get_tux_right_hip_joint();
-    lkn  = get_tux_left_knee_joint();
-    rkn  = get_tux_right_knee_joint();
-    lank = get_tux_left_ankle_joint();
-    rank = get_tux_right_ankle_joint();
-    head = get_tux_head();
-    neck = get_tux_neck();
-    tail = get_tux_tail_joint();
+    std::string& root = get_tux_root_node();
+    std::string& lsh  = get_tux_left_shoulder_joint();
+    std::string& rsh  = get_tux_right_shoulder_joint();
+    std::string& lhp  = get_tux_left_hip_joint();
+    std::string& rhp  = get_tux_right_hip_joint();
+    std::string& lkn  = get_tux_left_knee_joint();
+    std::string& rkn  = get_tux_right_knee_joint();
+    std::string& lank = get_tux_left_ankle_joint();
+    std::string& rank = get_tux_right_ankle_joint();
+    std::string& head = get_tux_head();
+    std::string& neck = get_tux_neck();
+    std::string& tail = get_tux_tail_joint();
 
     keyTime += dt;
 
@@ -99,7 +86,7 @@ void update_key_frame( Player& plyr, double dt )
     } 
 
     if ( idx == numFrames || numFrames == 0 ) {
-        set_game_mode( RACING );
+        GameMode::setMode( GameMode::RACING );
         return;
     } 
 
@@ -125,10 +112,10 @@ void update_key_frame( Player& plyr, double dt )
 	    / ( frames[idx-1].time - frames[idx].time );
     }
 
-    pos.x = interp( frac, frames[idx-1].pos.x, frames[idx].pos.x );
-    pos.z = interp( frac, frames[idx-1].pos.z, frames[idx].pos.z );
-    pos.y = interp( frac, frames[idx-1].pos.y, frames[idx].pos.y );
-    pos.y += find_y_coord( pos.x, pos.z );
+    pos.x() = interp( frac, frames[idx-1].pos.x(), frames[idx].pos.x() );
+    pos.z() = interp( frac, frames[idx-1].pos.z(), frames[idx].pos.z() );
+    pos.y() = interp( frac, frames[idx-1].pos.y(), frames[idx].pos.y() );
+    pos.y() += find_y_coord( pos.x(), pos.z() );
 
     set_tux_pos( plyr, pos );
 
@@ -161,90 +148,54 @@ void update_key_frame( Player& plyr, double dt )
     plyr.orientation_initialized = true;
 } 
 
-static int key_frame_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+key_frame_cb(ppogl::Script *vm) 
 {
-    double tmp;
-    key_frame_t frame;
-    pp::Vec2d start_pt = get_start_pt();
+    KeyFrame frame;
+    ppogl::Vec2d start_pt = Course::getStartPt();
 
-    if (numFrames == MAX_NUM_KEY_FRAMES ) {
-        PP_WARNING( "%s: max. num. of frames reached", argv[0] );
+    if(numFrames == MAX_NUM_KEY_FRAMES ){
+        PP_WARNING("tux.key_frame: max. num. of frames reached");
+		return 0;
     } 
 
-    if ( argc != 11 ) {
-	PP_WARNING( "wrong number of args to %s", argv[0] );
-        return TCL_ERROR;
+    if(vm->getTop()!=10){
+		PP_WARNING("tux.key_frame: Invalid number of arguments");
+		return 0;
     } 
 
-    if ( Tcl_GetDouble( ip, argv[1], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.time = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[2], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.pos.x = tmp + start_pt.x;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[3], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.pos.z = -tmp + start_pt.y;
-    }
+	frame.time = vm->getFloat(1);
+  
+	frame.pos.x() = vm->getFloat(2) + start_pt.x();
     
-    if ( Tcl_GetDouble( ip, argv[4], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.pos.y = tmp;
-    }
+	frame.pos.z() = (-1)*vm->getFloat(3) + start_pt.y();
+    
+	frame.pos.y() = vm->getFloat(4);
+  
+	frame.yaw = vm->getFloat(5);
+   
+	frame.pitch = vm->getFloat(6);
+    
+	frame.l_shldr = vm->getFloat(7);
 
-    if ( Tcl_GetDouble( ip, argv[5], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.yaw = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[6], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.pitch = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[7], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.l_shldr = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[8], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.r_shldr = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[9], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.l_hip = tmp;
-    }
-
-    if ( Tcl_GetDouble( ip, argv[10], &tmp ) != TCL_OK ) {
-        return TCL_ERROR;
-    } else {
-	frame.r_hip = tmp;
-    }
-
+	frame.r_shldr = vm->getFloat(8);
+    
+	frame.l_hip = vm->getFloat(9);
+ 
+	frame.r_hip = vm->getFloat(10);
+    
     frames[numFrames] = frame;
     numFrames++;
 
-    return TCL_OK;
+    return 0;
 } 
 
+static const struct ppogl::Script::Lib tuxlib[]={
+	{"key_frame", key_frame_cb}, 
+	{NULL, NULL}
+};
 
-
-void register_key_frame_callbacks( Tcl_Interp *ip )
+void register_key_frame_callbacks()
 {
-    Tcl_CreateCommand (ip, "tux_key_frame", key_frame_cb,  0,0);
+	script.registerLib("tux", tuxlib);
 }

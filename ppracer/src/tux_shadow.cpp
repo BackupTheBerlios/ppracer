@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,20 +24,20 @@
 #include "tux.h"
 #include "hier.h"
 #include "phys_sim.h"
-#include "textures.h"
+#include "gameconfig.h"
 
-#include "game_config.h"
+#include "ppogl/base/glwrappers.h"
 
 #define SHADOW_HEIGHT 0.1
 
 void draw_tux_shadow()
 {
-    if ( ! getparam_draw_tux_shadow() ) 
-	return;
+    if(!GameConfig::drawTuxShadow){
+		return;
+	}
 	
 	pp::Matrix model_matrix;
-    char *tux_root_node_name;
-    scene_node_t *tux_root_node;
+    SceneNode *tux_root_node;
 		
     set_gl_options( TUX_SHADOW ); 
 	
@@ -45,7 +45,7 @@ void draw_tux_shadow()
  	* Make the shadow darker if the stencil buffer is active 
  	*/
 	
-	if(getparam_stencil_buffer()){
+	if(GameConfig::enableStencilBuffer){
     	gl::Color(0.0f,0.0f,0.0f,0.3f);
 	}else{
     	gl::Color(0.0f,0.0f,0.0f,0.1f);
@@ -53,19 +53,19 @@ void draw_tux_shadow()
 	
     model_matrix.makeIdentity();
 
-    tux_root_node_name = get_tux_root_node();
+    std::string& tux_root_node_name = get_tux_root_node();
 
-    if ( get_scene_node( tux_root_node_name, &tux_root_node ) != TCL_OK ) {
+    if(get_scene_node(tux_root_node_name, &tux_root_node ) != true){
 		PP_ERROR( "couldn't find tux's root node" );
     } 
 
     traverse_dag_for_shadow( tux_root_node, model_matrix );
 }
 
-void traverse_dag_for_shadow( scene_node_t *node, pp::Matrix model_matrix )
+void traverse_dag_for_shadow( SceneNode *node, pp::Matrix model_matrix )
 {
     pp::Matrix new_model_matrix;
-    scene_node_t *child;
+    SceneNode *child;
 
     PP_CHECK_POINTER( node );
 
@@ -88,7 +88,7 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
 {
     double theta, phi, d_theta, d_phi, eps, twopi;
     double x, y, z;
-    int div = getparam_tux_shadow_sphere_divisions();
+    int div = GameConfig::tuxShadowSphereDivisions;
     
     eps = 1e-15;
     twopi = M_PI * 2.0;
@@ -184,21 +184,21 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
 void draw_shadow_vertex( double x, double y, double z, 
 			 pp::Matrix model_matrix )
 {
-    pp::Vec3d pt;
+    ppogl::Vec3d pt;
     double old_y;
-    pp::Vec3d nml;
+    ppogl::Vec3d nml;
 
-    pt = pp::Vec3d( x, y, z );
+    pt = ppogl::Vec3d( x, y, z );
     pt = model_matrix.transformPoint( pt );
 
-    old_y = pt.y;
+    old_y = pt.y();
     
-    nml = find_course_normal( pt.x, pt.z );
-    pt.y = find_y_coord( pt.x, pt.z ) + SHADOW_HEIGHT;
+    nml = find_course_normal( pt.x(), pt.z() );
+    pt.y() = find_y_coord( pt.x(), pt.z() ) + SHADOW_HEIGHT;
 
-    if ( pt.y > old_y ) 
-	pt.y = old_y;
+    if ( pt.y() > old_y ) 
+	pt.y() = old_y;
 
-    gl::Normal( nml.x, nml.y, nml.z );
-    gl::Vertex( pt.x, pt.y, pt.z );
+    gl::Normal( nml.x(), nml.y(), nml.z() );
+    gl::Vertex( pt.x(), pt.y(), pt.z() );
 }

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,10 +22,8 @@
 #include "render_util.h"
 #include "hier.h"
 
-#include "ppgltk/alg/defs.h"
-#include "ppgltk/alg/glwrappers.h"
-
-#include "game_config.h"
+#include "ppogl/base/defs.h"
+#include "ppogl/base/glwrappers.h"
 
 
 #define USE_GLUSPHERE 0
@@ -166,13 +164,14 @@ static GLuint get_sphere_display_list( int divisions ) {
 
     if ( !initialized ) {
 		initialized = true;
-		base_divisions = getparam_tux_sphere_divisions();
+		base_divisions = PPConfig.getInt("tux_sphere_divisions");
 
 		num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
 
 		PP_ASSERT( display_lists == NULL, "display_lists not NULL" );
-		display_lists = reinterpret_cast<GLuint*>(malloc( sizeof(GLuint) * num_display_lists ));
-
+		display_lists = new GLuint[num_display_lists];
+		PP_CHECK_ALLOC(display_lists);		
+		
 		for (int i=0; i<num_display_lists; i++) {
 			display_lists[i] = 0;
 		}
@@ -201,9 +200,9 @@ static GLuint get_sphere_display_list( int divisions ) {
 
 /* Traverses the DAG structure and draws the nodes
  */
-void traverse_dag( scene_node_t *node, material_t *mat )
+void traverse_dag( SceneNode *node, Material *mat )
 {
-    scene_node_t *child;
+    SceneNode *child;
 
     PP_CHECK_POINTER( node );
     gl::PushMatrix();
@@ -218,12 +217,12 @@ void traverse_dag( scene_node_t *node, material_t *mat )
         set_material( mat->diffuse, mat->specular, 
                      mat->specular_exp );
 
-	if ( getparam_use_sphere_display_list() ) {
+	//if ( getparam_use_sphere_display_list() ) {
 	    gl::CallList( get_sphere_display_list( 
 		node->param.sphere.divisions ) );
-	} else {
-	    draw_sphere( node->param.sphere.divisions );
-	}
+	//} else {
+	//    draw_sphere( node->param.sphere.divisions );
+	//}
     } 
 
     child = node->child;
@@ -242,11 +241,11 @@ void traverse_dag( scene_node_t *node, material_t *mat )
  * polygon; points in polygon must be specifed in counter-clockwise direction
  * when viewed from outside the shape for the normal to be outward-facing
  */
-pp::Vec3d make_normal( pp::Polygon p, pp::Vec3d *v )
+ppogl::Vec3d make_normal( ppogl::Polygon p, ppogl::Vec3d *v )
 {
     PP_REQUIRE( p.numVertices > 2, "number of vertices must be > 2" );
 
-	pp::Vec3d normal, v1, v2;
+	ppogl::Vec3d normal, v1, v2;
     double old_len;
 
     v1 = v[p.vertices[1]] - v[p.vertices[0]];
@@ -264,18 +263,18 @@ pp::Vec3d make_normal( pp::Polygon p, pp::Vec3d *v )
 
 /* Returns true iff the specified polygon intersections a unit-radius sphere
  * centered at the origin.  */
-bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
+bool intersect_polygon( ppogl::Polygon p, ppogl::Vec3d *v )
 {
-    ray_t ray; 
-    pp::Vec3d nml, edge_nml, edge_vec;
-    pp::Vec3d pt;
+    Ray ray; 
+    ppogl::Vec3d nml, edge_nml, edge_vec;
+    ppogl::Vec3d pt;
     double d, s, nuDotProd, wec;
     double edge_len, t, distsq;
     int i;
 
     /* create a ray from origin along polygon normal */
     nml = make_normal( p, v );
-    ray.pt = pp::Vec3d( 0., 0., 0. );
+    ray.pt = ppogl::Vec3d( 0., 0., 0. );
     ray.vec = nml;
 
     nuDotProd = nml*ray.vec;
@@ -283,9 +282,9 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
         return false;
 
     /* determine distance of plane from origin */
-    d = -( nml.x * v[p.vertices[0]].x + 
-           nml.y * v[p.vertices[0]].y + 
-           nml.z * v[p.vertices[0]].z );
+    d = -( nml.x() * v[p.vertices[0]].x() + 
+           nml.y() * v[p.vertices[0]].y() + 
+           nml.z() * v[p.vertices[0]].z() );
 
     /* if plane's distance to origin > 1, immediately reject */
     if ( fabs( d ) > 1 )
@@ -293,7 +292,7 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
 
     /* check distances of edges from origin */
     for ( i=0; i < p.numVertices; i++ ) {
-	pp::Vec3d *v0, *v1;
+	ppogl::Vec3d *v0, *v1;
 
 	v0 = &v[p.vertices[i]];
 	v1 = &v[p.vertices[ (i+1) % p.numVertices ]]; 
@@ -303,7 +302,7 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
 
 	/* t is the distance from v0 of the closest point on the line
            to the origin */
-	t = - ( *(reinterpret_cast<pp::Vec3d *>(v0))* edge_vec );
+	t = - ( *(reinterpret_cast<ppogl::Vec3d *>(v0))* edge_vec );
 
 	if ( t < 0 ) {
 	    /* use distance from v0 */
@@ -323,7 +322,7 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
     }
 
     /* find intersection point of ray and plane */
-    s = - ( d + ( nml*pp::Vec3d(ray.pt.x, ray.pt.y, ray.pt.z) ) ) /
+    s = - ( d + ( nml*ppogl::Vec3d(ray.pt.x(), ray.pt.y(), ray.pt.z()) ) ) /
         nuDotProd;
 
     pt = ray.pt+(s*ray.vec);
@@ -345,7 +344,7 @@ bool intersect_polygon( pp::Polygon p, pp::Vec3d *v )
 
 /* returns true iff polyhedron intersects unit-radius sphere centered
    at origin */
-bool intersect_polyhedron( pp::Polyhedron p )
+bool intersect_polyhedron( ppogl::Polyhedron p )
 {
     bool hit = false;
     int i;
@@ -361,11 +360,13 @@ bool intersect_polyhedron( pp::Polyhedron p )
 
 /*--------------------------------------------------------------------------*/
 
-pp::Polyhedron copy_polyhedron( pp::Polyhedron ph )
+ppogl::Polyhedron copy_polyhedron( ppogl::Polyhedron ph )
 {
-    pp::Polyhedron newph = ph;
-    newph.vertices = reinterpret_cast<pp::Vec3d *>(malloc( sizeof(pp::Vec3d) * ph.num_vertices));
-    for (int i=0; i<ph.num_vertices; i++) {
+    ppogl::Polyhedron newph = ph;
+    newph.vertices = new ppogl::Vec3d[ph.num_vertices];
+    PP_CHECK_ALLOC(newph.vertices);
+	
+	for (int i=0; i<ph.num_vertices; i++) {
         newph.vertices[i] = ph.vertices[i];
     } 
     return newph;
@@ -373,14 +374,14 @@ pp::Polyhedron copy_polyhedron( pp::Polyhedron ph )
 
 /*--------------------------------------------------------------------------*/
 
-void free_polyhedron( pp::Polyhedron ph ) 
+void free_polyhedron( ppogl::Polyhedron ph ) 
 {
-    free(ph.vertices);
+    delete[] ph.vertices;
 } 
 
 /*--------------------------------------------------------------------------*/
 
-void trans_polyhedron( pp::Matrix mat, pp::Polyhedron ph )
+void trans_polyhedron( pp::Matrix mat, ppogl::Polyhedron ph )
 {
     int i;
     for (i=0; i<ph.num_vertices; i++) {
@@ -391,12 +392,12 @@ void trans_polyhedron( pp::Matrix mat, pp::Polyhedron ph )
 /*--------------------------------------------------------------------------*/
 
 bool check_polyhedron_collision_with_dag( 
-    scene_node_t *node, pp::Matrix modelMatrix, pp::Matrix invModelMatrix,
-    pp::Polyhedron ph)
+    SceneNode *node, pp::Matrix modelMatrix, pp::Matrix invModelMatrix,
+    ppogl::Polyhedron ph)
 {
     pp::Matrix newModelMatrix, newInvModelMatrix;
-    scene_node_t *child;
-    pp::Polyhedron newph;
+    SceneNode *child;
+    ppogl::Polyhedron newph;
     bool hit = false;
 
     PP_CHECK_POINTER( node );

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,53 +24,60 @@
 
 #include "ppracer.h"
 
-#include "ppgltk/alg/color.h"
-#include "ppgltk/alg/vec2d.h"
-#include "ppgltk/alg/vec3d.h"
-#include "ppgltk/alg/vec3f.h"
-#include "ppgltk/alg/vec4f.h"
-#include "ppgltk/alg/matrix.h"
+#include "ppogl/base/color.h"
+#include "ppogl/base/vec2d.h"
+#include "ppogl/base/vec3d.h"
+#include "ppogl/base/vec3f.h"
+#include "ppogl/base/vec4f.h"
 
-typedef struct {
-    pp::Vec3d p[3];
-    pp::Vec2d t[3];
-} triangle_t;
+#include "ppogl/base/glwrappers.h"
+
+#include "algstuff.h"
+
+struct Triangle
+{
+    ppogl::Vec3d p[3];
+    ppogl::Vec2d t[3];
+};
 
 /// Ray (half-line)
-typedef struct { 
-    pp::Vec3d pt;
-    pp::Vec3d vec;
-} ray_t;
+struct Ray
+{ 
+    ppogl::Vec3d pt;
+    ppogl::Vec3d vec;
+};
 
 /// Material
-typedef struct {
-    pp::Color diffuse;
-    pp::Color specular;
+struct Material
+{
+    ppogl::Color diffuse;
+    ppogl::Color specular;
     float specular_exp;
-} material_t;
+};
 
 /// Light
-
-typedef struct {
+struct Light
+{
     bool is_on;
 
-	pp::Color ambient;
-    pp::Color diffuse;
-    pp::Color specular;
-    pp::Vec4f position;
-	pp::Vec3f spot_direction;
+	ppogl::Color ambient;
+    ppogl::Color diffuse;
+    ppogl::Color specular;
+    ppogl::Vec4f position;
+	ppogl::Vec3f spot_direction;
 	
     GLfloat spot_exponent;
     GLfloat spot_cutoff;
     GLfloat constant_attenuation;
     GLfloat linear_attenuation;
     GLfloat quadratic_attenuation;
-} light_t;
+};
 
 /// Key frame for animation sequences
-typedef struct {
+struct KeyFrame
+{
     float time;
-    pp::Vec3d pos;
+    ppogl::Vec3d pos;
 	
 	/// angle of rotation about y axis
     float yaw;
@@ -81,41 +88,45 @@ typedef struct {
     float r_shldr;
     float l_hip;
     float r_hip;
-} key_frame_t; 
+}; 
 
 /// Scene graph node types.
-typedef enum { 
+enum Geometry
+{ 
     Empty, Sphere
-} geometry_t;
+};
 
 /// Data for Sphere node type.
-typedef struct {
+struct SphereNode
+{
     float radius;
 	
 	/// How many divisions do we use to draw a sphere?
     int divisions;		
-} sphere_t;
+};
 
 /// Tux's eyes
-typedef enum {
+enum TuxEye
+{
     TuxLeftEye = 0, 
     TuxRightEye = 1
-} tux_eye_t;
+};
   
 /// Scene graph node.
-typedef struct scene_node_struct {
-    struct scene_node_struct* parent;
-    struct scene_node_struct* next;
-    struct scene_node_struct* child;
+struct SceneNode
+{
+    SceneNode* parent;
+    SceneNode* next;
+    SceneNode* child;
 
 	/// type of node
-    geometry_t geom;
+    Geometry geom;
 
-    union {
-        sphere_t sphere;   
-    } param;
+    union{
+        SphereNode sphere;   
+    }param;
       
-    material_t* mat;
+    Material* mat;
 
 
     /// Do we draw the shadow of this node?
@@ -125,78 +136,81 @@ typedef struct scene_node_struct {
     bool eye;
 
     /// If so, which one?
-    tux_eye_t which_eye;
+    TuxEye which_eye;
 
     /// The forward and inverse transforms
     pp::Matrix trans;
     pp::Matrix invtrans;   
 
-} scene_node_t;
-
-
-#define NUM_TERRAIN_TYPES 64
+};
 
 /// Difficulty levels
-typedef enum {
+enum DifficultyLevel
+{
     DIFFICULTY_LEVEL_EASY,
     DIFFICULTY_LEVEL_NORMAL,
     DIFFICULTY_LEVEL_HARD,
     DIFFICULTY_LEVEL_INSANE,
     DIFFICULTY_NUM_LEVELS
-} difficulty_level_t;
+};
 
 /// Race conditions
-typedef enum {
+enum RaceConditions
+{
     RACE_CONDITIONS_SUNNY,
     RACE_CONDITIONS_CLOUDY,
     RACE_CONDITIONS_NIGHT,
 	RACE_CONDITIONS_EVENING,
     RACE_CONDITIONS_NUM_CONDITIONS
-} race_conditions_t;
+};
 
 /// View mode
-typedef enum {
+enum ViewMode
+{
     BEHIND,
     FOLLOW,
     ABOVE,
     NUM_VIEW_MODES
-} view_mode_t;
+};
 
 //// View point
-typedef struct {
+struct View
+{
     /// View mode
-	view_mode_t mode;       		
+	ViewMode mode;       		
     
 	/// position of camera
-	pp::Vec3d pos;           		
+	ppogl::Vec3d pos;           		
     
 	/// position of player
-	pp::Vec3d plyr_pos;           	
+	ppogl::Vec3d plyr_pos;           	
     
 	/// viewing direction
-	pp::Vec3d dir;            		
+	ppogl::Vec3d dir;            		
     
 	/// up direction
-	pp::Vec3d up;               	
+	ppogl::Vec3d up;               	
     
 	/// inverse view matrix
 	pp::Matrix inv_view_mat;    	
     
 	/// has view been initialized?
 	bool initialized;          		
-} view_t;
+};
 
 /// Control mode
-typedef enum {
+enum ControlMode
+{
     KEYBOARD = 0,
     MOUSE = 1,
     JOYSTICK = 2
-} control_mode_t;
+};
 
 /// Control data
-typedef struct {
+struct Control
+{
     /// control mode
-	control_mode_t mode; 
+	ControlMode mode; 
 	
     /// turning [-1,1]
 	float turn_fact;
@@ -222,6 +236,10 @@ typedef struct {
     bool front_flip;
     bool back_flip;
     float flip_factor;
-} control_t;
+};
+
+
+// do we realy need this?
+#define NUM_TERRAIN_TYPES 64
 
 #endif // _PP_TYPES_H_

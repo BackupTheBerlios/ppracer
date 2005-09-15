@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -20,12 +20,10 @@
  */
 
 #include "winsys.h"
-#include "game_config.h"
 #include "loop.h"
 #include "render_util.h"
 
-#include "ppgltk/audio/audio.h"
-#include "ppgltk/alg/glwrappers.h"
+#include "ppogl/base/glwrappers.h"
 
 /* Windowing System Abstraction Layer */
 /* Abstracts creation of windows, handling of events, etc. */
@@ -35,22 +33,6 @@
 #endif
 
 static SDL_Surface *screen = NULL;
-
-static bool redisplay = false;
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Requests that the screen be redrawn
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_post_redisplay() 
-{
-    redisplay = true;
-}
-
 
 /*---------------------------------------------------------------------------*/
 /*! 
@@ -91,25 +73,25 @@ void setup_sdl_video_mode()
     int bpp = 0;
     int width, height;
 
-    if ( getparam_fullscreen() ) {
+    if (ppogl::Config::getInstance().getBool("fullscreen")) {
 		video_flags |= SDL_FULLSCREEN;
     } else {
 		video_flags |= SDL_RESIZABLE;
     }
 	
 #if SDL_VERSION_ATLEAST(1,2,6)
-	if(getparam_enable_fsaa()){
+	if(ppogl::Config::getInstance().getBool("enable_fsaa")){
 		//enable FSAA
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, getparam_multisamples());
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, PPConfig.getInt("multisamples"));
 	}
 #endif
 	
-	if(getparam_stencil_buffer()){
+	if(ppogl::Config::getInstance().getBool("stencil_buffer")){
 		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 	}
 
-    switch ( getparam_bpp_mode() ) {
+    switch(PPConfig.getInt("bpp_mode")){
     case 0:
 		/* Use current bpp */
 		bpp = 0;
@@ -126,25 +108,26 @@ void setup_sdl_video_mode()
 	break;
 
     default:
-		setparam_bpp_mode( 0 );
-		bpp = getparam_bpp_mode();
+		PPConfig.setInt("bpp_mode", 0);
+		bpp = 0;
     }
 
-    width = getparam_x_resolution();
+    width = PPConfig.getInt("x_resolution");
 	
-	if(getparam_x_resolution_half_width()){
+	if(PPConfig.getBool("x_resolution_half_width")){
 		width /=2;		
 	}
 	
-    height = getparam_y_resolution();
+    height = PPConfig.getInt("y_resolution");
 
     if ( ( screen = SDL_SetVideoMode( width, height, bpp, video_flags ) ) ==  NULL ){
-    	PP_ERROR( "Couldn't initialize video: %s", 
-			     SDL_GetError() );
+    	PP_ERROR( "Couldn't initialize video: " << SDL_GetError() );
     }
 	
+	GameMode::resolutionX = width;
+	GameMode::resolutionY = height;
+	
 	gl::Viewport(0,0,width,height);
-
 }
 
 
@@ -156,28 +139,26 @@ void setup_sdl_video_mode()
   \date    Created:  2000-10-19
   \date    Modified: 2000-10-19
 */
-void winsys_init( int *argc, char **argv, char *window_title, 
-		  char *icon_title )
+void
+winsys_init(char *window_title, char *icon_title)
 {
     Uint32 sdl_flags = SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE;
 
     /*
      * Initialize SDL
      */
-    if ( SDL_Init( sdl_flags ) < 0 ) {
-		PP_ERROR( "Couldn't initialize SDL: %s", SDL_GetError() );
+    if(SDL_Init(sdl_flags) < 0){
+		PP_ERROR("Couldn't initialize SDL: " << SDL_GetError());
     }
-
 
     /* 
      * Init video 
      */
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     setup_sdl_video_mode();
 
-    SDL_WM_SetCaption( window_title, icon_title );
-
+    SDL_WM_SetCaption(window_title, icon_title);
 }
 
 
@@ -282,7 +263,9 @@ void winsys_process_events()
 		break;
 
 	    case SDL_VIDEORESIZE:
-		setup_sdl_video_mode();
+			PPConfig.setInt("x_resolution",event.resize.w);
+			PPConfig.setInt("y_resolution",event.resize.h);
+			setup_sdl_video_mode();
 		    reshape( event.resize.w,
 				     event.resize.h );
 		break;
@@ -297,10 +280,7 @@ void winsys_process_events()
 	    SDL_UnlockAudio();
 	}
 
-	if ( redisplay ) {
-	    redisplay = false;
-	}
-	main_loop();
+	GameMode::mainLoop();
 
 	/* Delay for 1 ms.  This allows the other threads to do some
 	   work (otherwise the audio thread gets starved). */

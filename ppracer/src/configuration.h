@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -22,30 +22,28 @@
 
 #include "loop.h"
 
-#include "ppgltk/button.h"
-#include "ppgltk/label.h"
+#include "ppogl/ui.h"
 
 class Configuration : public GameMode
 {
-	pp::Button *mp_graphicsBtn;
-	pp::Button *mp_videoBtn;
-	pp::Button *mp_audioBtn;
-	pp::Button *mp_keyboardBtn;	
-	pp::Button *mp_joystickBtn;	
+	ppogl::Label m_titleLbl;
+	ppogl::Button m_generalBtn;
+	ppogl::Button m_videoBtn;
+	ppogl::Button m_audioBtn;
+	ppogl::Button m_keyboardBtn;	
+	ppogl::Button m_joystickBtn;	
 
-	pp::Button *mp_backBtn;
-	pp::Label *mp_titleLbl;		
+	ppogl::Button m_backBtn;
+	
 public:
 	Configuration();
-	~Configuration();
 
 	void loop(float timeStep);
-	void setWidgetPositions();
 
 	bool keyPressEvent(SDLKey key);
 
 	void back();
-	void graphics();
+	void general();
 	void video();
 	void audio();
 	void keyboard();

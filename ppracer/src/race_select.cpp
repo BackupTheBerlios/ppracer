@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,16 +21,7 @@
 
 #include "race_select.h"
 
-#include "ppgltk/button.h"
-#include "ppgltk/ssbutton.h"
-#include "ppgltk/listbox.h"
-#include "ppgltk/textarea.h"
-#include "ppgltk/font.h"
-
-#include "ppgltk/audio/audio.h"
-
 #include "course_load.h"
-#include "textures.h"
 #include "joystick.h"
 
 #include "stuff.h"
@@ -38,349 +29,201 @@
 
 #include <iostream>
 
-
-
 static std::list<CourseData> *courseList;
 static std::list<CourseData>::iterator curElem;
 static std::list<CourseData>::iterator lastCompletedRace;
 
 RaceSelect::RaceSelect()
+ : m_titleLbl(_("Select a race"),"heading"), 
+   m_descTa(300,104),
+   m_raceListBox(450,36),
+   m_backBtn(_("Back")),
+   m_startBtn(_("Race!")),
+   m_previewImage(ppogl::Vec2d(128,96)),
+   m_authorTitle(_("Contributed by:")),
+   m_timeTitle(_("Time:")),
+   m_herringTitle(_("Herring:")),
+   m_scoreTitle(_("Score:"))
 {
-    pp::Vec2d pos(0,0);
-
+    ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
+	
 	courseList = &openCourseList;
 		
     // Unless we're coming back from a race, initialize the race data to 
-    //   defaults.
-    
+    // defaults.
+	
     if ( GameMode::prevmode != GAME_OVER ) {
 		// Initialize the race data 
 		curElem = courseList->begin();
-		GameMgr::Instance()->setCurrentRace(curElem);
+		GameMgr::getInstance().setCurrentRace(curElem);
 		
-	    GameMgr::Instance()->getCurrentRace().mirrored = false;
-	    GameMgr::Instance()->getCurrentRace().condition = RACE_CONDITIONS_SUNNY;
-	    GameMgr::Instance()->getCurrentRace().windy = false;
-	    GameMgr::Instance()->getCurrentRace().snowing = false;
+	    GameMgr::getInstance().getCurrentRace().mirrored = false;
+	    GameMgr::getInstance().getCurrentRace().condition = RACE_CONDITIONS_SUNNY;
+	    GameMgr::getInstance().getCurrentRace().windy = false;
+	    GameMgr::getInstance().getCurrentRace().snowing = false;
     }
 	
-	mp_titleLbl = new pp::Label(pos, "heading", _("Select a race"));
-	mp_titleLbl->alignment.center();
-	mp_titleLbl->alignment.middle();	
+	{
+		std::list<CourseData>::iterator it;
+		for(it=courseList->begin(); it!=courseList->end();it++){
+			m_raceListBox.addElement((*it).getName(), it);			
+		}
+	}
 	
-    mp_backBtn = new pp::Button(pos,
-			      pp::Vec2d(150, 40), 
-			      "button_label", 
-			      _("Back") );
-    mp_backBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_backBtn->signalClicked.Connect(pp::CreateSlot(this,&RaceSelect::back));
+	m_titleLbl.setPosition(ppogl::Vec2d(320,400));
+	m_titleLbl.alignment.center();
+	
+    m_backBtn.setPosition(ppogl::Vec2d(80,0));
+    m_backBtn.signalClicked.Connect(ppogl::CreateSlot(this,&RaceSelect::back));
 
-    mp_startBtn = new pp::Button(pos,
-			       pp::Vec2d(150, 40),
-			       "button_label",
-			       _("Race!") );
-    mp_startBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_startBtn->setDisabledFontBinding( "button_label_disabled" );
-	mp_startBtn->signalClicked.Connect(pp::CreateSlot(this,&RaceSelect::start));
+	m_startBtn.setPosition(ppogl::Vec2d(560,0));
+	m_startBtn.alignment.right();
+	m_startBtn.signalClicked.Connect(ppogl::CreateSlot(this,&RaceSelect::start));
  
-	mp_raceListbox = new pp::Listbox<CourseData>(pos,
-				   pp::Vec2d(460, 44),
-				   "listbox_item",
-				   *courseList);
-	   
-    mp_raceListbox->setCurrentItem( curElem );
-	mp_raceListbox->signalChange.Connect(pp::CreateSlot(this,&RaceSelect::listboxItemChange));
-    // Create text area 
-    mp_descTa = new pp::Textarea( pos,
-			       pp::Vec2d(312, 107),
-			       "race_description",
-			       "" );
-	mp_descTa->setText( (*curElem).description.c_str() );
-    // Create state buttons - only if practicing or if cup_complete
-	
-	// mirror 
-	mp_mirrorSSBtn = new pp::SSButton( pos,
-					pp::Vec2d(32, 32),
-					2 );
-	mp_mirrorSSBtn->setStateImage(0,"mirror_button",
-				  pp::Vec2d( 0.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 32.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
-
-	mp_mirrorSSBtn->setStateImage(1,"mirror_button",
-				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
-
-	mp_mirrorSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().mirrored) );
+	m_raceListBox.setPosition(ppogl::Vec2d(320,320));
+	m_raceListBox.alignment.center();
+    m_raceListBox.setSelectedData(curElem);
+	m_raceListBox.signalChanged.Connect(ppogl::CreateSlot(this,&RaceSelect::updateData));
+    
+	// Create text area 
+    m_descTa.setPosition(ppogl::Vec2d(100,150));
+	m_descTa.setText((*curElem).getDescription());
+    
 	// conditions
-	mp_conditionsSSBtn = new pp::SSButton( pos,
-					    pp::Vec2d(32, 32),
-					    4 );
-	mp_conditionsSSBtn->setStateImage(0,"conditions_button",
-				  pp::Vec2d( 0.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 32.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
-
-	mp_conditionsSSBtn->setStateImage(1,"conditions_button",
-				  pp::Vec2d( 32.0/64.0, 0.0/64.0 ),
-				  pp::Vec2d( 64.0/64.0, 32.0/64.0 ),
-				  pp::Color::white );
-
-	mp_conditionsSSBtn->setStateImage(2,"conditions_button",
-				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );	
-
-	mp_conditionsSSBtn->setStateImage(3,"conditions_button",
-				  pp::Vec2d( 0.0/64.0, 0.0/64.0 ),
-				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
-				  pp::Color::white );	
-
-	mp_conditionsSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().condition) );
+	m_conditionsIBtn.setPosition(ppogl::Vec2d(416,260));
+	m_conditionsIBtn.setTexture("conditions_button");
+	m_conditionsIBtn.addState(0,ppogl::Vec4f(0.0, 0.5, 0.5, 1.0));
+	m_conditionsIBtn.addState(1,ppogl::Vec4f(0.5, 0.0, 1.0, 0.5));
+	m_conditionsIBtn.addState(2,ppogl::Vec4f(0.5, 0.5, 1.0, 1.0));
+	m_conditionsIBtn.addState(3,ppogl::Vec4f(0.0, 0.0, 0.5, 0.5));
+	m_conditionsIBtn.setMode(ppogl::ImageButton::MODE_CYCLE);
+	m_conditionsIBtn.setState(int(GameMgr::getInstance().getCurrentRace().condition));
+	
 	// wind
-	mp_windSSBtn = new pp::SSButton( pos,
-				      pp::Vec2d(32, 32),
-				      2 );
-	mp_windSSBtn->setStateImage(0,"wind_button",
-				  pp::Vec2d( 0.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 32.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
+	m_windIBtn.setPosition(ppogl::Vec2d(452,260));
+	m_windIBtn.setTexture("wind_button");
+	m_windIBtn.addState(0,ppogl::Vec4f(0.0, 0.5, 0.5, 1.0));
+	m_windIBtn.addState(1,ppogl::Vec4f(0.5, 0.5, 1.0, 1.0));
+	m_windIBtn.setMode(ppogl::ImageButton::MODE_CYCLE);
+	m_windIBtn.setState(int(GameMgr::getInstance().getCurrentRace().windy));
 
-	mp_windSSBtn->setStateImage(1,"wind_button",
-				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
-
-	mp_windSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().windy) );
-
+	// mirror 
+	m_mirrorIBtn.setPosition(ppogl::Vec2d(486,260));
+	m_mirrorIBtn.setTexture("mirror_button");
+	m_mirrorIBtn.addState(0, ppogl::Vec4f(0.0, 0.5, 0.5, 1.0));
+	m_mirrorIBtn.addState(1, ppogl::Vec4f(0.5, 0.5, 1.0, 1.0));
+	m_mirrorIBtn.setMode(ppogl::ImageButton::MODE_CYCLE);
+	m_mirrorIBtn.setState(int(GameMgr::getInstance().getCurrentRace().mirrored));
+	
 	// snow 
-	mp_snowSSBtn = new pp::SSButton( pos,
-				      pp::Vec2d(32, 32),
-				      2 );
-	mp_snowSSBtn->setStateImage(0,"snow_button",
-				  pp::Vec2d( 0.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 32.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
+	m_snowIBtn.setPosition(ppogl::Vec2d(520,260));
+	m_snowIBtn.setTexture("snow_button");
+	m_snowIBtn.addState(0,ppogl::Vec4f(0.0, 0.5, 0.5, 1.0));
+	m_snowIBtn.addState(1,ppogl::Vec4f(0.5, 0.5, 1.0, 1.0));
+	m_snowIBtn.setState(int(GameMgr::getInstance().getCurrentRace().snowing));
 
-	mp_snowSSBtn->setStateImage(1,"snow_button",
-				  pp::Vec2d( 32.0/64.0, 32.0/64.0 ),
-				  pp::Vec2d( 64.0/64.0, 64.0/64.0 ),
-				  pp::Color::white );
+	// preview image
+	m_previewImage.setPosition(ppogl::Vec2d(420,154));
+	m_previewImage.addState(0,ppogl::Vec4f(0.0, 0.0, 1.0, 1.0));
+	m_previewImage.setState(0);
+	m_previewImage.setBorder(4);	
+		
+	
+	ppogl::FontRef titlefont =
+			ppogl::FontMgr::getInstance().get("race_requirements_label");
+	ppogl::FontRef labelfont =
+			ppogl::FontMgr::getInstance().get("race_requirements");
 
-	mp_snowSSBtn->setState( int(GameMgr::Instance()->getCurrentRace().snowing) );
-	// XXX snow button doesn't do anything, so disable for now 
-	mp_snowSSBtn->setSensitive(false);
-
+	m_authorTitle.setPosition(ppogl::Vec2d(100,135));
+	m_authorTitle.setFont(titlefont);
+	m_authorLbl.setPosition(ppogl::Vec2d(
+		105 + titlefont->advance(m_authorTitle.getText()),
+		135));
+	m_authorLbl.setFont(labelfont);
+	
+	m_timeTitle.setPosition(ppogl::Vec2d(100,260));
+	m_timeTitle.setFont(titlefont);
+	m_timeLbl.setPosition(ppogl::Vec2d(
+		105 + titlefont->advance(m_timeTitle.getText()),
+		260));
+	m_timeLbl.setFont(labelfont);
+	
+	m_herringTitle.setPosition(ppogl::Vec2d(200,260));
+	m_herringTitle.setFont(titlefont);
+	m_herringLbl.setPosition(ppogl::Vec2d(
+		205 + titlefont->advance(m_herringTitle.getText()),
+		260));
+	m_herringLbl.setFont(labelfont);
+	
+	m_scoreTitle.setPosition(ppogl::Vec2d(300,260));
+	m_scoreTitle.setFont(titlefont);
+	m_scoreLbl.setPosition(ppogl::Vec2d(
+		305 + titlefont->advance(m_scoreTitle.getText()),
+		260));
+	m_scoreLbl.setFont(labelfont);
+		
 	updateButtonEnabledStates();
-    play_music( "start_screen" );
-}
+	updateData();
 
-RaceSelect::~RaceSelect()
-{
-	delete mp_backBtn;
-	delete mp_startBtn;
-	delete mp_raceListbox;
-	delete mp_conditionsSSBtn;
-	delete mp_snowSSBtn;
-	delete mp_windSSBtn;
-	delete mp_mirrorSSBtn;
-    delete mp_descTa;	
-	delete mp_titleLbl;
+	ppogl::AudioMgr::getInstance().playMusic("start_screen");
 }
 
 void
 RaceSelect::loop(float timeStep)
 {
-	update_audio();
-
     set_gl_options( GUI );
 
-    clear_rendering_context();
-
-    UIMgr.setupDisplay();
-
 	// draw snow and set windy to the winSSBtn state
-	drawSnow(timeStep, mp_windSSBtn->getState());
+	drawSnow(timeStep, m_windIBtn.getState());
 
-    theme.drawMenuDecorations();
-
-    setWidgetPositionsAndDrawDecorations();
-
-    UIMgr.draw();
-
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-
-    winsys_swap_buffers();
-}
-
-void
-RaceSelect::setWidgetPositionsAndDrawDecorations()
-{
-    int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
-    int box_width, box_height, box_max_y;
-    int x_org, y_org;
-    GLuint texobj;
-
-    // set the dimensions of the box in which all widgets should fit
-    box_width = 460;
-    box_height = 310;
-    box_max_y = h - 128;
-
-    x_org = w/2 - box_width/2;
-    y_org = h/2 - box_height/2;
-    if ( y_org + box_height > box_max_y ) {
-		y_org = box_max_y - box_height;
-    }
-
-    mp_backBtn->setPosition(pp::Vec2d( x_org + 131 - mp_backBtn->getWidth()/2.0,
-		      42 ) );
-
-    mp_startBtn->setPosition(pp::Vec2d( x_org + 343 - mp_startBtn->getWidth()/2.0,
-		      42 ) );
-
-	mp_raceListbox->setPosition(pp::Vec2d( x_org,y_org + 221 ) );
-
-	mp_descTa->setPosition(pp::Vec2d( x_org,y_org + 66 ) );
-    
-	mp_conditionsSSBtn->setPosition(
-	    pp::Vec2d( x_org + box_width - 4*36 + 4,
-			  y_org + 181 ) );
-
-	mp_windSSBtn->setPosition(
-	    pp::Vec2d( x_org + box_width - 3*36 + 4 ,
-			  y_org + 181 ) );
-
-	mp_snowSSBtn->setPosition(
-	    pp::Vec2d( x_org + box_width - 2*36 + 4,
-			  y_org + 181 ) );
-
-	mp_mirrorSSBtn->setPosition(
-	    pp::Vec2d( x_org + box_width - 1*36 + 4,
-			  y_org + 181 ) );
-    
-	mp_titleLbl->setPosition(pp::Vec2d(
-				x_org + box_width/2.0,
-				y_org + 310));
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);
 	
-    // Draw text indicating race requirements (if race not completed), 
-    //   or results in race if race completed.
-    drawStatusMsg( x_org, y_org );
-
-    // Draw preview
-
-	std::list<CourseData>::iterator elem;
-	elem = mp_raceListbox->getCurrentItem();
-
-    gl::Disable( GL_TEXTURE_2D );
-
-    gl::Color( pp::Color::white );
-    gl::Begin( GL_QUADS );
-    {
-	gl::Vertex( x_org+box_width-140, y_org+66 );
-	gl::Vertex( x_org+box_width, y_org+66 );
-	gl::Vertex( x_org+box_width, y_org+66+107 );
-	gl::Vertex( x_org+box_width-140, y_org+66+107 );
-    }
-    gl::End();
-
-    gl::Enable( GL_TEXTURE_2D );
-
-	//current_course = (*elem).course;
-	//if ( !get_texture_binding( current_course, &texobj ) ) {
-    if ( !get_texture_binding( (*elem).course.c_str(), &texobj ) ) {
-	if ( !get_texture_binding( "no_preview", &texobj ) ) {
-	    texobj = 0;
-	}
-    }
-
-    gl::BindTexture( GL_TEXTURE_2D, texobj );
-
-    gl::Begin( GL_QUADS );
-    {
-	gl::TexCoord( 0, 0);
-	gl::Vertex( x_org+box_width-136, y_org+70 );
-
-	gl::TexCoord( 1, 0);
-	gl::Vertex( x_org+box_width-4, y_org+70 );
-
-	gl::TexCoord( 1, 1);
-	gl::Vertex( x_org+box_width-4, y_org+70+99 );
-
-	gl::TexCoord( 0, 1);
-	gl::Vertex( x_org+box_width-136, y_org+70+99 );
-    }
-    gl::End();
+    reshape(resolutionX, resolutionY);
 }
-
 
 void
 RaceSelect::updateRaceData()
 {
-  	GameMgr::Instance()->getCurrentRace().course = (*curElem).course;
-	GameMgr::Instance()->getCurrentRace().name = (*curElem).name;
-	GameMgr::Instance()->getCurrentRace().description = (*curElem).description;
-	GameMgr::Instance()->getCurrentRace().mirrored = bool(mp_mirrorSSBtn->getState());
-	GameMgr::Instance()->getCurrentRace().condition = static_cast<race_conditions_t>(mp_conditionsSSBtn->getState());
-	GameMgr::Instance()->getCurrentRace().windy = bool(mp_windSSBtn->getState());
-	GameMgr::Instance()->getCurrentRace().snowing = bool(mp_snowSSBtn->getState());
+  	GameMgr::getInstance().getCurrentRace().course = (*curElem).course;
+	GameMgr::getInstance().getCurrentRace().setName((*curElem).getName());
+	GameMgr::getInstance().getCurrentRace().setDescription((*curElem).getDescription());
+	GameMgr::getInstance().getCurrentRace().mirrored = bool(m_mirrorIBtn.getState());
+	GameMgr::getInstance().getCurrentRace().condition = static_cast<RaceConditions>(m_conditionsIBtn.getState());
+	GameMgr::getInstance().getCurrentRace().windy = bool(m_windIBtn.getState());
+	GameMgr::getInstance().getCurrentRace().snowing = bool(m_snowIBtn.getState());
 }
 
 void
-RaceSelect::drawStatusMsg( int x_org, int y_org )
+RaceSelect::updateStatusMsg()
 {
-	
 	PlayerCourseData data;
 	
-	pp::Font *font = pp::Font::get("race_requirements");
-	pp::Font *labelfont = pp::Font::get("race_requirements_label");
-	
-	if(players[0].getOpenCourseData((*curElem).name,data)){
-		
+	if(players[0].getOpenCourseData((*curElem).getName(),data)){
 		char buff[BUFF_LEN];
 		int minutes;
 		int seconds;
 		int hundredths;
-
-		pp::Vec2d pos(x_org,y_org + 184);
-		
+	
 		getTimeComponents( data.time, minutes, seconds, hundredths );
 
-		const char* string = _("Time:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
-		
 		sprintf( buff, "%02d:%02d.%02d",minutes, seconds, hundredths);
-		font->draw(buff, pos);
+		m_timeLbl.setText(buff);
 		
-		pos.x+=75;
-		string = _("Herring:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
-
 		sprintf( buff, "%03d", data.herring ); 
-		font->draw(buff, pos);
-		
-		pos.x+=40;	
-		string = _("Score:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
-	
+		m_herringLbl.setText(buff);
+				
 		sprintf( buff, "%06d", data.score );
-		font->draw(buff, pos);
-	}
-		
-	const char* string = _("Contributed by:");
-	pp::Vec2d pos(x_org,y_org+50);
-	labelfont->draw(string,pos);
-	
-	pos.x += labelfont->advance(string) + 5;
-		
-	if(!(*curElem).contributed.empty()){
-		font->draw((*curElem).contributed.c_str(),pos);		
+		m_scoreLbl.setText(buff);
 	}else{
-		font->draw(_("Unknown"),pos);
+		m_timeLbl.setText("");
+		m_herringLbl.setText("");
+		m_scoreLbl.setText("");
+	}
+	if(!(*curElem).author.empty()){
+		m_authorLbl.setText((*curElem).author);
+	}else{
+		m_authorLbl.setText(_("Unknown"));
 	}	
 }
 
@@ -388,35 +231,47 @@ RaceSelect::drawStatusMsg( int x_org, int y_org )
 void
 RaceSelect::updateButtonEnabledStates()
 {
-	mp_startBtn->setSensitive( true );
+	//m_startBtn.setSensitive();
 }
 
 void
 RaceSelect::back()
 {
-	set_game_mode( GAME_TYPE_SELECT );
-    UIMgr.setDirty();
+	setMode( GAME_TYPE_SELECT );
 }
 
 void
 RaceSelect::start()
 {
-    mp_startBtn->setHighlight( true );
 	updateRaceData();	
 	loop( 0 );
-    set_game_mode( LOADING );
+    setMode( LOADING );
 }
 
 
 void
-RaceSelect::listboxItemChange()
-{
-	curElem=mp_raceListbox->getCurrentItem();
-	GameMgr::Instance()->setCurrentRace(curElem);	
+RaceSelect::updateData()
+{	GameMgr::getInstance().setCurrentRace(curElem);	
+
+	curElem=m_raceListBox.getSelectedData();
+	GameMgr::getInstance().setCurrentRace(curElem);	
 	updateRaceData();
-	mp_descTa->setText( (*curElem).description.c_str() );
+	m_descTa.setText((*curElem).getDescription());
 	updateButtonEnabledStates();
-	UIMgr.setDirty();
+	
+	ppogl::TextureRef texture =
+		ppogl::TextureMgr::getInstance().get((*curElem).course);
+
+	if(!texture){
+		texture =
+			ppogl::TextureMgr::getInstance().get("no_preview");
+		if(!texture){
+			PP_WARNING("Unable to get no_preview Image");
+		}
+	}
+	
+	m_previewImage.setTexture(texture);	
+	updateStatusMsg();	
 }
 
 bool
@@ -425,28 +280,28 @@ RaceSelect::keyPressEvent(SDLKey key)
 	switch (key){
 		case SDLK_UP:
 		case SDLK_LEFT:
-			mp_raceListbox->gotoPrevItem();
+			--m_raceListBox;
+			updateData();
 	    	return true;
 		case SDLK_RIGHT:
 		case SDLK_DOWN:
-			mp_raceListbox->gotoNextItem();
+			++m_raceListBox;
+			updateData();
 	    	return true;
 		case SDLK_RETURN: 
-	    	mp_startBtn->simulateMouseClick();
-			UIMgr.setDirty();
+	    	start();
 			return true;
 		case SDLK_ESCAPE: 
-	    	mp_backBtn->simulateMouseClick();
-			UIMgr.setDirty();
+	    	back();
 			return true;
 		case 'c': 
-	    	mp_conditionsSSBtn->simulateMouseClick();
+	    	m_conditionsIBtn.setClicked();
 	    	return true;
 		case 'w': 
-	    	mp_windSSBtn->simulateMouseClick();
+	    	m_windIBtn.setClicked();
 	    	return true;
 		case 'm':
-	    	mp_mirrorSSBtn->simulateMouseClick();
+	    	m_mirrorIBtn.setClicked();
 	    	return true;
 		default:
 			return false;

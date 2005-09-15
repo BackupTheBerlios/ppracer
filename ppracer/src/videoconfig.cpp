@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -32,160 +32,99 @@
  
 #include "videoconfig.h"
 
-#include "game_config.h"
 #include "winsys.h"
+#include "stuff.h"
 
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
-
-/// List of default resolitions (only if autodetection fails)
-resolution_t resolutions[] = { 	{"1280 x 1024",1280,1024},
-								{"1152 x 864",1152,864},
-								{"1024 x 768",1024,768},
-								{"800 x 600",800,600},
-								{"640 x 480",640,480}};
-
-/// List of bpp modes							
-bpp_t bpps[] = { 	{"Display",0},
-						{"16",1},
-						{"32",2}};
-
-/// List of multisamples						
-multisample_t multisamples[] = { 	{"1",1},
-						{"2",2},
-						{"4",4}};					
- 	
 VideoConfig::VideoConfig()
+ : 	m_resolutionLbl(_("Resolution:")),
+	m_bppLbl(_("Bits Per Pixel:")),
+	m_multisampleLbl(_("FSAA Multisamples:")),
+	m_fullscreenLbl(_("Fullscreen:")),
+	m_stencilLbl(_("Stencil Buffer:")),
+	m_fsaaLbl(_("Enable FSAA:")),
+	m_warningLbl(_("Experimental (needs restart)"))
 {
 	setTitle(_("Video Configuration"));	
+
+	m_bppListBox.addElement("Display", 0);
+	m_bppListBox.addElement("16", 1);
+	m_bppListBox.addElement("32", 2);
+	m_bppListBox.setSelectedData(PPConfig.getInt("bpp_mode"));
 	
-	pp::Vec2d pos(0,0);
-	
-	// resolution listbox 
-	
-	std::list<resolution_t>::iterator resit;
-	bool found=false;
+	m_multisampleListBox.addElement("1", 1);
+	m_multisampleListBox.addElement("2", 2);
+	m_multisampleListBox.addElement("4", 4);
+	if(!m_multisampleListBox.setSelectedData(PPConfig.getInt("multisamples"))){
+		char buff[4];
+		snprintf(buff,4,"%d",PPConfig.getInt("multisamples"));		
+		m_multisampleListBox.addElement(buff, PPConfig.getInt("multisamples"));
+		m_multisampleListBox.setSelectedData(PPConfig.getInt("multisamples"));
+	}	
 	
 	initVideoModes();
 	
-	// check for the current resolution
-	for (resit = m_resolutionList.begin();
-		 resit != m_resolutionList.end();
-		 resit++)
 	{
-		if ( (*resit).x==getparam_x_resolution() && (*resit).y==getparam_y_resolution())
-			break;			 
+		char buff[16];
+		snprintf(buff,16,"%d x %d",
+				 resolutionX,
+				 resolutionY);
+		if(!m_resolutionListBox.setSelected(buff)){
+			m_resolutionListBox.addElement(buff, Resolution(resolutionX,resolutionY));
+			m_resolutionListBox.setSelected(buff);	
+		}		
 	}
 		
-	if (resit == m_resolutionList.end()){
-		// current resolution not in list
-		// therefore we simply add this
-		char buff[16];
-		resolution_t resolution;
-		sprintf(buff,"%d x %d",getparam_x_resolution(), getparam_y_resolution());
-		resolution.name = buff;
-		resolution.x=getparam_x_resolution();
-		resolution.y=getparam_y_resolution();
-		m_resolutionList.insert(m_resolutionList.begin(),resolution);
-		resit = m_resolutionList.begin();
-	}
+	ppogl::Vec2d position(40,350);
+	ppogl::Vec2d position2(600,350);
 	
-	mp_resolutionListbox = new pp::Listbox<resolution_t>( pos,
-				   pp::Vec2d(190, 32),
-				   "listbox_item",
-				   m_resolutionList);
-    mp_resolutionListbox->setCurrentItem( resit );
+	m_resolutionLbl.setPosition(position);
+	m_resolutionListBox.setPosition(position2);
+	m_resolutionListBox.alignment.right();
 	
-  	//bpp listbox
-	std::list<bpp_t>::iterator bppit;
-	for (unsigned int i=0; i < PP_NUM_ELEMENTS(bpps); i++) {
-		m_bppList.push_back(bpps[i]);
-		if(bpps[i].data==getparam_bpp_mode()){
-			bppit = --m_bppList.end();
-		}
-    }
-    mp_bppListbox = new pp::Listbox<bpp_t>( pos,
-					pp::Vec2d(190, 32),
-					"listbox_item",
-					m_bppList);
-    mp_bppListbox->setCurrentItem( bppit );
+	position.y()-=40;
+	position2.y()-=40;
 	
-	mp_fullscreenBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_fullscreenBox->setState( getparam_fullscreen() );
-
+	m_bppLbl.setPosition(position);
+	m_bppListBox.setPosition(position2);
+	m_bppListBox.alignment.right();	
+			
+	position.y()-=40;
+	position2.y()-=40;
 	
-	mp_stencilBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_stencilBox->setState( getparam_stencil_buffer() );
+	m_fullscreenLbl.setPosition(position);
+	m_fullscreenBox.setPosition(position2);
+	m_fullscreenBox.alignment.right();
+	m_fullscreenBox.setSelected(PPConfig.getBool("fullscreen"));
 	
-	//multisample listbox
-	found=false;
-	std::list<multisample_t>::iterator multiit;
-	for (unsigned int i=0; i < PP_NUM_ELEMENTS(multisamples); i++) {
-		m_multisampleList.push_back(multisamples[i]);
-		if(multisamples[i].data==getparam_multisamples()){
-			multiit = --m_multisampleList.end();
-			found=true;
-		}
-    }
-	if(!found) multiit = m_multisampleList.begin();
-    mp_multisampleListbox = new pp::Listbox<multisample_t>( pos,
-					pp::Vec2d(150, 32),
-					"listbox_item",
-					m_multisampleList);
-    mp_multisampleListbox->setCurrentItem( multiit );
+	position.y()-=80;
+	position2.y()-=80;
 	
-	mp_fsaaBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_fsaaBox->setState( getparam_enable_fsaa());
-}
-
-VideoConfig::~VideoConfig()
-{
-	delete mp_resolutionListbox;
-	delete mp_bppListbox;
-	delete mp_multisampleListbox;
-	delete mp_fullscreenBox;
-	delete mp_stencilBox;
-	delete mp_fsaaBox;
-}
-
-void
-VideoConfig::setWidgetPositions()
-{
-	int width = 550;
-	int height = 240;
+	m_warningLbl.setPosition(position);
+		
+	position.y()-=40;
+	position2.y()-=40;
 	
-	pp::Vec2d pos(getparam_x_resolution()/2 - width/2,
-				  getparam_y_resolution()/2 + height/2);
+	m_stencilLbl.setPosition(position);
+	m_stencilBox.setPosition(position2);
+	m_stencilBox.alignment.right();
+	m_stencilBox.setSelected(PPConfig.getBool("stencil_buffer"));	
 	
-	pp::Font *font = pp::Font::get("button_label");
+	position.y()-=40;
+	position2.y()-=40;
 	
-	font->draw(_("Resolution:"),pos);
-	mp_resolutionListbox->setPosition(pp::Vec2d(pos.x+width-190,pos.y));	
+	m_fsaaLbl.setPosition(position);
+	m_fsaaBox.setPosition(position2);
+	m_fsaaBox.alignment.right();
+	m_fsaaBox.setSelected(PPConfig.getBool("enable_fsaa"));
+		
+	position.y()-=40;
+	position2.y()-=40;
 	
-	pos.y-=40;
-	font->draw(_("Bits Per Pixel:"),pos);
-	mp_bppListbox->setPosition(pp::Vec2d(pos.x+width-190,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Fullscreen:"),pos);
-	mp_fullscreenBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=80;
-	font->draw(_("Experimental (needs restart)"),pos);
-	
-	pos.y-=40;
-	font->draw("Stencil Buffer:",pos);
-	mp_stencilBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=40;
-	font->draw(_("Enable FSAA:"),pos);
-	mp_fsaaBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=40;
-	font->draw("FSAA Multisamples:",pos);
-	mp_multisampleListbox->setPosition(pp::Vec2d(pos.x+width-150,pos.y));
-
+	m_multisampleLbl.setPosition(position);
+	m_multisampleListBox.setPosition(position2);
+	m_multisampleListBox.alignment.right();
 }
 
 void
@@ -193,51 +132,50 @@ VideoConfig::apply()
 {
 	bool updatevideo = false;
 	
-	std::list<resolution_t>::iterator resit = mp_resolutionListbox->getCurrentItem();
-	std::list<bpp_t>::iterator bppit = mp_bppListbox->getCurrentItem();
-	std::list<multisample_t>::iterator multiit = mp_multisampleListbox->getCurrentItem();
-	
-	if ( (*resit).x != getparam_x_resolution() ){
-		setparam_x_resolution((*resit).x);
-		setparam_y_resolution((*resit).y);
+	ppogl::ListBox<Resolution>::iterator resit = m_resolutionListBox.getSelected();
+	ppogl::ListBox<int>::iterator bppit = m_bppListBox.getSelected();
+	ppogl::ListBox<int>::iterator multiit = m_multisampleListBox.getSelected();
+		
+	if ( (*resit).data.x != resolutionX ){
+		PPConfig.setInt("x_resolution",(*resit).data.x);
+		PPConfig.setInt("y_resolution",(*resit).data.y);
 		updatevideo=true;	
 	}
 	
-	if ( (*bppit).data != getparam_bpp_mode() ){
-		setparam_bpp_mode((*bppit).data);
+	if ( (*bppit).data != PPConfig.getInt("bpp_mode")){
+		PPConfig.setInt("bpp_mode",(*bppit).data);
 		updatevideo=true;	
 	}
 	
-	if (mp_fullscreenBox->getState() != getparam_fullscreen() ){
-		setparam_fullscreen(bool( mp_fullscreenBox->getState() ));
+	if (m_fullscreenBox.isSelected() != PPConfig.getBool("fullscreen")){
+		PPConfig.setInt("fullscreen",m_fullscreenBox.isSelected());
 		updatevideo=true;
 	}
 	
-	if (mp_stencilBox->getState() != getparam_stencil_buffer() ){
-		setparam_stencil_buffer(bool( mp_stencilBox->getState() ));
+	if (m_stencilBox.isSelected() != PPConfig.getBool("stencil_buffer")){
+		PPConfig.setBool("stencil_buffer",m_stencilBox.isSelected());
 		updatevideo=true;
 	}
 	
-	if (mp_fsaaBox->getState() != getparam_enable_fsaa() ){
-		setparam_enable_fsaa(bool( mp_fsaaBox->getState() ));
+	if (m_fsaaBox.isSelected() != PPConfig.getBool("enable_fsaa")){
+		PPConfig.setBool("enable_fsaa",m_fsaaBox.isSelected());
 		updatevideo=true;
 	}
 	
-	if ( (*multiit).data != getparam_multisamples() ){
-		setparam_multisamples((*multiit).data);
+	if ( (*multiit).data != PPConfig.getInt("multisamples")){
+		PPConfig.setInt("multisamples",(*multiit).data);
 		updatevideo=true;	
 	}
 	
 	
  	if (updatevideo==true){
-		printf("Set new videomode:%dx%d bpp:%d \n", (*resit).x, (*resit).y,(*bppit).data);
+		printf("Set new videomode:%dx%d bpp:%d \n", (*resit).data.x, (*resit).data.y, (*bppit).data);
 		setup_sdl_video_mode();
 	}	
 	
 	write_config_file();
 	
-	set_game_mode( GameMode::prevmode );
-    UIMgr.setDirty();	
+	setMode( GameMode::prevmode );
 }
 
 void
@@ -252,7 +190,7 @@ VideoConfig::initVideoModes()
 	int i;
 
 	// get available fullscreen OpenGL modes
-	if(!getparam_disable_videomode_autodetection()){	
+	if(!PPConfig.getBool("disable_videomode_autodetection")){	
 		modes=SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
 	}else{
 		modes=reinterpret_cast<SDL_Rect **>(-1);
@@ -262,20 +200,20 @@ VideoConfig::initVideoModes()
 		modes == reinterpret_cast<SDL_Rect **>(0) )
 	{
 		// unable to find modes... fall back to standard modes
-		for (unsigned int i=0; i<PP_NUM_ELEMENTS(resolutions); i++){
-			m_resolutionList.push_back(resolutions[i]);
-		}	
+		m_resolutionListBox.addElement("1280 x 1024", Resolution(1280,1024));
+		m_resolutionListBox.addElement("1152 x 864", Resolution(1152,864));
+		m_resolutionListBox.addElement("1024 x 768", Resolution(1024,768));
+		m_resolutionListBox.addElement("800 x 600", Resolution(800,600));
+		m_resolutionListBox.addElement("640 x 480", Resolution(640,480));
+
+		PP_WARNING("No standard modes detected");
 	}else{
 		char buff[16];
-		resolution_t resolution;
 		
 		// fill list with modes
 		for(i=0; modes[i]; ++i){
-			sprintf(buff,"%d x %d", modes[i]->w, modes[i]->h);
-			resolution.name = buff;
-			resolution.x=modes[i]->w;
-			resolution.y=modes[i]->h;
-			m_resolutionList.push_back(resolution);	
+			snprintf(buff,16,"%d x %d", modes[i]->w, modes[i]->h);
+			m_resolutionListBox.addElement(buff, Resolution(modes[i]->w,modes[i]->h));
 		}	
 	}
 }

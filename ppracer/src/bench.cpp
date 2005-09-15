@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,7 +21,9 @@
 
 #include "game_mgr.h"
 
-Benchmark::mode_t Benchmark::sm_mode = Benchmark::NONE;
+#include <iostream>
+
+Benchmark::BenchMode Benchmark::sm_mode = Benchmark::NONE;
 
 std::string Benchmark::sm_course;
 double Benchmark::sm_frames=0.0;
@@ -29,14 +31,12 @@ double Benchmark::sm_oldFrames=0.0;
 int Benchmark::sm_framesCounter=0;
 int Benchmark::sm_maxFrames=0;
 int Benchmark::sm_fc=0;
-pp::Vec2d Benchmark::sm_pos;
+ppogl::Vec2d Benchmark::sm_pos;
 double Benchmark::sm_timeStep=-1;
-race_conditions_t Benchmark::sm_condition=RACE_CONDITIONS_SUNNY;
+RaceConditions Benchmark::sm_condition=RACE_CONDITIONS_SUNNY;
 	
 Benchmark::Benchmark()
-{
-	
-	
+{	
 }
 
 Benchmark::~Benchmark()
@@ -60,19 +60,19 @@ Benchmark::loop(float timeStep)
 	}
 	
 	if( it != openCourseList.end() ){
-		GameMgr::Instance()->setCurrentRace(it);
-		GameMgr::Instance()->getCurrentRace().condition = sm_condition;
+		GameMgr::getInstance().setCurrentRace(it);
+		GameMgr::getInstance().getCurrentRace().condition = sm_condition;
 	}else{
 		std::cout << "Benchmark error: unable to set course: " 
 					<< sm_course << std::endl;
 		exit(0);
 	}
 	
-	set_game_mode( LOADING );
+	GameMode::setMode( GameMode::LOADING );
 }
 
 void
-Benchmark::setCourse(const char* course)
+Benchmark::setCourse(const std::string& course)
 {
 	sm_course = course;	
 	if(sm_mode == Benchmark::NONE){
@@ -87,24 +87,24 @@ Benchmark::setMaxFrames(int frames)
 }
 
 void
-Benchmark::setPosition(pp::Vec2d &position)
+Benchmark::setPosition(ppogl::Vec2d &position)
 {
 	sm_pos = position;
 }
 
-pp::Vec2d&
+ppogl::Vec2d&
 Benchmark::getPosition()
 {
 	return sm_pos;
 }
 
 void
-Benchmark::setMode(Benchmark::mode_t mode)
+Benchmark::setMode(Benchmark::BenchMode mode)
 {
 	sm_mode = mode;
 }
 
-Benchmark::mode_t
+Benchmark::BenchMode
 Benchmark::getMode()
 {
 	return sm_mode;
@@ -128,7 +128,7 @@ Benchmark::setRaceCondition(int condition)
 	if (condition > 0 && 
 		condition < RACE_CONDITIONS_NUM_CONDITIONS)
 	{
-		sm_condition = static_cast<race_conditions_t>(condition);
+		sm_condition = static_cast<RaceConditions>(condition);
 	}
 }
 
@@ -147,7 +147,7 @@ Benchmark::updateFPS(double fps)
 	}
 		
 	if( sm_maxFrames > 0 && sm_frames >= sm_maxFrames ){
-		set_game_mode(GAME_OVER);		
+		GameMode::setMode(GAME_OVER);		
 	}
 }
 

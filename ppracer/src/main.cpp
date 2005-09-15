@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,13 +21,12 @@
 
 #include "course_load.h"
 #include "course_render.h"
-#include "textures.h"
 #include "tux.h"
+#include "hier_cb.h"
 #include "phys_sim.h"
 #include "part_sys.h"
 #include "keyframe.h"
 #include "gl_util.h"
-#include "game_config.h"
 #include "loop.h"
 #include "render_util.h"
 
@@ -36,41 +35,65 @@
 #include "fog.h"
 #include "lights.h"
 
-#include "ppgltk/ui_mgr.h"
-
-#include "ppgltk/audio/audio_data.h"
-#include "ppgltk/audio/audio.h"
-
 #include "course_mgr.h"
 
 #include "game_mgr.h"
-
 #include "joystick.h"
-
-#include "translation.h"
-
-#include "callbacks.h"
-
-#include "tcl_util.h"
 #include "os_util.h"
+#include "stuff.h"
+#include "winsys.h"
+#include "ui_snow.h"
 
+#include "ppogl/translation.h"
+#include "ppogl/ui/uitheme.h"
+#include "ppogl/audio.h"
+#include "ppogl/config.h"
+#include "ppogl/base/os.h"
 
-/// instance of tcl interpreter
-Tcl_Interp *tclInterp;
+#include <iostream>
+
+/// global instance of the script interpreter
+ppogl::Script script;
 
 #define WINDOW_TITLE "PlanetPenguin Racer " VERSION
 
-#define GAME_INIT_SCRIPT "ppracer_init.tcl"
+void showHelpMessage()
+{
+	std::cout << 
+		"Usage: ppracer [OPTION...]\n"
+		"\n"
+		"  -c <config-file>         use custom config file\n"
+		"  -d <data-directory>      use custom data directory\n"
+		"\n"
+		"Benchmark/autoplay\n"
+		"  -a                       automatic playing mode\n"
+		"  -f <course-name>         course to play\n"
+		"  -rc <condition>          set condition for the course\n"
+		"  -p <x> <y>               start at position x,y\n"
+		"  -m <number-of-frames>    number of frames after which the playback gets aborted\n"
+		"  -t <milliseconds>        timestep for each frame\n"
+		"\n"
+		"Experimental\n"
+		"  --multiplayer            experimental multiplayer mode\n"
+		<< std::endl;	
+}
 
 std::string cfile;
+std::string data_dir;
 
 static void
 getopts( int argc, char *argv[] )
 {
 	for(int i=0; i<argc; i++){
-		if( !strcmp(argv[i],"-c") ){
+		if( !strcmp(argv[i],"--help") ){
+			showHelpMessage();
+			exit(0);
+		}else if( !strcmp(argv[i],"-c") ){
 			i++;
 			cfile = argv[i];
+		}else if( !strcmp(argv[i],"-d") ){
+			i++;
+			data_dir = argv[i];
 		}else if( !strcmp( argv[i],"-f") ){
 			i++;
 			if(argv[i] != NULL){			
@@ -85,12 +108,12 @@ getopts( int argc, char *argv[] )
 			Benchmark::setMode(Benchmark::AUTO);
 		}else if( !strcmp( argv[i],"-p") ){
 			i++;
-			pp::Vec2d pos;
+			ppogl::Vec2d pos;
 			if(argv[i] != NULL){
-				pos.x = atoi(argv[i]);
+				pos.x() = atoi(argv[i]);
 				i++;
 				if(argv[i] != NULL){
-					pos.y = atoi(argv[i]) * (-1);
+					pos.y() = atoi(argv[i]) * (-1);
 					Benchmark::setPosition(pos);
 					Benchmark::setMode(Benchmark::PAUSED);
 				}			
@@ -105,61 +128,26 @@ getopts( int argc, char *argv[] )
 			if(argv[i] != NULL){
 				Benchmark::setRaceCondition(atoi(argv[i]));
 			}
+		}else if( !strcmp( argv[i],"--multiplayer") ){
+			GameMode::exp_multiscreen=GameMode::MULTISCREEN_HORIZ;
 		}
 	}	
 }
 
-
-/* This function is called on exit */
+// this function is called on exit
 void cleanup(void)
 {
     write_config_file();
-
-    shutdown_audio();
-
-    winsys_shutdown();
-}
-
-void read_game_init_script()
-{
-	char cwd[BUFF_LEN];
-    if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-		PP_ERROR( "getcwd failed" );
-    }
-
-    if ( chdir( getparam_data_dir() ) != 0 ) {
-	/* Print a more informative warning since this is a common error */
-		PP_ERROR( "Can't find the PPRacer data "
-	    "directory.  Please check the\nvalue of `data_dir' in "
-	    "~/.ppracer/options and set it to the location where you\n"
-	    "installed the PPRacer-data files.\n\n"
-	    "Couldn't chdir to %s", getparam_data_dir() );
-    } 
-
-    if ( Tcl_EvalFile( tclInterp, GAME_INIT_SCRIPT) == TCL_ERROR ) {
-        PP_ERROR( "error evalating %s/%s: %s\n"
-		      "Please check the value of `data_dir' in ~/.ppracer/options "
-		      "and make sure it\npoints to the location of the "
-		      "latest version of the PPRacer-data files.", 
-		      getparam_data_dir(), GAME_INIT_SCRIPT, 
-		      Tcl_GetStringResult( tclInterp ) );
-    } 
-
-    PP_ASSERT( !Tcl_InterpDeleted( tclInterp ),
-		     "Tcl interpreter deleted" );
-
-    if ( chdir( cwd ) != 0 ) {
-	PP_ERROR( "couldn't chdir to %s", cwd );
-    } 
+	winsys_shutdown();
 }
 
 static
 void init_log()
 {
-    pp::Log::Instance()->setFilename("diagnostic_log.txt");
+    ppogl::Log::Instance()->setFilename("diagnostic_log.txt");
 
 	std::ostream* stream;
-	stream = pp::Log::Instance()->getStream();
+	stream = ppogl::Log::Instance()->getStream();
 	
 	if(stream==NULL){
 		return;
@@ -181,65 +169,80 @@ void init_log()
     }  
 }
 
-
-
-int main( int argc, char *argv[] )
+int
+main(int argc, char *argv[])
 {
-    try{ // used to catch all unhandled Errors and Assertions
+    try{ // used to catch all unhandled Errors and Assertions		
+	
+		// print copyright notice 
+    	std::cout << "PlanetPenguin Racer " VERSION " --  http://racer.planetpenguin.de" << std::endl;
+	    std::cout << "(c) 2004-2005 The PPRacer team" << std::endl;
+	    std::cout << "(c) 1999-2001 Jasmin F. Patry" << std::endl;
+	    std::cout << "<jfpatry@sunspirestudios.com>" << std::endl;
+	    std::cout << "PlanetPenguin Racer comes with ABSOLUTELY NO WARRANTY."<< std::endl;
+	    std::cout << "This is free software,\nand you are welcome to redistribute it under certain conditions."<< std::endl;
+	    std::cout << "See http://www.gnu.org/copyleft/gpl.html for details.\n" << std::endl;
+
+		// parse comandline options
+		getopts(argc,argv);
 		
-	/* Print copyright notice */
-    fprintf( stderr, "PPRacer " VERSION " --  http://racer.planetpenguin.de "
-	     "\n(c) 2004-2005 The PPRacer team\n"
-	     "(c) 1999-2001 Jasmin F. Patry"
-	     "<jfpatry@sunspirestudios.com>\n"
-	     "PPRacer comes with ABSOLUTELY NO WARRANTY. "
-	     "This is free software,\nand you are welcome to redistribute "
-	     "it under certain conditions.\n"
-	     "See http://www.gnu.org/copyleft/gpl.html for details.\n\n" );
+    	// seed the random number generator
+    	srand( time(NULL) );
+	
+	if(GameMode::exp_multiscreen==GameMode::MULTISCREEN_NONE){
+		GameMgr::getInstance().numPlayers = 1;
+	}else{
+		GameMgr::getInstance().numPlayers = 2;
+	}
+	
+	ppogl::Config::getInstance().init(&script,"ppconfig");
+	
+	if(cfile.empty()){
+		cfile=get_config_file_name();
+	}
+		
+	if(ppogl::os::isFile(cfile)){
+		script.doFile(cfile);
+		
+		// check whether the user set the data directory per commandline option
+		if(data_dir.empty()){
+			data_dir = PPConfig.getString("data_dir");
+		}else{
+			PPConfig.setString("data_dir",data_dir);
+		}
+		
+		PP_MESSAGE("Load config file");	
+	}else if(data_dir.empty()==false){
+		// no config file and user has set the data_dir with the commandline option
+		PPConfig.setString("data_dir",data_dir);
+	}
+	
+	if(data_dir.empty()){
+		data_dir = DATA_DIR;
+	}
+	
+	if(ppogl::os::isDirectory(data_dir)==false){
+		PP_ERROR("Unable to find data dir: " << data_dir <<"\n\tUse \"ppracer -d YOUR_DATA_DIRECTORY\"");
+	}
+	
+	if(ppogl::os::isFile(data_dir+"/config.nut")==false){
+		PP_ERROR("Unable to find needed file config.nut in the data dir: " << data_dir <<"\n\tUse \"ppracer -d YOUR_DATA_DIRECTORY\"");
+	}
+		
+	script.doFile(data_dir+"/config.nut");
 
-    /* Seed the random number generator */
-    srand( time(NULL) );
-
-
-    /*
-     * Set up the game configuration
-     */
-
-    /* Don't support multiplayer, yet... */
-    GameMgr::Instance()->numPlayers = 1;
-
-    /* Create a Tcl interpreter */
-    tclInterp = Tcl_CreateInterp();
-
-    if ( tclInterp == NULL ) {
-		PP_ERROR( "cannot create Tcl interpreter" ); 
-    }
-
-    /* Setup the configuration variables and read the ~/.ppracer/options file */
-    
-	getopts(argc,argv);
-
-	init_game_configuration();
-    read_config_file(cfile);
-
-
+	data_dir = PPConfig.getString("data_dir");
+	
     /* Setup diagnostic log if requested */
-    if ( getparam_write_diagnostic_log() ) {
+    if(PPConfig.getBool("write_diagnostic_log")){
 		init_log();
 	}
 
-    /*
-     * Setup Tcl stdout and stderr channels to point to C stdout and stderr 
-     * streams
-     */
-    setup_tcl_std_channels();
-		
     /* 
      * Initialize rendering context, create window
      */
-    winsys_init( &argc, argv, WINDOW_TITLE, WINDOW_TITLE );
-
-
+    winsys_init(WINDOW_TITLE, WINDOW_TITLE);
+	
     /* Ingore key-repeat messages */
     winsys_enable_key_repeat(false);
 
@@ -259,49 +262,52 @@ int main( int argc, char *argv[] )
     /* 
      * Load the game data and initialize game state
      */
-    register_game_config_callbacks( tclInterp );
-    register_course_load_tcl_callbacks( tclInterp );
-    register_key_frame_callbacks( tclInterp );
 
-	FogPlane::registerCallbacks( tclInterp );
-    
-	register_course_light_callbacks( tclInterp );
-    register_particle_callbacks( tclInterp );
-    register_texture_callbacks( tclInterp );
-    register_course_manager_callbacks( tclInterp );
-	register_translation_callbacks( tclInterp );
-	register_common_callbacks( tclInterp );
+    register_key_frame_callbacks();
+	Course::registerCallbacks();
+	FogPlane::registerCallbacks();
+
+	register_course_light_callbacks();
 	
-	// Setup class for translation
-	Translation::Instance()->getLanguages();
-	Translation::Instance()->load( getparam_ui_language() );
+    register_particle_callbacks();
+    register_course_manager_callbacks();
+	register_hier_callbacks();
+    register_tux_callbacks();
+	
+	// init audio	
+	ppogl::AudioMgr::getInstance().init(44100,ppogl::AudioMgr::FORMAT_16);
 
-    load_tux();
-    init_textures();
-    init_audio_data();
-    init_audio();
+	// Setup translations
+	script.doFile(data_dir+"/translations/languages.nut");	
+	script.doFile(data_dir+"/translations/"+PPConfig.getString("ui_language")+".nut");		
 
-	init_course_manager();
+	script.doFile(data_dir+"/init.nut");	
+
+	// load "cached" configuration values
+	GameConfig::update();
+
     init_joystick();
 	init_ui_snow();
 
-	/* Read the ppracer_init.tcl file */
-    read_game_init_script();
-
-    /* Placeholder name until we give players way to enter name */
+    // Placeholder name until we give players way to enter name
     players[0].name = "tux";
 	players[0].loadData();
+	
+	if(GameMode::exp_multiscreen!=GameMode::MULTISCREEN_NONE){
+	    players[1].name = "tux2";
+		players[1].loadData();
+	}
 
-    GameMode::mode = NO_MODE;
+    GameMode::mode = GameMode::NO_MODE;
 	
 	if(Benchmark::getMode()==Benchmark::NONE){
-		set_game_mode( SPLASH );
+		GameMode::setMode(GameMode::SPLASH);
 
 	}else{
-		set_game_mode( BENCHMARK );
+		GameMode::setMode(GameMode::BENCHMARK);
 	}
 	
-    GameMgr::Instance()->difficulty = DIFFICULTY_LEVEL_NORMAL;
+    GameMgr::getInstance().difficulty = DIFFICULTY_LEVEL_NORMAL;
 	
 	winsys_show_cursor( false );
 
@@ -313,12 +319,15 @@ int main( int argc, char *argv[] )
 	
     return 0;
 	
-	}catch(pp::Error &e){
-		// some derived classes (ie pp::Assertion)
-		// print an error message
-		e.printMessage();
-		
-		PP_MESSAGE("Aborting :(");	
-		exit(1);
+	}catch(ppogl::Error &e){
+		/*
+		 * It's possible that an exception is thrown outside of main.
+		 * In most cases this is a problem with the object 
+		 * destruction during program termination.
+		 * If we see the abort message (see below) we known
+		 * that the exception is thrown within main().
+		 */		
+		std::cerr << "Aborting main function :(" << std::endl;	
+		abort();
 	}
 }

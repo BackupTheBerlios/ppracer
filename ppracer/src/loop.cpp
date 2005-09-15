@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -20,10 +20,9 @@
  */
 
 #include "loop.h"
-#include "game_config.h"
 
-#include "ppgltk/ui_snow.h"
-#include "ppgltk/alg/defs.h"
+#include "ui_snow.h"
+#include "ppogl/base/defs.h"
 
 #include "SDL.h"
 
@@ -44,7 +43,7 @@
 #include "bench.h"
 
 #include "configuration.h"
-#include "graphicsconfig.h"
+#include "generalconfig.h"
 #include "videoconfig.h"
 #include "audioconfig.h"
 #include "keyboardconfig.h"
@@ -52,45 +51,62 @@
 
 #include "game_mgr.h"
 
+#include "ppogl/ui/uimgr.h"
+
+#include "winsys.h"
 
 GameMode* GameMode::currentMode = NULL;
 
-game_mode_t GameMode::mode;
-game_mode_t GameMode::prevmode;
+GameMode::Mode GameMode::mode;
+GameMode::Mode GameMode::prevmode;
 
-static game_mode_t new_mode = NO_MODE;
+int GameMode::resolutionX=0;
+int GameMode::resolutionY=0;
 
-void set_game_mode( game_mode_t mode ) 
+static GameMode::Mode new_mode = GameMode::NO_MODE;
+
+static ppogl::Vec2d cursorPos;
+static bool rightMouseButtonDown  = false;
+static bool middleMouseButtonDown = false;
+
+void
+updateDisplay()
+{
+	SDL_GL_SwapBuffers();
+}
+
+void
+GameMode::setMode( GameMode::Mode mode ) 
 {
     new_mode = mode;
 }
 
-void main_loop()
+void
+GameMode::mainLoop()
 {
-	if ( getparam_capture_mouse() ) {
-		const int w = getparam_x_resolution();
-		const int h = getparam_y_resolution();
-		pp::Vec2d pos = UIMgr.getMousePosition();
-
-		// Flip y coordinates
-		pos.y = h - pos.y;
-
-		if ( pos.x < 0 ) {
-		    pos.x = 0;
-		}
-		if ( pos.x > w-1 ) {
-		    pos.x = w-1;
-		}
-		if ( pos.y < 0 ) {
-		    pos.y = 0;
-		}
-		if ( pos.y > h-1 ) {
-		    pos.y = h-1;
-		}
-
-		winsys_warp_pointer( int(pos.x), int(pos.y) );
-    }
+	/* Grab mouse pointer
 	
+	ppogl::Vec2d pos =
+		ppogl::UIManager::getInstance().getCursorPosition();
+	
+	// Flip y coordinates
+	pos.y() = GameMode::resolutionY - pos.y();
+
+	if( pos.x() < 0 ){
+		pos.x() = 0;
+	}
+	if( pos.x() > GameMode::resolutionX-1 ){
+	    pos.x() = GameMode::resolutionX-1;
+	}
+	if( pos.y() < 0 ){
+	    pos.y() = 0;
+	}
+	if( pos.y() > GameMode::resolutionY-1 ) {
+		pos.y() = GameMode::resolutionY-1;
+	}
+	
+	winsys_warp_pointer( int(pos.x()), int(pos.y()) );
+	*/
 	if ( GameMode::mode != new_mode ) {
 		
 		if (GameMode::currentMode!=NULL){
@@ -135,8 +151,8 @@ void main_loop()
 			case EVENT_SELECT:
 				GameMode::currentMode = new EventSelect();
 				break;
-			case CONFIG_GRAPHICS:
-				GameMode::currentMode = new GraphicsConfig();
+			case CONFIG_GENERAL:
+				GameMode::currentMode = new GeneralConfig();
 				break;
 			case CONFIG_VIDEO:
 				GameMode::currentMode = new VideoConfig();
@@ -164,16 +180,20 @@ void main_loop()
 	
 		// Reset time step clock so that there isn't a sudden
 		//  jump when we start the new mode 
-		GameMgr::Instance()->resetTimeStep();
+		GameMgr::getInstance().resetTimeStep();
 	}
 	
-	GameMgr::Instance()->updateTimeStep();
+	GameMgr::getInstance().updateTimeStep();
+	
+	clear_rendering_context();	
 	
 	if ( Benchmark::getTimeStep() >0.0 ){
 		GameMode::currentMode->loop(Benchmark::getTimeStep());
 	}else{	
-		GameMode::currentMode->loop( GameMgr::Instance()->getTimeStep() );
+		GameMode::currentMode->loop( GameMgr::getInstance().getTimeStep() );
 	}
+	
+	updateDisplay();	
 }
 
 /*---------------------------------------------------------------------------*/
@@ -182,7 +202,8 @@ void main_loop()
 
   \author  jfpatry
 */
-bool is_mode_change_pending()
+bool
+GameMode::isModeChangePending()
 {
     return bool(GameMode::mode != new_mode);
 }
@@ -190,13 +211,12 @@ bool is_mode_change_pending()
 GameMode::GameMode()
 {
 }
-
 	
 void
 GameMode::drawSnow( float timeStep, bool windy )
 {
 	// check wether ui snow is 
-	if(getparam_ui_snow()){
+	if(PPConfig.getBool("ui_snow")){
 		// update and draw snow
 		update_ui_snow( timeStep, windy );
 		draw_ui_snow();
@@ -205,6 +225,13 @@ GameMode::drawSnow( float timeStep, bool windy )
 
 void loop_mouse_func (int button, int state, int x, int y)
 {
+    if( button == SDL_BUTTON_MIDDLE ){
+		middleMouseButtonDown = ( state == SDL_PRESSED );
+    }
+    if( button == SDL_BUTTON_RIGHT ){
+		rightMouseButtonDown = ( state == SDL_PRESSED );
+    }
+	
 	if(GameMode::currentMode!=NULL){
 		bool pressed = state && SDL_PRESSED;
 		if(GameMode::currentMode->mouseButtonEvent(button,x,y,pressed)) return;
@@ -213,13 +240,32 @@ void loop_mouse_func (int button, int state, int x, int y)
 		}else{
 			if(GameMode::currentMode->mouseButtonReleaseEvent(button,x,y)) return;
 		}	
-		UIMgr.mouseEvent(button,state,x,y);
-	}
+		ppogl::UIManager::getInstance().mouseButtonEvent(button,state);
+	}	
 }
 
 void loop_mouse_motion_func( int x, int y )
 {
-	UIMgr.motionEvent(x,y);
+	if( cursorPos.x() != x || cursorPos.y() != y ) {
+		// Update UI snow 
+		if(PPConfig.getBool("ui_snow")){
+			if ( rightMouseButtonDown ) {
+				make_ui_snow( cursorPos );
+				reset_ui_snow_cursor_pos( cursorPos );
+			} else if ( middleMouseButtonDown ) {
+				make_ui_snow( cursorPos );
+				push_ui_snow( cursorPos );
+			} else {
+				push_ui_snow( cursorPos );
+			}
+		}
+    }
+	cursorPos.x()=x;
+	cursorPos.y()=y;	
+	
+	// Reverse y coordinate
+    y = GameMode::resolutionY - y;
+	ppogl::UIManager::getInstance().mouseEvent(x,y);
 }
 
 void loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y)
@@ -237,6 +283,10 @@ void loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y)
 		}else{
 			if(GameMode::currentMode->keyPressEvent(key)) return;
 		}
-		UIMgr.keyboardEvent(key,mod,release);
+		ppogl::UIManager::getInstance().keyboardEvent(key,mod,release);
 	}
 }
+
+
+// multiscreen is an experimental feature
+GameMode::MultiscreenMode GameMode::exp_multiscreen = GameMode::MULTISCREEN_NONE;

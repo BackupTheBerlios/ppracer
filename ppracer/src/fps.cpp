@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ FPS::FPS()
 void
 FPS::update()
 {
-    m_time += GameMgr::Instance()->getTimeStep();
+    m_time += GameMgr::getInstance().getTimeStep();
 	m_frames++;
 	if( m_time>0.3){
 		m_fps = m_frames / m_time;

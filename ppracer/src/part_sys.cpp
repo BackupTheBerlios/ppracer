@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,12 +22,11 @@
 #include "part_sys.h"
 #include "phys_sim.h"
 #include "gl_util.h"
-#include "tcl_util.h"
 #include "course_render.h"
 #include "render_util.h"
-#include "textures.h"
 
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
+#include "ppogl/base/glwrappers.h"
 
 /* This constant is here as part of a debugging check to prevent an infinite 
    number of particles from being created */
@@ -45,7 +44,7 @@
 #define PARTICLE_SHADOW_ALPHA 0.1
 
 typedef struct _Particle {
-    pp::Vec3d pt;
+    ppogl::Vec3d pt;
     short type;
     double base_size;
     double cur_size;
@@ -53,12 +52,12 @@ typedef struct _Particle {
     double age;
     double death;
     double alpha;
-    pp::Vec3d vel;
+    ppogl::Vec3d vel;
 	GLuint particle_binding;
     struct _Particle *next;
 } Particle;
 
-static pp::Color particleColor;
+static ppogl::Color particleColor;
 
 static Particle* head = NULL;
 static int num_particles = 0;
@@ -68,7 +67,7 @@ double frand()
     return double(rand())/RAND_MAX;
 } 
 
-void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particle_binding) 
+void create_new_particles( ppogl::Vec3d loc, ppogl::Vec3d vel, int num, GLuint particle_binding) 
 {
     Particle *newp;
     int i;
@@ -83,20 +82,17 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
 
     for (i=0; i<num; i++) {
 
-        newp = reinterpret_cast<Particle*>(malloc( sizeof( Particle) )	);
-
-        if ( newp == NULL ) {
-            PP_ERROR( "out of memory" );
-        } 
+        newp = new Particle;
+		PP_CHECK_ALLOC(newp);
 
         num_particles += 1;
 
         newp->next = head;
         head = newp;
 
-        newp->pt.x = loc.x + 2.*(frand() - 0.5) * START_RADIUS;
-        newp->pt.y = loc.y;
-        newp->pt.z = loc.z + 2.*(frand() - 0.5) * START_RADIUS;
+        newp->pt.x() = loc.x() + 2.*(frand() - 0.5) * START_RADIUS;
+        newp->pt.y() = loc.y();
+        newp->pt.z() = loc.z() + 2.*(frand() - 0.5) * START_RADIUS;
 
 	newp->type = int(frand() * (4.0 - EPS));
 		
@@ -111,7 +107,7 @@ void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particl
 
 
         newp->vel =(speed*vel)+
-	    pp::Vec3d( VARIANCE_FACTOR * (frand() - 0.5) * speed, 
+	    ppogl::Vec3d( VARIANCE_FACTOR * (frand() - 0.5) * speed, 
 			 VARIANCE_FACTOR * (frand() - 0.5) * speed,
 			 VARIANCE_FACTOR * (frand() - 0.5) * speed  );
     }
@@ -129,16 +125,16 @@ void update_particles( double time_step )
 
 	(**p).pt = ( (**p).pt)+(time_step*(**p).vel );
 
-	ycoord = find_y_coord( (**p).pt.x, (**p).pt.z );
+	ycoord = find_y_coord( (**p).pt.x(), (**p).pt.z() );
 
-	if ( (**p).pt.y < ycoord - 3 ) {
+	if ( (**p).pt.y() < ycoord - 3 ) {
 	    (**p).age = (**p).death + 1;
 	} 
 
         if ( (**p).age >= (**p).death ) {
             q = *p;
             *p = q->next;
-            free(q);
+            delete q;
             num_particles -= 1;
             continue;
         } 
@@ -148,7 +144,7 @@ void update_particles( double time_step )
 	(**p).cur_size = NEW_PART_SIZE + 
 	    ( OLD_PART_SIZE - NEW_PART_SIZE ) * ( (**p).age / (**p).death );
 
-        (**p).vel.y += -EARTH_GRAV * time_step;
+        (**p).vel.y() += -EARTH_GRAV * time_step;
 
         p = &( (**p).next );
     } 
@@ -159,7 +155,7 @@ void draw_particles( Player& plyr )
     Particle *p;
     //GLuint   texture_id;
     //char *binding;
-    pp::Vec2d min_tex_coord, max_tex_coord;
+    ppogl::Vec2d min_tex_coord, max_tex_coord;
 
     set_gl_options( PARTICLES );
 
@@ -181,22 +177,22 @@ void draw_particles( Player& plyr )
         if ( p->age < 0 ) continue;
 		gl::BindTexture(GL_TEXTURE_2D, p->particle_binding);
 	if ( p->type == 0 || p->type == 1 ) {
-	    min_tex_coord.y = 0;
-	    max_tex_coord.y = 0.5;
+	    min_tex_coord.y() = 0;
+	    max_tex_coord.y() = 0.5;
 	} else {
-	    min_tex_coord.y = 0.5;
-	    max_tex_coord.y = 1.0;
+	    min_tex_coord.y() = 0.5;
+	    max_tex_coord.y() = 1.0;
 	}
 
 	if ( p->type == 0 || p->type == 3 ) {
-	    min_tex_coord.x = 0;
-	    max_tex_coord.x = 0.5;
+	    min_tex_coord.x() = 0;
+	    max_tex_coord.x() = 0.5;
 	} else {
-	    min_tex_coord.x = 0.5;
-	    max_tex_coord.x = 1.0;
+	    min_tex_coord.x() = 0.5;
+	    max_tex_coord.x() = 1.0;
 	}
 
-	gl::Color(particleColor, particleColor.a * p->alpha );
+	gl::Color(particleColor, particleColor.a() * p->alpha );
 
 	draw_billboard( plyr, p->pt, p->cur_size, p->cur_size,
 			false, min_tex_coord, max_tex_coord );
@@ -213,34 +209,48 @@ void clear_particles()
         if (p == NULL ) break;
         q=p;
         p=p->next;
-        free(q);
+        delete q;
     } 
     head = NULL;
     num_particles = 0;
 }
 
-void reset_particles() {
-	particleColor.r = 1.0;
-    particleColor.g = 1.0;
-    particleColor.b = 1.0;
-    particleColor.a = 1.0;
+void
+reset_particles()
+{
+	particleColor = ppogl::Color::white;
 } 
 
-static int particle_color_cb(ClientData cd, Tcl_Interp *ip, 
-			      int argc, CONST84 char *argv[]) 
+static int
+particle_color_cb(ppogl::Script *vm)
 {
-    double tmp_arr[4];
+    if(vm->getTop()!=1){
+		PP_WARNING("pptheme.particle_color: Invalid number of arguments");
+		return 0;
+	}
+				
+	vm->pushNull();
+	for(int i=0; i<4; i++){
+		vm->next(1);
+		particleColor.values[i]=vm->getFloat(-1);
+		vm->pop();
+	}
+	
+	return 0;
+	
+	/*
+	double tmp_arr[4];
     bool error = false;
 
     if ( argc == 2 ) {
-	/* New format */
+	// New format
 	if ( get_tcl_tuple ( ip, argv[1], tmp_arr, 4 ) == TCL_ERROR ) {
 	    error = true;
 	} else {
 		particleColor.set(tmp_arr);
 	}
     } else {
-	/* Old format */
+	// Old format 
 	if (argc < 3) {
 	    error = true;
 	} else {
@@ -270,10 +280,10 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
 		    }
 			particleColor.set(tmp_arr);
 		} else if ( strcmp( "-specular", *argv ) == 0 ) {
-		    /* Ignore */
+		    // Ignore
 		    NEXT_ARG;
 		} else if ( strcmp( "-shininess", *argv ) == 0 ) {
-		    /* Ignore */
+		    // Ignore
 		    NEXT_ARG;
 		} else {
 		    PP_WARNING( "tux_particle_color: unrecognized "
@@ -294,9 +304,15 @@ static int particle_color_cb(ClientData cd, Tcl_Interp *ip,
     }
 
     return TCL_OK;
+	*/
 }
 
-void register_particle_callbacks( Tcl_Interp *ip )
+static const struct ppogl::Script::Lib ppthemelib[]={
+	{"particle_color", particle_color_cb},
+	{NULL, NULL}
+};
+
+void register_particle_callbacks()
 {
-    Tcl_CreateCommand (ip, "tux_particle_color", particle_color_cb,  0,0);
+	script.registerLib("pptheme", ppthemelib);
 }

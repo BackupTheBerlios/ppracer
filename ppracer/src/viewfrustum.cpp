@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -20,11 +20,12 @@
  */
 
 #include "viewfrustum.h"
-#include "game_config.h"
 
-#include "ppgltk/alg/defs.h"
+#include "loop.h"
 
-#define DOT_PRODUCT( v1, v2 ) (double(v1.x * v2.x + v1.y * v2.y + v1.z * v2.z))
+#include "ppogl/base/defs.h"
+
+#define DOT_PRODUCT( v1, v2 ) (double(v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()))
 
 
 static pp::Plane frustum_planes[6];
@@ -39,18 +40,24 @@ static bool p_vertex_code_y[6];
 static bool p_vertex_code_z[6];
 
 
-void setup_view_frustum( Player& plyr, double near_dist, 
-			 double far_dist )
+void
+setup_view_frustum(Player& plyr,
+			double near_dist, double far_dist,
+			int multiscreen)
 {
-    double aspect = double(getparam_x_resolution()) /
-	getparam_y_resolution();
+    double aspect = double(GameMode::resolutionX) /
+					double(GameMode::resolutionY);
 
     int i;
-    pp::Vec3d pt;
-    pp::Vec3d origin(0., 0., 0.);
-    double half_fov = ANGLES_TO_RADIANS( getparam_fov() * 0.5 );
-    double half_fov_horiz = atan( tan( half_fov ) * aspect ); 
-
+    ppogl::Vec3d pt;
+    ppogl::Vec3d origin(0., 0., 0.);
+    double half_fov = ANGLES_TO_RADIANS( GameConfig::fov * 0.5 );
+    double half_fov_horiz = atan(tan(half_fov) * aspect); 
+	
+	if(multiscreen>=0){
+		//in multiscreen mode we have to double the horizontal aspect
+		half_fov_horiz*=2; 	
+	}
 
     /* create frustum in viewing coordinates */
 
@@ -95,13 +102,13 @@ void setup_view_frustum( Player& plyr, double near_dist,
 		p_vertex_code_z[i] = false;
 		
 		
-	if ( frustum_planes[i].nml.x > 0 ) {
+	if ( frustum_planes[i].nml.x() > 0 ) {
 		p_vertex_code_x[i] = true;
 	}
-	if ( frustum_planes[i].nml.y > 0 ) {
+	if ( frustum_planes[i].nml.y() > 0 ) {
 		p_vertex_code_y[i] = true;
 	}
-	if ( frustum_planes[i].nml.z > 0 ) {
+	if ( frustum_planes[i].nml.z() > 0 ) {
 		p_vertex_code_z[i] = true;
 	}
 
@@ -112,28 +119,28 @@ void setup_view_frustum( Player& plyr, double near_dist,
 /** View frustum clipping for AABB (axis-aligned bounding box). See
    Assarsson, Ulf and Tomas M\"oller, "Optimized View Frustum Culling
    Algorithms", unpublished, http://www.ce.chalmers.se/staff/uffe/ .  */
-clip_result_t clip_aabb_to_view_frustum( const pp::Vec3d& min, const pp::Vec3d& max )
+ClipResult clip_aabb_to_view_frustum( const ppogl::Vec3d& min, const ppogl::Vec3d& max )
 {
-    pp::Vec3d n, p;
-    clip_result_t intersect = NoClip;
+    ppogl::Vec3d n, p;
+    ClipResult intersect = NoClip;
 
     for (int i=5; i>=0; i--) {
 		p = min;
 		n = max;
 		
 		if ( p_vertex_code_x[i]) {
-		    p.x = max.x;
-		    n.x = min.x;
+		    p.x() = max.x();
+		    n.x() = min.x();
 		}
 
 		if ( p_vertex_code_y[i]) {
-		    p.y = max.y;
-		    n.y = min.y;
+		    p.y() = max.y();
+		    n.y() = min.y();
 		}
 
 		if ( p_vertex_code_z[i]) {
-		    p.z = max.z;
-		    n.z = min.z;
+		    p.z() = max.z();
+		    n.z() = min.z();
 		}
 
 		if ( DOT_PRODUCT( n, frustum_planes[i].nml ) +

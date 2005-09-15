@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,9 +21,11 @@
 
 #include "fog.h"
 #include "gl_util.h"
-#include "tcl_util.h"
+#include "gameconfig.h"
 
-#include "game_config.h"
+#include "ppogl/base/glwrappers.h"
+
+#include <iostream>
 
 
 FogPlane fogPlane;
@@ -35,14 +37,14 @@ FogPlane::reset()
     m_mode = GL_LINEAR;
     m_density = 0.005;
     m_start = 0.0;
-    m_end = getparam_forward_clip_distance();
-	m_color = pp::Color::white;
+    m_end = GameConfig::forwardClipDistance;
+	m_color = ppogl::Color::white;
 }
 
 void 
 FogPlane::setup()
 {
-    if ( !m_isOn || getparam_disable_fog() ) {
+    if(!m_isOn || PPConfig.getBool("disable_fog") ) {
 		gl::Disable(GL_FOG);
 		return;	
     }
@@ -55,124 +57,78 @@ FogPlane::setup()
     gl::Fog(GL_FOG_END, m_end);
     gl::Fog(GL_FOG_COLOR, m_color);
 
-    if ( getparam_nice_fog() ) {
-		gl::Hint(GL_FOG_HINT, GL_NICEST);
-    } else {
-		gl::Hint(GL_FOG_HINT, GL_FASTEST);
-    }
+	gl::Hint(GL_FOG_HINT, GL_NICEST);
+
 }
 
-static int fog_cb (ClientData cd, Tcl_Interp *ip, 
-		   int argc, CONST84 char *argv[]) 
+static int
+fog_cb(ppogl::Script *vm)
 {
-    double tmp_arr[4];
-    double tmp_dbl;
-    bool error = false;
-    
-    if (argc < 2) {
-		error = true;
+	int num_args = vm->getTop();
+	
+    if(num_args !=6){
+		PP_WARNING("pptheme.fog: Inavalid number of arguments");
+		return 0;
     }
 
-    NEXT_ARG;
-
-    while ( !error && argc > 0 ) {
-
-	if ( strcmp( "-on", *argv ) == 0 ) {
-	    fogPlane.setEnabled();
-	} else if ( strcmp( "-off", *argv ) == 0 ) {
-	    fogPlane.setEnabled(false);
-	} else if ( strcmp( "-mode", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-
-	    if ( strcmp( "exp", *argv ) == 0 ) {
+	// activated
+	fogPlane.setEnabled(vm->getBool(1));
+	
+	//mode 
+	if(num_args>=2){
+		std::string mode = vm->getString(2);
+			
+	    if(mode=="exp"){
 			fogPlane.setMode(GL_EXP);
-	    } else if ( strcmp( "exp2", *argv ) == 0 ) {
+	    }else if(mode=="exp2"){
 			fogPlane.setMode(GL_EXP2);
-	    } else if ( strcmp( "linear", *argv ) == 0 ) {
+	    }else if(mode=="linear"){
 			fogPlane.setMode(GL_LINEAR);
-	    } else {
-			PP_WARNING( "tux_fog: mode must be one of "
-			       "`exp', `exp2', or `linear'" );
-			error = true;
+	    }else {
+			PP_WARNING("pptheme.fog: mode must be one of "
+			       "`exp', `exp2', or `linear'");
+			return 0;
 	    }
-	} else if ( strcmp( "-density", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    	if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-	    fogPlane.setDensity(tmp_dbl);
-	} else if ( strcmp( "-start", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-	    fogPlane.setStart(tmp_dbl);
-	} else if ( strcmp( "-end", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-	    fogPlane.setEnd(tmp_dbl);
-	} else if ( strcmp( "-color", *argv ) == 0 ) 
-	{
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-		
-		pp::Color color(tmp_arr[0],tmp_arr[1],tmp_arr[2],tmp_arr[3]);
-		fogPlane.setColor(color);
-	} else {
-	    PP_WARNING( "tux_fog: unrecognized "
-			   "parameter `%s'", *argv );
+	}
+	
+	//density
+	if(num_args>=3){
+		fogPlane.setDensity(vm->getFloat(3));
 	}
 
-	NEXT_ARG;
-    }
+	//color
+	if(num_args>=4){
+		ppogl::Color color;
+		vm->pushNull();
+		for(int i=0; i<4; i++){
+			vm->next(4);
+			color.values[i]=vm->getFloat();	
+			vm->pop();
+		}
+		fogPlane.setColor(color);
+	}
+	
+	//start
+	if(num_args>=5){
+		fogPlane.setStart(vm->getFloat(5));	
+	}
+	
+	//end
+	if(num_args>=6){
+		fogPlane.setEnd(vm->getFloat(6));	
+	}
 
-    if ( error ) {
-	PP_WARNING( "error in call to tux_fog" );
-	Tcl_AppendResult(
-	    ip, 
-	    "\nUsage: tux_fog [-on|-off] "
-	    "[-mode [exp|exp2|linear]] "
-	    "[-density <value>] "
-	    "[-start <value>] "
-	    "[-end <value>] "
-	    "[-color { r g b a }] ",
-	    NULL );
-	return TCL_ERROR;
-    }
-    
-    return TCL_OK;
+    return 0;
 }
 
+static const struct ppogl::Script::Lib ppthemelib[]={
+	{"fog", fog_cb},
+	{NULL, NULL}
+};
+
+
 void
-FogPlane::registerCallbacks( Tcl_Interp *ip )
+FogPlane::registerCallbacks()
 {
-	Tcl_CreateCommand (ip, "tux_fog", fog_cb,  0,0);
+	script.registerLib("pptheme", ppthemelib);
 }

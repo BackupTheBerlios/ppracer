@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -20,137 +20,64 @@
 
 #include "game_type_select.h"
 
-#include "ppgltk/audio/audio.h"
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
 #include "game_mgr.h"
 
+#include "winsys.h"
 
 GameTypeSelect::GameTypeSelect()
+ : m_enterEventBtn(_("Enter an event")),
+   m_practiceBtn(_("Practice")),
+   m_configureBtn(_("Configuration")),
+   m_creditsBtn(_("Credits")),
+   m_quitBtn(_("Quit"))   
 {
-	pp::Vec2d pos(0,0);
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
+	
+	ppogl::Vec2d position(320,280);
+	
+	m_enterEventBtn.setPosition(position);
+	m_enterEventBtn.alignment.center();
+    m_enterEventBtn.signalClicked.Connect(ppogl::CreateSlot(this,&GameTypeSelect::eventSelect));
+	
+	position.y()-=40;
 
-    mp_enterEventBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Enter an event") );
-    mp_enterEventBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_enterEventBtn->signalClicked.Connect(pp::CreateSlot(this,&GameTypeSelect::eventSelect));
+    m_practiceBtn.setPosition(position);
+    m_practiceBtn.alignment.center();
+	m_practiceBtn.signalClicked.Connect(ppogl::CreateSlot(this,&GameTypeSelect::practice));
 
-    mp_practiceBtn = new pp::Button(pos,
-				  pp::Vec2d(300, 40),
-				  "button_label",
-				  _("Practice")	);
-    mp_practiceBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_practiceBtn->signalClicked.Connect(pp::CreateSlot(this,&GameTypeSelect::practice));
+	position.y()-=40;
+		
+	m_configureBtn.setPosition(position);
+	m_configureBtn.alignment.center();
+    m_configureBtn.signalClicked.Connect(ppogl::CreateSlot(this,&GameTypeSelect::configuration));
 
-	mp_configureBtn = new pp::Button(pos,
-				  pp::Vec2d(300, 40),
-				  "button_label",
-				  _("Configuration") );
-    mp_configureBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_configureBtn->signalClicked.Connect(pp::CreateSlot(this,&GameTypeSelect::configuration));
+	position.y()-=40;
+	
+	m_creditsBtn.setPosition(position);
+	m_creditsBtn.alignment.center();
+	m_creditsBtn.signalClicked.Connect(ppogl::CreateSlot(this,&GameTypeSelect::credits));
+	
+	position.y()-=40;
 
-	mp_creditsBtn = new pp::Button(pos,
-				  pp::Vec2d(300, 40),
-				  "button_label",
-				  _("Credits") );
-    mp_creditsBtn->setHilitFontBinding( "button_label_hilit" );
-	mp_creditsBtn->signalClicked.Connect(pp::CreateSlot(this,&GameTypeSelect::credits));
+	m_quitBtn.setPosition(position);
+	m_quitBtn.alignment.center();
+    m_quitBtn.signalClicked.Connect(ppogl::CreateSlot(this,&GameTypeSelect::quit));
 
-	mp_quitBtn = new pp::Button(pos,
-			      pp::Vec2d(300, 40),
-			      "button_label",
-			      _("Quit") );
-
-	mp_quitBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_quitBtn->signalClicked.Connect(pp::CreateSlot(this,&GameTypeSelect::quit));
-
-    play_music( "start_screen" );	
-}
-
-GameTypeSelect::~GameTypeSelect()
-{
-	delete mp_enterEventBtn;
-	delete mp_practiceBtn;
-	delete mp_configureBtn;
-	delete mp_creditsBtn;
-	delete mp_quitBtn;	
+    ppogl::AudioMgr::getInstance().playMusic("start_screen");	
 }
 
 void
 GameTypeSelect::loop(float timeStep)
 {
-	update_audio();
-
     set_gl_options( GUI );
-
-    clear_rendering_context();
-
-    setWidgetPositions();
-
-    UIMgr.setupDisplay();
 
 	drawSnow(timeStep);
 
-    theme.drawMenuDecorations();
-
-    UIMgr.draw();
-	
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-
-    winsys_swap_buffers();
-}
-
-
-void
-GameTypeSelect::setWidgetPositions()
-{
-    pp::Button* button_list[] = { mp_enterEventBtn,
-				  mp_practiceBtn,
-				  mp_configureBtn,
-				  mp_creditsBtn,
-				  mp_quitBtn };
-    int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
-    int box_height;
-    int box_max_y;
-    int top_y;
-    int bottom_y;
-    int num_buttons = sizeof( button_list ) / sizeof( button_list[0] );
-    int i;
-    int tot_button_height = 0;
-    int button_sep =0;
-    int cur_y_pos;
-
-    box_height = 210;
-    box_max_y = h - 128;
-
-    bottom_y = int(0.4*h - box_height/2);
-
-    if ( bottom_y + box_height > box_max_y ) {
-	bottom_y = box_max_y - box_height;
-    }
-
-    top_y = bottom_y + box_height;
-
-    for (i=0; i<num_buttons; i++) {
-		tot_button_height += int(button_list[i]->getHeight());
-    }
-
-    if ( num_buttons > 1 ) {
-	button_sep = ( top_y - bottom_y - tot_button_height ) / 
-	    ( num_buttons - 1 );
-	button_sep = MAX( 0, button_sep );
-    }
-
-    cur_y_pos = top_y;
-    for (i=0; i<num_buttons; i++) {
-	cur_y_pos -= int(button_list[i]->getHeight());
-	button_list[i]->setPosition(pp::Vec2d( w/2.0 - button_list[i]->getWidth()/2.0,
-			  cur_y_pos ) );
-	cur_y_pos -= button_sep;
-    }
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);	
+	reshape(resolutionX, resolutionY);
 }
 
 bool
@@ -163,13 +90,13 @@ GameTypeSelect::keyPressEvent(SDLKey key)
 	    	return true;;
 		case 'e':
 		case 13: // Enter
-			mp_enterEventBtn->simulateMouseClick();
+			eventSelect();
 	    	return true;
 		case 'p':
-			mp_practiceBtn->simulateMouseClick();
+			practice();
 			return true;
 		case 'c':
-			mp_creditsBtn->simulateMouseClick();
+			credits();
 			return true;
 		default:
 			return false;
@@ -179,33 +106,27 @@ GameTypeSelect::keyPressEvent(SDLKey key)
 void
 GameTypeSelect::eventSelect()
 {
-	GameMgr::Instance()->reset(GameMgr::EVENT);
-
-	set_game_mode( EVENT_SELECT );
-	UIMgr.setDirty();
+	GameMgr::getInstance().reset(GameMgr::EVENT);
+	setMode( EVENT_SELECT );
 }
 
 void
 GameTypeSelect::credits()
 {
-	set_game_mode( CREDITS );
-	UIMgr.setDirty();
+	setMode( CREDITS );
 }
 
 void
 GameTypeSelect::practice()
 {
-	GameMgr::Instance()->reset(GameMgr::PRACTICING);
-
-	set_game_mode( RACE_SELECT );
-	UIMgr.setDirty();
+	GameMgr::getInstance().reset(GameMgr::PRACTICING);
+	setMode( RACE_SELECT );
 }
 
 void
 GameTypeSelect::configuration()
 {
-	set_game_mode( CONFIGURATION );
-	UIMgr.setDirty();
+	setMode( CONFIGURATION );
 }
 
 void

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,15 +21,14 @@
 
 #include "hier.h"
 #include "hier_util.h"
-#include "game_config.h"
 
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
-/*
- * These hash tables map from names to node pointers and material data, resp.
- */
-Tcl_HashTable g_hier_node_table;
-Tcl_HashTable g_hier_material_table;
+#include <map>
+#include <string>
+
+std::map<std::string, SceneNode *> nodes;
+std::map<std::string, Material*> materials;
 
 
 /*
@@ -38,9 +37,9 @@ Tcl_HashTable g_hier_material_table;
 
 
 /* Default Material */
-material_t g_hier_default_material ={ 
-				pp::Color(0., 0., 1.),  /* diffuse color  = blue */
-				pp::Color(0., 0., 0.),  /* specular color = black */
+Material g_hier_default_material ={ 
+				ppogl::Color(0., 0., 1.),  /* diffuse color  = blue */
+				ppogl::Color(0., 0., 0.),  /* specular color = black */
 				0.0              /* specular exp. = 0.0 */
 			};
 /*
@@ -49,101 +48,80 @@ material_t g_hier_default_material ={
 
 /* Add a new node name to the node name hash table.
    node_name contains the child's name only. */
-static int 
-add_scene_node( const char *parent_name, const char *node_name, scene_node_t *node ) 
+static bool
+add_scene_node( std::string& parent_name, std::string& node_name, SceneNode *node ) 
 {
-    Tcl_HashEntry *entry;
-    int newEntry;
-    char new_name[1024];
-
-    /* Add the current node to the hash table 
-    */
-    if (0 == strcmp(parent_name,":")) {
-        sprintf(new_name, ":%s", node_name);
+    //int newEntry;
+	
+    // Add the current node to the hash table 
+	std::string new_name;
+	
+    if(parent_name==":"){
+        new_name = ":" + node_name;
     } else {
-        sprintf(new_name, "%s:%s", parent_name, node_name);
+        new_name = parent_name + ":" + node_name;
     }
-
-    entry = Tcl_CreateHashEntry(&g_hier_node_table,new_name,&newEntry);
-
-    if (newEntry) { 
-        Tcl_SetHashValue(entry, node);
-    } else {
-        return TCL_ERROR;
-    }
-
-    return TCL_OK;
+	
+	nodes[new_name]=node;
+	
+    return true;
 }
 
 /* Get node pointer from node name */
-int 
-get_scene_node( const char *node_name, scene_node_t **node ) 
+bool
+get_scene_node(std::string& node_name, SceneNode **node ) 
 {
-    Tcl_HashEntry *entry;
-  
-    entry = Tcl_FindHashEntry(&g_hier_node_table, node_name);
-    if (0 == entry) {
-        if(0 == strcmp(node_name, ":")) {
-            /* the root has been specified 
-             */
+	std::map<std::string, SceneNode *>::iterator it;
+	
+	if((it=nodes.find(node_name))!=nodes.end()){
+		*node = (*it).second;
+	}else{
+		if(node_name==":"){
+            //the root has been specified
             *node = 0;
-        } else {
-            return TCL_ERROR;
-        }
-    } else {
-        *node = reinterpret_cast<scene_node_t*>(Tcl_GetHashValue(entry));
-    }
-
-    return TCL_OK;
+        }else{	
+			return false;
+		}
+	}
+	return true;
 }
 
 /* Add a new material name to the material name hash table. */
-int 
-add_material( const char *mat_name, material_t *mat ) 
+void
+add_material(std::string& mat_name, Material *mat)
 {
-    Tcl_HashEntry *entry;
-    int newEntry;
-
-    entry = Tcl_CreateHashEntry(&g_hier_material_table,mat_name,&newEntry);
-    if (newEntry) {
-        Tcl_SetHashValue(entry, mat);
-    } else {
-        return TCL_ERROR;
-    }
-
-    return TCL_OK;
+    materials[mat_name]=mat;
 }
 
 /* Get material pointer from material name */
-int 
-get_material( const char *mat_name, material_t **mat ) 
+bool 
+get_material(std::string& mat_name, Material **mat ) 
 {
-    Tcl_HashEntry *entry;
+    std::map<std::string, Material*>::iterator it;
 
-    entry = Tcl_FindHashEntry(&g_hier_material_table, mat_name);
-    if (0 == entry) {
-        return TCL_ERROR;
-    } else {
-        *mat = reinterpret_cast<material_t*>(Tcl_GetHashValue(entry));
-    }
-
-    return TCL_OK;
+	if((it=materials.find(mat_name))!=materials.end()){
+		*mat = (*it).second;
+		return true;
+	}else{
+		return false;
+	}
 }
 
 /* Creates a new node, add the node to the hash table, and inserts the
    node into the DAG.  Default values are given to all fields except
    the type-specific ones (geom, param).  */
-char* create_scene_node( const char *parent_name, const char *child_name, 
-			 scene_node_t **node )
+std::string create_scene_node(std::string& parent_name, std::string& child_name, 
+			 SceneNode **node )
 {
-    scene_node_t *parent, *child;
-    if ( get_scene_node( parent_name, &parent ) != TCL_OK ) {
+    SceneNode *parent, *child;
+		
+    if(get_scene_node(parent_name, &parent) != true){
         return "Parent node does not exist";
-    } 
+    }
 
-    /* Create node */
-    child = reinterpret_cast<scene_node_t *>(malloc( sizeof( scene_node_t ) ));
-
+    child = new SceneNode;
+	PP_CHECK_ALLOC(child);
+	
     /* Initialize node */
     child->parent = parent;
     child->next = NULL;
@@ -154,10 +132,10 @@ char* create_scene_node( const char *parent_name, const char *child_name,
     child->trans.makeIdentity();
     child->invtrans.makeIdentity();
 
-    if ( add_scene_node( parent_name, child_name, child ) != TCL_OK ) {
-        free( child );
+    if(add_scene_node(parent_name, child_name, child ) != true){
+        delete child;
         return "Child already exists";
-    } 
+    }
 
 
     /* Add node to parent's children */
@@ -172,31 +150,31 @@ char* create_scene_node( const char *parent_name, const char *child_name,
     } 
 
     *node = child;
-    return NULL;
+    return "";
 } 
 
-char*
-reset_scene_node( char *node ) 
+std::string
+reset_scene_node( std::string& node ) 
 {  
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node( node, &nodePtr )!= true){
         return "No such node";
     } 
 
     nodePtr->trans.makeIdentity();
     nodePtr->invtrans.makeIdentity();
 
-    return NULL;
+    return "";
 }
 
-char*
-rotate_scene_node( const char *node, char axis, double angle ) 
+std::string 
+rotate_scene_node(std::string& node, char axis, double angle ) 
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
     pp::Matrix rotMatrix;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if (get_scene_node( node, &nodePtr ) != true){
         return "No such node";
     } 
 
@@ -206,159 +184,156 @@ rotate_scene_node( const char *node, char axis, double angle )
     rotMatrix.makeRotation( -angle, axis );
     nodePtr->invtrans=rotMatrix*nodePtr->invtrans;
 
-    return NULL;
+    return "";
 }
 
-char*
-translate_scene_node( const char *node, pp::Vec3d vec ) 
+std::string 
+translate_scene_node(std::string& node, ppogl::Vec3d vec ) 
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
     pp::Matrix xlateMatrix;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node( node, &nodePtr ) != true){
         return "No such node";
     } 
 
-    xlateMatrix.makeTranslation( vec.x, vec.y, vec.z );
+    xlateMatrix.makeTranslation( vec.x(), vec.y(), vec.z() );
 	nodePtr->trans=nodePtr->trans*xlateMatrix;
 	
-    xlateMatrix.makeTranslation( -vec.x, -vec.y, -vec.z );
+    xlateMatrix.makeTranslation( -vec.x(), -vec.y(), -vec.z() );
     nodePtr->invtrans=xlateMatrix*nodePtr->invtrans;
 
-    return NULL;
+    return "";
 }
 
-char*
-scale_scene_node( const char *node, pp::Vec3d center, double factor[3] ) 
+std::string 
+scale_scene_node(std::string& node, ppogl::Vec3d center, ppogl::Vec3d factor) 
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
     pp::Matrix matrix;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node( node, &nodePtr ) != true){
         return "No such node";
     } 
 
-    matrix.makeTranslation( -center.x, -center.y, -center.z );
+    matrix.makeTranslation( -center.x(), -center.y(), -center.z() );
     nodePtr->trans=nodePtr->trans*matrix;
 	
-    matrix.makeTranslation( center.x, center.y, center.z );
+    matrix.makeTranslation( center.x(), center.y(), center.z() );
     nodePtr->invtrans=matrix*nodePtr->invtrans;
 
-    matrix.makeScaling( factor[0], factor[1], factor[2] );
+    matrix.makeScaling( factor.values[0], factor.values[1], factor.values[2] );
     nodePtr->trans=nodePtr->trans*matrix;
 	
-    matrix.makeScaling( 1./factor[0], 1./factor[1], 1./factor[2] );
+    matrix.makeScaling( 1./factor.values[0], 1./factor.values[1], 1./factor.values[2] );
     nodePtr->invtrans=matrix*nodePtr->invtrans;
 
-    matrix.makeTranslation( center.x, center.y, center.z );
+    matrix.makeTranslation( center.x(), center.y(), center.z() );
     nodePtr->trans=nodePtr->trans*matrix;
 	
-    matrix.makeTranslation( -center.x, -center.y, -center.z );
+    matrix.makeTranslation( -center.x(), -center.y(), -center.z() );
     nodePtr->invtrans=matrix*nodePtr->invtrans;
 
-    return NULL;
+    return "";
 }
 
-char*
-transform_scene_node( char *node, pp::Matrix mat, pp::Matrix invmat ) 
+std::string 
+transform_scene_node(std::string& node, pp::Matrix mat, pp::Matrix invmat ) 
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node( node, &nodePtr ) != true){
         return "No such node";
     } 
 
     nodePtr->trans=nodePtr->trans*mat;
     nodePtr->invtrans=invmat*nodePtr->invtrans;
 
-    return NULL;
+    return "";
 }
 
-char*
-set_scene_node_material( const char *node, const char *mat ) 
+std::string 
+set_scene_node_material(std::string& node, std::string& mat) 
 {
-    material_t *matPtr;
-    scene_node_t *nodePtr;
+    Material *matPtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node(node, &nodePtr) != true){
         return "No such node";
-    } 
+    }
 
-    if ( get_material( mat, &matPtr ) != TCL_OK ) {
+    if(get_material( mat, &matPtr ) != true){
         return "No such material";
     } 
 
     nodePtr->mat = matPtr;
 
-    return NULL;
+    return "";
 }
 
-char*
-set_scene_node_shadow_state( const char *node, const char *state ) 
+std::string 
+set_scene_node_shadow_state(std::string& node, std::string& state) 
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node(node, &nodePtr) != true){
         return "No such node";
     } 
 
-    if ( strcmp( state, "off" ) == 0 ) {
-	nodePtr->render_shadow = false;
-    } else if ( strcmp ( state, "on" ) == 0 ) {
-	nodePtr->render_shadow = true;
+    if(state=="off"){
+		nodePtr->render_shadow = false;
+    }else if(state=="on"){
+		nodePtr->render_shadow = true;
     } else {
-	return "Shadow state must be 'on' or 'off'";
+		return "Shadow state must be 'on' or 'off'";
     }
 
-    return NULL;
+    return "";
 }
 
-char*
-set_scene_node_eye( const char *node, const char *which_eye )
+std::string 
+set_scene_node_eye(std::string& node, std::string& which_eye )
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
+    if(get_scene_node(node, &nodePtr) != true){
         return "No such node";
     } 
 
-    if ( strcmp( which_eye, "right" ) == 0 ) {
-	nodePtr->eye = true;
-	nodePtr->which_eye = TuxRightEye;
-    } else if ( strcmp ( which_eye, "left" ) == 0 ) {
-	nodePtr->eye = true;
-	nodePtr->which_eye = TuxLeftEye;
-    } else {
-	return "'eye' must be right or left";
+    if (which_eye=="right" ){
+		nodePtr->eye = true;
+		nodePtr->which_eye = TuxRightEye;
+    }else if(which_eye == "left"){
+		nodePtr->eye = true;
+		nodePtr->which_eye = TuxLeftEye;
+    }else{
+		return "'eye' must be right or left";
     }
 
-    return NULL;
+    return "";
 }
 
-char*
-create_tranform_node( const char *parent_name, const char *child_name ) 
+std::string 
+create_tranform_node(std::string& parent_name, std::string& child_name ) 
 {
-    scene_node_t *node;
-    char *msg;
-
-    msg = create_scene_node(parent_name, child_name, &node);
-    if ( msg != NULL ) {
+    SceneNode *node;
+    std::string msg = create_scene_node(parent_name, child_name, &node);
+    if (!msg.empty()){
         return msg;
     } 
 
     node->geom = Empty;
 
-    return NULL;
+    return msg;
 }
 
-char*
-create_sphere_node( const char *parent_name, const char *child_name, double resolution ) 
+std::string
+create_sphere_node(std::string& parent_name, std::string& child_name, double resolution ) 
 {
-    scene_node_t *node;
-    char *msg;
+    SceneNode *node;
 
-    msg = create_scene_node(parent_name, child_name, &node);
-    if ( msg != NULL ) {
+    std::string msg = create_scene_node(parent_name, child_name, &node);
+    if(!msg.empty()){
         return msg;
     } 
 
@@ -367,82 +342,77 @@ create_sphere_node( const char *parent_name, const char *child_name, double reso
     node->param.sphere.divisions = MIN( 
 	MAX_SPHERE_DIVISIONS, MAX( 
 	    MIN_SPHERE_DIVISIONS, 
-	    ROUND_TO_NEAREST( getparam_tux_sphere_divisions() * resolution ) 
+	    ROUND_TO_NEAREST(PPConfig.getInt("tux_sphere_divisions") * resolution ) 
 	    ) );
 
-    return NULL;
+    return msg;
 }
 
-char*
-create_material( const char *mat, pp::Color diffuse, 
-		 pp::Color specular, double specular_exp ) 
+std::string 
+create_material(std::string& mat, ppogl::Color diffuse, 
+		 ppogl::Color specular, double specular_exp ) 
 {
-    material_t *matPtr;
+    Material *matPtr;
 
-    matPtr = reinterpret_cast<material_t *>(malloc( sizeof( material_t ) ));
+    matPtr = new Material;
+	PP_CHECK_ALLOC(matPtr);
+		
+    matPtr->diffuse.r() = diffuse.r();
+    matPtr->diffuse.g() = diffuse.g();
+    matPtr->diffuse.b() = diffuse.b();
+    matPtr->diffuse.a() = 1.0;
 
-    matPtr->diffuse.r = diffuse.r;
-    matPtr->diffuse.g = diffuse.g;
-    matPtr->diffuse.b = diffuse.b;
-    matPtr->diffuse.a = 1.0;
-
-    matPtr->specular.r = specular.r;
-    matPtr->specular.g = specular.g;
-    matPtr->specular.b = specular.b;
-    matPtr->specular.a = 1.0;
+    matPtr->specular.r() = specular.r();
+    matPtr->specular.g() = specular.g();
+    matPtr->specular.b() = specular.b();
+    matPtr->specular.a() = 1.0;
 
     matPtr->specular_exp = specular_exp;
 
-    if ( add_material( mat, matPtr ) != TCL_OK ) {
-        free( matPtr );
-        return "Material already exists";
-    } 
+	add_material( mat, matPtr );
 
-    return NULL;
+    return "";
 }
 
 void initialize_scene_graph() 
 {
     /* Initialize state */
 
-    g_hier_default_material.diffuse.r = 0.0;
-    g_hier_default_material.diffuse.g = 0.0;
-    g_hier_default_material.diffuse.b = 1.0;
-    g_hier_default_material.diffuse.a = 1.0;
+    g_hier_default_material.diffuse.r() = 0.0;
+    g_hier_default_material.diffuse.g() = 0.0;
+    g_hier_default_material.diffuse.b() = 1.0;
+    g_hier_default_material.diffuse.a() = 1.0;
 
-    g_hier_default_material.specular.r = 0.0;
-    g_hier_default_material.specular.g = 0.0;
-    g_hier_default_material.specular.b = 0.0;
-    g_hier_default_material.specular.a = 1.0;
+    g_hier_default_material.specular.r() = 0.0;
+    g_hier_default_material.specular.g() = 0.0;
+    g_hier_default_material.specular.b() = 0.0;
+    g_hier_default_material.specular.a() = 1.0;
 
     g_hier_default_material.specular_exp = 0.0;
-
-    Tcl_InitHashTable(&g_hier_node_table,TCL_STRING_KEYS);
-    Tcl_InitHashTable(&g_hier_material_table,TCL_STRING_KEYS);
 }
 
-void draw_scene_graph( char *node )
+void draw_scene_graph(std::string& node)
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
-        PP_ERROR( "draw_scene_graph: No such node `%s'", node );
+    if(get_scene_node( node, &nodePtr ) != true){
+        PP_ERROR( "draw_scene_graph: No such node: " << node);
     } 
 
     traverse_dag( nodePtr, &g_hier_default_material );
     
 } 
 
-bool collide( char *node, pp::Polyhedron ph )
+bool collide(std::string& node, ppogl::Polyhedron ph )
 {
-    scene_node_t *nodePtr;
+    SceneNode *nodePtr;
     pp::Matrix mat, invmat;
 
     mat.makeIdentity();
     invmat.makeIdentity();
 
-    if ( get_scene_node( node, &nodePtr ) != TCL_OK ) {
-        PP_ERROR( "draw_scene_graph: No such node `%s'", node );
+    if(get_scene_node(node, &nodePtr) != true){
+        PP_ERROR( "draw_scene_graph: No such node: " << node );
     } 
 
     return check_polyhedron_collision_with_dag( nodePtr, mat, invmat, ph );

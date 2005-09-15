@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,8 +21,7 @@
 
 #include "racing.h"
 
-#include "ppgltk/audio/audio.h"
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
 #include "keyframe.h"
 #include "course_render.h"
@@ -38,20 +37,15 @@
 #include "screenshot.h"
 #include "fog.h"
 #include "viewfrustum.h"
-#include "track_marks.h"
 #include "hud.h"
 #include "joystick.h"
+#include "track_marks.h"
 #include "snow.h"
-#include "game_config.h"
 #include "winsys.h"
 #include "lights.h"
 
-
-#include "game_mgr.h"
 #include "bench.h"
-
-#include "ppgltk/ppgltk.h"
-
+#include "game_mgr.h"
 
 /* Time constant for automatic steering centering (s) */
 #define TURN_DECAY_TIME_CONSTANT 0.5
@@ -67,67 +61,68 @@
 /* If too high off the ground, tux flaps instead of jumping */
 #define JUMP_MAX_START_HEIGHT 0.30
 
-extern terrain_tex_t terrain_texture[NUM_TERRAIN_TYPES];
+extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
+
+Racing::States::States()
+ : chargeStartTime(0),
+   lastTerrain(0),
+   rightTurn(false),
+   leftTurn(false),
+   trickModifier(false),
+   paddling(false),
+   charging(false),
+   braking(false)
+{
+}
 
 Racing::Racing()
 {
-	m_rightTurn = false;
-	m_leftTurn = false;
-	m_trickModifier = false;
-	m_paddling = false;
-	m_charging = false;
-	m_braking = false;
-	
     // Initialize view
-    if ( getparam_view_mode() < 0 || 
-		getparam_view_mode() >= NUM_VIEW_MODES ) 
+    int viewmode = PPConfig.getInt("view_mode");
+		
+	if( viewmode<0 || viewmode>=NUM_VIEW_MODES ) 
     {
-		setparam_view_mode( ABOVE );
-    }
-    set_view_mode( players[0], static_cast<view_mode_t>(getparam_view_mode()) );
-
-    // We need to reset controls here since callbacks won't have been
-    //   called in paused mode. This results in duplication between this
-    //   code and init_physical_simulation.  Oh well. 
-
-    players[0].control.turn_fact = 0.0;
-    players[0].control.turn_animation = 0.0;
-    players[0].control.is_braking = false;
-    players[0].control.is_paddling = false;
-    players[0].control.jumping = false;
-    players[0].control.jump_charging = false;
-	players[0].max_speed = 0;
-
-    // Set last_terrain to a value not used below
-    m_lastTerrain = 0;
-    
-    if ( GameMode::prevmode != PAUSED ) {
+		PPConfig.setInt("view_mode", ABOVE);
+    }	
+	
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
+		set_view_mode(players[i], static_cast<ViewMode>(viewmode));
+		
+		// We need to reset controls here since callbacks won't have been
+		// called in paused mode. This results in duplication between this
+		// code and init_physical_simulation.  Oh well. 
+		players[i].control.turn_fact = 0.0;
+		players[i].control.turn_animation = 0.0;
+		players[i].control.is_braking = false;
+		players[i].control.is_paddling = false;
+		players[i].control.jumping = false;
+		players[i].control.jump_charging = false;
+		players[i].max_speed = 0;
+		
+		init_snow(players[i].view.pos);
+	}
+   
+    if(GameMode::prevmode != PAUSED){
 		init_physical_simulation();
     }
 
-    GameMgr::Instance()->abortRace(false);
-	
-	init_snow(players[0].view.pos);
-		
-    play_music( "racing" );	
+    GameMgr::getInstance().abortRace(false);
+			
+    ppogl::AudioMgr::getInstance().playMusic("racing");	
 }
-
 
 Racing::~Racing()
 {
-	//todo: stop all sound which are specified by the used theme
-	halt_sound( "flying_sound" );
-    halt_sound( "rock_sound" );
-    halt_sound( "ice_sound" );
-    halt_sound( "snow_sound" );
+	ppogl::AudioMgr::getInstance().stopAllSounds();
     break_track_marks();
 }
 
 void
-Racing::loop(float timeStep)
+Racing::prePlayer(int plyr, float timestep)
 {
-	int width, height;
+	Player& player=players[plyr];
+	
     bool joy_left_turn = false;
     bool joy_right_turn = false;
     double joy_turn_fact = 0.0;
@@ -136,38 +131,27 @@ Racing::loop(float timeStep)
     bool joy_tricks = false;
     bool joy_charging = false;
     bool airborne;
-    pp::Vec3d dir;
+    ppogl::Vec3d dir;
     float speed;
     float terrain_weights[NUM_TERRAIN_TYPES];
     int new_terrain = 0;
     int slide_volume;
 	unsigned int i;
 
-	if (Benchmark::getMode() == Benchmark::AUTO){
-		m_paddling = true;
-	}	
+	if(Benchmark::getMode() == Benchmark::AUTO){
+		m_state[plyr].paddling = true;
+	}
 	
-    dir = players[0].vel;
+    dir = player.vel;
     speed = dir.normalize();
 	
 	//set max_speed
-	if (speed > players[0].max_speed) players[0].max_speed=int(speed);
+	if (speed > player.max_speed) player.max_speed=int(speed);
 
 	
-    airborne = ( players[0].pos.y > ( find_y_coord(players[0].pos.x, 
-						       players[0].pos.z) + 
+    airborne = ( player.pos.y() > ( find_y_coord(players[0].pos.x(), 
+						       player.pos.z()) + 
 					  JUMP_MAX_START_HEIGHT ) );
-
-    width = getparam_x_resolution();
-    height = getparam_y_resolution();
-
-    fpsCounter.update();
-
-    update_audio();
-
-    clear_rendering_context();
-
-    fogPlane.setup();
 
     // Joystick
 
@@ -188,85 +172,85 @@ Racing::loop(float timeStep)
 	    joy_turn_fact = joy_x;
 	}
 
-	if ( getparam_joystick_brake_button() >= 0 ) {
+	if(PPConfig.getInt("joystick_brake_button") >= 0 ) {
 	    joy_braking = 
-		is_joystick_button_down( getparam_joystick_brake_button() );
+		is_joystick_button_down(PPConfig.getInt("joystick_brake_button"));
 	} 
-	if ( !joy_braking ) {
+	if( !joy_braking ) {
 	    joy_braking = ( joy_y > 0.5 );
 	}
 
-	if ( getparam_joystick_paddle_button() >= 0 ) {
+	if(PPConfig.getInt("joystick_paddle_button") >= 0 ) {
 	    joy_paddling = 
-		is_joystick_button_down( getparam_joystick_paddle_button() );
+		is_joystick_button_down(PPConfig.getInt("joystick_paddle_button"));
 	}
 	if ( !joy_paddling ) {
 	    joy_paddling = ( joy_y < -0.5 );
 	}
 
-	if ( getparam_joystick_jump_button() >= 0 ) {
+	if (PPConfig.getInt("joystick_jump_button") >= 0 ) {
 	    joy_charging = 
-		is_joystick_button_down( getparam_joystick_jump_button() );
+		is_joystick_button_down(PPConfig.getInt("joystick_jump_button"));
 	}
 
-	if ( getparam_joystick_trick_button() >= 0 ) {
+	if (PPConfig.getInt("joystick_trick_button") >= 0 ) {
 	    joy_tricks = 
-		is_joystick_button_down( getparam_joystick_trick_button() );
+		is_joystick_button_down(PPConfig.getInt("joystick_trick_button"));
 	}
     }
 
     // Update braking 
-    players[0].control.is_braking = ( m_braking || joy_braking );
+    players[0].control.is_braking = ( m_state[plyr].braking || joy_braking );
 
     if ( airborne ) {
 	new_terrain = (1<<4);
 
 	// Tricks
-	if ( m_trickModifier || joy_tricks ) {
-	    if ( m_leftTurn || joy_left_turn ) {
-		players[0].control.barrel_roll_left = true;
+	if ( m_state[plyr].trickModifier || joy_tricks ) {
+	    if ( m_state[plyr].leftTurn || joy_left_turn ) {
+		player.control.barrel_roll_left = true;
 	    }
-	    if ( m_rightTurn || joy_right_turn ) {
-		players[0].control.barrel_roll_right = true;
+	    if ( m_state[plyr].rightTurn || joy_right_turn ) {
+		player.control.barrel_roll_right = true;
 	    }
-	    if ( m_paddling || joy_paddling ) {
-		players[0].control.front_flip = true;
+	    if ( m_state[plyr].paddling || joy_paddling ) {
+		player.control.front_flip = true;
 	    }
-	    if ( players[0].control.is_braking ) {
-		players[0].control.back_flip = true;
+	    if ( player.control.is_braking ) {
+		player.control.back_flip = true;
 	    }
 	}
 
 		for(i=0;i<num_terrains;i++){
 			if ( !terrain_texture[i].sound.empty() && terrain_texture[i].soundactive==true) {
-				halt_sound( terrain_texture[i].sound.c_str() );
+				ppogl::AudioMgr::getInstance().stopSound(terrain_texture[i].sound);
 				terrain_texture[i].soundactive=false;
 			}
 		}
 		
     } else {
 
-	get_surface_type(players[0].pos.x, players[0].pos.z, terrain_weights);
+	get_surface_type(player.pos.x(), player.pos.z(), terrain_weights);
 	
 
     //Play sliding sound
 		
-		slide_volume = int(MIN( (((pow(players[0].control.turn_fact, 2)*128)) +
-			 (players[0].control.is_braking?128:0) +
-			 (players[0].control.jumping?128:0) +
+		slide_volume = int(MIN( (((pow(player.control.turn_fact, 2)*128)) +
+			 (player.control.is_braking?128:0) +
+			 (player.control.jumping?128:0) +
 			 20) *
 			(speed/10), 128 ));
 		
 		for(i=0;i<num_terrains;i++){
 			if ( !terrain_texture[i].sound.empty() ) {
 				if (terrain_weights[i] > 0 ){
-					set_sound_volume(terrain_texture[i].sound.c_str(), int(slide_volume * terrain_weights[i]));
+					//set_sound_volume(terrain_texture[i].sound, int(slide_volume * terrain_weights[i]));
 					if (terrain_texture[i].soundactive==false){
-						play_sound(terrain_texture[i].sound.c_str() , -1 );
+						ppogl::AudioMgr::getInstance().playSound(terrain_texture[i].sound);
 						terrain_texture[i].soundactive=true;
 					}
 				} else if (terrain_texture[i].soundactive==true){
-					halt_sound( terrain_texture[i].sound.c_str() );
+					ppogl::AudioMgr::getInstance().stopSound(terrain_texture[i].sound);
 					terrain_texture[i].soundactive=false;
 				}
 			}
@@ -277,182 +261,165 @@ Racing::loop(float timeStep)
 
     // Jumping
 
-    calcJumpAmt( timeStep );
+    calcJumpAmt(plyr);
 
-    if ( ( m_charging || joy_charging ) && 
-	 !players[0].control.jump_charging && !players[0].control.jumping ) 
+    if ( ( m_state[plyr].charging || joy_charging ) && 
+	 !player.control.jump_charging && !player.control.jumping ) 
     {
-		players[0].control.jump_charging = true;
-		m_chargeStartTime = GameMgr::Instance()->time;
+		player.control.jump_charging = true;
+		m_state[plyr].chargeStartTime = GameMgr::getInstance().time;
     }
 
-    if ( ( !m_charging && !joy_charging ) && players[0].control.jump_charging ) {
-		players[0].control.jump_charging = false;
-		players[0].control.begin_jump = true;
+    if ( ( !m_state[plyr].charging && !joy_charging ) && player.control.jump_charging ) {
+		player.control.jump_charging = false;
+		player.control.begin_jump = true;
     }
-
  
     // Turning 
-
-    if ( ( m_leftTurn || joy_left_turn )  ^ (m_rightTurn || joy_right_turn ) ) {
-	bool turning_left = ( m_leftTurn || joy_left_turn );
+    if ( ( m_state[plyr].leftTurn || joy_left_turn )  ^ (m_state[plyr].rightTurn || joy_right_turn ) ) {
+	bool turning_left = (m_state[plyr].leftTurn || joy_left_turn );
 
 	if ( joy_left_turn || joy_right_turn ) {
-	    players[0].control.turn_fact = joy_turn_fact;
+	    player.control.turn_fact = joy_turn_fact;
 	} else {
-	    players[0].control.turn_fact = (turning_left?-1:1);
+	    player.control.turn_fact = (turning_left?-1:1);
 	}
 
-	players[0].control.turn_animation += (turning_left?-1:1) *
-	    0.15 * timeStep / 0.05;
-	players[0].control.turn_animation = 
-	    MIN(1.0, MAX(-1.0, players[0].control.turn_animation));
+	player.control.turn_animation += (turning_left?-1:1) *
+	    0.15 * timestep / 0.05;
+	player.control.turn_animation = 
+	    MIN(1.0, MAX(-1.0, player.control.turn_animation));
     } else {
-	players[0].control.turn_fact = 0;
+	player.control.turn_fact = 0;
 
 	// Decay turn animation
-	if ( timeStep < ROLL_DECAY_TIME_CONSTANT ) {
-	    players[0].control.turn_animation *= 
-		1.0 - timeStep/ROLL_DECAY_TIME_CONSTANT;
+	if ( timestep < ROLL_DECAY_TIME_CONSTANT ) {
+	    player.control.turn_animation *= 
+		1.0 - timestep/ROLL_DECAY_TIME_CONSTANT;
 	} else {
-	    players[0].control.turn_animation = 0.0;
+	    player.control.turn_animation = 0.0;
 	}
     }
 
     
     
     //Paddling
-    if ( ( m_paddling || joy_paddling ) && players[0].control.is_paddling == false ) {
-		players[0].control.is_paddling = true;
-		players[0].control.paddle_time = GameMgr::Instance()->time;
+    if ( ( m_state[plyr].paddling || joy_paddling ) && player.control.is_paddling == false ) {
+		player.control.is_paddling = true;
+		player.control.paddle_time = GameMgr::getInstance().time;
     }
 
     
    	//Play flying sound
 
     if (new_terrain & (1<<4)) {
-		set_sound_volume("flying_sound", int(MIN(128, speed*2)));
-		if (!(m_lastTerrain & (1<<4))) {
-	 	   play_sound( "flying_sound", -1 );
+		//set_sound_volume("flying_sound", int(MIN(128, speed*2)));
+		if (!(m_state[plyr].lastTerrain & (1<<4))) {
+	 	   ppogl::AudioMgr::getInstance().playSound("flying_sound", -1);
 		}
 	    } else {
-		if (m_lastTerrain & (1<<4)) {
-		    halt_sound( "flying_sound" );
+		if (m_state[plyr].lastTerrain & (1<<4)) {
+		    ppogl::AudioMgr::getInstance().stopSound("flying_sound");
 		}
 	}
 
-  	m_lastTerrain = new_terrain; 
+  	m_state[plyr].lastTerrain = new_terrain; 
 
 	//Tricks
-    if ( players[0].control.barrel_roll_left || players[0].control.barrel_roll_right ) {
-	players[0].control.barrel_roll_factor += 
-		( players[0].control.barrel_roll_left ? -1 : 1 ) * 0.15 * timeStep / 0.05;
-	if ( (players[0].control.barrel_roll_factor  > 1) ||
-	     (players[0].control.barrel_roll_factor  < -1) ) {
-	    players[0].control.barrel_roll_factor = 0;
-	    players[0].control.barrel_roll_left = players[0].control.barrel_roll_right = false;
+    if ( player.control.barrel_roll_left || player.control.barrel_roll_right ) {
+	player.control.barrel_roll_factor += 
+		( player.control.barrel_roll_left ? -1 : 1 ) * 0.15 * timestep / 0.05;
+	if ( (player.control.barrel_roll_factor  > 1) ||
+	     (player.control.barrel_roll_factor  < -1) ) {
+	    player.control.barrel_roll_factor = 0;
+	    player.control.barrel_roll_left = player.control.barrel_roll_right = false;
 	}
     }
-    if ( players[0].control.front_flip || players[0].control.back_flip ) {
-	players[0].control.flip_factor += 
-		( players[0].control.back_flip ? -1 : 1 ) * 0.15 * timeStep / 0.05;
-	if ( (players[0].control.flip_factor  > 1) ||
-	     (players[0].control.flip_factor  < -1) ) {
-	    players[0].control.flip_factor = 0;
-	    players[0].control.front_flip = players[0].control.back_flip = false;
+    if ( player.control.front_flip || player.control.back_flip ) {
+	player.control.flip_factor += 
+		( player.control.back_flip ? -1 : 1 ) * 0.15 * timestep / 0.05;
+	if ( (player.control.flip_factor  > 1) ||
+	     (player.control.flip_factor  < -1) ) {
+	    player.control.flip_factor = 0;
+	    player.control.front_flip = player.control.back_flip = false;
 	}
     }
 
-    update_player_pos( players[0], timeStep );
+    update_player_pos( player, timestep );
 	 
-	//Track Marks
-    add_track_mark( players[0] );
+	GameMgr::getInstance().time += timestep;
+	if(airborne) player.airbornetime += timestep;
+}
 
-
-    update_view( players[0], timeStep );
-
-    setup_view_frustum( players[0], NEAR_CLIP_DIST, 
-			getparam_forward_clip_distance() );
-
-    draw_sky(players[0].view.pos);
-
-    draw_fog_plane();
-
-    set_course_clipping( true );
-    set_course_eye_point( players[0].view.pos );
-    setup_course_lighting();
-    render_course();
-	
-	
-	//Draw snow
-	update_snow( timeStep, false, players[0].view.pos );
-	draw_snow(players[0].view.pos);
-	
-    draw_trees();
-	
-    if ( getparam_draw_particles() ) {
-		update_particles( timeStep );
-		draw_particles( players[0] );
-    }
-
-    draw_tux();
-    draw_tux_shadow();
-
-    HUD1.draw(players[0]);
-	
-	
-    reshape( width, height );
-
-    winsys_swap_buffers();
-
-    GameMgr::Instance()->time += timeStep;
-	if (airborne) GameMgr::Instance()->airbornetime += timeStep;
-		
+void
+Racing::postDisplay(float timeStep)
+{
 	if(Benchmark::getMode() == Benchmark::PAUSED){
-		set_game_mode(PAUSED);
+		setMode(PAUSED);
 	}
 }
 
 void
-Racing::calcJumpAmt( double time_step )
+Racing::calcJumpAmt(int player)
 {
-    if ( players[0].control.jump_charging ) {
-		players[0].control.jump_amt = MIN( 
-	    MAX_JUMP_AMT, GameMgr::Instance()->time - m_chargeStartTime );
-    } else if ( players[0].control.jumping ) {
-		players[0].control.jump_amt *= 
-	    ( 1.0 - ( GameMgr::Instance()->time - players[0].control.jump_start_time ) / 
+    if(players[player].control.jump_charging){
+		players[player].control.jump_amt = MIN( 
+	    MAX_JUMP_AMT, GameMgr::getInstance().time - m_state[player].chargeStartTime );
+    }else if(players[player].control.jumping){
+		players[player].control.jump_amt *= 
+	    ( 1.0 - ( GameMgr::getInstance().time - players[player].control.jump_start_time ) / 
 	      JUMP_FORCE_DURATION );
-    } else {
-		players[0].control.jump_amt = 0;
+    }else{
+		players[player].control.jump_amt = 0;
     }
 }
-
 
 bool
 Racing::keyboardEvent(SDLKey key, bool release)
 {
-	if(key==getparam_turn_left_key()){
-		m_leftTurn = !release;
+	if(key==PPConfig.getInt("turn_left_key")){
+		m_state[0].leftTurn = !release;
 		return true;
-	}else if(key==getparam_turn_right_key()){
-		m_rightTurn = !release;
+	}else if(key==PPConfig.getInt("turn_right_key")){
+		m_state[0].rightTurn = !release;
 		return true;
-	}else if(key==getparam_paddle_key()){
-		m_paddling = !release;
+	}else if(key==PPConfig.getInt("paddle_key")){
+		m_state[0].paddling = !release;
 		return true;
-	}else if(key==getparam_brake_key()){
-		m_braking = !release;
+	}else if(key==PPConfig.getInt("brake_key")){
+		m_state[0].braking = !release;
 		return true;
-	}else if(key==getparam_trick_modifier_key()){
-		m_trickModifier = !release;
+	}else if(key==PPConfig.getInt("trick_modifier_key")){
+		m_state[0].trickModifier = !release;
 		return true;
-	}else if(key==getparam_jump_key()){
-		m_charging = !release;
+	}else if(key==PPConfig.getInt("jump_key")){
+		m_state[0].charging = !release;
 		return true;
-	}else{
-		return false;
 	}
+	
+	if(GameMgr::getInstance().numPlayers==2){
+		if(key==PPConfig.getInt("turn_left_key2")){
+			m_state[1].leftTurn = !release;
+			return true;
+		}else if(key==PPConfig.getInt("turn_right_key2")){
+			m_state[1].rightTurn = !release;
+			return true;
+		}else if(key==PPConfig.getInt("paddle_key2")){
+			m_state[1].paddling = !release;
+			return true;
+		}else if(key==PPConfig.getInt("brake_key2")){
+			m_state[1].braking = !release;
+			return true;
+		}else if(key==PPConfig.getInt("trick_modifier_key2")){
+			m_state[1].trickModifier = !release;
+			return true;
+		}else if(key==PPConfig.getInt("jump_key2")){
+			m_state[1].charging = !release;
+			return true;
+		}	
+	}	
+
+	return false;
 }
 
 bool
@@ -461,33 +428,48 @@ Racing::keyPressEvent(SDLKey key)
 	switch(key){
 		case 'q':
 		case SDLK_ESCAPE: 
-			GameMgr::Instance()->abortRace();
-    		set_game_mode( GAME_OVER );
-			return true;	
+			GameMgr::getInstance().abortRace();
+    		setMode(GAME_OVER);
+			return true;
 		case '1':
     		set_view_mode( players[0], ABOVE );
-    		setparam_view_mode( ABOVE );
+    		PPConfig.setInt("view_mode", ABOVE);
 			return true;
 		case '2':
 			set_view_mode( players[0], FOLLOW );
-			setparam_view_mode( FOLLOW );
+			PPConfig.setInt("view_mode", FOLLOW);
 			return true;
 		case '3':
 			set_view_mode( players[0], BEHIND );
-			setparam_view_mode( BEHIND );
-			return true;	
-		case 's':
-    		screenshot();
+			PPConfig.setInt("view_mode", BEHIND);
 			return true;
-		case 'p':
-			set_game_mode( PAUSED );
+		case '4':
+    		set_view_mode( players[1], ABOVE );
+    		PPConfig.setInt("view_mode2", ABOVE);
+			return true;
+		case '5':
+			set_view_mode( players[1], FOLLOW );
+			PPConfig.setInt("view_mode2", FOLLOW);
+			return true;
+		case '6':
+			set_view_mode( players[1], BEHIND );
+			PPConfig.setInt("view_mode2", BEHIND);
 			return true;
 		default:
-			if(key==getparam_reset_key()){
-				set_game_mode( RESET );
+			if(key==PPConfig.getInt("reset_key")){
+				setMode(RESET);
+				return true;
+			}else if(key==PPConfig.getInt("reset_key2")){
+				//deactivating since reset isn't realy useable in multiplayer mode
+				//setMode(RESET);
+				return true;
+			}else if(key==PPConfig.getInt("pause_key")){
+				setMode(PAUSED);
+				return true;
+			}else if(key==PPConfig.getInt("screenshot_key")){
+				screenshot();
 				return true;
 			}
 	}
-		
 	return false;
 }

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,11 +21,8 @@
 
 #include "game_over.h"
 
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/font.h"
-#include "ppgltk/audio/audio.h"
+#include "ppogl/font.h"
 
-#include "game_config.h"
 #include "gl_util.h"
 #include "fps.h"
 #include "render_util.h"
@@ -47,37 +44,44 @@
 
 #include "bench.h"
 
-GameOver::GameOver()
-{
-	halt_sound( "flying_sound" );
-    halt_sound( "rock_sound" );
-    halt_sound( "ice_sound" );
-    halt_sound( "snow_sound" );
+#include "winsys.h"
 
+GameOver::GameOver()
+ : m_raceOverLbl("","race_over"),
+   m_timeLbl("","race_stats"),
+   m_herringLbl("","race_stats"),
+   m_scoreLbl("","race_stats"),
+   m_maxspeedLbl("","race_stats"),
+   m_flyingLbl("","race_stats"),
+   m_resultsLbl("","race_stats")
+{
+	ppogl::AudioMgr::getInstance().stopAllSounds();
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
+	
 	if( Benchmark::getMode() != Benchmark::NONE ){
 		Benchmark::displayState();
 		winsys_exit( 0 );
 	}
-		
-    play_music( "game_over" );
+	
+    ppogl::AudioMgr::getInstance().playMusic("game_over");
 
-    m_aborted = GameMgr::Instance()->wasRaceAborted();
+    m_aborted = GameMgr::getInstance().wasRaceAborted();
 
 	if ( !m_aborted ) {
-		GameMgr::Instance()->updatePlayersScores();
+		GameMgr::getInstance().updatePlayersScores();
     }
 		
-    if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
-		m_bestScore = GameMgr::Instance()->updateCurrentRaceData();		
+    if ( GameMgr::getInstance().gametype!=GameMgr::PRACTICING ) {
+		m_bestScore = GameMgr::getInstance().updateCurrentRaceData();		
 		
-		if(!GameMgr::Instance()->wasRaceWon()){
+		if(!GameMgr::getInstance().wasRaceWon()){
 			players[0].decLives();
 		}
     }else{
 		if ( !m_aborted ) {
 			m_bestScore = players[0].updateOpenCourseData(
-									GameMgr::Instance()->getCurrentRace().name,
-									GameMgr::Instance()->time,
+									GameMgr::getInstance().getCurrentRace().getName(),
+									GameMgr::getInstance().time,
 									players[0].herring,
 									players[0].score);
 			
@@ -86,178 +90,149 @@ GameOver::GameOver()
 	}
 	
 	{  
-	pp::Vec3d dir = players[0].vel;
+	ppogl::Vec3d dir = players[0].vel;
 	int speed = int(dir.normalize());
 	//set max_speed
 	if (speed > players[0].max_speed) players[0].max_speed=int(speed);
 	}
 	
-	int width = getparam_x_resolution();
-    int height = getparam_y_resolution();
+	ppogl::Vec2d pos(320, 240+150);
 	
-	pp::Vec2d pos(width/2, height/2 +200);
-	
-	if ( GameMgr::Instance()->wasRaceAborted() ) {
-		mp_raceOverLbl = new pp::Label(pos,"race_over",_("Race aborted"));
-		mp_raceOverLbl->alignment.center();
+	m_raceOverLbl.setPosition(pos);
+	m_raceOverLbl.alignment.center();
+		
+	if ( GameMgr::getInstance().wasRaceAborted() ) {
+		m_raceOverLbl.setText(_("Race aborted"));
     }else{	
-		mp_raceOverLbl = new pp::Label(pos,"race_over",_("Race Over"));
-		mp_raceOverLbl->alignment.center();
+		m_raceOverLbl.setText(_("Race Over"));
 	
 		char buff[BUFF_LEN];
 		int minutes, seconds, hundredths;
 
-		getTimeComponents( GameMgr::Instance()->time, minutes, seconds, hundredths );
-		sprintf( buff, _("Time: %02d:%02d.%02d"), minutes, seconds, hundredths );	
-		pos.y-=100;
-		mp_timeLbl = new pp::Label(pos,"race_stats", buff);
-		mp_timeLbl->alignment.center();
+		getTimeComponents( GameMgr::getInstance().time, minutes, seconds, hundredths );
+		sprintf( buff, _("Time: %02d:%02d.%02d").c_str(), minutes, seconds, hundredths );	
+		pos.y()-=100;
+		
+		m_timeLbl.setPosition(pos);
+		m_timeLbl.alignment.center();
+		m_timeLbl.setText(buff);
 	
-		sprintf( buff, _("Herring: %3d"), players[0].herring );
-		pos.y-=30;
-		mp_herringLbl = new pp::Label(pos,"race_stats",buff);
-		mp_herringLbl->alignment.center();
+		sprintf( buff, _("Herring: %3d").c_str(), players[0].herring );
+		pos.y()-=30;
+		m_herringLbl.setPosition(pos);
+		m_herringLbl.alignment.center();
+		m_herringLbl.setText(buff);
 	
-		sprintf( buff, _("Score: %6d"), players[0].score );
-		pos.y-=30;
-		mp_scoreLbl = new pp::Label(pos,"race_stats",buff);
-		mp_scoreLbl->alignment.center();
+		sprintf( buff, _("Score: %6d").c_str(), players[0].score );
+		pos.y()-=30;
+		m_scoreLbl.setPosition(pos);
+		m_scoreLbl.alignment.center();
+		m_scoreLbl.setText(buff);
 	
 		int speed = int(double(players[0].max_speed) * M_PER_SEC_TO_KM_PER_H);
-		sprintf( buff, _("Max speed: %3d km/h"), speed);
-		pos.y-=30;
-		mp_maxspeedLbl = new pp::Label(pos,"race_stats",buff);
-		mp_maxspeedLbl->alignment.center();
+		sprintf( buff, _("Max speed: %3d km/h").c_str(), speed);
+		pos.y()-=30;
+		m_maxspeedLbl.setPosition(pos);
+		m_maxspeedLbl.alignment.center();
+		m_maxspeedLbl.setText(buff);
 	
-		double percent = (GameMgr::Instance()->airbornetime / GameMgr::Instance()->time) * 100.0;
-		sprintf( buff, _("Was flying: %.01f %% of time"), percent);
-		pos.y-=30;
-		mp_flyingLbl = new pp::Label(pos,"race_stats",buff);
-		mp_flyingLbl->alignment.center();
+		double percent = (players[0].airbornetime / GameMgr::getInstance().time) * 100.0;
+		sprintf( buff, _("Was flying: %.01f %% of time").c_str(), percent);
+		pos.y()-=30;
+		m_flyingLbl.setPosition(pos);
+		m_flyingLbl.alignment.center();
+		m_flyingLbl.setText(buff);
 	
+		std::string string;
 	
-		const char *string="";
-	
-		if ( GameMgr::Instance()->gametype==GameMgr::PRACTICING){
+		if ( GameMgr::getInstance().gametype==GameMgr::PRACTICING){
 			if(m_bestScore){
 				string = _("You beat your best score!");
 			}
-		} else if(GameMgr::Instance()->wasEventWon()){
+		} else if(GameMgr::getInstance().wasEventWon()){
 			string = _("Congratulations! You won the event!");
-		} else if(GameMgr::Instance()->wasCupWon()){
+		} else if(GameMgr::getInstance().wasCupWon()){
 			string = _("Congratulations! You won the cup!");
-		} else if(GameMgr::Instance()->wasRaceWon()){
+		} else if(GameMgr::getInstance().wasRaceWon()){
 			string = _("You advanced to the next race!");
 		} else {
 			string = _("You didn't advance.");
 		}	
 	
-		pos.y-=30;
-		mp_resultsLbl = new pp::Label(pos,"race_stats",string);
-		mp_resultsLbl->alignment.center();
+		pos.y()-=30;
+		m_resultsLbl.setPosition(pos);
+		m_resultsLbl.alignment.center();
+		m_resultsLbl.setText(string);
 	}
-}
-
-GameOver::~GameOver()
-{
-	delete mp_raceOverLbl;
-	
-	if ( !GameMgr::Instance()->wasRaceAborted() ) {
-		delete mp_timeLbl;
-		delete mp_herringLbl;
-		delete mp_scoreLbl;
-		delete mp_maxspeedLbl;
-		delete mp_flyingLbl;
-		delete mp_resultsLbl;
-	}
+	//Set the racing mode to paused to disable player updates
+	m_paused=true;
 }
 
 void
-GameOver::loop(float timeStep)
+GameOver::preDisplay(float timestep)
 {
-    int width, height;
-    width = getparam_x_resolution();
-    height = getparam_y_resolution();
+    if(is_joystick_active()){
+		update_joystick();
 
-    /* Check joystick */
-    if ( is_joystick_active() ) {
-	update_joystick();
-
-	if ( is_joystick_continue_button_down() )
-	{
-	    if ( GameMgr::Instance()->gametype != GameMgr::PRACTICING ) {
-			set_game_mode( EVENT_RACE_SELECT );
-		}else{
-			set_game_mode( RACE_SELECT );
+		if(is_joystick_continue_button_down()){
+	    	if(GameMgr::getInstance().gametype != GameMgr::PRACTICING){
+				setMode(EVENT_RACE_SELECT);
+			}else{
+				setMode(RACE_SELECT);
+			}
+	    	return;
 		}
-	    winsys_post_redisplay();
-	    return;
-	}
     }
-    fpsCounter.update();
+}
 
-    update_audio();
+void
+GameOver::postDisplay(float timestep)
+{	
+    reshape(resolutionX, resolutionY);
 
-    clear_rendering_context();
+	set_gl_options(GUI);
+    HUD1.draw(players[0], resolutionX, resolutionY);
 
-    fogPlane.setup();
-    update_player_pos( players[0], 0 );
-    update_view( players[0], 0 );
-
-    setup_view_frustum( players[0], NEAR_CLIP_DIST, 
-			getparam_forward_clip_distance() );
-
-    draw_sky(players[0].view.pos);
-    draw_fog_plane();
-
-    set_course_clipping( true );
-    set_course_eye_point( players[0].view.pos );
-    setup_course_lighting();
-    render_course();
-    draw_trees();
-    if ( getparam_draw_particles() ) {
-		draw_particles( players[0] );
-    }
-
-    draw_tux();
-    draw_tux_shadow();
-	
-	set_gl_options( GUI );
-    HUD1.draw(players[0]);
-
+	gl::PushMatrix();
+	{
+	gl::MatrixMode(GL_PROJECTION);
+    gl::LoadIdentity();
+    gl::Ortho(0.0, resolutionX, 0.0, resolutionY, -1.0, 1.0);
+    gl::MatrixMode(GL_MODELVIEW);
+    gl::LoadIdentity();
+    gl::Translate(0.0, 0.0, -1.0);
+    gl::Color(ppogl::Color::white);
+		
 	gl::Disable(GL_TEXTURE_2D);
     gl::Color(0.0,0.0,0.0,0.5);
-    gl::Rect(0,0,width,height);
+    gl::Rect(0,0,resolutionX, resolutionY);
     gl::Enable(GL_TEXTURE_2D);
+	}
+	gl::PopMatrix();
 	
-	UIMgr.setupDisplay();
-	UIMgr.draw();
-		
-    reshape( width, height );
-    winsys_swap_buffers();
+	ppogl::UIManager::getInstance().draw(resolutionX, resolutionY,
+										 false); //no decoration
 }
 
 bool
 GameOver::mouseButtonEvent(int button, int x, int y, bool pressed)
 
 {
-	if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
-		set_game_mode( EVENT_RACE_SELECT );
+	if ( GameMgr::getInstance().gametype!=GameMgr::PRACTICING ) {
+		setMode(EVENT_RACE_SELECT);
 	}else{
-		set_game_mode( RACE_SELECT );
+		setMode(RACE_SELECT);
 	}
-	winsys_post_redisplay();
 	return true;
 }
 
 bool
 GameOver::keyPressEvent(SDLKey key)
 {
-	if ( GameMgr::Instance()->gametype!=GameMgr::PRACTICING ) {
-		set_game_mode( EVENT_RACE_SELECT );
+	if(GameMgr::getInstance().gametype!=GameMgr::PRACTICING){
+		setMode(EVENT_RACE_SELECT);
 	}else{
-		set_game_mode( RACE_SELECT );
+		setMode(RACE_SELECT);
 	}
-	winsys_post_redisplay();
 	return true;
 }

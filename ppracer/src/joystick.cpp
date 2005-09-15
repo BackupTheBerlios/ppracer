@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -20,7 +20,6 @@
  */
 
 #include "joystick.h"
-#include "game_config.h"
 
 #if defined( HAVE_SDL_JOYSTICKOPEN )
 
@@ -31,10 +30,16 @@ static SDL_Joystick *joystick = NULL;
 static int num_buttons = 0;
 static int num_axes = 0;
 
+static bool disabled=false;
+
+
 void init_joystick()
 {
-    if(getparam_disable_joystick()) return;
-	
+    if(PPConfig.getBool("disable_joystick")){
+		disabled=true;
+		return;
+	}
+		
 	int num_joysticks = 0;
     char *js_name;
 
@@ -77,7 +82,7 @@ void init_joystick()
 
 bool is_joystick_active()
 {
-	if(getparam_disable_joystick()) return false;
+	if(disabled) return false;
 
 	return ( joystick != NULL );
 	
@@ -85,13 +90,13 @@ bool is_joystick_active()
 
 void update_joystick()
 {
-	if(getparam_disable_joystick()) return;
+	if(disabled) return;
     SDL_JoystickUpdate();
 }
 
 double get_joystick_x_axis()
 {
-    if(getparam_disable_joystick()) return 0.0;
+    if(disabled) return 0.0;
 
 	
 	static bool warning_given = false;
@@ -99,7 +104,7 @@ double get_joystick_x_axis()
 
     PP_CHECK_POINTER(joystick);
 
-    axis = getparam_joystick_x_axis();
+    axis = PPConfig.getInt("joystick_x_axis");
 
     /* Make sure axis is valid */
     if ( axis >= num_axes || axis < 0 ) {
@@ -118,14 +123,14 @@ double get_joystick_x_axis()
 
 double get_joystick_y_axis()
 {
-	if(getparam_disable_joystick()) return 0.0;
+	if(disabled) return 0.0;
 	
     static bool warning_given = false;
     int axis;
 
     PP_CHECK_POINTER( joystick );
 
-    axis = getparam_joystick_y_axis();
+    axis = PPConfig.getInt("joystick_y_axis");
 
     /* Make sure axis is valid */
     if ( axis >= num_axes || axis < 0 ) {
@@ -139,12 +144,12 @@ double get_joystick_y_axis()
 	return 0.0;
     }
 
-    return SDL_JoystickGetAxis( joystick, getparam_joystick_y_axis() )/32768.0;
+    return SDL_JoystickGetAxis( joystick, PPConfig.getInt("joystick_y_axis") )/32768.0;
 }
 
 bool is_joystick_button_down( int button ) 
 {
-    if(getparam_disable_joystick()) return false;
+    if(disabled) return false;
 	
 	static bool warning_given = false;
 
@@ -167,17 +172,17 @@ bool is_joystick_button_down( int button )
 
 bool is_joystick_continue_button_down()
 {
-	if(getparam_disable_joystick()) return false;
+	if(disabled) return false;
 	
     if ( joystick == NULL ) {
-	return false;
+		return false;
     }
 
-    if ( getparam_joystick_continue_button() < 0 ) {
-	return false;
+    if(PPConfig.getInt("joystick_continue_button") < 0 ) {
+		return false;
     }
 
-    return is_joystick_button_down( getparam_joystick_continue_button() );
+    return is_joystick_button_down( PPConfig.getInt("joystick_continue_button") );
 }
 
 int get_joystick_down_button()
@@ -190,14 +195,9 @@ int get_joystick_down_button()
 	return -1;
 }
 
-
-
-
-
-
 #else
 
-/* Stub functions */
+// Stub functions
 
 void init_joystick()
 {

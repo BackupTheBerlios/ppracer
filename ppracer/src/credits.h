@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,16 +21,16 @@
 #define _CREDITS_H_
 
 #include "loop.h"
-#include "ppgltk/font.h"
+#include "ppogl/font.h"
 
 class Credits : public GameMode
 {	
-	typedef struct {
-		pp::Font *font;
-		const char *text;
-	}c_line_t;
+	struct CLine{
+		ppogl::FontRef font;
+		std::string text;
+	};
 
-	c_line_t *lines;
+	CLine *lines;
 
 	double m_yOffset;
 	

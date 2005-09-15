@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -23,8 +23,8 @@
 #define _FOG_H_
 
 #include "ppracer.h"
-
-#include "ppgltk/alg/color.h"
+#include "ppogl/base/color.h"
+#include "ppogl/base/glwrappers.h"
 
 class FogPlane {
 	
@@ -33,7 +33,7 @@ class FogPlane {
     GLfloat m_density;
     GLfloat m_start;
     GLfloat m_end;
-    pp::Color m_color;
+    ppogl::Color m_color;
 	
 public:
 	FogPlane(){};
@@ -43,15 +43,15 @@ public:
 	
 	inline bool isEnabled() const {return m_isOn;}
 	inline void setEnabled(const bool state=true){m_isOn=state;}
-	inline pp::Color& getColor() {return m_color;}
-	inline void setColor(pp::Color color){m_color=color;}
+	inline ppogl::Color& getColor() {return m_color;}
+	inline void setColor(ppogl::Color color){m_color=color;}
 	inline void setMode(const GLint mode){m_mode=mode;}
 	inline void setDensity(const GLfloat density){m_density=density;}
 	inline void setStart(const GLfloat start){m_start=start;}
 	inline void setEnd(const GLfloat end){m_end=end;}
 	void setup();
 	
-	static void registerCallbacks( Tcl_Interp *ip );
+	static void registerCallbacks();
 };
 
 extern FogPlane fogPlane;

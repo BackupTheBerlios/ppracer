@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -19,30 +19,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 #include "ppracer.h"
 #include "screenshot.h"
-#include "ppgltk/images/image.h"
-#include "ppgltk/alg/glwrappers.h"
+#include "ppogl/images/image.h"
+#include "ppogl/base/glwrappers.h"
 
 static int screenshot_num = 0;
 
-void screenshot()
+bool
+take_screenshot(const std::string& fileName)
 {
-    char buff[20];
-    sprintf( buff, "tux_sshot_%d.ppm", screenshot_num++ );
-    if(!take_screenshot( buff )){
-        fprintf( stderr, "Couldn't save screenshot\n");
-    };
-} 
-
-bool take_screenshot ( char* fileName ) {
-
 	int viewport[4];
 	gl::GetValue(GL_VIEWPORT, viewport);
 	gl::ReadBuffer(GL_FRONT);
 	
-	pp::Image image(viewport[2],viewport[3],3);
+	ppogl::Image image(viewport[2],viewport[3],3);
 	
 	image.width=viewport[2];
 	image.height=viewport[3];
@@ -56,4 +47,14 @@ bool take_screenshot ( char* fileName ) {
 	}
 	
 	return image.writeToFile(fileName);
+}
+
+void
+screenshot()
+{
+    char buff[20];
+    snprintf(buff, 20, "tux_sshot_%d.ppm", screenshot_num++);
+    if(!take_screenshot(buff)){
+        PP_WARNING("Couldn't save screenshot");
+    };
 }

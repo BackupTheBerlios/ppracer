@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -20,117 +20,78 @@
 
 #include "configuration.h"
 
-#include "ppgltk/button.h"
-#include "ppgltk/audio/audio.h"
+#include "gameconfig.h"
 
-static game_mode_t preConfigMode = NO_MODE;
-
+static GameMode::Mode preConfigMode = GameMode::NO_MODE;
 
 Configuration::Configuration()
+ : m_titleLbl(_("Configuration"),"heading"),
+   m_generalBtn(_("General")),
+   m_videoBtn(_("Video")),
+   m_audioBtn(_("Audio")),
+   m_keyboardBtn(_("Keyboard")),
+   m_joystickBtn(_("Joystick")),
+   m_backBtn(_("Back"))
 {
 	if(GameMode::prevmode==GAME_TYPE_SELECT || GameMode::prevmode == PAUSED){
 		preConfigMode = GameMode::prevmode;
 	}
+		
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
 	
-	pp::Vec2d pos(0,0);
+	ppogl::Vec2d position(320,400);
 	
-	mp_titleLbl = new pp::Label(pos,"heading",_("Configuration"));
-	mp_titleLbl->alignment.center();
-	mp_titleLbl->alignment.middle();	
+	m_titleLbl.setPosition(position);
+	m_titleLbl.alignment.set(0.5f, 1.0f);
 	
-	mp_graphicsBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40),
-				     "button_label",
-				     _("Graphics") );
-    mp_graphicsBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_graphicsBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::graphics));
+	position.y()-=100;
 	
-	mp_videoBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Video") );
-    mp_videoBtn->setHilitFontBinding( "button_label_hilit" );
-	mp_videoBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::video));	
+	m_generalBtn.setPosition(position);
+	m_generalBtn.alignment.center();
+    m_generalBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::general));
+	
+	position.y()-=40;
+	
+	m_videoBtn.setPosition(position);
+	m_videoBtn.alignment.center();
+	m_videoBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::video));	
 
-	mp_audioBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Audio") );
-    mp_audioBtn->setHilitFontBinding( "button_label_hilit" );
-	mp_audioBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::audio));	
+	position.y()-=40;
+	
+	m_audioBtn.setPosition(position);
+	m_audioBtn.alignment.center();
+	m_audioBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::audio));	
+	
+	position.y()-=40;
 
-	mp_keyboardBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Keyboard") );
-   	mp_keyboardBtn->setHilitFontBinding( "button_label_hilit" );
-	mp_keyboardBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::keyboard));	
+	m_keyboardBtn.setPosition(position);
+	m_keyboardBtn.alignment.center();
+	m_keyboardBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::keyboard));	
 
-	mp_joystickBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Joystick") );
-   	mp_joystickBtn->setHilitFontBinding( "button_label_hilit" );
-	mp_joystickBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::joystick));	
+	position.y()-=40;
 
+	m_joystickBtn.setPosition(position);
+	m_joystickBtn.alignment.center();
+	m_joystickBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::joystick));	
 
-    mp_backBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Back") );
-    mp_backBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_backBtn->signalClicked.Connect(pp::CreateSlot(this,&Configuration::back));		
-}
+	position.y()-=60;
 
-Configuration::~Configuration()
-{
-	delete mp_graphicsBtn;
-	delete mp_videoBtn;
-	delete mp_audioBtn;
-	delete mp_keyboardBtn;
-	delete mp_joystickBtn;
-	delete mp_backBtn;
-	delete mp_titleLbl;
+    m_backBtn.setPosition(position);
+    m_backBtn.alignment.center();
+    m_backBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::back));		
 }
 
 void
 Configuration::loop(float timeStep)
 {
-	update_audio();
     set_gl_options( GUI );
-    clear_rendering_context();
-    UIMgr.setupDisplay();
+	
 	drawSnow(timeStep);
-	theme.drawMenuDecorations();
-	setWidgetPositions();
-    UIMgr.draw();
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-    winsys_swap_buffers();	
-}
 
-void
-Configuration::setWidgetPositions()
-{
-	int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
-	
-	pp::Vec2d pos(w/2,h/2+100);
-
-	mp_titleLbl->setPosition(pos);
-	
-	pos.x-=150;
-	pos.y-=80;
-	mp_graphicsBtn->setPosition(pos);
-	pos.y-=40;
-	mp_videoBtn->setPosition(pos);
-	pos.y-=40;
-	mp_audioBtn->setPosition(pos);
-	pos.y-=40;
-	mp_keyboardBtn->setPosition(pos);
-	pos.y-=40;
-	mp_joystickBtn->setPosition(pos);
-	pos.y-=60;
-	mp_backBtn->setPosition(pos);	
+	// draw ui
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);
+    reshape(resolutionX, resolutionY);
 }
 
 bool
@@ -149,42 +110,40 @@ Configuration::keyPressEvent(SDLKey key)
 void
 Configuration::back()
 {
-	set_game_mode( preConfigMode );
+	setMode( preConfigMode );
+	
+	//update static configuration if we are in paused mode
+	if(preConfigMode==PAUSED) GameConfig::update();
+		
 	preConfigMode = NO_MODE;
-    UIMgr.setDirty();
 }
 
 void
-Configuration::graphics()
+Configuration::general()
 {
-	set_game_mode( CONFIG_GRAPHICS );
-    UIMgr.setDirty();
+	setMode( CONFIG_GENERAL );
 }
 
 void
 Configuration::video()
 {
-	set_game_mode( CONFIG_VIDEO );
-    UIMgr.setDirty();
+	setMode( CONFIG_VIDEO );
 }
 
 void
 Configuration::audio()
 {
-	set_game_mode( CONFIG_AUDIO );
-    UIMgr.setDirty();
+	setMode( CONFIG_AUDIO );
 }
 
 void
 Configuration::keyboard()
 {
-	set_game_mode( CONFIG_KEYBOARD );
-    UIMgr.setDirty();
+	setMode( CONFIG_KEYBOARD );
 }
 
 void
 Configuration::joystick()
 {
-	set_game_mode( CONFIG_JOYSTICK );
-    UIMgr.setDirty();
+	setMode( CONFIG_JOYSTICK );
 }

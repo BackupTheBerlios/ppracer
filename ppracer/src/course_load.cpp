@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,14 +22,14 @@
 #include "course_load.h"
 #include "course_render.h"
 #include "course_quad.h"
+#include "game_mgr.h"
 
-#include "game_config.h"
+#include "ppogl/base/glwrappers.h"
+#include "ppogl/base/os.h"
+#include "ppogl/images/image.h"
+#include "ppogl/textures.h"
 
-#include "ppgltk/images/image.h"
-
-#include "textures.h"
 #include "phys_sim.h"
-#include "tcl_util.h"
 #include "keyframe.h"
 #include "gl_util.h"
 #include "lights.h"
@@ -38,108 +38,116 @@
 
 #include "hud.h"
 
-#include "player.h"
+#include "mirror_course.h"
 
-#include "ppgltk/audio/audio_data.h"
+#include "player.h"
 
 #include "track_marks.h"
 
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
-#include "translation.h"
+#include "ppogl/translation.h"
 
-#define MAX_TREES 8192
-#define MAX_TREE_TYPES 32
-#define MAX_ITEMS 8192
-#define MAX_ITEM_TYPES 128
+#include "elements.h"
+
+#include <iostream>
 
 #define MIN_ANGLE 5
 #define MAX_ANGLE 80
 
-#define ICE_IMG_VAL  0
-#define ROCK_IMG_VAL 127
-#define SNOW_IMG_VAL 255
-#define TREE_IMG_THRESHOLD 128
+TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 
-#define DEP_TREE_RED 255
-#define DEP_TREE_GREEN 0
-#define DEP_TREE_BLUE 0
-
-terrain_tex_t terrain_texture[NUM_TERRAIN_TYPES];
 unsigned int num_terrains=0;
 
 static bool        course_loaded = false;
 
 static float     *elevation;
 static float      elev_scale;
-static float      course_width, course_length;
-static float      play_width, play_length;
+
+static ppogl::Vec2d courseDim;
+static ppogl::Vec2d playDim;
+
 static float      course_angle;
 static int           nx, ny;
-static Tree        tree_locs[MAX_TREES];
-static int           num_trees;
 static int    *terrain;
-static pp::Vec2d     start_pt;
+static ppogl::Vec2d     start_pt;
 
 
 static std::string courseAuthor;
 static std::string courseName;
 
+static int base_height_value;
 
-static int           base_height_value;
-static tree_type_t   tree_types[MAX_TREE_TYPES];
-static int           num_tree_types = 0;
-static int           tree_dep_call = -1;
+static std::map< std::string,ppogl::RefPtr<ModelType> > modelTypes;
+static std::map<std::string,ppogl::RefPtr<ItemType> > itemTypes;
 
-static Item			item_locs[MAX_ITEMS];
-static item_type_t   item_types[MAX_ITEM_TYPES];
-static int           num_item_types = 0;
-static int           num_items;
-
-
-///All terrains that are used in the current race.
+///All terrains that are used in the current course.
 ///The list is sorted with respect to the terrain wheights
 std::list<int> usedTerrains;
 
+// Interleaved vertex, normal, and color data
+static GLubyte *vnc_array = NULL;
 
-/* Interleaved vertex, normal, and color data */
-static GLubyte      *vnc_array = NULL;
+float*
+Course::getElevData()
+{
+	return elevation;
+}
 
-float    *get_course_elev_data()    { return elevation; }
-int    *get_course_terrain_data() { return terrain; }
-float      get_course_angle()        { return course_angle; } 
-Tree       *get_tree_locs()           { return tree_locs; }
-int           get_num_trees()           { return num_trees; }
-pp::Polyhedron*  get_tree_polyhedron(int type) { return tree_types[type].ph; }
-const char* get_tree_name(int type)       { return tree_types[type].name.c_str(); }
-pp::Vec2d     get_start_pt()            { return start_pt; }
-void          set_start_pt( pp::Vec2d p ) { start_pt = p; }
-std::string& get_course_author() { return courseAuthor; }
-std::string& get_course_name() { return courseName; }
+int*
+Course::getTerrainData()
+{
+	return terrain;
+}
 
-Item       *get_item_locs()           { return item_locs; }
-int           get_num_items()           { return num_items; }
-const char         *get_item_name(int type)   { return item_types[type].name.c_str(); }
-int           get_num_item_types()      { return num_item_types; }
-item_type_t  *get_item_types()          { return item_types; }
+float
+Course::getAngle()
+{
+	return course_angle;
+} 
 
+ppogl::Vec2d
+Course::getStartPt()
+{
+	return start_pt;
+}
 
+void
+Course::setStartPt(ppogl::Vec2d p)
+{
+	start_pt = p;
+}
 
-void get_gl_arrays( GLubyte **vnc_arr )
+std::string&
+Course::getAuthor()
+{
+	return courseAuthor; 
+}
+
+std::string&
+Course::getName()
+{
+	return courseName;
+}
+
+void
+Course::getGLArrays( GLubyte **vnc_arr )
 {
     *vnc_arr = vnc_array;
 }
 
-void get_course_dimensions( float *width, float *length )
+void
+Course::getDimensions( float *width, float *length )
 {
-    *width = course_width;
-    *length = course_length;
+    *width = courseDim.x();
+    *length = courseDim.y();
 } 
 
-void get_play_dimensions( float *width, float *length )
+void
+Course::getPlayDimensions( float *width, float *length )
 {
-    *width = play_width;
-    *length = play_length;
+    *width = playDim.x();
+    *length = playDim.y();
 } 
 
 /*! 
@@ -152,7 +160,8 @@ void get_play_dimensions( float *width, float *length )
   \date    Created:  2000-08-30
   \date    Modified: 2000-08-30
 */
-float get_terrain_base_height( float distance )
+float
+Course::getTerrainBaseHeight( float distance )
 {
     PP_REQUIRE( distance > -EPS, "distance should be positive" );
 	
@@ -176,39 +185,34 @@ float get_terrain_base_height( float distance )
   \date    Created:  2000-08-30
   \date    Modified: 2000-08-30
 */
-float get_terrain_max_height( float distance )
+float
+Course::getTerrainMaxHeight( float distance )
 {
-    return get_terrain_base_height( distance ) + elev_scale;
+    return getTerrainBaseHeight( distance ) + elev_scale;
 }
 
-void get_course_divisions( int *x, int *y )
+void
+Course::getDivisions( int *x, int *y )
 {
     *x = nx;
     *y = ny;
 } 
 
-
-static void reset_course()
+static void
+reset_course()
 {
-    int i;
-
-    /*
-     * Defaults
-     */
 	num_terrains = 0;
-    num_trees     = 0;
-    num_items     = 0;
-    course_angle  = 20.;
-    course_width  = 50.;
-    course_length = 130.;
-    play_width  = 50.;
-    play_length = 130.;
-    nx = ny = -1;
-    start_pt.x = 0;
-    start_pt.y = 0;
-    base_height_value = 127; /* 50% grey */
+    course_angle  = 20;
+	
+    courseDim = ppogl::Vec2d(50,130);
+	playDim = ppogl::Vec2d(50,130);
 
-    set_course_mirroring( false );
+    nx = ny = -1;
+    start_pt.x() = 0;
+    start_pt.y() = 0;
+    base_height_value = 127;
+	
+    set_course_mirroring(false);
 
     reset_lights();
     fogPlane.reset();
@@ -221,82 +225,56 @@ static void reset_course()
 
     reset_course_quadtree();
 
-    free( elevation ); elevation = NULL;
-    free( terrain ); terrain = NULL;
+    delete[] elevation;
+	elevation=NULL;
+	
+    delete[] terrain;
+	terrain=NULL;
 
-    free( vnc_array ); vnc_array = NULL;
+    delete[] vnc_array;
+	vnc_array=NULL;
 
-    for ( i = 0; i < num_tree_types; i++) {
-	unbind_texture( tree_types[i].name.c_str() );
-	tree_types[i].name.erase();
-
-	tree_types[i].num_trees = 0;
-
-    }
-    num_tree_types = 0;
-    tree_dep_call = -1;
-
-    for ( i = 0; i < num_item_types; i++) {
-	if (item_types[i].reset_point == false) {
-	    unbind_texture( item_types[i].name.c_str() );
-	}
-
-	item_types[i].name.erase();
-
-	item_types[i].texture.erase();
-
-	item_types[i].num_items = 0;
-    }
-    num_item_types = 0;
-
+	modelLocs.clear();
+	modelTypes.clear();
+		
+	itemLocs.clear();
+	itemTypes.clear();
+	
     course_loaded = false;
 
     reset_key_frame();
 } 
 
-bool course_exists( int num )
-{
-    char buff[BUFF_LEN];
-    struct stat s;
-
-    sprintf( buff, "%s/courses/%d", getparam_data_dir(), num );
-    if ( stat( buff, &s ) != 0 ) {
-	return false;
-    }
-    if ( ! S_ISDIR( s.st_mode ) ) {
-	return false;
-    }
-    return true;
-}
-
-void fill_gl_arrays()
+void
+Course::fillGLArrays()
 {
     int x,y;
-    pp::Vec3d *normals = get_course_normals();
-    pp::Vec3d nml;
+    ppogl::Vec3d *normals = get_course_normals();
+    ppogl::Vec3d nml;
     int idx;
 
     gl::DisableClientState(GL_VERTEX_ARRAY);
     gl::DisableClientState(GL_NORMAL_ARRAY);
     gl::DisableClientState(GL_COLOR_ARRAY);
 
-    /* Align vertices and normals on 16-byte intervals (Q3A does this) */
-    vnc_array = reinterpret_cast<GLubyte*>(malloc( STRIDE_GL_ARRAY * nx * ny ));
-
+    // Align vertices and normals on 16-byte intervals (Q3A does this)
+    vnc_array = new GLubyte[STRIDE_GL_ARRAY * nx * ny];
+	PP_CHECK_ALLOC(vnc_array);
+	
     for (x=0; x<nx; x++) {
 	for (y=0; y<ny; y++) {
 	    idx = STRIDE_GL_ARRAY*(y*nx+x);
 	   
 #define floatval(i) (*reinterpret_cast<GLfloat*>(vnc_array+idx+(i)*sizeof(GLfloat)))
 
-	    floatval(0) = GLfloat(x) / (nx-1.) * course_width;
+	    floatval(0) = GLfloat(x) / (nx-1.) * courseDim.x();
 	    floatval(1) = ELEV(x,y);
-	    floatval(2) = -GLfloat(y)/ (ny-1.) * course_length;
+	    floatval(2) = -GLfloat(y)/ (ny-1.) * courseDim.y();
 
 	    nml = normals[ x + y * nx ];
-	    floatval(4) = nml.x;
-	    floatval(5) = nml.y;
-	    floatval(6) = nml.z;
+	    floatval(4) = nml.x();
+	    floatval(5) = nml.y();
+	    floatval(6) = nml.z();
 	    floatval(7) = 1.0f;
 	   
 #undef floatval
@@ -325,58 +303,37 @@ void fill_gl_arrays()
 		    vnc_array + 8*sizeof(GLfloat) );
 }
 
-void load_course( std::string& course )
+void
+Course::load(std::string& course)
 {
-    char buff[BUFF_LEN];
-    char cwd[BUFF_LEN];
-
     reset_course();
 	HUD1.reset();
+	HUD2.reset();
 	
-	
-    if ( getcwd( cwd, BUFF_LEN ) == NULL ) {
-	 PP_ERROR( "getcwd failed" );
+	std::string cwd = ppogl::os::cwd();
+	if(cwd.empty()){
+		PP_ERROR("Unable to get curent working directory");
     }
-    if (course[0]=='/'){
-		if ( chdir(course.c_str() ) != 0 ) {	
-			PP_ERROR( "Couldn't chdir to %s", course.c_str() );
-    	} 
-	}else{
-		sprintf( buff, "%s/courses/%s", getparam_data_dir(), course.c_str() );
-		if ( chdir( buff ) != 0 ) {
-			PP_ERROR( "Couldn't chdir to %s", buff );
-    	} 
-	}
+		
+	std::string data_dir = PPConfig.getString("data_dir");
+	script.doFile(data_dir+"/"+course+"/course.nut");			
 	
-    if ( Tcl_EvalFile( tclInterp, "./course.tcl") == TCL_ERROR ) {
-		PP_ERROR("Error evaluating %s/course.tcl: %s",  
-		      buff, Tcl_GetStringResult( tclInterp ) );
+    if(ppogl::os::chdir(cwd)==false){
+		PP_ERROR("Unable to change into directory: " << cwd );
     } 
-
-    if ( chdir( cwd ) != 0 ) {
-		PP_ERROR( "Couldn't chdir to %s", cwd );
-    } 
-
-    PP_ASSERT( !Tcl_InterpDeleted( tclInterp ),
-		     "Tcl interpreter deleted" );
 
     calc_normals();
 
-    fill_gl_arrays();
+    fillGLArrays();
 
-    init_course_quadtree( elevation, nx, ny, course_width/(nx-1.), 
-			  -course_length/(ny-1),
-			  players[0].view.pos, 
-			  getparam_course_detail_level() );
+    init_course_quadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
+			  -courseDim.y()/(ny-1),
+			  players[0].view.pos);
 
     init_track_marks();
 
     course_loaded = true;
-
-    /* flush unused audio files */
-    delete_unused_audio_data();
 } 
-
 
 static inline int intensity_to_terrain( const int intensity )
 {
@@ -391,139 +348,115 @@ static inline int intensity_to_terrain( const int intensity )
 }
 
 
-static int course_dim_cb ( ClientData cd, Tcl_Interp *ip, 
-			   int argc, CONST84 char *argv[]) 
+static int
+course_dim_cb(ppogl::Script *vm) 
 {
-    double width, length;
-
-    if ( ( argc != 3 ) && ( argc != 5 ) ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <course width> <course length>",
-			 " [<play width> <play length>]", NULL );
-        return TCL_ERROR;
+    if(vm->getTop() != 1){
+        PP_WARNING("ppcourse.course_dim: Invalid number of arguments");
+		return 0;
     }
 
-    if ( Tcl_GetDouble( ip, argv[1], &width ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid course width", 
-			 NULL );
-        return TCL_ERROR;
-    } 
-    if ( Tcl_GetDouble( ip, argv[2], &length ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid course length", 
-			 NULL );
-        return TCL_ERROR;
-    } 
+	if(vm->isArray()){
+		vm->pushNull();
+		vm->next(-2);
+		courseDim.x() = vm->getFloat();
+		vm->pop(2);
+		vm->next(-2);
+		courseDim.y() = vm->getFloat();
+		vm->pop(2);
+		
+		if(vm->next(-2)){
+			playDim.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			playDim.y() = vm->getFloat();
+			vm->pop(2);
+		}else{
+			playDim = courseDim;
+		}
 
-    course_width = width;
-    course_length = length;
-
-    if ( argc == 5 ) {
-		if ( Tcl_GetDouble( ip, argv[3], &width ) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid play width", 
-					 NULL );
-			return TCL_ERROR;
-		} 
-		if ( Tcl_GetDouble( ip, argv[4], &length ) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid play length", 
-					 NULL );
-			return TCL_ERROR;
-		} 
-		play_width = width;
-		play_length = length;
-    } else {
-		play_width = course_width;
-		play_length = course_length;
-    }
-
-    return TCL_OK;
+		vm->pop();
+	}else{
+		PP_WARNING("ppcourse.course_dim: Value is no array");
+	}		
+	return 0;
 } 
 
-static int angle_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+angle_cb(ppogl::Script *vm)
 {
     double angle;
 
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <angle>",
-			 NULL );
-        return TCL_ERROR;
+    if(vm->getTop()!=1){
+        PP_WARNING("ppcourse.angle_cb: invalid number of arguments");
+		return 0;
     } 
 
-    if ( Tcl_GetDouble( ip, argv[1], &angle ) != TCL_OK ) {
-        return TCL_ERROR;
-    } 
+    angle = vm->getFloat(1);
 
-    if ( angle < MIN_ANGLE ) {
-	PP_MESSAGE( "course angle is too small. Setting to %f",
-		       MIN_ANGLE );
-	angle = MIN_ANGLE;
+    if(angle < MIN_ANGLE){
+		PP_WARNING("course angle is too small. Setting to " << MIN_ANGLE);
+		angle = MIN_ANGLE;
     }
 
-    if ( MAX_ANGLE < angle ) {
-	PP_MESSAGE( "course angle is too large. Setting to %f",
-		       MAX_ANGLE );
-	angle = MAX_ANGLE;
+    if(MAX_ANGLE < angle){
+		PP_WARNING("course angle is too large. Setting to " << MAX_ANGLE);
+		angle = MAX_ANGLE;
     }
 
     course_angle = angle;
 
-    return TCL_OK;
+    return 0;
 } 
 
 
-static int elev_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+elev_cb(ppogl::Script *vm)
 {
-    pp::Image *elev_img;
+    ppogl::Image *elev_img;
     float slope;
     int   x,y;
     int   pad;
 
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <elevation bitmap>",
-			 NULL );
-        return TCL_ERROR;
+	if(vm->getTop() != 1){
+        PP_WARNING("ppcourse.elev: Invalid number of arguments");
+		return 0;
     } 
 
-    if (course_loaded) {
-		PP_MESSAGE( "ignoring %s: course already loaded",
-		       argv[0] );
-	return TCL_OK;
+    if(course_loaded){
+		PP_WARNING("Ignoring ppcourse.elev: course already loaded");
+		return 0;
     }
 
-    elev_img = pp::Image::readFile( argv[1] );
+	std::string filename = vm->getString(1);
+    elev_img = ppogl::Image::readFile(filename);
     if ( elev_img == NULL ) {
-		PP_WARNING( "%s: couldn't load %s", argv[0], argv[1] );
-		return TCL_ERROR;
+		PP_WARNING( "ppcourse.elev: couldn't load " << filename);
+		return 0;
     }
 	
     nx = elev_img->width;
     ny = elev_img->height;
 
-    elevation = reinterpret_cast<float *>(malloc( sizeof(float)*nx*ny ));
-
-    if ( elevation == NULL ) {
-		PP_ERROR( "malloc failed" );
-    }
-
+    elevation = new float[nx*ny];
+	PP_CHECK_ALLOC(elevation);
+	
     slope = tan( ANGLES_TO_RADIANS( course_angle ) );
 
-	//elev_img->sizeZ=4;
-	
-    pad = 0;    /* RGBA images rows are aligned on 4-byte boundaries */
+	pad = 0;    /* RGBA images rows are aligned on 4-byte boundaries */
     for (y=0; y<ny; y++) {
         for (x=0; x<nx; x++) {
 	    ELEV(nx-1-x, ny-1-y) = 
 		( ( elev_img->data[ (x + nx * y) * elev_img->depth + pad ] 
 		    - base_height_value ) / 255.0 ) * elev_scale
-		- double(ny-1.-y)/ny * course_length * slope;
+		- double(ny-1.-y)/ny * courseDim.y() * slope;
         } 
         //pad += (nx*elev_img->depth) % 4;
     } 
 
 	delete elev_img;
 	
-    return TCL_OK;
+    return 0;
 } 
 
 
@@ -538,44 +471,38 @@ sort_terrain(const int x, const int y)
 }
 
 
-static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+terrain_cb(ppogl::Script *vm)
 {
-    pp::Image *terrain_img;
+    ppogl::Image *terrain_img;
     int   x,y;
     int   pad;
     int   idx;
 	int	terrain_value;
 	int	image_pointer;
 
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <terrain bitmap>",
-			 NULL );
-        return TCL_ERROR;
+    if(vm->getTop()!=1){
+        PP_WARNING("ppcourse.load_terrain: Invalid number of arguments");
+		return 0;
     } 
 
-    terrain_img = pp::Image::readFile( argv[1] );
+	std::string filename = vm->getString(1);
+	
+    terrain_img = ppogl::Image::readFile(filename);
 
-    if ( terrain_img == NULL ) {
-		PP_WARNING("%s: couldn't load %s", argv[0], argv[1] );
-        Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1],
-			 NULL );
-		return TCL_ERROR;
+    if(terrain_img == NULL){
+		PP_WARNING("ppcourse.load_terrain: couldn't load " << filename);
+		return 0;
     }
 
     if ( nx != terrain_img->width || ny != terrain_img->height ) {
-        Tcl_AppendResult(ip, argv[0], ": terrain bitmap must have same " 
-			 "dimensions as elevation bitmap",
-			 NULL );
-
-	return TCL_ERROR;
+        PP_WARNING("ppcourse.load_terrain: terrain bitmap must have same " 
+			 "dimensions as elevation bitmap");
+		return 0;
     }
 
-    terrain = reinterpret_cast<int *>(malloc( sizeof(int)*nx*ny ));
-
-    if ( terrain == NULL ) {
-		PP_ERROR( "malloc failed" );
-    }
+    terrain = new int[nx*ny];
+	PP_CHECK_ALLOC(terrain);
 	
 	pad = 0;
 	
@@ -592,7 +519,6 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
 	    terrain[idx] = intensity_to_terrain(terrain_value);
 		
         } 
-        //pad += (nx*terrain_img->depth) % 4;
     } 
 	
     delete terrain_img;
@@ -607,1061 +533,815 @@ static int terrain_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *a
 	}
 	usedTerrains.sort(sort_terrain);
 	
-    return TCL_OK;
+    return 0;
 } 
 
-static int bgnd_img_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+
+static int
+terrain_tex_cb(ppogl::Script *vm)
 {
-
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <background image>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if (!load_and_bind_texture( "background", argv[1] )) {
-      Tcl_AppendResult(ip, argv[0], ": could not load texture", NULL);
-      return TCL_ERROR;
-	}
-
-    return TCL_OK;
-}
-
-static int terrain_tex_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
-{
- 	
-    int i;
-	int  rtn, num_col;
-	CONST84 char* text_bind =NULL;
-	int convert_temp;
-	CONST84 char** indices = 0;
-
-	if (num_terrains>=NUM_TERRAIN_TYPES){
-		Tcl_AppendResult(ip, argv[0], ": max number og terrains reached", NULL );
-        return TCL_ERROR;
+	if(num_terrains>=NUM_TERRAIN_TYPES){
+		PP_WARNING("pptheme.terrain_tex: Max number of terrains reached");
+		return 0;
 	}
 	
-
-	/* fill in values not specified with defaults */
+	// fill in values not specified with defaults
 	terrain_texture[num_terrains].type=1;
 	terrain_texture[num_terrains].value=0;
 	terrain_texture[num_terrains].friction=0.5;
 	terrain_texture[num_terrains].compression=0.1;
-	terrain_texture[num_terrains].texbind=0;
-	terrain_texture[num_terrains].partbind=0;
 	terrain_texture[num_terrains].soundactive=false;
-	terrain_texture[num_terrains].trackmark.head=0;
-	terrain_texture[num_terrains].trackmark.mark=0;
-	terrain_texture[num_terrains].trackmark.tail=0;
 	terrain_texture[num_terrains].wheight=150;
 	terrain_texture[num_terrains].count=0;
 	
+	std::string name = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("filename");
+	
+	if(name.empty() || filename.empty()){
+		PP_WARNING("pptheme.terrain_tex: Please specify name and texture");
+		return 0;
+	}
+	
+	ppogl::TextureRef texture =
+		ppogl::TextureMgr::getInstance().load(name, filename);
+			terrain_texture[num_terrains].texture = texture;
+	if(!terrain_texture[num_terrains].texture){
+		PP_WARNING("pptheme.terrain_tex: Unable to load texture " << filename << " for terrain " << name);
+		return 0;
+	}	
 
-    for ( i = 1; (i < argc - 1); i += 2 ) {
-	
-	if ( strcmp( "-name", argv[i] ) == 0 ) {
-		text_bind=argv[i+1];
-	
-	} else if ( strcmp( "-texture", argv[i]) == 0 ) {
-		if ( !load_and_bind_texture( text_bind,argv[i+1]) ) {
-     		Tcl_AppendResult(ip, argv[0], ": could not load texture", NULL);
-	  		return TCL_ERROR;
-    	}
-	   if (!get_texture_binding(text_bind, &terrain_texture[num_terrains].texbind)) {
-	   terrain_texture[num_terrains].texbind = 0;
+	if(vm->isKeyInTable("color")){
+		vm->pushString("color");
+		if(vm->get() && vm->isArray()){
+			//color value
+			int temp_value=0;
+			vm->pushNull();
+			for(int i=0; i<3; i++){
+				vm->next(-2);
+				temp_value += (vm->getInt() << (8*i));
+				vm->pop(2);
+			}
+			terrain_texture[num_terrains].value=temp_value;	
+			vm->pop(2);
+		}else{
+			PP_WARNING("pptheme.terrain_tex: Invalid color in terrain type " << name);
+		}
+	}else{
+		PP_WARNING("Terrain type " << name << " has no color");
+	}
+
+	if(vm->isKeyInTable("friction")){
+		terrain_texture[num_terrains].friction=vm->getFloatFromTable("friction");
+	}
+
+	if(vm->isKeyInTable("compression")){
+		terrain_texture[num_terrains].compression=vm->getFloatFromTable("compression");
 	}
 		
-	} else if ( strcmp( "-wheight", argv[i] ) == 0 ) {
-	    if ( Tcl_GetInt( ip, argv[i+1],
-		    &terrain_texture[num_terrains].wheight) != TCL_OK ){
-				Tcl_AppendResult(ip, argv[0], ": invalid wheight",
-				 NULL );
-			return TCL_ERROR;	
-	    }
-	} else if ( strcmp( "-color", argv[i] ) == 0 ) {
-	    rtn = Tcl_SplitList(ip, argv[i+1], &num_col, &indices);
-	    if( rtn != TCL_OK ) {
-		Tcl_AppendResult(ip, "a list of colors must be provided\n",
-			     NULL);
-		Tcl_Free(reinterpret_cast<char *>(indices));
-		return TCL_ERROR;
-	    }
-
-	    if (num_col == 3 || num_col == 4) {
-		Tcl_GetInt(ip, indices[0], &convert_temp);
-		terrain_texture[num_terrains].value = static_cast<unsigned char>(convert_temp);
-		Tcl_GetInt(ip, indices[1], &convert_temp);
-		terrain_texture[num_terrains].value += static_cast<unsigned char>(convert_temp) << 8;
-		Tcl_GetInt(ip, indices[2], &convert_temp);
-		terrain_texture[num_terrains].value += static_cast<unsigned char>(convert_temp) << 16;
+	if(vm->isKeyInTable("wheight")){
+		terrain_texture[num_terrains].wheight=vm->getIntFromTable("wheight");
+	}	
+	
+	if(vm->isKeyInTable("sound")){
+		terrain_texture[num_terrains].sound=vm->getStringFromTable("sound");
+	}
+		
+	if(vm->isKeyInTable("particle")){
+		terrain_texture[num_terrains].particles = 
+			ppogl::TextureMgr::getInstance().get(
+						vm->getStringFromTable("particle"));
+	}
 			
-	    } else {
-		Tcl_AppendResult(ip, argv[0], ": must specify three colors"
-			" to link with terrain type", NULL);
-		return TCL_ERROR;
-	    }
-	    Tcl_Free(reinterpret_cast<char *>(indices));
-	}  else if ( strcmp( "-friction", argv[i] ) == 0 ) {
-	    if ( Tcl_GetDouble( ip, argv[i+1],
-		    &terrain_texture[num_terrains].friction) != TCL_OK ) {
-				Tcl_AppendResult(ip, argv[0], ": invalid friction",
-				 NULL );
-			return TCL_ERROR;	
-	    }
-	}else if ( strcmp( "-compression", argv[i] ) == 0 ) {
-	    if ( Tcl_GetDouble( ip, argv[i+1],
-		    &terrain_texture[num_terrains].compression) != TCL_OK ) {
-				Tcl_AppendResult(ip, argv[0], ": invalid compression",
-				 NULL );
-			return TCL_ERROR;
-	    }
-	}else if ( strcmp( "-particles", argv[i]) == 0 ) {
-		if (!get_texture_binding(argv[i+1], &terrain_texture[num_terrains].partbind)) {
-	   		terrain_texture[num_terrains].texbind = 0;
-		}
-	} else if ( strcmp( "-envmap_texture", argv[i]) == 0 ) {
-		if (!get_texture_binding(argv[i+1], &terrain_texture[num_terrains].envmapbind)) {
-	   		terrain_texture[num_terrains].envmapbind = 0;
-		}
-	} else if ( strcmp( "-track_head", argv[i]) == 0 ) {
-		if (!get_texture_binding(argv[i+1], &terrain_texture[num_terrains].trackmark.head)) {
-	   		terrain_texture[num_terrains].trackmark.head = 0;
-		}
-	} else if ( strcmp( "-track_mark", argv[i]) == 0 ) {
-		if (!get_texture_binding(argv[i+1], &terrain_texture[num_terrains].trackmark.mark)) {
-	   		terrain_texture[num_terrains].trackmark.mark = 0;
-		}
-	} else if ( strcmp( "-track_tail", argv[i]) == 0 ) {
-		if (!get_texture_binding(argv[i+1], &terrain_texture[num_terrains].trackmark.tail)) {
-	   		 terrain_texture[num_terrains].trackmark.tail = 0;
-		}
-	} else if ( strcmp( "-sound", argv[i]) == 0 ) {
-		terrain_texture[num_terrains].sound = argv[i+1];		
+	if(vm->isKeyInTable("track_head")){
+		terrain_texture[num_terrains].trackmark.head = 
+			ppogl::TextureMgr::getInstance().get(
+					vm->getStringFromTable("track_head"));
+	}
+	
+	if(vm->isKeyInTable("track_mark")){
+		terrain_texture[num_terrains].trackmark.mark = 
+			ppogl::TextureMgr::getInstance().get(
+					vm->getStringFromTable("track_mark"));		
+	}
+		
+	if(vm->isKeyInTable("track_tail")){
+		terrain_texture[num_terrains].trackmark.tail = 
+			ppogl::TextureMgr::getInstance().get(
+					vm->getStringFromTable("track_tail"));
 	}
 
-	
-	
-   } 
+	if(vm->isKeyInTable("envmap_texture")){
+		terrain_texture[num_terrains].envmap = 
+			ppogl::TextureMgr::getInstance().get(
+					vm->getStringFromTable("envmap_texture"));
+	}
 
     num_terrains++;
-    return TCL_OK;
-	
-	
+    return 0;
 } 
 
 
-static int start_pt_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+start_pt_cb(ppogl::Script *vm)
 {
-    double xcd, ycd;
+    double xcd =0;
+	double ycd =0;
 
-    if ( argc != 3 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <x coord> <y coord>",
-			 NULL );
-        return TCL_ERROR;
-    } 
+    if(vm->getTop() != 1){
+        PP_WARNING("ppcourse.start_pt: Invalid number of arguments");
+		return 0;
+    }
+		
+	if(vm->isArray()){
+		vm->pushNull();
+		vm->next(-2);
+		xcd = vm->getFloat();
+		vm->pop(2);
+		vm->next(-2);
+		ycd = vm->getFloat();
+		vm->pop(2);
+		
+		vm->pop();
+	}else{
+		PP_WARNING("ppcourse.start_pt: Value is no array");		
+	}
 
-    if ( Tcl_GetDouble( ip, argv[1], &xcd ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid x coordinate", NULL );
-        return TCL_ERROR;
-    } 
-    if ( Tcl_GetDouble( ip, argv[2], &ycd ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid y coordinate", NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( !( xcd > 0 && xcd < course_width ) ) {
-	PP_WARNING( "%s: x coordinate out of bounds, "
-		       "using 0\n", argv[0] );
-	xcd = 0;
+    if(!( xcd > 0 && xcd < courseDim.x() )){
+		PP_WARNING("ppcourse.start_pt: x coordinate out of bounds, "
+		       "using 0");
+		xcd = 0;
     }
 
-    if ( !( ycd > 0 && ycd < course_length ) ) {
-	PP_WARNING( "%s: y coordinate out of bounds, "
-		       "using 0\n", argv[0] );
-	ycd = 0;
+    if (!( ycd > 0 && ycd < courseDim.y() )){
+		PP_WARNING("ppcourse.start_pt: y coordinate out of bounds, "
+		       "using 0");
+		ycd = 0;
     }
 
-    start_pt.x = xcd;
-    start_pt.y = -ycd;
+    start_pt.x() = xcd;
+    start_pt.y() = -ycd;
 
-    return TCL_OK;
+    return 0;
 } 
 
-static int elev_scale_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+elev_scale_cb(ppogl::Script *vm)
 {
-
     double scale;
     
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <scale>",
-			 NULL );
-        return TCL_ERROR;
+	if(vm->getTop() != 1){
+        PP_WARNING("ppcourse.elev_scale: invalid number of arguments");
+		return 0;
     } 
-
-    if ( Tcl_GetDouble( ip, argv[1], &scale ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid scale", NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( scale <= 0 ) {
-		PP_WARNING( "%s: scale must be positive", argv[0] );
-	return TCL_ERROR;
+	
+	scale = vm->getFloat(1);
+	
+    if(scale <= 0){
+		PP_WARNING("ppcourse.elev_scale: scale must be positive");
+		return 0;
     }
 
     elev_scale = scale;
 
-    return TCL_OK;
+    return 0;
 } 
 
-static int is_tree( unsigned char pixel[], tree_type_t ** which_type )
+static int
+elements_cb(ppogl::Script *vm)
 {
-	int min_distance = pixel[0] + pixel[1] + pixel[2];
-    
-	int distance;
- 
-    *which_type = NULL;
-    for (int i = 0; i < num_tree_types; i++) {
-		// assume red green blue pixel ordering 
-		distance = abs ( tree_types[i].red - pixel[0] ) +
-		    abs ( tree_types[i].green - pixel[1] ) +
-		    abs ( tree_types[i].blue - pixel[2] );
-		if (distance < min_distance) {
-			min_distance = distance;
-			*which_type = &tree_types[i];
-		}
+    if(vm->getTop()!=1){
+		PP_WARNING("ppcourse.elements: Invalid number of arguments");
+		return 0;
+	}
+	
+	ppogl::Image *elementsImg;
+	
+	std::string filename = vm->getString(1);
+	
+	if(filename.empty()){
+		// no elements image specified
+		return 0;
+	}
+	
+	elementsImg = ppogl::Image::readFile(filename);
+    if(elementsImg->data == NULL){
+		PP_WARNING( "ppcourse.load_elements: couldn't load image: " << filename);
+		return 0;
     }
-    
-    return min_distance;
-}
-
-static int is_item( unsigned char pixel[], item_type_t ** which_type )
-{
-    int      min_distance = pixel[0] + pixel[1] + pixel[2];
-    int distance;
- 
-    *which_type = NULL;
-    for (int i = 0; i < num_item_types; i++) {
-		// assume red green blue pixel ordering 
-		distance = abs ( item_types[i].red - pixel[0] ) +
-		    abs ( item_types[i].green - pixel[1] ) +
-		    abs ( item_types[i].blue - pixel[2] );
-		if (distance < min_distance) {
-			min_distance = distance;
-			*which_type = &item_types[i];
-		}
-    }
-    
-    return min_distance;
-}
-
-static int trees_cb ( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
-{
-    pp::Image *treeImg;
-    int sx, sy, sz;
-    int x,y;
-    int pad;
-    tree_type_t *which_tree;
-    item_type_t *which_item;
-    int i;
-    int best_tree_dist, best_item_dist;
-
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <tree location bitmap>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    treeImg = pp::Image::readFile( argv[1] );
-    if ( treeImg->data == NULL ) {
-		PP_WARNING( "%s: couldn't load %s", 
-		       argv[0], argv[1] );
-        Tcl_AppendResult(ip, argv[0], ": couldn't load ", argv[1], 
-			 NULL );
-	return TCL_ERROR;
-    }
-
-    if ( num_tree_types == 0 && num_item_types == 0 ) {
-	PP_WARNING( "tux_trees callback called with no tree or item "
-		       "types set" );
-    }
-
-    sx = treeImg->width;
-    sy = treeImg->height;
-    sz = treeImg->depth;
-
-    for (i = 0; i < num_tree_types; i++) {
-		tree_types[i].num_trees = 0;
-    }
-
-    for (i = 0; i < num_item_types; i++) {
-		item_types[i].num_items = 0;
-    }
-
-    num_trees = 0;
-    num_items = 0;
-    pad = 0;
-    for (y=0; y<sy; y++) {
-        for (x=0; x<sx; x++) {
-			
-			unsigned char* pixel=&treeImg->data[ (x + y*sx)*sz + pad ];
-			if(pixel[0]!=0 || pixel[1]!=0 || pixel[2]!=0){
+	
+	ppogl::Image::iterator it;
+	for(it=elementsImg->begin();it!=elementsImg->end();it++){
+		
+		if( !(*it).compareRGB(ppogl::Color4c::black) ){
+			// the pixel is not black,
+			// check for an element type with this color value			
 				
-				best_tree_dist = is_tree ( pixel,&which_tree );
-            	best_item_dist = is_item ( pixel,&which_item );
-
-	    		if ( best_tree_dist < best_item_dist && which_tree != NULL ) {
-        		if (num_trees+1 == MAX_TREES ) {
-                    fprintf( stderr, "%s: maximum number of trees reached.\n", 
-					argv[0] );
-            	        break;
-            	    }
-					num_trees += 1;
-					which_tree->num_trees += 1;
-										
-					which_tree->pos.push_back(pp::Vec2d(
-						(sx-x)/double(sx-1.)*course_width,
-						-(sy-y)/double(sy-1.)*course_length));
+			bool found=false;
+			
+			std::map<std::string, ppogl::RefPtr<ModelType> >::iterator modelit;
+			for(modelit=modelTypes.begin();modelit!=modelTypes.end();modelit++){
+				if( (*modelit).second->color.compareRGB(*it) ){
+					// yes, that's the right item
+				
+					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*courseDim.x();
+					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*courseDim.y();
+					double y = find_y_coord(x,z) + (*modelit).second->height;
 					
-				} else if ( which_item != NULL ) {
-                	if (num_items+1 == MAX_ITEMS ) {
-                    	fprintf( stderr, "%s: maximum number of items reached.\n", 
-			   	 		argv[0] );
-             			break;
-            	    }
-					num_items += 1;
-					which_item->num_items += 1;
+					Model model((*modelit).second, ppogl::Vec3d(x,y,z));
+															
+					modelLocs.push_back(model);
+					found=true;
+					break;
+				}
+			}
+			if(found)continue;
+				
+			std::map<std::string, ppogl::RefPtr<ItemType> >::iterator itemit;
+			for(itemit=itemTypes.begin();itemit!=itemTypes.end();itemit++){
+				if( (*itemit).second->color.compareRGB(*it) ){
+					// yes, that's the right item
+					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*courseDim.x();
+					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*courseDim.y();
+					double y = find_y_coord(x,z) + (*itemit).second->above_ground;
 					
-					which_item->pos.push_back(pp::Vec2d(
-						(sx-x)/double(sx-1.)*course_width,
-						-(sy-y)/double(sy-1.)*course_length));
-					
+					if( (*itemit).second->reset_point ){
+						resetLocs.push_back(ppogl::Vec2d(x,z));
+						found=true;
+						break;						
+					}else{
+						Item item((*itemit).second, ppogl::Vec3d(x,y,z));	
+						
+						itemLocs.push_back(item);
+												
+						found=true;
+						break;
 					}
-        		}
+				}
 			}
-			//pad += ( sx * sz ) % 4; /* to compensate for word-aligned rows */
-    }
-
-    /*
-    // double pass so that tree and object types are clumped together - reduce
-    // texture switching
-    */
-	std::list<pp::Vec2d>::iterator it;
-    num_trees = 0;
-    for (i = 0; i < num_tree_types; i++) {
-			
-		for(it=tree_types[i].pos.begin();it!=tree_types[i].pos.end();it++){
-		    tree_locs[num_trees].ray.pt.x = (*it).x;
-	    	tree_locs[num_trees].ray.pt.z = (*it).y;
-	    	tree_locs[num_trees].ray.pt.y = find_y_coord( (*it).x, (*it).y ) + tree_types[i].height;
-	    	tree_locs[num_trees].ray.vec = pp::Vec3d( 0, 1, 0);
-
-	   		//tree_locs[num_trees].height = (double)rand()/RAND_MAX*tree_types[i].vary*2;
-	    	//tree_locs[num_trees].height -= tree_types[i].vary;
-	    	//tree_locs[num_trees].height = tree_types[i].height + 
-			//tree_locs[num_trees].height * tree_types[i].height;
-	    	//tree_locs[num_trees].diam = (tree_locs[num_trees].height /
-			//tree_types[i].height) * tree_types[i].diam;
-			
-			tree_locs[num_trees].diam = tree_types[i].diam;
-	    	tree_locs[num_trees].type = i;
-			tree_locs[num_trees].setModel(tree_types[i].model);
-			tree_locs[num_trees].setPolyhedron(tree_types[i].ph);
-		
-	    	num_trees++;
-		}
-		tree_types[i].pos.clear();
-    }
-
-    num_items = 0;
-    for (i = 0; i < num_item_types; i++) {
-		
-		for(it=item_types[i].pos.begin();it!=item_types[i].pos.end();it++){
-
-	    	item_locs[num_items].ray.pt.x = (*it).x;
-	    	item_locs[num_items].ray.pt.z = (*it).y;
-	    	item_locs[num_items].ray.pt.y = find_y_coord( (*it).x, (*it).y )
-					    + item_types[i].above_ground;
-			item_locs[num_items].ray.vec = pp::Vec3d(0, 1, 0);
-
-	    	item_locs[num_items].height = item_types[i].height ; 
-	    	item_locs[num_items].diam = item_types[i].diam;
-	    	item_locs[num_items].type = i;
-			item_locs[num_items].setType(item_types[i].type);
-			item_locs[num_items].setScore(item_types[i].score);
-
-	    	if ( item_types[i].reset_point )  {
-				item_locs[num_items].setDrawable(false);
-	    	} else {
-				item_locs[num_items].setDrawable(true);
-	    	}
-	    	num_items++;
-		}
-		item_types[i].pos.clear();
-    }
-
-    delete treeImg;
-
-    return TCL_OK;
-}
-
-static int friction_cb ( ClientData cd, Tcl_Interp *ip, 
-			 int argc, CONST84 char *argv[]) 
-{
-    double fric[4];
-    float fric_s[4];
-    unsigned int i;
-
-    if ( argc != 5 ) {
-        fprintf( stderr, "Usage: %s <ice> <rock> <snow> <ramp>", argv[0] );
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <ice coeff.> <rock coeff.> "
-			 "<snow coeff.> <ramp coeff.>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( Tcl_GetDouble( ip, argv[1], &fric[0] ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid ice coefficient",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( Tcl_GetDouble( ip, argv[2], &fric[1] ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid rock coefficient",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( Tcl_GetDouble( ip, argv[3], &fric[2] ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid snow coefficient",
-			 NULL );
-        return TCL_ERROR;
-    }
-	 
-	if ( Tcl_GetDouble( ip, argv[4], &fric[3] ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid ramp coefficient",
-			 NULL );
-        return TCL_ERROR;
-    }
-	
-
-    for ( i=0; i<sizeof(fric)/sizeof(fric[0]); i++) {
-	fric_s[i] = fric[i];
-    }
-
-    set_friction_coeff( fric_s );
-
-    return TCL_OK;
-} 
-
-static int course_author_cb( ClientData cd, Tcl_Interp *ip, 
-			     int argc, CONST84 char *argv[]) 
-{
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <author's name>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    courseAuthor = argv[1];
-
-    return TCL_OK;
-} 
-
-static int course_name_cb( ClientData cd, Tcl_Interp *ip, 
-			   int argc, CONST84 char *argv[]) 
-{
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <course name>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    courseName = argv[1];
-
-    return TCL_OK;
-} 
-
-static int base_height_value_cb( ClientData cd, Tcl_Interp *ip, 
-				 int argc, CONST84 char *argv[]) 
-{
-    int value;
-
-    if ( argc != 2 ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid number of arguments\n", 
-			 "Usage: ", argv[0], " <base height>",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    if ( Tcl_GetInt( ip, argv[1], &value ) != TCL_OK ) {
-        Tcl_AppendResult(ip, argv[0], ": invalid base height",
-			 NULL );
-        return TCL_ERROR;
-    } 
-
-    base_height_value = value;
-
-    return TCL_OK;
-}
-
-static int tree_model_cb( ClientData cd, Tcl_Interp *ip, 
-				 int argc, CONST84 char *argv[])
-{
-	if ( num_tree_types + 1 >= MAX_TREE_TYPES ) {
-		Tcl_AppendResult(ip, argv[0], ": max number of tree types reached",
-			 NULL );
-		return TCL_ERROR;
-    }
-	
-    tree_types[num_tree_types].height = 1.0;
-	tree_types[num_tree_types].diam = 1.0;
-    tree_types[num_tree_types].num_trees = 0;
-    tree_types[num_tree_types].red = 255;
-    tree_types[num_tree_types].green = 255;
-    tree_types[num_tree_types].blue = 255;
-	tree_types[num_tree_types].model = NULL;
-	
-
-	int error = 0;
-	
-	for ( int i = 1; (i < argc - 1) && !error; i += 2 ) {
-		if ( strcmp( "-name", argv[i] ) == 0 ) {
-		    tree_types[num_tree_types].name = argv[i+1];
-
-		} else if ( strcmp( "-height", argv[i] ) == 0 ) {
-	    	if ( Tcl_GetDouble( ip, argv[i+1],
-		   		&tree_types[num_tree_types].height) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid height",
-					NULL );
-			error = 1;
-	    	}
-		} else if ( strcmp( "-diam", argv[i] ) == 0 ) {
-	    	if ( Tcl_GetDouble( ip, argv[i+1],
-		   		&tree_types[num_tree_types].diam) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid diameter",
-					NULL );
-			error = 1;
-		
-	    	}
-			
-		} else if ( strcmp( "-model", argv[i] ) == 0 ) {
-			tree_types[num_tree_types].model =
-				new pp::Model(argv[i+1]);
-			
-		} else if ( strcmp( "-color", argv[i] ) == 0 ) {
-			int         rtn, num_col;
-    		CONST84 char **     indices = 0;
-			
-	    	rtn = Tcl_SplitList(ip, argv[i+1], &num_col, &indices);
-			if( rtn != TCL_OK ) {
-				Tcl_AppendResult(ip, "a list of colors must be provided\n",
-			    		NULL);
-				Tcl_Free(reinterpret_cast<char *>(indices));
-				error = 1;
-	    	}
-    
-			int convert_temp;
-
-	    	if (num_col == 3 || num_col == 4) {
-				Tcl_GetInt(ip, indices[0], &convert_temp);
-				tree_types[num_tree_types].red = static_cast<unsigned char>(convert_temp);
-				Tcl_GetInt(ip, indices[1], &convert_temp);
-				tree_types[num_tree_types].green = static_cast<unsigned char>(convert_temp);
-				Tcl_GetInt(ip, indices[2], &convert_temp);
-				tree_types[num_tree_types].blue = static_cast<unsigned char>(convert_temp);
-	    	} else {
-				Tcl_AppendResult(ip, argv[0], ": must specify three colors"
-				" to link with tree type", NULL);
-				error = 1;
-	    	}
-	    	Tcl_Free(reinterpret_cast<char *>(indices));
-		} 
-	}
-	
-	tree_types[num_tree_types].ph = 
-			tree_types[num_tree_types].model->getPolyhedron();	
-	
-	num_tree_types += 1;
-	return TCL_OK;
-}
-
-
-static int item_spec_cb( ClientData cd, Tcl_Interp *ip, 
-				 int argc, CONST84 char *argv[])
-{
-    int          rtn, num_col;
-    CONST84 char **      indices = NULL;
-    int          convert_temp;
-    char *       err_msg = "";
-    char         buff[BUFF_LEN];
-
-    if ( num_item_types + 1 >= MAX_ITEM_TYPES ) {
-	Tcl_AppendResult(ip, argv[0], ": max number of item types reached",
-			 NULL );
-	return TCL_ERROR;
-    }
-
-    item_types[num_item_types].diam = .8;
-    item_types[num_item_types].height = 0.5;
-    item_types[num_item_types].above_ground = 0.0;
-    item_types[num_item_types].red = 255;
-    item_types[num_item_types].green = 255;
-    item_types[num_item_types].blue = 255;
-	item_types[num_item_types].type = Item::UNCOLLECTABLE;
-    item_types[num_item_types].reset_point = false;
-    item_types[num_item_types].num_items = 0;
-    item_types[num_item_types].use_normal = false;
-	item_types[num_item_types].score=1;
-
-    NEXT_ARG;
-
-    while ( *argv != NULL ) {
-	if ( strcmp( "-name", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-name", err_msg, item_spec_bail );
-
-	    item_types[num_item_types].name = *argv;
-
-	} else if ( strcmp( "-height", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-height", err_msg, item_spec_bail );
-
-	    if ( Tcl_GetDouble( ip, *argv,
-		    &item_types[num_item_types].height) != TCL_OK ) {
-		Tcl_AppendResult(ip, argv[0], ": invalid height\n",
-					NULL);
-	    }
-
-	} else if ( strcmp( "-diameter", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-diameter", err_msg, item_spec_bail );
-
-	    if ( Tcl_GetDouble( ip, *argv,
-		    &item_types[num_item_types].diam) != TCL_OK ) {
-		Tcl_AppendResult(ip, argv[0], ": invalid diameter\n",
-					NULL);
-	    }
-	
-	} else if ( strcmp( "-texture", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-texture", err_msg, item_spec_bail );
-
-	    if ( item_types[num_item_types].texture.empty() ) {
-			item_types[num_item_types].texture = *argv;
-	    } else {
-			Tcl_AppendResult(ip, argv[0], ": specify only one texture\n",
-				NULL );
-	    }
-
-	} else if ( strcmp( "-above_ground", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-above_ground", err_msg, item_spec_bail );
-
-	    if ( Tcl_GetDouble( ip, *argv,
-		    &item_types[num_item_types].above_ground) != TCL_OK ) {
-		Tcl_AppendResult(ip, argv[0], ": invalid height above ground\n",
-					NULL);
-	    }
-
-	} else if ( strcmp( "-score", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-score", err_msg, item_spec_bail );
-
-	    if ( Tcl_GetInt( ip, *argv,
-		    &item_types[num_item_types].score) != TCL_OK ) {
-		Tcl_AppendResult(ip, argv[0], ": invalid score\n",
-					NULL);
-	    }
-
-	} else if ( strcmp( "-color", *argv ) == 0 ) 
-	{
-	    NEXT_ARG;
-	    CHECK_ARG( "-color", err_msg, item_spec_bail );
-
-	    rtn = Tcl_SplitList(ip, *argv, &num_col, &indices);
-	    if( rtn != TCL_OK ) {
-		err_msg = "Must provide a list of colors for -color";
-		goto item_spec_bail; 
-	    }
-
-	    if (num_col == 3 || num_col == 4) {
-		Tcl_GetInt(ip, indices[0], &convert_temp);
-		item_types[num_item_types].red = static_cast<unsigned char>(convert_temp);
-		Tcl_GetInt(ip, indices[1], &convert_temp);
-		item_types[num_item_types].green = static_cast<unsigned char>(convert_temp);
-		Tcl_GetInt(ip, indices[2], &convert_temp);
-		item_types[num_item_types].blue = static_cast<unsigned char>(convert_temp);
-	    } else {
-		err_msg = "Color specification must have 3 or 4 elements";
-		goto item_spec_bail;
-	    }
-	    Tcl_Free(reinterpret_cast<char *>(indices));
-	    indices = NULL;
-
-	} else if ( strcmp( "-type", *argv ) == 0) {
-		NEXT_ARG;
-	    CHECK_ARG( "-type", err_msg, item_spec_bail );
-		
-		if(!strcmp(*argv,"herring")){
-			item_types[num_item_types].type=Item::HERRING;
-		}else if (!strcmp(*argv,"life")){
-			item_types[num_item_types].type=Item::LIFE;
 		}	
-	} else if ( strcmp( "-reset_point", *argv ) == 0 ) {
-	    item_types[num_item_types].reset_point = true;
-	    item_types[num_item_types].type = Item::UNCOLLECTABLE;
-	} else if ( strcmp( "-normal", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    CHECK_ARG( "-normal", err_msg, item_spec_bail );
+	}
+			
+	return 0;
+}
 
-	    if ( get_tcl_tuple( 
-		ip, *argv, reinterpret_cast<double*>(&item_types[num_item_types].normal), 3 )
-		 != TCL_OK )
-	    {
-		err_msg = "Must specify a list of size three for -normal";
-		goto item_spec_bail;
-	    }
-
-	    item_types[num_item_types].normal.normalize();
-
-	    item_types[num_item_types].use_normal = true;
-
-	} else {
-	    sprintf( buff, "Unrecognized option `%s'", *argv );
-	    goto item_spec_bail;
+static int
+model_spec_cb(ppogl::Script *vm)
+{
+	if(	!vm->isKeyInTable("name") ||
+		!vm->isKeyInTable("file"))
+	{
+		PP_WARNING("pptheme.model: Please specify name and file");
+		return 0;	
 	}
 
-	NEXT_ARG;
-    }
-
-    if ( item_types[num_item_types].name.empty() ||
-	 ( item_types[num_item_types].texture.empty() &&
-	   item_types[num_item_types].reset_point == false ) ) 
-    {
-	err_msg = "Some mandatory elements not filled.  "
-	    "Item name and texture name must be supplied.";
-	goto item_spec_bail;
-    }
-
-    if ( item_types[num_item_types].reset_point == false &&
-	 !bind_texture( item_types[num_item_types].name.c_str(),
-			item_types[num_item_types].texture.c_str() )) 
-    {
-	err_msg = "could not bind specified texture";
-	goto item_spec_bail;
-    }
-
-    num_item_types += 1;
-    return TCL_OK;
-
-item_spec_bail:
-    if ( indices ) {
-		Tcl_Free(reinterpret_cast<char *>(indices));
-		indices = NULL;
-    }
-
-	item_types[num_item_types].name.erase();
-	item_types[num_item_types].texture.erase();
-
-        
-
-    Tcl_AppendResult(
-	ip,
-	"Error in call to tux_item_spec: ", 
-	err_msg,
-	"\n",
-	"Usage: tux_item_spec -name <name> -height <height> "
-	"-diameter <diameter> -color {r g b [a]} "
-	"[-texture <texture>] [-above_ground <distance>] [-score <score>] "
-	"[-nocollect] [-reset_point] [-normal {x y z}]",
-	(NULL) );
-    return TCL_ERROR;
-}
-
-static int wind_velocity_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
-{
-	pp::Vec3d velocity;
-	double scale;
-	char *err_msg = "";
-	int rtn, num_col;
-	CONST84 char ** indices = NULL;
-	int convert_temp;
-
-    NEXT_ARG;
-
-    while ( *argv != NULL ){
-		if ( strcmp( "-scale", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-scale", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetDouble( ip, *argv,
-			    &scale) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid scale\n",
-						NULL);
-		    }
-		}else if ( strcmp( "-velocity", *argv ) == 0 ||
-		    strcmp( "-velocity", *argv ) == 0 ){
-		    NEXT_ARG;
-		    CHECK_ARG( "-velocity", err_msg, item_spec_bail );
+	ppogl::RefPtr<ModelType> model = new ModelType;
+		
+	std::string name = vm->getStringFromTable("name");
 	
-		    rtn = Tcl_SplitList(ip, *argv, &num_col, &indices);
-	    	if( rtn != TCL_OK ) {
-				err_msg = "Must provide a list of velocities for -velocity";
-				goto item_spec_bail; 
+	model->setModel(ppogl::ModelRef(
+			new ppogl::Model(vm->getStringFromTable("file"))
+		));
+
+	if(vm->isKeyInTable("diameter")){
+		model->diameter =
+				vm->getFloatFromTable("diameter");		
+	}
+	
+	if(vm->isKeyInTable("height")){
+		model->height =
+				vm->getFloatFromTable("height");		
+	}
+	
+	if(vm->isKeyInTable("color")){
+		vm->pushString("color");
+		if(vm->get() && vm->isArray()){
+			vm->pushNull();
+			for(int i=0; i<3; i++){
+				vm->next(-2);
+				model->color.values[i] = vm->getInt();
+				vm->pop(2);
 			}
-
-			if (num_col == 3) {
-				Tcl_GetInt(ip, indices[0], &convert_temp);
-				velocity.x = static_cast<unsigned char>(convert_temp);
-				Tcl_GetInt(ip, indices[1], &convert_temp);
-				velocity.y = static_cast<unsigned char>(convert_temp);
-				Tcl_GetInt(ip, indices[2], &convert_temp);
-				velocity.z = static_cast<unsigned char>(convert_temp);
-		    } else {
-				err_msg = "Velocity specification must have 3 elements";
-				goto item_spec_bail;
-	    	}
-			Tcl_Free(reinterpret_cast<char *>(indices));
-	    	indices = NULL;
+			vm->pop(2);
+		}else{
+			PP_WARNING("pptheme.model: Invalid color in model type " << name);
 		}
-
-		NEXT_ARG;
-    }	
+	}else{
+		PP_WARNING("pptheme.model: No color specified for model");
+	}
+		
+	// attach model to map
+	// an existing model with the same name will be replaced
+	modelTypes[name]=model;
 	
+	return 0;
+}
+
+static int
+reset_point_cb(ppogl::Script *vm)
+{
+	if(!vm->isArray(1)){
+		PP_WARNING("pptheme.reset_point: Invalid color table");
+		return 0;
+	}
+	
+	ppogl::RefPtr<ItemType> item = new ItemType;	
+	
+	vm->pushNull();
+	for(int i=0; i<3; i++){
+		vm->next(1);
+		item->color.values[i]=vm->getInt();
+		vm->pop(2);	
+	}
+	vm->pop();
+	
+	item->reset_point = true;
+	item->type = ItemType::UNCOLLECTABLE;
+	
+	itemTypes["reset_point"]=item;
+	
+	return 0;
+}	
+		
+static int
+item_spec_cb(ppogl::Script *vm)
+{
+	if(	!vm->isKeyInTable("name") ||
+		!vm->isKeyInTable("element_type") ||
+		!vm->isKeyInTable("texture"))
+	{
+		PP_WARNING("pptheme.item: Please specify name, element_type and texture");
+		return 0;	
+	}
+	
+	std::string name = vm->getStringFromTable("name");
+	std::string type = vm->getStringFromTable("element_type");
+	std::string texture = vm->getStringFromTable("texture");	
+
+	ppogl::RefPtr<ItemType> item = new ItemType;
+		
+	item->texture =
+		ppogl::TextureMgr::getInstance().get(texture);
+	
+	if(!item->texture){
+		PP_WARNING("pptheme.item: Unable to get texture for item " << name << ": " << texture);
+		return 0;
+	}
+				
+	if(type=="herring"){
+		item->type=ItemType::HERRING;
+	}else if(type=="life"){
+		item->type=ItemType::LIFE;
+	}
+	
+	if(vm->isKeyInTable("diameter")){
+		item->diam = vm->getFloatFromTable("diameter");
+	}
+		
+	if(vm->isKeyInTable("height")){
+		item->height = vm->getFloatFromTable("height");
+	}
+	
+	if(vm->isKeyInTable("above_ground")){
+		item->above_ground = vm->getFloatFromTable("above_ground");
+	}
+	
+	if(vm->isKeyInTable("score")){
+		item->score = vm->getIntFromTable("score");
+	}
+	
+	if(vm->isKeyInTable("color")){
+		vm->pushString("color");
+		if(vm->get() && vm->isArray()){
+			vm->pushNull();
+			for(int i=0; i<3; i++){
+				vm->next(-2);
+				item->color.values[i] = vm->getInt();
+				vm->pop(2);
+			}
+			vm->pop(2);	
+		}else{
+			PP_WARNING("pptheme.item: Invalid color in item type " << name);
+		}
+	}else{
+		PP_WARNING("pptheme.item: No color specified for item");
+	}
+	
+	if(vm->isKeyInTable("normal")){
+		vm->pushString("normal");
+		if(vm->get() && vm->isArray()){
+			vm->pushNull();
+			for(int i=0; i<3; i++){
+				vm->next(-2);
+				item->normal.values[i] = vm->getFloat();
+				vm->pop(2);
+			}
+			vm->pop(2);
+			item->use_normal=true;
+		}else{
+			PP_WARNING("pptheme.item: Invalid normal in item type " << name);
+		}
+		vm->pop(2);
+	}
+
+	itemTypes[name]=item;
+	
+	return 0;	
+}
+
+static int
+wind_velocity_cb(ppogl::Script *vm)
+{
+	if(vm->getTop()>2){
+		PP_WARNING("pptheme.wind_velocity: Invalid number of arguments");
+		return 0;
+	}
+		
+	ppogl::Vec3d velocity;
+	double scale = 1.0;
+	
+	if(vm->isArray(1)){
+		vm->pushNull();
+		for(int i=0; i<3; i++){
+			vm->next(1);
+			velocity.values[i]=vm->getFloat();
+			vm->pop(2);
+		}
+	}else{
+		PP_WARNING("pptheme.wind_velocity: Invalid direction");
+		return 0;
+	}
+	vm->pop();
+	
+	if(vm->getTop()==2){
+		scale = vm->getFloat(2);	
+	}
+		
 	set_wind_velocity(velocity,scale);
-    return TCL_OK;
 
-item_spec_bail:
-    if ( indices ){
-	Tcl_Free(reinterpret_cast<char *>(indices));
-	indices = NULL;
-    }
-
-    Tcl_AppendResult(
-		ip,
-		"Error in call to tux_wind_velocity: ", 
-		err_msg,
-		"\n",
-		"Usage: tux-wind_velocity -velocity {x y z} -scale <scale>",
-		(NULL) );
-    return TCL_ERROR;
+	return 0;
 }
 
 
-static int hud_cb( ClientData cd, Tcl_Interp *ip, int argc, CONST84 char *argv[]) 
+static int
+hud_cb(ppogl::Script *vm)
 {
-	char *err_msg = "";
-	int rtn, num_col;
-	CONST84 char ** indices = NULL;
-	int convert_temp;
-	
-	int hud=1, element_num=-1;
-	
+	if(vm->getTop() != 1){
+		PP_WARNING("pptheme.hud: Invalid number of arguments");
+		return 0;
+	}
+		
+	int element_num=-1;
 	HUD::Element element;
 	
-    NEXT_ARG;
-
-    while ( *argv != NULL ){
-		if ( strcmp( "-hud", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-hud", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &hud) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid HUD\n",
-						NULL);
-		    }
-		}else if ( strcmp( "-element", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-element", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &element_num) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid HUD element number\n",
-						NULL);
-		    }
-		}else if ( strcmp( "-type", *argv ) == 0 ) {
-			NEXT_ARG;
-			CHECK_ARG( "-typr", err_msg, item_spec_bail );
-			if(!strcmp("text",*argv)){
-				element.type=0;
-			}else if(!strcmp("fsb",*argv)){
-				element.type=1;
-			}else if(!strcmp("herring",*argv)){
-				element.type=2;
-			}else if(!strcmp("image",*argv)){
-				element.type=3;
-			}else if(!strcmp("time",*argv)){
-				element.type=4;
-			}else if(!strcmp("speed",*argv)){
-				element.type=5;	
-			}else if(!strcmp("gauge",*argv)){
-				element.type=6;	
-			}else if(!strcmp("energybar",*argv)){
-				element.type=7;	
-			}else if(!strcmp("speedbar",*argv)){
-				element.type=8;	
-			}else if(!strcmp("percentage",*argv)){
-				element.type=9;	
-			}else if(!strcmp("percentagebar",*argv)){
-				element.type=10;	
-			}else{
-				err_msg = "invalid type";
-				goto item_spec_bail;
-			}					
-		}else if ( strcmp( "-position", *argv ) == 0 ||
-		    strcmp( "-position", *argv ) == 0 ){
-		    NEXT_ARG;
-		    CHECK_ARG( "-position", err_msg, item_spec_bail );
-	
-		    rtn = Tcl_SplitList(ip, *argv, &num_col, &indices);
-	    	if( rtn != TCL_OK ) {
-				err_msg = "Must provide a list with x and y for -position";
-				goto item_spec_bail; 
-			}
-			if (num_col == 2) {
-				Tcl_GetInt(ip, indices[0], &convert_temp);
-				element.x = convert_temp;
-				Tcl_GetInt(ip, indices[1], &convert_temp);
-				element.y = convert_temp;
-		    } else {
-				err_msg = "Position must have 2 elements";
-				goto item_spec_bail;
-	    	}
-			Tcl_Free(reinterpret_cast<char *>(indices));
-	    	indices = NULL;
-		} else if ( strcmp( "-texture", *argv ) == 0 ) {
-		    NEXT_ARG;
-			CHECK_ARG( "-texture", err_msg, item_spec_bail );
-			
-			if ( !get_texture_binding(*argv, &element.texture ) ) {
-				err_msg = "Couldn't get texture";
-				goto item_spec_bail;
-			}
-		} else if ( strcmp( "-font", *argv ) == 0 ) {
-		    NEXT_ARG;
-			CHECK_ARG( "-font", err_msg, item_spec_bail );
-	
-			element.font = pp::Font::get(*argv);
-			if( element.font==NULL){
-				err_msg = "Couldn't get font";
-				goto item_spec_bail;
-			}else{
-				element.height = int(element.font->ascender());			
-			}			
-		} else if ( strcmp( "-string", *argv ) == 0 ) {
-			NEXT_ARG;
-			CHECK_ARG( "-string", err_msg, item_spec_bail );
-	   		if ( element.string.empty() ) {
-				element.string = _(*argv);
-	    	} else {
-				err_msg = "Specify only one string";
-				goto item_spec_bail;
-	    	}
-		} else if ( strcmp( "-angle", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-angle", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &element.angle) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid angle\n",
-						NULL);
-		    }
-		} else if ( strcmp( "-width", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-width", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &element.width) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid width\n",
-						NULL);
-		    }
-		} else if ( strcmp( "-height", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-height", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &element.height) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid height\n",
-						NULL);
-		    }
-		} else if ( strcmp( "-size", *argv ) == 0 ) {
-		    NEXT_ARG;
-		    CHECK_ARG( "-size", err_msg, item_spec_bail );		
-
-		    if ( Tcl_GetInt( ip, *argv,
-			    &element.size) != TCL_OK ) {
-			Tcl_AppendResult(ip, argv[0], ": invalid size\n",
-						NULL);
-		    }
-		}
+	int hud = int(vm->getFloatFromTable("hud")); 
 		
-		NEXT_ARG;
-    }
+	if(!vm->isKeyInTable("element_type")){
+		PP_WARNING("pptheme.hud: No element type specified");
+		return 0;
+	}
 	
+	std::string type = vm->getStringFromTable("element_type");
+		
+	if(type=="text"){
+		element.type=0;
+	}else if(type=="fsb"){
+		element.type=1;
+	}else if(type=="herring"){
+		element.type=2;
+	}else if(type=="image"){
+		element.type=3;
+	}else if(type=="time"){
+		element.type=4;
+	}else if(type=="speed"){
+		element.type=5;	
+	}else if(type=="gauge"){
+		element.type=6;	
+	}else if(type=="energybar"){
+		element.type=7;	
+	}else if(type=="speedbar"){
+		element.type=8;	
+	}else if(type=="percentage"){
+		element.type=9;	
+	}else if(type=="percentagebar"){
+		element.type=10;	
+	}else{
+		PP_WARNING("pptheme.hud: Unknown type: " << type);
+		return 0;
+	}
+
+	if(vm->isKeyInTable("position")){
+		vm->pushString("position");
+		if(vm->get() && vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			element.x = vm->getInt();
+			vm->pop(2);
+			vm->next(-2);
+			element.y = vm->getInt();
+			vm->pop(2);
+			vm->pop(2); //the table
+		}else{
+			PP_WARNING("pptheme.hud: Invalid position");
+		}
+	}
 	
-	//in case of a text element we're precalculating
-	//the width and the unicode string
+	//texture
+	if(vm->isKeyInTable("texture")){
+		std::string texture = vm->getStringFromTable("texture");	
+		element.texture = 
+			ppogl::TextureMgr::getInstance().get(texture);
+		
+		if(!element.texture){
+			PP_WARNING("pptheme.hud: Unable to get texture: " << texture);
+		}
+	}
+	
+	// width
+	if(vm->isKeyInTable("width")){
+		element.width = vm->getIntFromTable("width");
+	}
+
+	// height	
+	if(vm->isKeyInTable("height")){
+		element.height = vm->getIntFromTable("height");
+	}
+	
+	// size
+	if(vm->isKeyInTable("size")){
+		element.size = vm->getIntFromTable("size");
+	}
+	
+	// string
+	if(vm->isKeyInTable("string")){
+		element.string = _(vm->getStringFromTable("string"));
+	}
+		
+	// font
+	if(vm->isKeyInTable("font")){
+		std::string font = vm->getStringFromTable("font");
+		element.font = ppogl::FontMgr::getInstance().get(font);
+		if(!element.font){
+			PP_WARNING("pptheme.hud: Unable to get font: " << font); 
+		}else{
+			element.height = int(element.font->ascender());			
+		}			
+	}
+	
+	// angle
+	if(vm->isKeyInTable("angle")){
+		element.angle = vm->getIntFromTable("angle");
+	}	
+	
+	//precalculate unicode string and width of the font
 	if(element.type==0 && element.font && !element.string.empty()){
-		pp::Font::utf8ToUnicode(element.u_string,element.string.c_str());
+		ppogl::Font::utf8ToUnicode(element.u_string,element.string);
 		element.width = int(element.font->advance(element.u_string));
 	}
-	
-	if(hud==2){
-		//no multiplayer support
+		
+	if(hud!=1){
+		PP_WARNING("pptheme.hud: Invalid hud " << hud << " is not supported");
 	}else{
-		if (element_num==-1){
+		if(element_num==-1){
 			HUD1.add(element);
+			
+			//only for testing purpose
+			HUD2.add(element);
 		}else{
 			HUD1.update(element_num,element);
+					
+			//only for testing purpose
+			HUD2.update(element_num,element);
+		}
+	}
+
+	return 0;
+}
+
+static int
+get_condition_cb(ppogl::Script *vm)
+{
+	switch(GameMgr::getInstance().getCurrentRace().condition)
+	{
+		case RACE_CONDITIONS_CLOUDY:
+			vm->pushString("cloudy");
+			break;
+		case RACE_CONDITIONS_NIGHT:
+			vm->pushString("night");
+			break;
+		case RACE_CONDITIONS_EVENING:
+			vm->pushString("evening");
+			break;		
+		default:
+			vm->pushString("sunny");	
+	}
+	return 1;
+}
+
+static int
+base_height_value_cb(ppogl::Script *vm)
+{
+	if(vm->getTop()!=1){
+		PP_WARNING("ppcourse.base_height_value: Invalid number of arguments");
+	}
+	
+	int value = vm->getInt(1);
+	
+	if(value<0) value=0;
+	else if(value>255) value=255;
+	
+	base_height_value = value;	
+	return 0;
+}
+
+static int
+add_model_cb(ppogl::Script *vm)
+{	
+	if(!vm->isTable()){
+		PP_WARNING("ppcourse.add_model: Arguments needs to be a table");
+		return 0;
+	}
+	
+	std::string name = vm->getStringFromTable("name");
+	
+	if(name.empty()){
+		PP_WARNING("ppcourse.add_model: No name given for model");
+	}
+	
+	ppogl::Vec3d position;
+	
+	if(vm->isKeyInTable("position")){
+		vm->pushString("position");
+		if(vm->get() && vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			position.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			position.z() = (-1)*vm->getFloat();
+			vm->pop(2);
+			vm->pop(2);
+		}else{
+			PP_WARNING("ppcourse.add_model: Invalid position");
+			return 0;
 		}
 	}
 	
-    return TCL_OK;
+	std::map<std::string,ppogl::RefPtr<ModelType> >::iterator it;
 
-item_spec_bail:
-    if ( indices ){
-		Tcl_Free(reinterpret_cast<char *>(indices));
-		indices = NULL;
-    }
-
-    Tcl_AppendResult(
-		ip,
-		"Error in call to tux_hud: ", 
-		err_msg,
-		"\n",
-		"Usage: tux_hud -hud <hud> -element <element number> -type <type> -position {x y} -binding <binding> -string <string> -width <width> -height <height> -size <size> -angle <angle>",
-		"\n",
-		"Valid types: text, fsb, herring, image, time, speed, gauge, energybar and speedbar",
-		(NULL) );
-    return TCL_ERROR;
+	if((it=modelTypes.find(name))==modelTypes.end()){
+		PP_WARNING("ppcourse.add_item: Unable to find item: " << name);
+		return 0;
+	}
+	
+	double aboveGround = (*it).second->height;
+	
+	if(vm->isKeyInTable("above_ground")){
+		aboveGround += vm->getFloatFromTable("above_ground");
+	}
+		
+	position.y() = find_y_coord(position.x(),position.z()) + aboveGround;
+	
+	Model model((*it).second, position);
+	
+	modelLocs.push_back(model);
+	
+	return 0;
 }
 
-
-void register_course_load_tcl_callbacks( Tcl_Interp *ip )
+static int
+add_item_cb(ppogl::Script *vm)
 {
-    Tcl_CreateCommand (ip, "tux_course_dim", course_dim_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_angle",      angle_cb,  0,0);
-    Tcl_CreateCommand (ip, "tux_elev_scale", elev_scale_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_elev",       elev_cb,        0,0);
-    Tcl_CreateCommand (ip, "tux_load_terrain",    terrain_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_trees",      trees_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_bgnd_img",   bgnd_img_cb,   0,0);
-	Tcl_CreateCommand (ip, "tux_terrain_tex",   terrain_tex_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_start_pt",   start_pt_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_friction",   friction_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_course_author", course_author_cb, 0,0);
-    Tcl_CreateCommand (ip, "tux_course_name", course_name_cb, 0,0);
-    Tcl_CreateCommand (ip, "tux_base_height_value", base_height_value_cb, 0,0);
-    Tcl_CreateCommand (ip, "tux_tree_model",  tree_model_cb,   0,0);
-    Tcl_CreateCommand (ip, "tux_item_spec",  item_spec_cb,   0,0);
-	Tcl_CreateCommand (ip, "tux_wind_velocity",  wind_velocity_cb,   0,0);
-	Tcl_CreateCommand (ip, "tux_hud",  hud_cb,   0,0);
+	if(!vm->isTable()){
+		PP_WARNING("ppcourse.add_item: Arguments needs to be a table");
+		return 0;
+	}
+	
+	std::string name = vm->getStringFromTable("name");
+	
+	if(name.empty()){
+		PP_WARNING("ppcourse.add_item: No name given for item");
+	}
+	
+	ppogl::Vec3d position;
+	
+	if(vm->isKeyInTable("position")){
+		vm->pushString("position");
+		if(vm->get() && vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			position.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			position.z() = (-1)*vm->getFloat();
+			vm->pop(2);
+			vm->pop(2);
+		}else{
+			PP_WARNING("ppcourse.add_item: Invalid position");
+			return 0;
+		}
+	}
+	
+	std::map<std::string,ppogl::RefPtr<ItemType> >::iterator it;
+
+	if((it=itemTypes.find(name))==itemTypes.end()){
+		PP_WARNING("ppcourse.add_item: Unable to find item: " << name);
+		return 0;
+	}
+	
+	double aboveGround = (*it).second->above_ground;
+	
+	if(vm->isKeyInTable("above_ground")){
+		aboveGround = vm->getFloatFromTable("above_ground");
+	}
+		
+	position.y() = find_y_coord(position.x(),position.z()) + aboveGround;
+	
+	Item item((*it).second, position);
+	
+	if(vm->isKeyInTable("normal")){
+		vm->pushString("normal");
+		if(vm->get() && vm->isArray()){
+			ppogl::Vec3d normal;
+			vm->pushNull();
+			for(int i=0; i<3; i++){
+				vm->next(-2);
+				normal.values[i] = vm->getFloat();
+				vm->pop(2);
+			}
+			vm->pop(2);
+			item.setNormal(normal);
+		}	
+	}
+	
+	if(vm->isKeyInTable("diameter")){
+		item.setDiameter(vm->getFloatFromTable("diameter"));
+	}
+	
+	if(vm->isKeyInTable("height")){
+		item.setHeight(vm->getFloatFromTable("height"));
+	}
+	
+	itemLocs.push_back(item);
+	
+	return 0;
+}
+
+static int
+add_reset_point_cb(ppogl::Script *vm)
+{
+	ppogl::Vec2d position;	
+	if(vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			position.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			position.x() = (-1)*vm->getFloat();
+			vm->pop(2);
+			vm->pop(2);
+	}else{
+		PP_WARNING("ppcourse.add_reset_point: Invalid position");
+		return 0;
+	}
+		
+	resetLocs.push_back(position);
+	
+	return 0;
+}
+
+static const struct ppogl::Script::Lib ppcourselib[]={
+	{"course_dim", course_dim_cb},
+	{"start_pt", start_pt_cb},
+	{"angle", angle_cb},  
+	{"elev_scale", elev_scale_cb},
+	{"elev", elev_cb},
+	{"load_terrain", terrain_cb},
+	{"load_elements", elements_cb},
+	{"get_condition", get_condition_cb},
+	{"base_height_value", base_height_value_cb},
+	{"add_model", add_model_cb},
+	{"add_item", add_item_cb},
+	{"add_reset_point", add_reset_point_cb},
+	{NULL, NULL}
+};
+
+static const struct ppogl::Script::Lib ppthemelib[]={
+	{"terrain_tex", terrain_tex_cb},
+	{"hud", hud_cb},
+	{"wind_velocity", wind_velocity_cb},
+	{"reset_point", reset_point_cb},
+	{"item",  item_spec_cb},
+	{"model",  model_spec_cb},
+	{NULL, NULL}
+};
+
+void
+Course::registerCallbacks()
+{
+	script.registerLib("ppcourse", ppcourselib);
+	script.registerLib("pptheme", ppthemelib);
 }

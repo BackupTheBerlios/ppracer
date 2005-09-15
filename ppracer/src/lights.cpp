@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,11 +21,13 @@
 
 #include "lights.h"
 #include "gl_util.h"
-#include "tcl_util.h"
 
-static light_t course_lights[NUM_COURSE_LIGHTS];
+#include "ppogl/base/glwrappers.h"
 
-light_t* get_course_lights() { 
+
+static Light course_lights[NUM_COURSE_LIGHTS];
+
+Light* get_course_lights() { 
     return course_lights; 
 }
 
@@ -37,7 +39,7 @@ void reset_lights()
         // EXCEPT that light 0 isn't treated differently than the
         // others 
 		course_lights[i].is_on = false;
-		course_lights[i].spot_direction.z=-1.0;
+		course_lights[i].spot_direction.z()=-1.0;
 		course_lights[i].spot_exponent = 0.0;
 		course_lights[i].spot_cutoff = 180.0;
 		course_lights[i].constant_attenuation = 1.0;
@@ -46,12 +48,12 @@ void reset_lights()
     }
 
     // Turn off global ambient light
-    gl::LightModel(GL_LIGHT_MODEL_AMBIENT, pp::Color::black);
+    gl::LightModel(GL_LIGHT_MODEL_AMBIENT, ppogl::Color::black);
 }
 
 void setup_course_lighting()
 {
-    light_t *course_lights;
+    Light *course_lights;
 
     course_lights = get_course_lights();
 
@@ -80,181 +82,76 @@ void setup_course_lighting()
 	}
 }
 
-static int course_light_cb (ClientData cd, Tcl_Interp *ip, 
-			    int argc, CONST84 char **argv) 
+static int
+course_light_cb(ppogl::Script *vm)
 {
-    int light_num;
-    double tmp_arr[4];
-    double tmp_dbl;
-    bool error = false;
-    
-    if (argc < 3) {
-	error = true;
+	int num_args=vm->getTop();
+	
+    if(num_args<=1){
+		PP_WARNING("pptheme.course_light: Invalid number of arguments");
+		return 0;
     }
 
-    NEXT_ARG;
-
-    if ( Tcl_GetInt( ip, *argv, &light_num ) == TCL_ERROR ) {
-	error = true;
+	int light_num = int(vm->getFloat(1));
+	
+	if(light_num < 0 || light_num >= NUM_COURSE_LIGHTS ) {
+		PP_WARNING("pptheme.course_light: Invalid light number: " << light_num);
+		return 0;
     }
 
-    if ( light_num < 0 || light_num >= NUM_COURSE_LIGHTS ) {
-	error = true;
-    }
-
-    NEXT_ARG;
-
-    while ( !error && argc > 0 ) {
-	if ( strcmp( "-on", *argv ) == 0 ) {
-	    course_lights[light_num].is_on = true;
-	} else if ( strcmp( "-off", *argv ) == 0 ) {
-	    course_lights[light_num].is_on = false;
-	} else if ( strcmp( "-ambient", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-		course_lights[light_num].ambient.set(tmp_arr);
-		
-	} else if ( strcmp( "-diffuse", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-		course_lights[light_num].diffuse.set(tmp_arr);
-
-	} else if ( strcmp( "-specular", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-		course_lights[light_num].specular.set(tmp_arr);
-		
-	} else if ( strcmp( "-position", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-		course_lights[light_num].position.set(tmp_arr);
-		
-	} else if ( strcmp( "-spot_direction", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-			error = true;
-			break;
-	    }
-	    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 3 ) == TCL_ERROR ) {
-			error = true;
-			break;
-	    }
-		course_lights[light_num].spot_direction.set(tmp_arr);
-
-	} else if ( strcmp( "-spot_exponent", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-	    course_lights[light_num].spot_exponent = tmp_dbl;
-	} else if ( strcmp( "-spot_cutoff", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-	    course_lights[light_num].spot_cutoff = tmp_dbl;
-	} else if ( strcmp( "-constant_attenuation", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-	    course_lights[light_num].constant_attenuation = tmp_dbl;
-	} else if ( strcmp( "-linear_attenuation", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-	    course_lights[light_num].linear_attenuation = tmp_dbl;
-	} else if ( strcmp( "-quadratic_attenuation", *argv ) == 0 ) {
-	    NEXT_ARG;
-	    if ( argc == 0 ) {
-		error = true;
-		break;
-	    }
-	    if ( Tcl_GetDouble ( ip, *argv, &tmp_dbl ) == TCL_ERROR ) {
-		error = true;
-		break;
-	    }
-	    course_lights[light_num].quadratic_attenuation = tmp_dbl;
-	} else {
-	    PP_WARNING( "tux_course_light: unrecognized "
-			   "parameter `%s'", *argv );
+	// activated
+	if(num_args>=2){
+		course_lights[light_num].is_on = vm->getBool(2);		
+	}
+	
+	// position
+	if(num_args>=3){
+		vm->pushNull();
+		for(int i=0; i<4; i++){
+			vm->next(3);
+			course_lights[light_num].position.values[i]=vm->getFloat();
+			vm->pop();
+		}	
 	}
 
-	NEXT_ARG;
-    }
-
-    if ( error ) {
-	PP_WARNING(  "error in call to tux_course_light" );
-	Tcl_AppendResult(
-	    ip, 
-	    "\nUsage: tux_course_light <light_number> [-on|-off] "
-	    "[-ambient { r g b a }] "
-	    "[-diffuse { r g b a }] "
-	    "[-specular { r g b a }] "
-	    "[-position { x y z w }] "
-	    "[-spot_direction { x y z }] "
-	    "[-spot_exponent <value>] "
-	    "[-spot_cutoff <value>] "
-	    "[-constant_attenuation <value>] "
-	    "[-linear_attenuation <value>] "
-	    "[-quadratic_attenuation <value>] ",
-	    NULL );
-		return TCL_ERROR;
-    }
-    
-    return TCL_OK;
+	// diffuse
+	if(num_args>=4){
+		vm->pushNull();
+		for(int i=0; i<4; i++){
+			vm->next(4);
+			course_lights[light_num].diffuse.values[i]=vm->getFloat();
+			vm->pop();
+		}
+	}
+	
+	// specular
+	if(num_args>=5){
+		vm->pushNull();
+		for(int i=0; i<4; i++){
+			vm->next(5);
+			course_lights[light_num].specular.values[i]=vm->getFloat();
+			vm->pop();
+		}	
+	}
+	
+	// ambient
+	if(num_args>=6){
+		vm->pushNull();
+		for(int i=0; i<4; i++){
+			vm->next(6);
+			course_lights[light_num].ambient.values[i]=vm->getFloat();
+			vm->pop();
+		}
+	}
+	return 0;
 }
 
-void register_course_light_callbacks( Tcl_Interp *ip )
+static const struct ppogl::Script::Lib ppthemelib[]={
+	{"course_light", course_light_cb},
+	{NULL, NULL}
+};
+
+void register_course_light_callbacks()
 {
-    Tcl_CreateCommand (ip, "tux_course_light", course_light_cb, 0,0);
+	script.registerLib("pptheme", ppthemelib);
 }

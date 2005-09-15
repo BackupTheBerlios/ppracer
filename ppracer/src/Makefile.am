@@ -1,72 +1,18 @@
 
+SUBDIRS = squirrel sqstdlib ftgl ppogl
+
 AM_CPPFLAGS = -DPP_DATADIR=\"$(ppdatadir)\"
 
 bin_PROGRAMS = ppracer
 
+LDADD = \
+		ppogl/libppogl.a	\
+		sqstdlib/libsqstdlib.a	\
+		squirrel/libsquirrel.a	\
+		ftgl/libftgl.a	
+
+
 ppracer_SOURCES =				\
-	ppgltk/ppgltk.h				\
-	ppgltk/listbox.h			\
-	ppgltk/ssbutton.cpp			\
-	ppgltk/ssbutton.h			\
-	ppgltk/checkbox.cpp			\
-	ppgltk/checkbox.h			\
-	ppgltk/textarea.cpp			\
-	ppgltk/textarea.h			\
-	ppgltk/ui_mgr.cpp			\
-	ppgltk/ui_mgr.h				\
-	ppgltk/ui_snow.cpp			\
-	ppgltk/ui_snow.h			\
-	ppgltk/ui_theme.cpp			\
-	ppgltk/ui_theme.h			\
-	ppgltk/button.cpp			\
-	ppgltk/button.h				\
-	ppgltk/frame.cpp			\
-	ppgltk/frame.h				\
-	ppgltk/entry.cpp			\
-	ppgltk/entry.h				\
-	ppgltk/widget.cpp			\
-	ppgltk/widget.h				\
-	ppgltk/alg/color.cpp			\
-	ppgltk/alg/color.h			\
-	ppgltk/alg/defs.h			\
-	ppgltk/alg/matrix.cpp			\
-	ppgltk/alg/matrix.h			\
-	ppgltk/alg/quat.cpp			\
-	ppgltk/alg/quat.h			\
-	ppgltk/alg/vec2d.cpp			\
-	ppgltk/alg/vec2d.h			\
-	ppgltk/alg/vec3d.cpp			\
-	ppgltk/alg/vec3d.h			\
-	ppgltk/alg/vec3f.cpp			\
-	ppgltk/alg/vec3f.h			\
-	ppgltk/alg/vec4f.cpp			\
-	ppgltk/alg/vec4f.h			\
-	ppgltk/alg/plane.h			\
-	ppgltk/alg/plane.cpp			\
-	ppgltk/alg/glhelper.h			\
-	ppgltk/alg/gaus.h			\
-	ppgltk/alg/glhelper.cpp			\
-	ppgltk/alg/glwrappers.cpp		\
-	ppgltk/alg/glwrappers.h			\
-	ppgltk/alg/poly.h			\
-	ppgltk/alg/poly.cpp			\
-	ppgltk/alg/signal.h			\
-	ppgltk/alg/assert.cpp			\
-	ppgltk/alg/assert.h			\
-	ppgltk/alg/errors.cpp			\
-	ppgltk/alg/errors.h			\
-	ppgltk/audio/audio.cpp			\
-	ppgltk/audio/audio.h			\
-	ppgltk/audio/audio_data.cpp		\
-	ppgltk/audio/audio_data.h		\
-	ppgltk/images/image.cpp			\
-	ppgltk/images/image.h			\
-	ppgltk/images/png_reader.cpp		\
-	ppgltk/images/png_reader.h		\
-	ppgltk/images/rgb_reader.cpp		\
-	ppgltk/images/rgb_reader.h		\
-	ppgltk/images/ppm_writer.cpp		\
-	ppgltk/images/ppm_writer.h		\
 	course_load.cpp				\
 	course_load.h				\
 	course_mgr.cpp				\
@@ -79,18 +25,18 @@ ppracer_SOURCES =				\
 	credits.h				\
 	event_select.cpp			\
 	event_select.h				\
-	file_util.cpp				\
-	file_util.h				\
+	elements.cpp				\
+	elements.h				\
 	fog.cpp					\
 	fog.h					\
 	fps.cpp					\
 	fps.h					\
-        game_config.cpp				\
-        game_config.h				\
-        game_type_select.cpp			\
-        game_type_select.h			\
-        game_over.cpp				\
-        game_over.h				\
+	gameconfig.cpp				\
+	gameconfig.h				\
+	game_type_select.cpp			\
+	game_type_select.h			\
+	game_over.cpp				\
+	game_over.h				\
 	gl_util.cpp				\
 	gl_util.h				\
 	hier.cpp				\
@@ -118,11 +64,10 @@ ppracer_SOURCES =				\
 	mirror_course.h				\
 	player.cpp				\
 	player.h				\
-	pp_classes.h				\
-        nmrcl.cpp				\
-        nmrcl.h					\
-        os_util.cpp				\
-        os_util.h				\
+	nmrcl.cpp				\
+	nmrcl.h					\
+	os_util.cpp				\
+	os_util.h				\
 	part_sys.cpp				\
 	part_sys.h				\
 	paused.cpp				\
@@ -147,12 +92,6 @@ ppracer_SOURCES =				\
 	snow.h					\
 	splash_screen.cpp			\
 	splash_screen.h				\
-	string_util.cpp				\
-	string_util.h				\
-	tcl_util.cpp				\
-	tcl_util.h				\
-	textures.cpp				\
-	textures.h				\
 	track_marks.cpp				\
 	track_marks.h				\
 	tux.cpp					\
@@ -175,64 +114,22 @@ ppracer_SOURCES =				\
 	configmode.h				\
 	configuration.cpp			\
 	configuration.h				\
-	graphicsconfig.cpp			\
-	graphicsconfig.h			\
+	generalconfig.cpp			\
+	generalconfig.h				\
 	joystickconfig.cpp			\
 	joystickconfig.h			\
 	keyboardconfig.cpp			\
 	keyboardconfig.h			\
 	stuff.cpp				\
 	stuff.h					\
+	ui_snow.cpp				\
+	ui_snow.h				\
 	game_mgr.cpp				\
 	game_mgr.h				\
+	racingmode.cpp				\
+	racingmode.h				\
 	bench.cpp				\
 	bench.h					\
-	callbacks.cpp				\
-	callbacks.h				\
-	translation.cpp				\
-	translation.h				\
-	ppgltk/alignment.cpp			\
-	ppgltk/alignment.h			\
-	ppgltk/model.cpp			\
-	ppgltk/model.h				\
-	ppgltk/model_ac.cpp			\
-	ppgltk/model_ac.h			\
-	ppgltk/font.cpp				\
-	ppgltk/font.h				\
-	ppgltk/label.cpp			\
-	ppgltk/label.h				\
-	\
-	\
-	ppgltk/FT/FTBBox.h		\
-	ppgltk/FT/FTCharToGlyphIndexMap.h	\
-	ppgltk/FT/FTCharmap.h		\
-	ppgltk/FT/FTFace.h		\
-	ppgltk/FT/FTFont.h		\
-	ppgltk/FT/FTGL.h		\
-	ppgltk/FT/FTGLTextureFont.h	\
-	ppgltk/FT/FTGlyph.h		\
-	ppgltk/FT/FTGlyphContainer.h	\
-	ppgltk/FT/FTLibrary.h		\
-	ppgltk/FT/FTList.h		\
-	ppgltk/FT/FTPoint.h		\
-	ppgltk/FT/FTSize.h		\
-	ppgltk/FT/FTVector.h		\
-	ppgltk/FT/FTTextureGlyph.h	\
-	\
-	\
-	ppgltk/FT/FTCharmap.cpp		\
-	ppgltk/FT/FTFace.cpp		\
-	ppgltk/FT/FTFont.cpp		\
-	ppgltk/FT/FTGLTextureFont.cpp	\
-	ppgltk/FT/FTGlyph.cpp		\
-	ppgltk/FT/FTGlyphContainer.cpp	\
-	ppgltk/FT/FTLibrary.cpp		\
-	ppgltk/FT/FTPoint.cpp		\
-	ppgltk/FT/FTSize.cpp		\
-	ppgltk/FT/FTTextureGlyph.cpp
-
-
-EXTRA_DIST = ppgltk/listbox.cpp 	\
-	ppgltk/FT/license.txt		\
-	ppgltk/FT/README.txt
+	algstuff.cpp				\
+	algstuff.h
 

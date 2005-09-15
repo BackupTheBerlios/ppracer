@@ -13,22 +13,17 @@
 // Modifications for use in ppracer by Volker Stroebel <volker@planetpenguin.de>
 
 
-#include "textures.h"
 #include "course_load.h"
 #include "fog.h"
 #include "gl_util.h"
 #include "course_render.h"
-#include "game_config.h"
 
-
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
+#include "ppogl/base/glwrappers.h"
 
 #include "quadtree.h"
+#include "gameconfig.h"
 
-
-/* Amount to scale terrain errors by in order to be comparable to
-   height errors */
-#define TERRAIN_ERROR_SCALE 0.1
 
 /* Distance at which we force the activation of vertices that lie on
    texture edges */
@@ -37,6 +32,7 @@
 /* Maximum Distance at which we magnify the error term (to minimize
    popping near the camera */
 #define ERROR_MAGNIFICATION_THRESHOLD 30
+
 
 /* Amount to magnify errors by within ERROR_MAGNIFICATION_THRESHOLD */
 #define ERROR_MAGNIFICATION_AMOUNT 3
@@ -48,8 +44,7 @@
 #define colorval(j,ch) \
 VNCArray[j*STRIDE_GL_ARRAY+STRIDE_GL_ARRAY-4+(ch)]
 
-
-extern terrain_tex_t terrain_texture[NUM_TERRAIN_TYPES];
+extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
 
 int terrain_count[NUM_TERRAIN_TYPES];
@@ -115,7 +110,7 @@ quadsquare::quadsquare(quadcornerdata* pcd)
 		for (int i=0; i< NUM_TERRAIN_TYPES; i++){
 			VertexArrayIndices[0] = NULL;		
 		}
-		Terrain = get_course_terrain_data();
+		Terrain = Course::getTerrainData();
     }
 }
 
@@ -331,7 +326,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 
 	    if ( different_terrains ) {
 		ForceSouthVert = true;
-		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
+		terrain_error = GameConfig::terrainErrorScale * whole * whole;
 	    } else {
 		ForceSouthVert = false;
 	    }
@@ -367,7 +362,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
 
 	    if ( different_terrains ) {
 		ForceEastVert = true;
-		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
+		terrain_error = GameConfig::terrainErrorScale * whole * whole;
 	    } else {
 		ForceEastVert = false;
 	    }
@@ -407,9 +402,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
     //
     // Compute terrain_error
     //
-     int terrain;
-
-    //int *terrain_count = new int[(int)num_terrains];
+    int terrain;
 
     for (t=0; t<num_terrains; t++) {
 		terrain_count[t] = 0;
@@ -462,7 +455,7 @@ float	quadsquare::RecomputeError(const quadcornerdata& cd)
     terrain_error *= whole * whole;
 
     /* and finally scale it so that it's comparable to height error */
-    terrain_error *= TERRAIN_ERROR_SCALE;
+    terrain_error *= GameConfig::terrainErrorScale;
 
     if ( terrain_error > maxerror ) {
 	maxerror = terrain_error;
@@ -783,12 +776,8 @@ quadsquare::NotifyChildDisable(const quadcornerdata& cd, int index)
      */
 }
 
-
-static float DetailThreshold = 100;
-
-
 bool
-quadsquare::VertexTest(int x, float y, int z, float error, const float Viewer[3], vertex_loc_t vertex_loc )
+quadsquare::VertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc )
 /// Returns true if the vertex at (x,z) with the given world-space error between
 /// its interpolated location and its true location, should be enabled, given that
 /// the viewpoint is located at Viewer[].
@@ -811,7 +800,7 @@ quadsquare::VertexTest(int x, float y, int z, float error, const float Viewer[3]
 		error *= ERROR_MAGNIFICATION_AMOUNT;
     }
 
-    return error * DetailThreshold  > d;
+    return error * GameConfig::courseDetails  > d;
 }
 
 
@@ -832,7 +821,7 @@ quadsquare::BoxTest(int x, int z, float size, float miny, float maxy, float erro
 		error *= ERROR_MAGNIFICATION_AMOUNT;
     }
 
-    if ( error * DetailThreshold > d ) {
+    if ( error * GameConfig::courseDetails > d ) {
 		return true;
     }
 
@@ -847,15 +836,13 @@ quadsquare::BoxTest(int x, int z, float size, float miny, float maxy, float erro
 }
 
 void
-quadsquare::Update(const quadcornerdata& cd, const float ViewerLocation[3], const float Detail)
+quadsquare::Update(const quadcornerdata& cd, const float ViewerLocation[3])
 /// Refresh the vertex enabled states in the tree, according to the
 /// location of the viewer.  May force creation or deletion of qsquares
 /// in areas which need to be interpolated.
 {
 
     float Viewer[3];
-
-    DetailThreshold = Detail;
 
     Viewer[0] = ViewerLocation[0] / ScaleX;
     Viewer[1] = ViewerLocation[1];
@@ -866,7 +853,7 @@ quadsquare::Update(const quadcornerdata& cd, const float ViewerLocation[3], cons
 
 
 void
-quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, clip_result_t vis )
+quadsquare::UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis )
 /// Does the actual work of updating enabled states and tree growing/shrinking.
 {    
 	PP_REQUIRE( vis != NotVisible, "Invalid visibility value" );
@@ -994,17 +981,17 @@ void
 quadsquare::DrawTris(int terrain)
 {
     int tmp_min_idx = VertexArrayMinIdx[terrain];
-    if ( glLockArraysEXT_p && getparam_use_cva()) {
+    if ( glLockArraysEXT_p && GameConfig::useCVA) {
 
+	/*
 	if ( getparam_cva_hack() ) {
-	    /* This is a hack that seems to fix the "psychedelic colors" on 
-	       some drivers (TNT/TNT2, for example)
-	     */
+	    // This is a hack that seems to fix the "psychedelic colors" on 
+	    //   some drivers (TNT/TNT2, for example)
 	    if ( tmp_min_idx == 0 ) {
 		tmp_min_idx = 1;
 	    }
 	} 
-	
+	*/
 	glLockArraysEXT_p( tmp_min_idx, 
 			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1 ); 
     }
@@ -1012,7 +999,7 @@ quadsquare::DrawTris(int terrain)
     gl::DrawElements( GL_TRIANGLES, VertexArrayCounter[terrain],
 		    GL_UNSIGNED_INT, VertexArrayIndices[terrain] );
 
-    if ( glUnlockArraysEXT_p && getparam_use_cva()) {
+    if ( glUnlockArraysEXT_p && GameConfig::useCVA) {
 		glUnlockArraysEXT_p();
     }
 }
@@ -1051,11 +1038,9 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
     const bool fog_on=fogPlane.isEnabled();
     int i,idx;
     int nx, ny;
-    get_course_divisions( &nx, &ny );
+    Course::getDivisions( &nx, &ny );
 
-    /*
-     * Draw the "normal" blended triangles
-     */
+    //Draw the "normal" blended triangles
 
 	InitArrayCounters();
 	RenderAux(cd, SomeClip);
@@ -1076,15 +1061,15 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 			colorval(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
 
-		gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
+		gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
 		DrawTris((*it));
 
-		if ( terrain_texture[(*it)].envmapbind != 0  && getparam_terrain_envmap() ) {
+		if ( terrain_texture[(*it)].envmap  && GameConfig::useTerrainEnvmap) {
 		    /* Render Ice with environment map */
 		    gl::DisableClientState(GL_COLOR_ARRAY);
 		    gl::Color(1.0f, 1.0f, 1.0f, ENV_MAP_ALPHA / 255.0f );
 
-		    DrawEnvmapTris(terrain_texture[(*it)].envmapbind, (*it));	
+		    DrawEnvmapTris(terrain_texture[(*it)].envmap->getID(), (*it));	
 
 		    gl::EnableClientState(GL_COLOR_ARRAY);
 		}
@@ -1094,8 +1079,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
      * Draw the "special" triangles that have different terrain types
      * at each of the corners 
      */
-    if ( getparam_terrain_blending() &&
-	 getparam_perfect_terrain_blending()) {
+    if(GameConfig::useTerrainBlending){
 
 	/*
 	 * Get the "special" three-terrain triangles
@@ -1116,8 +1100,8 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 	    }
 	    
 	    /* Draw the black triangles */
-	    gl::BindTexture(GL_TEXTURE_2D, terrain_texture[0].texbind);
-	    DrawTris(0);
+	    gl::BindTexture(GL_TEXTURE_2D, terrain_texture[0].texture);
+		DrawTris(0);
 	    
 	    /* Now we draw the triangle once for each texture */
 	    if (fog_on) {
@@ -1137,7 +1121,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 		//for (int j=0; j<(int)num_terrains; j++) {
 		for(it=usedTerrains.begin(); it != usedTerrains.end(); it++){
 			
-			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texbind);
+			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
 
 			/* Set alpha values */
 			for (i=0; i<int(VertexArrayCounter[0]); i++) {
@@ -1151,7 +1135,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 
 	    /* Render Ice with environment map */
-	    if ( getparam_terrain_envmap() ) {
+	    if(GameConfig::useTerrainEnvmap){
 		gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    
 		/* Need to set alpha values for ice */
@@ -1171,7 +1155,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
 			ENV_MAP_ALPHA : 0;
 		}			
 			
-		DrawEnvmapTris(getparam_terrain_envmap(),0);
+		DrawEnvmapTris(GameConfig::useTerrainEnvmap,0);
 	    }
 	}
     }
@@ -1179,7 +1163,7 @@ quadsquare::Render(const quadcornerdata& cd, GLubyte *vnc_array)
     gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-clip_result_t
+ClipResult
 quadsquare::ClipSquare( const quadcornerdata& cd )
 {
     if ( cd.xorg >= RowSize-1 ) {
@@ -1192,23 +1176,23 @@ quadsquare::ClipSquare( const quadcornerdata& cd )
 	
     const int whole = 2 << cd.Level;
 	
-	pp::Vec3d Min(cd.xorg*ScaleX, MinY, cd.zorg*ScaleZ);
-    pp::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,(cd.zorg + whole) * ScaleZ);
+	ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, cd.zorg*ScaleZ);
+    ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,(cd.zorg + whole) * ScaleZ);
 
     /* If the scales are negative we'll need to swap */
-    if ( Min.x > Max.x ) {
-		float tmp = Min.x;
-		Min.x = Max.x;
-		Max.x = tmp;
+    if ( Min.x() > Max.x() ) {
+		float tmp = Min.x();
+		Min.x() = Max.x();
+		Max.x() = tmp;
     }
 
-    if ( Min.z > Max.z ) {
-		float tmp = Min.z;
-		Min.z = Max.z;
-		Max.z = tmp;
+    if ( Min.z() > Max.z() ) {
+		float tmp = Min.z();
+		Min.z() = Max.z();
+		Max.z() = tmp;
     }
 
-    const clip_result_t clip_result = clip_aabb_to_view_frustum(Min, Max);
+    const ClipResult clip_result = clip_aabb_to_view_frustum(Min, Max);
 
     if ( clip_result == NotVisible || clip_result == SomeClip ) {
 		return clip_result;
@@ -1298,7 +1282,7 @@ inline void quadsquare::MakeNoBlendTri( int a, int b, int c, int terrain )
 static bool terraintest[NUM_TERRAIN_TYPES];
 
 void
-quadsquare::RenderAux(const quadcornerdata& cd, clip_result_t vis)
+quadsquare::RenderAux(const quadcornerdata& cd, ClipResult vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
 /// Recurses as necessary.
 {
@@ -1390,7 +1374,7 @@ quadsquare::RenderAux(const quadcornerdata& cd, clip_result_t vis)
 	
 		for (unsigned int j=0; j<num_terrains; j++) {
 			 if (terraintest[j]==true){			 
-			 	if ( getparam_terrain_blending() ){make_tri_list(MakeTri,j);}
+			 	if(GameConfig::useTerrainBlending){make_tri_list(MakeTri,j);}
 				else{make_tri_list(MakeNoBlendTri,j);}
 			 }
 		} 
@@ -1399,7 +1383,7 @@ quadsquare::RenderAux(const quadcornerdata& cd, clip_result_t vis)
 
 
 void
-quadsquare::RenderAuxSpezial(const quadcornerdata& cd, clip_result_t vis)
+quadsquare::RenderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
 /// Recurses as necessary.
 {

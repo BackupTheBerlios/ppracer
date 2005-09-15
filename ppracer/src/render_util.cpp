@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,14 +21,12 @@
 
 #include "gl_util.h"
 #include "render_util.h"
-#include "textures.h"
-#include "game_config.h"
 #include "player.h"
+#include "gameconfig.h"
 
 #include "stuff.h"
 
-#include "ppgltk/ui_theme.h"
-#include "ppgltk/alg/glhelper.h"
+#include "ppogl/base/glwrappers.h"
 
 /*
  * Constants 
@@ -38,24 +36,37 @@
    fogging plane is drawn (m) */
 #define FAR_CLIP_FUDGE_AMOUNT 5
 
-static const pp::Color textColor(0.0, 0.0, 0.0);
+static const ppogl::Color textColor(0.0, 0.0, 0.0);
 
-void reshape( int w, int h )
+void reshape(int w, int h, int multiscreen)
 {
-    double far_clip_dist;
-
-    setparam_x_resolution( w );
-    setparam_y_resolution( h );
-    gl::Viewport(0, 0, GLint(w), GLint(h) );
-    gl::MatrixMode( GL_PROJECTION );
-    gl::LoadIdentity();
-
-    far_clip_dist = getparam_forward_clip_distance() + FAR_CLIP_FUDGE_AMOUNT;
-
-    gluPerspective( getparam_fov(), double(w)/h, NEAR_CLIP_DIST, 
-		    far_clip_dist );
-
-    gl::MatrixMode( GL_MODELVIEW );
+	if(multiscreen<0){
+		//not in multiscreen mode
+    	gl::Viewport(0, 0, w, h);
+    	gl::MatrixMode( GL_PROJECTION );
+    	gl::LoadIdentity();
+    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	gluPerspective( GameConfig::fov, double(w)/h, NEAR_CLIP_DIST, far_clip_dist );
+    	gl::MatrixMode( GL_MODELVIEW );
+	}else if(multiscreen==0){
+		// multiscreen 0 (top)
+		gl::Viewport(0, h/2, w, h/2);
+    	gl::MatrixMode(GL_PROJECTION);
+    	gl::LoadIdentity();
+    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	gluPerspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	gl::MatrixMode( GL_MODELVIEW );
+	}else if(multiscreen==1){
+		// multiscreen 1 (bottom)
+		gl::Viewport(0, 0, w, h/2);
+    	gl::MatrixMode(GL_PROJECTION);
+    	gl::LoadIdentity();
+    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	gluPerspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	gl::MatrixMode( GL_MODELVIEW );
+	}else{
+		PP_ERROR("Screen " << multiscreen << " is not supported in multiscreen mode");
+	}
 } 
 
 void flat_mode()
@@ -77,14 +88,14 @@ void draw_overlay() {
 void clear_rendering_context()
 {
     gl::DepthMask( GL_TRUE );
-    gl::ClearColor(theme.background);
+    gl::ClearColor(ppogl::Color(0.5, 0.6, 0.9));
     gl::ClearStencil(0);
     gl::Clear( GL_COLOR_BUFFER_BIT 
 	     | GL_DEPTH_BUFFER_BIT 
 	     | GL_STENCIL_BUFFER_BIT );
 }
 
-void set_material( const pp::Color diffuse, const pp::Color specular,
+void set_material( const ppogl::Color diffuse, const ppogl::Color specular,
 			 const double specular_exp )
 ///Sets the material properties
 {
@@ -98,31 +109,31 @@ void set_material( const pp::Color diffuse, const pp::Color specular,
 
 
 void draw_billboard( Player& plyr, 
-		     pp::Vec3d center_pt, double width, double height, 
+		     ppogl::Vec3d center_pt, double width, double height, 
 		     bool use_world_y_axis, 
-		     pp::Vec2d min_tex_coord, pp::Vec2d max_tex_coord )
+		     ppogl::Vec2d min_tex_coord, ppogl::Vec2d max_tex_coord )
 {
-    pp::Vec3d pt;
-    pp::Vec3d x_vec;
-    pp::Vec3d y_vec;
-    pp::Vec3d z_vec;
+    ppogl::Vec3d pt;
+    ppogl::Vec3d x_vec;
+    ppogl::Vec3d y_vec;
+    ppogl::Vec3d z_vec;
 
-    x_vec.x = plyr.view.inv_view_mat.data[0][0];
-    x_vec.y = plyr.view.inv_view_mat.data[0][1];
-    x_vec.z = plyr.view.inv_view_mat.data[0][2];
+    x_vec.x() = plyr.view.inv_view_mat.data[0][0];
+    x_vec.y() = plyr.view.inv_view_mat.data[0][1];
+    x_vec.z() = plyr.view.inv_view_mat.data[0][2];
 
     if ( use_world_y_axis ) {
-		y_vec = pp::Vec3d( 0, 1, 0 );
+		y_vec = ppogl::Vec3d( 0, 1, 0 );
 		x_vec = projectIntoPlane( y_vec, x_vec );
 		x_vec.normalize();
 		z_vec = x_vec^y_vec;
     } else {
-		y_vec.x = plyr.view.inv_view_mat.data[1][0];
-		y_vec.y = plyr.view.inv_view_mat.data[1][1];
-		y_vec.z = plyr.view.inv_view_mat.data[1][2];
-		z_vec.x = plyr.view.inv_view_mat.data[2][0];
-		z_vec.y = plyr.view.inv_view_mat.data[2][1];
-		z_vec.z = plyr.view.inv_view_mat.data[2][2];
+		y_vec.x() = plyr.view.inv_view_mat.data[1][0];
+		y_vec.y() = plyr.view.inv_view_mat.data[1][1];
+		y_vec.z() = plyr.view.inv_view_mat.data[1][2];
+		z_vec.x() = plyr.view.inv_view_mat.data[2][0];
+		z_vec.y() = plyr.view.inv_view_mat.data[2][1];
+		z_vec.z() = plyr.view.inv_view_mat.data[2][2];
     }
 
     gl::Begin(GL_QUADS);
@@ -134,7 +145,7 @@ void draw_billboard( Player& plyr,
 		gl::Vertex(pt);
 
 		pt = pt + (width*x_vec);
-		gl::TexCoord(max_tex_coord.x, min_tex_coord.y);
+		gl::TexCoord(max_tex_coord.x(), min_tex_coord.y());
 		gl::Vertex(pt);
 
 		pt = pt - (height*y_vec);
@@ -142,7 +153,7 @@ void draw_billboard( Player& plyr,
 		gl::Vertex(pt);
 
 		pt = pt - (-width *x_vec);
-		gl::TexCoord(min_tex_coord.x, max_tex_coord.y);
+		gl::TexCoord(min_tex_coord.x(), max_tex_coord.y());
 		gl::Vertex(pt);
 	}
     gl::End();

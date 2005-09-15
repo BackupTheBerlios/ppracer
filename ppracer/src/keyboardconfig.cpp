@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -19,9 +19,8 @@
  
 #include "keyboardconfig.h"
 
-#include "game_config.h"
+#include "stuff.h"
 #include "game_mgr.h"
-#include "ppgltk/ui_mgr.h"
 
 #include <string.h>
 #include <stdlib.h>	
@@ -109,125 +108,118 @@ static KeyMap keymap[] = {
 
 	
 KeyboardConfig::KeyboardConfig()
+ : m_leftLbl(_("Turn left:")),
+   m_rightLbl(_("Turn right:")),
+   m_paddleLbl(_("Paddle:")),
+   m_brakeLbl(_("Brake:")),
+   m_jumpLbl(_("Jump:")),
+   m_trickLbl(_("Trick:")),
+   m_resetLbl(_("Reset:")),
+   m_pauseLbl(_("Pause:"))
 {
 	setTitle(_("Keyboard Configuration"));
 	
-	pp::Vec2d pos(0,0);
-	pp::Vec2d size(220,32);
+	ppogl::Vec2d position(40,350);
+	ppogl::Vec2d position2(600,350);
 	
-	mp_leftEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_leftEntry->setEditable(false);
-	mp_leftEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_leftEntry->setContent(getKey(SDLKey(getparam_turn_left_key())));
-	
-	mp_rightEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_rightEntry->setEditable(false);
-	mp_rightEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_rightEntry->setContent(getKey(SDLKey(getparam_turn_right_key())));
-	
-	mp_paddleEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_paddleEntry->setEditable(false);
-	mp_paddleEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_paddleEntry->setContent(getKey(SDLKey(getparam_paddle_key())));
-	
-	mp_brakeEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_brakeEntry->setEditable(false);
-	mp_brakeEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_brakeEntry->setContent(getKey(SDLKey(getparam_brake_key())));
-	
-	mp_jumpEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_jumpEntry->setEditable(false);
-	mp_jumpEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_jumpEntry->setContent(getKey(SDLKey(getparam_jump_key())));
-	
-	mp_trickEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_trickEntry->setEditable(false);
-	mp_trickEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_trickEntry->setContent(getKey(SDLKey(getparam_trick_modifier_key())));
-	
-	mp_resetEntry = new pp::Entry(pos, size,
-				     "listbox_item");
-	mp_resetEntry->setEditable(false);
-	mp_resetEntry->signalKeyPressed.Connect(pp::CreateSlot(this,&KeyboardConfig::setKey));
-   	mp_resetEntry->setContent(getKey(SDLKey(getparam_reset_key())));	
-}
-
-KeyboardConfig::~KeyboardConfig()
-{
-	delete mp_leftEntry;
-	delete mp_rightEntry;
-	delete mp_paddleEntry;
-	delete mp_brakeEntry;
-	delete mp_jumpEntry;
-	delete mp_trickEntry;
-	delete mp_resetEntry;
-}
-
-void
-KeyboardConfig::setWidgetPositions()
-{
-	int width = 500;
-	int height = 240;
+	m_leftLbl.setPosition(position);
+	m_leftEntry.setPosition(position2);
+	m_leftEntry.alignment.right();
+	m_leftEntry.setEditable(false);
+	m_leftEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_leftEntry.setText(getKey(SDLKey(PPConfig.getInt("turn_left_key"))));
 		
-	pp::Vec2d pos(getparam_x_resolution()/2 - width/2,
-				  getparam_y_resolution()/2 + height/2);
+	position.y()-=40;
+	position2.y()-=40;	
 	
-	pp::Font *font = pp::Font::get("button_label");
+	m_rightLbl.setPosition(position);
+	m_rightEntry.setPosition(position2);
+	m_rightEntry.alignment.right();
+	m_rightEntry.setEditable(false);
+	m_rightEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_rightEntry.setText(getKey(SDLKey(PPConfig.getInt("turn_right_key"))));
 	
-	font->draw(_("Turn left:"),pos);
-	mp_leftEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_paddleLbl.setPosition(position);
+	m_paddleEntry.setPosition(position2);
+	m_paddleEntry.alignment.right();
+	m_paddleEntry.setEditable(false);
+	m_paddleEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_paddleEntry.setText(getKey(SDLKey(PPConfig.getInt("paddle_key"))));
 		
-	pos.y-=40;
-	font->draw(_("Turn right:"),pos);
-	mp_rightEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;	
+		
+	m_brakeLbl.setPosition(position);
+	m_brakeEntry.setPosition(position2);
+	m_brakeEntry.alignment.right();
+	m_brakeEntry.setEditable(false);
+	m_brakeEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_brakeEntry.setText(getKey(SDLKey(PPConfig.getInt("brake_key"))));
 	
-	pos.y-=40;
-	font->draw(_("Paddle:"),pos);
-	mp_paddleEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;	
+		
+	m_jumpLbl.setPosition(position);
+	m_jumpEntry.setPosition(position2);
+	m_jumpEntry.alignment.right();
+	m_jumpEntry.setEditable(false);
+	m_jumpEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_jumpEntry.setText(getKey(SDLKey(PPConfig.getInt("jump_key"))));
 	
-	pos.y-=40;
-	font->draw(_("Brake:"),pos);
-	mp_brakeEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;	
 	
-	pos.y-=40;
-	font->draw(_("Jump:"),pos);
-	mp_jumpEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	m_trickLbl.setPosition(position);
+	m_trickEntry.setPosition(position2);
+	m_trickEntry.alignment.right();
+	m_trickEntry.setEditable(false);
+	m_trickEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_trickEntry.setText(getKey(SDLKey(PPConfig.getInt("trick_modifier_key"))));
 	
-	pos.y-=40;
-	font->draw(_("Trick:"),pos);
-	mp_trickEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;	
+	
+	m_resetLbl.setPosition(position);
+	m_resetEntry.setPosition(position2);
+	m_resetEntry.alignment.right();
+	m_resetEntry.setEditable(false);
+	m_resetEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_resetEntry.setText(getKey(SDLKey(PPConfig.getInt("reset_key"))));	
 
-	pos.y-=40;
-	font->draw(_("Reset:"),pos);
-	mp_resetEntry->setPosition(pp::Vec2d(pos.x+width-220,pos.y));
+	position.y()-=40;
+	position2.y()-=40;	
+	
+	m_pauseLbl.setPosition(position);
+	m_pauseEntry.setPosition(position2);
+	m_pauseEntry.alignment.right();
+	m_pauseEntry.setEditable(false);
+	m_pauseEntry.signalKeyPressed.Connect(ppogl::CreateSlot(this,&KeyboardConfig::setKey));
+   	m_pauseEntry.setText(getKey(SDLKey(PPConfig.getInt("pause_key"))));	
 }
 
 void
 KeyboardConfig::apply()
 {
-	setparam_turn_left_key(getKey(mp_leftEntry->getContent()));
-	setparam_turn_right_key(getKey(mp_rightEntry->getContent()));		
-	setparam_paddle_key(getKey(mp_paddleEntry->getContent()));		
-	setparam_brake_key(getKey(mp_brakeEntry->getContent()));		
-	setparam_jump_key(getKey(mp_jumpEntry->getContent()));		
-	setparam_trick_modifier_key(getKey(mp_trickEntry->getContent()));		
-	setparam_reset_key(getKey(mp_resetEntry->getContent()));		
+	PPConfig.setInt("turn_left_key", getKey(m_leftEntry.getText()));
+	PPConfig.setInt("turn_right_key", getKey(m_rightEntry.getText()));		
+	PPConfig.setInt("paddle_key", getKey(m_paddleEntry.getText()));		
+	PPConfig.setInt("brake_key", getKey(m_brakeEntry.getText()));		
+	PPConfig.setInt("jump_key", getKey(m_jumpEntry.getText()));		
+	PPConfig.setInt("trick_modifier_key", getKey(m_trickEntry.getText()));		
+	PPConfig.setInt("reset_key", getKey(m_resetEntry.getText()));		
+	PPConfig.setInt("pause_key", getKey(m_pauseEntry.getText()));		
 	
 	write_config_file();
-	set_game_mode( GameMode::prevmode );
-    UIMgr.setDirty();
+	setMode( GameMode::prevmode );
 }
 
 void
-KeyboardConfig::setKey(pp::Entry* widget, SDLKey key)
+KeyboardConfig::setKey(ppogl::Entry *widget, SDLKey key)
 {
-	widget->setContent(getKey(key));
+	widget->setText(getKey(key));
 }
 
 std::string KeyboardConfig::getKey(SDLKey key)

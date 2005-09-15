@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -44,10 +44,9 @@
 #if defined( NATIVE_WIN32_COMPILER )
 /* Need to manually define some things that autoconf defines for
    us in config.h */
-#   define VERSION "0.3.2-dev"
+#   define VERSION "0.3.9"
 #   define HAVE_SDL_MIXER 1
 #   define HAVE_SDL_JOYSTICKOPEN 1
-#   define TCL_HEADER <tcl.h>
 
 #   define HAVE__ISNAN
 
@@ -101,27 +100,6 @@
 #   include <dirent.h>
 #endif
 
-/* OpenGL */
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-#ifdef HAVE_GL_GLX_H
-#   include <GL/glx.h>
-#endif
-
-
-
-#include <iostream>
-
-/* Tcl -- name of header is system-dependent :( */
-//#include TCL_HEADER
-#include "tcl.h"
-
-
-#ifndef M_PI
-#   define M_PI 3.1415926535
-#endif
-
 /* Some versions of sys/stat.h don't define S_ISDIR */
 #ifndef S_ISDIR
 #   define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
@@ -129,10 +107,11 @@
 
 /* Header files to include by default */
 
-#include "ppgltk/alg/errors.h"
-#include "ppgltk/alg/assert.h"
+#include "ppogl/base/errors.h"
+#include "ppogl/base/assert.h"
 
-
+#include "ppogl/config.h"
+#define PPConfig ppogl::Config::getInstance()
 
 #define PROG_NAME "ppracer"
 
@@ -168,8 +147,6 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 (x) = tmp; \
 }
 
-
-
 /* Directory separator */
 #ifdef WIN32
 #   define DIR_SEPARATOR "\\"
@@ -185,15 +162,8 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 /* Number of lives players get to complete a cup */
 #define INIT_NUM_LIVES 4
 
-#ifndef CONST84
-#   define CONST84
-#	define FUCKTCL (char*)
-#else
-#	define FUCKTCL
-#endif
-
 /// The custom log modes 
-typedef enum {
+enum DebugMode{
     DEBUG_ODE       = 1,
     DEBUG_QUADTREE,
     DEBUG_CONTROL,
@@ -208,15 +178,13 @@ typedef enum {
     DEBUG_JOYSTICK,
     DEBUG_GL_INFO,
     NUM_DEBUG_MODES
-} debug_mode_t;
+};
 
+#define TEX_SCALE 6
 
+#include "ppogl/ppogl_script.h"
 
-
-
-
-
-extern Tcl_Interp *tclInterp;
-
+/// global instance of the lua interpreter
+extern ppogl::Script script;
 
 #endif

@@ -20,14 +20,15 @@
 
 #include "viewfrustum.h"
 
-typedef enum {
+enum VertexLoc
+{
     East,
     South,
     Center
-} vertex_loc_t;
+};
 
-struct HeightMapInfo {
-    //double *Data;
+struct HeightMapInfo
+{
 	float *Data;
     int	XOrigin, ZOrigin;
     int	XSize, ZSize;
@@ -43,14 +44,14 @@ struct HeightMapInfo {
 		}
 		return Data[ x + z * RowWidth ];
 	}
-
 };
 
 class quadsquare;
 
 // A structure used during recursive traversal of the tree to hold
 // relevant but transitory data.
-struct quadcornerdata {
+struct quadcornerdata
+{
     const quadcornerdata* Parent;
     quadsquare*	Square;
     int	ChildIndex;
@@ -60,7 +61,8 @@ struct quadcornerdata {
 };
 
 
-class quadsquare {
+class quadsquare
+{
     quadsquare*	Child[4];
 
     float	Vertex[5];	// center, e, n, w, s
@@ -101,7 +103,7 @@ public:
     float	RecomputeError(const quadcornerdata& cd);
     int	CountNodes();
 	
-    void	Update(const quadcornerdata& cd, const float ViewerLocation[3], const float Detail);
+    void	Update(const quadcornerdata& cd, const float ViewerLocation[3]);
     void	Render(const quadcornerdata& cd, GLubyte *vnc_array);
 
     float	GetHeight(const quadcornerdata& cd, const float x, const float z);
@@ -127,15 +129,16 @@ private:
     void	CreateChild(int index, const quadcornerdata& cd);
     void	SetupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
 
-    void	UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, clip_result_t vis);
-    void	RenderAux(const quadcornerdata& cd, clip_result_t vi);
-    void	RenderAuxSpezial(const quadcornerdata& cd, clip_result_t vis);
+    void	UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
+    void	RenderAux(const quadcornerdata& cd, ClipResult vi);
+    void	RenderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
     void	SetStatic(const quadcornerdata& cd);
 	int InitVert(const int i, const int x, const int z);
 
-    bool	VertexTest(int x, float y, int z, float error, const float Viewer[3], vertex_loc_t vertex_loc );
+    bool	VertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
     bool	BoxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
-    clip_result_t ClipSquare( const quadcornerdata& cd );
+    ClipResult ClipSquare( const quadcornerdata& cd );
+
 };
 
 #endif // _QUADTREE_H_

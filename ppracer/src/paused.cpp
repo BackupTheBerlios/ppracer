@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -19,10 +19,6 @@
 
 #include "paused.h"
 
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/audio/audio.h"
-
-#include "game_config.h"
 #include "gl_util.h"
 #include "fps.h"
 #include "render_util.h"
@@ -45,146 +41,89 @@
 #include "bench.h"
 
 Paused::Paused()
+ : m_backgroundFrm(240,260),
+   m_pausedLbl(_("Paused"),"paused"),
+   m_configBtn(_("Configuration")),
+   m_resumeBtn(_("Resume")),
+   m_quitBtn(_("Quit"))
 {
-	int centerX = getparam_x_resolution() / 2;
-	int centerY = getparam_y_resolution() / 2;
-	
-	mp_backgroundFrm = new pp::Frame(pp::Vec2d(centerX-120,centerY-100),
-								  pp::Vec2d(240,200));
-	
-	mp_pausedLbl = new pp::Label(pp::Vec2d(centerX,centerY+90),"paused",_("Paused"));
-	mp_pausedLbl->alignment.center();
-	mp_pausedLbl->alignment.top();
-	
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
 
-	mp_configBtn = new pp::Button(pp::Vec2d(centerX-150,centerY-15),
-				     	pp::Vec2d(300, 40),
-				     	"button_label",
-				     	_("Configuration") );
+	m_backgroundFrm.setPosition(ppogl::Vec2d(320,250));
+	m_backgroundFrm.alignment.set(0.5, 0.5);
 	
-    mp_configBtn->setHilitFontBinding("button_label_hilit");
-	mp_configBtn->signalClicked.Connect(pp::CreateSlot(this,&Paused::configuration));
-	
-	mp_resumeBtn = new pp::Button(pp::Vec2d(centerX-150,centerY-55),
-				     	pp::Vec2d(300, 40),
-				     	"button_label",
-				     	_("Resume") );
-	
-    mp_resumeBtn->setHilitFontBinding("button_label_hilit");
-	mp_resumeBtn->signalClicked.Connect(pp::CreateSlot(this,&Paused::resume));
+	m_pausedLbl.setPosition(ppogl::Vec2d(320,350));
+	m_pausedLbl.alignment.set(0.5,0.5);
 
-	mp_quitBtn = new pp::Button(pp::Vec2d(centerX-150,centerY-95),
-				     	pp::Vec2d(300, 40),
-				     	"button_label",
-				     	_("Quit") );
+	m_configBtn.setPosition(ppogl::Vec2d(320,245));
+	m_configBtn.alignment.center();
+	m_configBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Paused::configuration));
 	
-    mp_quitBtn->setHilitFontBinding("button_label_hilit");
-	mp_quitBtn->signalClicked.Connect(pp::CreateSlot(this,&Paused::quit));
+	m_resumeBtn.setPosition(ppogl::Vec2d(320,205));
+	m_resumeBtn.alignment.center();
+	m_resumeBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Paused::resume));
 
-	play_music( "paused" );
+	m_quitBtn.setPosition(ppogl::Vec2d(320,165));
+    m_quitBtn.alignment.center();
+	m_quitBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Paused::quit));
+
+	m_paused=true;
+	
+	ppogl::AudioMgr::getInstance().playMusic("paused");
 }
 
-Paused::~Paused()
-{
-	delete mp_configBtn;
-	delete mp_resumeBtn;
-	delete mp_quitBtn;
-	delete mp_backgroundFrm;
-	delete mp_pausedLbl;
-}
-	
 void
-Paused::loop(float timeStep)
+Paused::preDisplay(float timeStep)
 {
-    int width, height;
-    width = getparam_x_resolution();
-    height = getparam_y_resolution();
-
-    // Check joystick 
-    if ( is_joystick_active() ) {
+    // check joystick 
+    if(is_joystick_active()){
 		update_joystick();
 
-		if ( is_joystick_continue_button_down() )
-		{
-			set_game_mode( RACING );
-			winsys_post_redisplay();
+		if(is_joystick_continue_button_down()){
+			setMode(RACING);
 		    return;
 		}
     }
+}
 
-    fpsCounter.update();
-
-    update_audio();
-
-    clear_rendering_context();
-
-    fogPlane.setup();
-
-    update_player_pos( players[0], 0 );
-    update_view( players[0], 0 );
-
-    setup_view_frustum( players[0], NEAR_CLIP_DIST, 
-			getparam_forward_clip_distance() );
-
-    draw_sky( players[0].view.pos );
-
-    draw_fog_plane( );
-
-    set_course_clipping( true );
-    set_course_eye_point( players[0].view.pos );
-    setup_course_lighting();
-    render_course();
-    draw_trees();
-
-    if ( getparam_draw_particles() ) {
-		draw_particles( players[0] );
-    }
-
-    draw_tux();
-    draw_tux_shadow();
-
-    set_gl_options( GUI );
-
-    UIMgr.setupDisplay();
-
-    HUD1.draw(players[0]);
+void
+Paused::postDisplay(float timestep)
+{
+    reshape(resolutionX, resolutionY);
+	set_gl_options(GUI);
 	
-	if(Benchmark::getMode()!=Benchmark::PAUSED){
-    	UIMgr.draw();
+   	if(Benchmark::getMode()!=Benchmark::PAUSED){
+		ppogl::UIManager::getInstance().draw(resolutionX, resolutionY,
+											 false); // no decoration
 	}    	
-	reshape( width, height );
-    winsys_swap_buffers();
 }
 
 bool
 Paused::keyPressEvent(SDLKey key)
 {
 	if(Benchmark::getMode() == Benchmark::PAUSED){
-		set_game_mode( GAME_OVER );
+		setMode( GAME_OVER );
 	}else{
-		set_game_mode( RACING );
+		setMode( RACING );
 	}
-	winsys_post_redisplay();
 	return true;
 }
 
 void
 Paused::resume()
 {
-	set_game_mode( RACING );
-	winsys_post_redisplay();
+	setMode( RACING );
 }
 
 void
 Paused::quit()
 {
-	GameMgr::Instance()->abortRace();
-    set_game_mode( GAME_OVER );
+	GameMgr::getInstance().abortRace();
+    setMode( GAME_OVER );
 }
 
 void
 Paused::configuration()
 {
-	set_game_mode( CONFIGURATION );
-	UIMgr.setDirty();
+	setMode( CONFIGURATION );
 }

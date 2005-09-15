@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -23,16 +23,16 @@
 #include "fps.h"
 #include "phys_sim.h"
 #include "course_mgr.h"
-#include "game_config.h"
 #include "hud.h"
 
 #include "stuff.h"
 #include "game_mgr.h"
+#include "gameconfig.h"
 
-#include "ppgltk/ui_mgr.h"
-#include "ppgltk/alg/defs.h"
+#include "ppogl/base/defs.h"
 
 HUD HUD1;
+HUD HUD2;
 
 HUD::Element::Element()
  : type(-1), 
@@ -80,18 +80,33 @@ HUD::update(const int i, Element newElement){
 }
 
 void
-HUD::draw(Player& plyr)
+HUD::draw(Player& plyr, int width, int height)
 {
-	UIMgr.setupDisplay();
-	set_gl_options( TEXFONT );
+	m_width=width;
+	m_height = height;
 	
+	gl::PushMatrix();
+	{
+	gl::MatrixMode(GL_PROJECTION);
+    gl::LoadIdentity();
+    gl::Ortho(0.0, m_width, 0.0,
+			  m_height, -1.0, 1.0);
+    gl::MatrixMode(GL_MODELVIEW);
+    gl::LoadIdentity();
+    gl::Translate(0.0, 0.0, -1.0);
+    gl::Color(ppogl::Color::white);
+	
+	set_gl_options( TEXFONT );
+		
 	for(int i=0; i<m_numElements; i++){	
 		switch(m_element[i].type){
 			case 0:
 				text(i);
 				break;
 			case 1:
-				fps(i);
+				if(GameConfig::displayFPS){
+					fps(i);
+    			}	
 				break;
 			case 2:
 				herring(i,plyr.herring);
@@ -104,13 +119,13 @@ HUD::draw(Player& plyr)
 				break;	
 			case 5:
 				{
-				pp::Vec3d vel = plyr.vel;
+				ppogl::Vec3d vel = plyr.vel;
     			speed(i,vel.normalize()* M_PER_SEC_TO_KM_PER_H);
 				}
 				break;
 			case 6:
 				{
-				pp::Vec3d vel = plyr.vel;
+				ppogl::Vec3d vel = plyr.vel;
 				gauge(i,vel.normalize()* M_PER_SEC_TO_KM_PER_H,plyr.control.jump_amt);
 				}
 				break;
@@ -119,30 +134,35 @@ HUD::draw(Player& plyr)
 				break;
 			case 8:
 				{
-				pp::Vec3d vel = plyr.vel;
+				ppogl::Vec3d vel = plyr.vel;
 				bar(i,vel.normalize()* M_PER_SEC_TO_KM_PER_H/135);
 				}	
 				break;
 			case 9:
-				coursePercentage(i);
+				if(GameConfig::displayCoursePercentage){
+					coursePercentage(i, plyr);
+				}
 				break;
 			case 10:
-				if ( getparam_display_course_percentage() ){		
-					bar(i,players[0].getCoursePercentage()/100);
+				if(GameConfig::displayCoursePercentage){		
+					bar(i,plyr.getCoursePercentage()/100);
 				}
 				break;
 		}
 	}
+	
+	}
+	gl::PopMatrix();
 }
 
 void
 HUD::text(const int i)
 {
-    if(m_element[i].font){
+	if(m_element[i].font){
 		fix_xy(m_element[i].x, m_element[i].y,
 			   m_element[i].height, m_element[i].width);
 		
-		m_element[i].font->draw(m_element[i].string.c_str(),
+		m_element[i].font->draw(m_element[i].string,
 				   m_element[i].x, m_element[i].y);		
 	}
 }
@@ -150,15 +170,11 @@ HUD::text(const int i)
 void
 HUD::fps(const int i)
 {
-	if ( ! getparam_display_fps() ) {
-		return;
-    }
-	
     if(m_element[i].font){
 		char string[BUFF_LEN];
 		sprintf( string, m_element[i].string.c_str(), fpsCounter.get() );
 		
-		pp::Font::utf8ToUnicode(m_element[i].u_string,string);
+		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
@@ -173,7 +189,7 @@ HUD::herring(const int i, const int herring_count)
 		char string[BUFF_LEN];
 		sprintf( string, m_element[i].string.c_str(), herring_count );
 		
-		pp::Font::utf8ToUnicode(m_element[i].u_string,string);
+		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
@@ -186,7 +202,7 @@ HUD::image(const int i)
 {
 	if(!m_element[i].texture) return;
 
-    gl::Color(pp::Color::white);
+    gl::Color(ppogl::Color::white);
 
     gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
 
@@ -224,10 +240,10 @@ HUD::time(const int i)
 		char string[BUFF_LEN];
 		int minutes, seconds, hundredths;
 		    
-		getTimeComponents( GameMgr::Instance()->time, minutes, seconds, hundredths );
+		getTimeComponents( GameMgr::getInstance().time, minutes, seconds, hundredths );
 		sprintf( string, m_element[i].string.c_str(), minutes, seconds, hundredths);
 		
-		pp::Font::utf8ToUnicode(m_element[i].u_string,string);
+		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
@@ -243,7 +259,7 @@ HUD::speed(const int i, const double speed)
 		char string[BUFF_LEN];
 		sprintf( string, m_element[i].string.c_str(), speed );
 		
-		pp::Font::utf8ToUnicode(m_element[i].u_string,string);
+		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
@@ -307,29 +323,21 @@ HUD::bar(const int i, double percentage)
 #define SPEEDBAR_RED_FRACTION 0.25
 #define SPEED_UNITS_Y_OFFSET 4.0
 
-static pp::Color energy_background_color(0.2, 0.2, 0.2, 0.5);
-static pp::Color energy_foreground_color(0.54, 0.59, 1.00, 0.5);
-static pp::Color speedbar_background_color(0.2, 0.2, 0.2, 0.5);
+static ppogl::Color energy_background_color(0.2, 0.2, 0.2, 0.5);
+static ppogl::Color energy_foreground_color(0.54, 0.59, 1.00, 0.5);
+static ppogl::Color speedbar_background_color(0.2, 0.2, 0.2, 0.5);
 
 void
 HUD::initGauge()
 {
-    const char *binding;
-	
-	binding = "gauge_energy_mask";
-    if ( !get_texture_binding( binding, &m_energymaskTex ) ) {
-		PP_WARNING( "Couldn't get texture for binding %s", binding );
-    }
-	
-	binding = "gauge_speed_mask";
-    if ( !get_texture_binding( binding, &m_speedmaskTex ) ) {
-		PP_WARNING( "Couldn't get texture for binding %s", binding );
-    }
-	    
-	binding = "gauge_outline";
-    if ( !get_texture_binding( binding, &m_outlineTex ) ) {
-		PP_WARNING( "Couldn't get texture for binding %s", binding );
-    }
+	m_energymaskTex = 
+		ppogl::TextureMgr::getInstance().get("gauge_energy_mask");
+
+	m_speedmaskTex = 
+		ppogl::TextureMgr::getInstance().get("gauge_speed_mask");
+
+	m_outlineTex =
+		ppogl::TextureMgr::getInstance().get("gauge_outline");
 }
 
 
@@ -350,7 +358,7 @@ HUD::gauge(const int i, const double speed, const double energy)
 
     gl::PushMatrix();
     {
-	gl::Translate(getparam_x_resolution() - m_element[i].width,0);
+	gl::Translate(m_width - m_element[i].width,0);
 
 	gl::Color(energy_background_color);
 
@@ -414,11 +422,11 @@ HUD::gauge(const int i, const double speed, const double energy)
 
 	draw_partial_tri_fan(1.0);
 
-	gl::Color(pp::Color::white);
+	gl::Color(ppogl::Color::white);
 
 	draw_partial_tri_fan( MIN( 1.0, speedbar_frac ) );
 
-	gl::Color(pp::Color::white);
+	gl::Color(ppogl::Color::white);
 
 	gl::BindTexture(GL_TEXTURE_2D, m_outlineTex);
 
@@ -447,7 +455,7 @@ HUD::draw_partial_tri_fan(const double fraction)
     double angle, angle_incr, cur_angle;
     int i;
     bool trifan = false;
-    pp::Vec2d pt;
+    ppogl::Vec2d pt;
 
     angle = SPEEDBAR_BASE_ANGLE + 
 	( SPEEDBAR_MAX_ANGLE - SPEEDBAR_BASE_ANGLE ) * fraction;
@@ -468,7 +476,7 @@ HUD::draw_partial_tri_fan(const double fraction)
 
 	pt = calc_new_fan_pt( cur_angle );
 
-	gl::Vertex(pt.x, pt.y);
+	gl::Vertex(pt.x(), pt.y());
     }
 
     if ( cur_angle > angle + EPS ) {
@@ -480,7 +488,7 @@ HUD::draw_partial_tri_fan(const double fraction)
 
 	pt = calc_new_fan_pt( cur_angle );
 
-	gl::Vertex(pt.x, pt.y);
+	gl::Vertex(pt.x(), pt.y());
     }
 
     if ( trifan ) {
@@ -489,13 +497,13 @@ HUD::draw_partial_tri_fan(const double fraction)
     }
 }
 
-pp::Vec2d
+ppogl::Vec2d
 HUD::calc_new_fan_pt(const double angle )
 {
-    pp::Vec2d pt;
-    pt.x = ENERGY_GAUGE_CENTER_X + cos( ANGLES_TO_RADIANS( angle ) ) *
+    ppogl::Vec2d pt;
+    pt.x() = ENERGY_GAUGE_CENTER_X + cos( ANGLES_TO_RADIANS( angle ) ) *
 	SPEEDBAR_OUTER_RADIUS;
-    pt.y = ENERGY_GAUGE_CENTER_Y + sin( ANGLES_TO_RADIANS( angle ) ) *
+    pt.y() = ENERGY_GAUGE_CENTER_Y + sin( ANGLES_TO_RADIANS( angle ) ) *
 	SPEEDBAR_OUTER_RADIUS;
 
     return pt;
@@ -504,7 +512,7 @@ HUD::calc_new_fan_pt(const double angle )
 void
 HUD::start_tri_fan(void)
 {
-    pp::Vec2d pt;
+    ppogl::Vec2d pt;
 
     gl::Begin(GL_TRIANGLE_FAN);
     gl::Vertex(ENERGY_GAUGE_CENTER_X, ENERGY_GAUGE_CENTER_Y);
@@ -518,25 +526,21 @@ void
 HUD::fix_xy(int &x, int &y, const int asc, const int width)
 {
 	if(x<0){
-		x=getparam_x_resolution()+x-width+1;
+		x=m_width+x-width+1;
 	}
 	if(y<0){
-		y=getparam_y_resolution()+y-asc+1;
+		y=m_height+y-asc+1;
 	}
 }
 
 void
-HUD::coursePercentage(const int i)
+HUD::coursePercentage(const int i, Player& plyr)
 {
-	if ( !getparam_display_course_percentage() ) {
-		return;
-    }
-	
 	if(m_element[i].font){
 		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), players[0].getCoursePercentage() );
+		sprintf( string, m_element[i].string.c_str(), plyr.getCoursePercentage() );
 		
-		pp::Font::utf8ToUnicode(m_element[i].u_string,string);
+		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);

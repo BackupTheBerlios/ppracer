@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -25,10 +25,11 @@
 #include "course_mgr.h"
 #include "player.h"
 
-class GameMgr
+#include "ppogl/base/singleton.h"
+
+
+class GameMgr : public ppogl::Singleton<GameMgr>
 {
-	GameMgr();
-	
 	std::list<CourseData>::iterator mi_currentRace;
 	
 	bool m_raceAborted;
@@ -37,12 +38,9 @@ class GameMgr
 	bool m_eventWon;
 	
 	double m_lastTicks;
-	
-	static GameMgr* instance;
 			
 public:
-
-	static GameMgr* Instance();
+	GameMgr();
 
 	// should be private
 	// needs some love in event_select.cpp
@@ -50,9 +48,8 @@ public:
 	std::list<CupData>::iterator currentCup;
 
 
-	difficulty_level_t difficulty;
+	DifficultyLevel difficulty;
 	double time;
-	double airbornetime;
 	double timeStep;
 	int numPlayers;
 
@@ -65,13 +62,13 @@ public:
 	inline CupData& getCurrentCup(){return *currentCup;};
 	inline CourseData& getCurrentRace(){return *mi_currentRace;};
 
-	typedef enum{
+	enum GameType{
 		PRACTICING,
 		EVENT
-	}gametype_t;
+	};
 
-	gametype_t gametype;
-	void reset(gametype_t type);
+	GameType gametype;
+	void reset(GameType type);
 	
 	inline bool wasRaceAborted(){return m_raceAborted;};
 	inline void abortRace(bool abort=true){m_raceAborted=abort;};

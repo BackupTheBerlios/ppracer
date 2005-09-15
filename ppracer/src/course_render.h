@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,18 +22,16 @@
 #ifndef _COURSE_RENDER_H_
 #define _COURSE_RENDER_H_
 
-#include "ppgltk/ppgltk.h"
-
-pp::Vec3d* get_course_normals();
+ppogl::Vec3d* get_course_normals();
 void reset_course_list();
 void calc_normals();
 void setup_course_tex_gen();
 void render_course();
 void draw_background(double fov, double aspect );
-void draw_sky(pp::Vec3d pos);
-void draw_trees() ;
+void draw_sky(ppogl::Vec3d pos);
+void draw_elements() ;
 void set_course_clipping( bool state );
-void set_course_eye_point( pp::Vec3d pt );
+void set_course_eye_point( ppogl::Vec3d pt );
 void set_course_fog( bool state);
 void draw_fog_plane();
 

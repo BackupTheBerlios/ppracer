@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -21,13 +21,9 @@
 
 #include "event_race_select.h"
 
-#include "game_config.h"
-
-#include "ppgltk/font.h"
-#include "ppgltk/audio/audio.h"
+#include "ppogl/font.h"
 
 #include "course_load.h"
-#include "textures.h"
 #include "joystick.h"
 
 #include "stuff.h"
@@ -39,246 +35,138 @@
 static std::list<CourseData>::iterator curElem;
 
 EventRaceSelect::EventRaceSelect()
+ : m_titleLbl(_("Select a race"),"heading"), 
+   m_descTa(300,104),
+   m_raceListBox(450,36),
+   m_backBtn(_("Back")),
+   m_startBtn(_("Race!")),
+   m_previewImage(ppogl::Vec2d(128,96)),
+   m_authorTitle(_("Contributed by:")),
+   m_timeTitle(_("Time:")),
+   m_herringTitle(_("Herring:")),
+   m_scoreTitle(_("Score:")),
+   m_statusLbl("","race_requirements_label")
 {
-    pp::Vec2d pos(0,0);
-
-	mp_titleLbl = new pp::Label(pos, "heading", _("Select a race"));
-	mp_titleLbl->alignment.center();
-	mp_titleLbl->alignment.middle();	
-	
-	
-    mp_backBtn = new pp::Button(pos,
-			      pp::Vec2d(150, 40), 
-			      "button_label", 
-			      _("Back") );
-    mp_backBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_backBtn->signalClicked.Connect(pp::CreateSlot(this,&EventRaceSelect::back));
-
-    mp_startBtn = new pp::Button(pos,
-			       pp::Vec2d(150, 40),
-			       "button_label",
-			       _("Race!") );
-    mp_startBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_startBtn->setDisabledFontBinding( "button_label_disabled" );
-	mp_startBtn->signalClicked.Connect(pp::CreateSlot(this,&EventRaceSelect::start));
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
 
 	if ( GameMode::prevmode != GAME_OVER ) {
-		curElem = GameMgr::Instance()->getCurrentCup().raceList.begin();
+		curElem = GameMgr::getInstance().getCurrentCup().raceList.begin();
     } else {
-		if( GameMgr::Instance()->wasRaceWon() ){
-			if(curElem != --GameMgr::Instance()->getCurrentCup().raceList.end()){
+		if( GameMgr::getInstance().wasRaceWon() ){
+			if(curElem != --GameMgr::getInstance().getCurrentCup().raceList.end()){
 				curElem++;
 			}
 		}
     }
-
-	mp_raceListbox = new pp::Listbox<CourseData>(pos,
-				   pp::Vec2d(460, 44),
-				   "listbox_item",
-				   GameMgr::Instance()->getCurrentCup().raceList);
-    mp_raceListbox->setCurrentItem( curElem );
-	mp_raceListbox->signalChange.Connect(pp::CreateSlot(this,&EventRaceSelect::listboxItemChange));
-    // Create text area 
-     
-    mp_descTa = new pp::Textarea( pos,
-			       pp::Vec2d(312, 107),
-			       "race_description",
-			       "" );
-	mp_descTa->setText( (*curElem).description.c_str() );
-    // Create state buttons - only if practicing or if cup_complete
-    
-  	mp_conditionsSSBtn = NULL;
-	mp_windSSBtn = NULL;
-	mp_snowSSBtn = NULL;
-	mp_mirrorSSBtn = NULL;
-    
-    updateStates();
-
-    play_music( "start_screen" );
-}
-
-EventRaceSelect::~EventRaceSelect()
-{
-	delete mp_titleLbl;
 	
-	delete mp_backBtn;
-	delete mp_startBtn;
-	delete mp_raceListbox;
-	delete mp_conditionsSSBtn;
-	delete mp_snowSSBtn;
-	delete mp_windSSBtn;
-	delete mp_mirrorSSBtn;
-    delete mp_descTa;	
+	{
+		std::list<CourseData> &courses = 
+			GameMgr::getInstance().getCurrentCup().raceList;
+				
+		std::list<CourseData>::iterator it;
+		for(it=courses.begin(); it!=courses.end();it++){
+			m_raceListBox.addElement((*it).getName(), it);			
+		}
+	}
+	
+	
+	m_titleLbl.setPosition(ppogl::Vec2d(320,400));
+	m_titleLbl.alignment.center();
+	
+    m_backBtn.setPosition(ppogl::Vec2d(80,0));
+    m_backBtn.signalClicked.Connect(ppogl::CreateSlot(this,&EventRaceSelect::back));
+
+	m_startBtn.setPosition(ppogl::Vec2d(560,0));
+	m_startBtn.alignment.right();
+	m_startBtn.signalClicked.Connect(ppogl::CreateSlot(this,&EventRaceSelect::start));
+ 
+	m_raceListBox.setPosition(ppogl::Vec2d(320,320));
+	m_raceListBox.alignment.center();
+    m_raceListBox.setSelectedData(curElem);
+	m_raceListBox.signalChanged.Connect(ppogl::CreateSlot(this,&EventRaceSelect::updateData));
+    
+	// Create text area 
+    m_descTa.setPosition(ppogl::Vec2d(100,150));
+	m_descTa.setText((*curElem).getDescription());
+    
+	for(int i=0; i<4; i++){
+		m_livesImg[i].setPosition(ppogl::Vec2d(416+i*36,260));
+		m_livesImg[i].setTexture("life_icon");
+		m_livesImg[i].addState(0,ppogl::Vec4f(0.0, 0.0, 1.0, 0.5));
+		m_livesImg[i].addState(1,ppogl::Vec4f(0.0, 0.5, 1.0, 1.0));
+		m_livesImg[i].setState(0);	
+	}
+
+	// preview image
+	m_previewImage.setPosition(ppogl::Vec2d(420,154));
+	m_previewImage.addState(0,ppogl::Vec4f(0.0, 0.0, 1.0, 1.0));
+	m_previewImage.setState(0);
+	m_previewImage.setBorder(4);	
+		
+	ppogl::FontRef titlefont =
+			ppogl::FontMgr::getInstance().get("race_requirements_label");
+	ppogl::FontRef labelfont =
+			ppogl::FontMgr::getInstance().get("race_requirements");
+
+	m_authorTitle.setPosition(ppogl::Vec2d(100,135));
+	m_authorTitle.setFont(titlefont);
+	m_authorLbl.setPosition(ppogl::Vec2d(
+		105 + titlefont->advance(m_authorTitle.getText()),
+		135));
+	m_authorLbl.setFont(labelfont);
+	
+	m_timeTitle.setPosition(ppogl::Vec2d(100,260));
+	m_timeTitle.setFont(titlefont);
+	m_timeLbl.setPosition(ppogl::Vec2d(
+		105 + titlefont->advance(m_timeTitle.getText()),
+		260));
+	m_timeLbl.setFont(labelfont);
+	
+	m_herringTitle.setPosition(ppogl::Vec2d(200,260));
+	m_herringTitle.setFont(titlefont);
+	m_herringLbl.setPosition(ppogl::Vec2d(
+		205 + titlefont->advance(m_herringTitle.getText()),
+		260));
+	m_herringLbl.setFont(labelfont);
+	
+	m_scoreTitle.setPosition(ppogl::Vec2d(300,260));
+	m_scoreTitle.setFont(titlefont);
+	m_scoreLbl.setPosition(ppogl::Vec2d(
+		305 + titlefont->advance(m_scoreTitle.getText()),
+		260));
+	m_scoreLbl.setFont(labelfont);
+		
+	// status message
+	m_statusLbl.setPosition(ppogl::Vec2d(100,275));
+
+	updateStates();
+	updateData();
+
+	ppogl::AudioMgr::getInstance().playMusic("start_screen");
 }
 
 void
 EventRaceSelect::loop(float timeStep)
 {
-	update_audio();
-
     set_gl_options( GUI );
 
-    clear_rendering_context();
-
-    UIMgr.setupDisplay();
-
-	// todo: detect wether the cours is windy
-	// in the meantime we always set windy to true
 	drawSnow(timeStep, true);
 	
-    theme.drawMenuDecorations();
+    ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);
 
-    setWidgetPositionsAndDrawDecorations();
-
-    UIMgr.draw();
-
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-
-    winsys_swap_buffers();
+    reshape(resolutionX, resolutionY);
 }
 
 void
-EventRaceSelect::setWidgetPositionsAndDrawDecorations()
+EventRaceSelect::updateStatusMsg()
 {
-    int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
-    int box_width, box_height, box_max_y;
-    int x_org, y_org;
-    GLuint texobj;
-
-    // set the dimensions of the box in which all widgets should fit
-    box_width = 460;
-    box_height = 310;
-    box_max_y = h - 128;
-
-    x_org = w/2 - box_width/2;
-    y_org = h/2 - box_height/2;
-    if ( y_org + box_height > box_max_y ) {
-		y_org = box_max_y - box_height;
-    }
-
-    mp_backBtn->setPosition(pp::Vec2d( x_org + 131 - mp_backBtn->getWidth()/2.0,
-		      42 ) );
-
-    mp_startBtn->setPosition(pp::Vec2d( x_org + 343 - mp_startBtn->getWidth()/2.0,
-		      42 ) );
-
-	mp_raceListbox->setPosition(pp::Vec2d( x_org,y_org + 221 ) );
-
-	mp_descTa->setPosition(pp::Vec2d( x_org,y_org + 66 ) );
-    
-	// Draw tux life icons
-	int i;
-	
-	gl::PushMatrix();
-	{
-
-	    gl::Translate( x_org + box_width - 4*36 + 4,
-			  y_org + 181,
-			  0 );
-	    
-	    PP_ASSERT( INIT_NUM_LIVES == 4, 
-			     "Assumption about number of lives invalid -- "
-			     "need to recode this part" );
-
-	    if ( !get_texture_binding( "tux_life", &texobj ) ) {
-			texobj = 0;
-	    }
-
-	    gl::BindTexture( GL_TEXTURE_2D, texobj );
-
-	    for ( i=0; i<4; i++ ) {
-		pp::Vec2d ll, ur;
-		if ( players[0].getLives() > i ) {
-		    ll = pp::Vec2d( 0, 0.5 );
-		    ur = pp::Vec2d( 1, 1 );
-		} else {
-		    ll = pp::Vec2d( 0, 0 );
-		    ur = pp::Vec2d( 1, 0.5 );
-		}
-		gl::Begin( GL_QUADS );
-		{
-		    gl::TexCoord( ll.x, ll.y );
-		    gl::Vertex( 0, 0 );
-
-		    gl::TexCoord( ur.x, ll.y );
-		    gl::Vertex( 32, 0 );
-
-		    gl::TexCoord( ur.x, ur.y );
-		    gl::Vertex( 32, 32 );
-
-		    gl::TexCoord( ll.x, ur.y );
-		    gl::Vertex( 0, 32 );
-		}
-		gl::End();
-
-		gl::Translate( 36, 0, 0 );
-	    }
-	}
-	gl::PopMatrix();
-    
-    // Draw other stuff
-	
-	mp_titleLbl->setPosition(pp::Vec2d(x_org + box_width/2.0,y_org + 310));
-	
-	// Draw text indicating race requirements (if race not completed), 
-    //   or results in race if race completed.
-    drawStatusMsg( x_org, y_org );
-
-    // Draw preview
-	std::list<CourseData>::iterator elem;
-	elem = mp_raceListbox->getCurrentItem();
-
-    gl::Disable( GL_TEXTURE_2D );
-
-    gl::Color(pp::Color::white);
-    gl::Begin( GL_QUADS );
-    {
-		gl::Vertex( x_org+box_width-140, y_org+66 );
-		gl::Vertex( x_org+box_width, y_org+66 );
-		gl::Vertex( x_org+box_width, y_org+66+107 );
-		gl::Vertex( x_org+box_width-140, y_org+66+107 );
-    }
-    gl::End();
-
-    gl::Enable( GL_TEXTURE_2D );
-
-    if ( !get_texture_binding( (*elem).course.c_str(), &texobj ) ) {
-	if ( !get_texture_binding( "no_preview", &texobj ) ) {
-	    texobj = 0;
-	}
-    }
-
-    gl::BindTexture( GL_TEXTURE_2D, texobj );
-
-    gl::Begin( GL_QUADS );
-    {
-	gl::TexCoord( 0, 0);
-	gl::Vertex( x_org+box_width-136, y_org+70 );
-
-	gl::TexCoord( 1, 0);
-	gl::Vertex( x_org+box_width-4, y_org+70 );
-
-	gl::TexCoord( 1, 1);
-	gl::Vertex( x_org+box_width-4, y_org+70+99 );
-
-	gl::TexCoord( 0, 1);
-	gl::Vertex( x_org+box_width-136, y_org+70+99 );
-    }
-    gl::End();
-}
-
-void
-EventRaceSelect::drawStatusMsg( int x_org, int y_org )
-{
-    const char *msg;
+    std::string msg;
     char buff[BUFF_LEN];
-    bool draw_stats = true;	
 	
 	switch(state){
 		case DEAD:
 			msg = _("You don't have any lives left.");
-	    	draw_stats = false;
 			break;
 		
 		case RACEWON:
@@ -291,109 +179,79 @@ EventRaceSelect::drawStatusMsg( int x_org, int y_org )
 		
 		case UNPLAYABLE:
 			msg = _("You can't enter this race yet.");
-			draw_stats = false;
 			break;
 		default:
 			msg = "";
-			draw_stats = false;
 			break;
 	}
+	
+	m_statusLbl.setText(msg);
 		
-	pp::Font *font = pp::Font::get("race_requirements");
-	pp::Font *labelfont = pp::Font::get("race_requirements_label");
-	
-	labelfont->draw(msg,pp::Vec2d(x_org,y_org + 200));
-	
-	if ( draw_stats ) {
-		int minutes;
-		int seconds;
-		int hundredths;
+	int minutes;
+	int seconds;
+	int hundredths;
 
-		pp::Vec2d pos(x_org,y_org + 184);
+	getTimeComponents( m_data.time, minutes, seconds, hundredths );
 		
-		getTimeComponents( m_data.time, minutes, seconds, hundredths );
+	sprintf( buff, "%02d:%02d.%02d",minutes, seconds, hundredths);
+	m_timeLbl.setText(buff);
 		
-		const char* string = _("Time:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
+	sprintf( buff, "%03d", m_data.herring ); 
+	m_herringLbl.setText(buff);;
 		
-		sprintf( buff, "%02d:%02d.%02d",minutes, seconds, hundredths);
-		font->draw(buff, pos);
+	sprintf( buff, "%06d", m_data.score );
+	m_scoreLbl.setText(buff);
 		
-		pos.x+=75;
-		string = _("Herring:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
-
-		sprintf( buff, "%03d", m_data.herring ); 
-		font->draw(buff, pos);
-		
-		pos.x+=40;	
-		string = _("Score:");
-		labelfont->draw(string, pos);
-		pos.x+=labelfont->advance(string) + 5;
-	
-		sprintf( buff, "%06d", m_data.score );
-		font->draw(buff, pos);
-	
-	}
-		
-	const char* string = _("Contributed by:");
-	pp::Vec2d pos(x_org,y_org+50);
-	labelfont->draw(string,pos);
-	pos.x += labelfont->advance(string) + 5;
-		
-	if(!(*curElem).contributed.empty()){
-		font->draw((*curElem).contributed.c_str(),pos);		
+	if(!(*curElem).author.empty()){
+		m_authorLbl.setText((*curElem).author);
 	}else{
-		font->draw(_("Unknown"),pos);
+		m_authorLbl.setText(_("Unknown"));
 	}	
 }
-
 
 void
 EventRaceSelect::updateStates()
 {
 	if ( players[0].getLives() <= 0 ) {
 		state=DEAD;
-		mp_startBtn->setSensitive( false );
+		m_startBtn.setInsensitive(true);
 	} else {
 		m_data.won=false;
 		players[0].getCupCourseData(
-				std::string(GameMgr::Instance()->getCurrentEvent().name),
-				std::string(GameMgr::Instance()->getCurrentCup().name),
-				std::string((*curElem).name),
+				std::string(GameMgr::getInstance().getCurrentEvent().getName()),
+				std::string(GameMgr::getInstance().getCurrentCup().getName()),
+				std::string((*curElem).getName()),
 				m_data);
 	
 		if(m_data.won){
 			state=RACEWON;
-			mp_startBtn->setSensitive( false );	
+			m_startBtn.setInsensitive(true);	
 		}else{
 			
-			difficulty_level_t d = GameMgr::Instance()->difficulty;
+			DifficultyLevel d = GameMgr::getInstance().difficulty;
 			m_data.time = (*curElem).time_req[d];
 			m_data.herring = (*curElem).herring_req[d];
 			m_data.score = int((*curElem).score_req[d]);
 
-			if(curElem==GameMgr::Instance()->getCurrentCup().raceList.begin()){
+			if(curElem==GameMgr::getInstance().getCurrentCup().raceList.begin()){
 				state=PLAYABLE;
-				mp_startBtn->setSensitive( true );
+				m_startBtn.setInsensitive(false);
 			}else{
 				PlayerCourseData prev;
 				curElem--;
 				players[0].getCupCourseData(
-					std::string(GameMgr::Instance()->getCurrentEvent().name),
-					std::string(GameMgr::Instance()->getCurrentCup().name),
-					std::string((*curElem).name),
+					std::string(GameMgr::getInstance().getCurrentEvent().getName()),
+					std::string(GameMgr::getInstance().getCurrentCup().getName()),
+					std::string((*curElem).getName()),
 					prev);
 				curElem++;
 				
 				if(prev.won){
 					state=PLAYABLE;
-					mp_startBtn->setSensitive( true );
+					m_startBtn.setInsensitive(false);
 				} else {
 					state=UNPLAYABLE;
-					mp_startBtn->setSensitive( false );
+					m_startBtn.setInsensitive(true);
 				}
 			}
 		}
@@ -403,28 +261,51 @@ EventRaceSelect::updateStates()
 void
 EventRaceSelect::back()
 {
-	set_game_mode( EVENT_SELECT );
-    UIMgr.setDirty();
+	setMode( EVENT_SELECT );
 }
 
 void
 EventRaceSelect::start()
 {
-    mp_startBtn->setHighlight( true );
     loop( 0 );
-	GameMgr::Instance()->setCurrentRace(curElem);
-
-    set_game_mode( LOADING );
+	GameMgr::getInstance().setCurrentRace(curElem);
+    setMode( LOADING );
 }
 
 
 void
-EventRaceSelect::listboxItemChange()
+EventRaceSelect::updateData()
 {
-	curElem = mp_raceListbox->getCurrentItem();
-	mp_descTa->setText( (*curElem).description.c_str() );
+	curElem = m_raceListBox.getSelectedData();
+	m_descTa.setText((*curElem).getDescription());
 	updateStates();
-	UIMgr.setDirty();
+	updateStatusMsg();
+	
+	ppogl::TextureRef texture =
+		ppogl::TextureMgr::getInstance().get((*curElem).course);
+
+	if(!texture){
+		texture =
+			ppogl::TextureMgr::getInstance().get("no_preview");
+		if(!texture){
+			PP_WARNING("Unable to get no_preview Image");
+		}
+	}	
+	m_previewImage.setTexture(texture);
+	
+	// set life images
+	PP_ASSERT(INIT_NUM_LIVES==4, 
+				"Assumption about number of lives invalid -- "
+				"need to recode this part" );
+
+	for (int i=0; i<4; i++ ){
+		if(players[0].getLives() > i){
+			m_livesImg[i].setState(1);	
+		}else{
+			m_livesImg[i].setState(0);
+		}
+	}
+
 }
 
 bool
@@ -433,29 +314,22 @@ EventRaceSelect::keyPressEvent(SDLKey key)
 	switch (key){
 		case SDLK_UP:
 		case SDLK_LEFT:
-			mp_raceListbox->gotoPrevItem();
+			--m_raceListBox;
+			updateData();
 	    	return true;
 		case SDLK_RIGHT:
 		case SDLK_DOWN:
-			mp_raceListbox->gotoNextItem();
+			++m_raceListBox;
+			updateData();
 	    	return true;
 		case SDLK_RETURN:
-	    	mp_startBtn->simulateMouseClick();
-			UIMgr.setDirty();
+			if(!m_startBtn.isInsensitive()){
+				start();
+			}
 			return true;
 		case SDLK_ESCAPE:
-	    	mp_backBtn->simulateMouseClick();
-			UIMgr.setDirty();
+	    	back();
 			return true;
-		case 'c': 
-	    	mp_conditionsSSBtn->simulateMouseClick();
-	    	return true;
-		case 'w': 
-	    	mp_windSSBtn->simulateMouseClick();
-	    	return true;
-		case 'm':
-	    	mp_mirrorSSBtn->simulateMouseClick();
-	    	return true;
 		default:
 			return false;
 	}	
