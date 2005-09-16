@@ -15,7 +15,7 @@ Translation.addLanguage("en_GB", "English");
 Translation.addLanguage("es_ES", "Español");
 Translation.addLanguage("fr_FR", "Français");
 Translation.addLanguage("it_IT", "Italian");
-Translation.addLanguage("hu_HU", "Magyar nyelv");
+Translation.addLanguage("hu_HU", "Magyar");
 Translation.addLanguage("nl_NL", "Nederlands");
 Translation.addLanguage("nb_NO", "Norsk (bokmål)");
 Translation.addLanguage("nn_NO", "Norsk (nynorsk)");
