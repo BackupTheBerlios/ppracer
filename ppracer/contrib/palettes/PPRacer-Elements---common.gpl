@@ -10,3 +10,4 @@ Columns: 4
   0 255  48	Shrub
 255  96   0	Tree Barren
   0   0   0	None
+255 128 255	Reset point

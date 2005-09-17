@@ -4,7 +4,7 @@ Columns: 4
 #
  28 185 204	Herring
 194  40  40	Flag
-128 128   0	Start
+128 128   0	Namenlos
 255 255   0	Finish
 255 255 255	Tree
   0 255  48	Shrub
@@ -18,3 +18,4 @@ Columns: 4
 136 170  17	Life
 187 187 255	Barrier
 160 160 160	X-Mas tree
+255 128 255	Reset point
