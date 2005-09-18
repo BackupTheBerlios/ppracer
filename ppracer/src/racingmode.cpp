@@ -89,7 +89,7 @@ RacingMode::renderCourse(int player, float timestep)
 	fogPlane.setup();
 	
 	//track marks
-    add_track_mark(players[player]);
+    trackMarks[player].update();	
 	
 	if(m_paused==false){	
 		//only update the players view if game is not paused
@@ -104,6 +104,9 @@ RacingMode::renderCourse(int player, float timestep)
     set_course_eye_point(players[player].view.pos );
     setup_course_lighting();
     render_course();
+	
+	// draw trackmarks for all players
+	TrackMarks::drawAllPlayers();
 	
     draw_elements();
 	

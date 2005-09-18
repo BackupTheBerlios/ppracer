@@ -115,7 +115,7 @@ Racing::Racing()
 Racing::~Racing()
 {
 	ppogl::AudioMgr::getInstance().stopAllSounds();
-    break_track_marks();
+ 	TrackMarks::discontinueAllPlayers();
 }
 
 void

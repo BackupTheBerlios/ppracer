@@ -330,8 +330,10 @@ Course::load(std::string& course)
 			  -courseDim.y()/(ny-1),
 			  players[0].view.pos);
 
-    init_track_marks();
-
+	// init trackmarks for all players
+	// todo: check whether we need to keep the old ones
+    TrackMarks::init();
+	
     course_loaded = true;
 } 
 

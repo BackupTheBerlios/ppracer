@@ -299,8 +299,6 @@ void render_course()
     update_course_quadtree(eye_pt);
 
     render_course_quadtree();
-	
-    draw_track_marks();
 }
 
 void draw_sky(ppogl::Vec3d pos)

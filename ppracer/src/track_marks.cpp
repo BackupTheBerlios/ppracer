@@ -38,319 +38,20 @@
 #undef TRACK_TRIANGLES
 
 #define TRACK_WIDTH  0.7
-#define MAX_TRACK_MARKS 1000
 #define MAX_CONTINUE_TRACK_DIST TRACK_WIDTH*4
 #define MAX_CONTINUE_TRACK_TIME .1
 #define SPEED_TO_START_TRENCH 0.0
 #define SPEED_OF_DEEPEST_TRENCH 10
 
-#ifdef TRACK_TRIANGLES
-  #define TRACK_HEIGHT 0.1
-  #define MAX_TRACK_DEPTH 10
-  #define MAX_TRIS MAX_TRACK_MARKS
-#else
-  #define TRACK_HEIGHT 0.08
-  #define MAX_TRACK_DEPTH 0.7
-#endif
-
-enum TrackTypes{
-    TRACK_HEAD,
-    TRACK_MARK,
-    TRACK_TAIL,
-    NUM_TRACK_TYPES
-};
-
-struct TrackQuad{
-    ppogl::Vec3d v1, v2, v3, v4;
-    ppogl::Vec2d t1, t2, t3, t4;
-    ppogl::Vec3d n1, n2, n3, n4;
-    TrackTypes track_type;
-	int terrain;
-    double alpha;
-};
-
-struct TrackMarks{
-    TrackQuad quads[MAX_TRACK_MARKS];
-    int current_mark;
-    int next_mark;
-    double last_mark_time;
-    ppogl::Vec3d last_mark_pos;
-};
-
-static TrackMarks track_marks;
-static bool continuing_track;
+#define TRACK_HEIGHT 0.08
+#define MAX_TRACK_DEPTH 0.7
 
 extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
 
-#ifdef TRACK_TRIANGLES
-struct TrackTris{
-    triangle_t tri[MAX_TRIS];
-    track_types_t *track_type[MAX_TRIS];
-    double *alpha[MAX_TRIS];
-    int first_mark;
-    int next_mark;
-    int current_start;
-    int current_end;
-    int num_tris;
-};
-
-struct TrackTri{
-    ppogl::Vec3d v1, v2, v3;
-};
-
-static TrackTris track_tris;
-
-static void draw_tri( Triangle *tri, double alpha )
+void
+TrackMarks::draw()
 {
-    ppogl::Vec3d nml;
-    GLfloat c[4] = {1.0, 0.0, 0.0, 1.0}; 
-
-//    set_material_alpha( white, black, 1.0, alpha );
-    set_material_alpha( white, black, 1.0, 1.0 );  
-
-    gl::Material(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
-
-    gl::Begin(GL_TRIANGLES);
-
-    nml = find_course_normal( tri->p[0].x(), tri->p[0].z() );
-    gl::Normal( nml.x(), nml.y(), nml.z() );
-    gl::TexCoord( tri->t[0].x(), tri->t[0].y() );
-    gl::Vertex( tri->p[0].x(), tri->p[0].y(), tri->p[0].z() );
-    
-    nml = find_course_normal( tri->p[1].x(), tri->p[1].z() );
-    gl::Normal( nml.x(), nml.y(), nml.z() );
-    gl::TexCoord( tri->t[1].x(), tri->t[1].y() );
-    gl::Vertex( tri->p[1].x(), tri->p[1].y(), tri->p[1].z() );
-    
-    nml = find_course_normal( tri->p[2].x(), tri->p[2].z() );
-    gl::Normal( nml.x(), nml.y(), nml.z() );
-    gl::TexCoord( tri->t[2].x(), tri->t[2].y() );
-    gl::Vertex( tri->p[2].x(), tri->p[2].y(), tri->p[2].z() );
-
-    gl::End();
-}
-
-static void draw_tri_tracks( void )
-{
-    GLuint texid[NUM_TRACK_TYPES];
-
-    set_gl_options( TRACK_MARKS ); 
-
-    gl::Color(ppogl::Color::black);
-
-    get_texture_binding( "track_head", &texid[TRACK_HEAD] );
-    get_texture_binding( "track_mark", &texid[TRACK_MARK] );
-    get_texture_binding( "track_tail", &texid[TRACK_TAIL] );
-
-    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    set_material( white, black, 1.0 );
-    setup_course_lighting();
-
-    for(int i = 0; i < track_tris.num_tris; i++ ) {
-		gl::BindTexture( GL_TEXTURE_2D, 
-		       texid[*track_tris.track_type[(track_tris.first_mark+i)%MAX_TRIS]] );
-		draw_tri( &track_tris.tri[(track_tris.first_mark+i)%MAX_TRIS],
-			  *track_tris.alpha[(track_tris.first_mark+i)%MAX_TRIS] );
-    }
-}
-
-static void add_tri_tracks_from_tri( ppogl::Vec3d p1, ppogl::Vec3d p2, ppogl::Vec3d p3,
-				     ppogl::Vec2d t1, ppogl::Vec2d t2, ppogl::Vec2d t3,
-				     track_types_t *track_type, double *alpha )
-{
-    double minx, maxx;
-    double minz, maxz;
-    int nx, nz;
-    double width, length;
-    int i, j, k;
-    double xstep, zstep;
-    line_t cut;
-    int num_tris;
-    int this_set_end;
-    int num_new;
-
-    /* Make 'em planar. Calculate y later anyway */
-    p1.y() = p2.y() = p3.y() = 0;
-
-    get_course_divisions( &nx, &nz );
-    get_course_dimensions( &width, &length );
-    xstep = width/(nx-1);
-    zstep = length/(nz-1);
-
-    minx = min(min(p1.x(), p2.x()), p3.x());
-    minz = min(min(p1.z(), p2.z()), p3.z());
-    maxx = max(max(p1.x(), p2.x()), p3.x());
-    maxz = max(max(p1.z(), p2.z()), p3.z());
-
-    track_tris.current_start = track_tris.next_mark;
-    track_tris.current_end = track_tris.next_mark;
-
-    track_tris.tri[track_tris.next_mark].p[0] = p1;
-    track_tris.tri[track_tris.next_mark].p[1] = p2;
-    track_tris.tri[track_tris.next_mark].p[2] = p3;
-    track_tris.tri[track_tris.next_mark].t[0] = t1;
-    track_tris.tri[track_tris.next_mark].t[1] = t2;
-    track_tris.tri[track_tris.next_mark].t[2] = t3; 
-
-    /*
-     * Make lengthwise cuts
-     */
-    for( i = (int)((minx/xstep)+0.9999); i < (int)(maxx/xstep); i++ ) {
-	cut.pt = make_point( i*xstep, 0, 0 );
-	cut.nml = make_vector( 1, 0, 0 );
-	this_set_end = track_tris.current_end;
-	for ( j = track_tris.current_start; j <= this_set_end; j++ ) {
-	    num_tris = cut_triangle( &track_tris.tri[j%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+1)%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+2)%MAX_TRIS],
-				     cut );
-	    track_tris.current_end = (track_tris.current_end + num_tris - 1)%MAX_TRIS;
-	}
-    }
-    
-    /*
-     * Make cross cuts
-     */
-    for( i = (int)((minz/zstep)+0.9999); i < (int)(maxz/zstep); i++ ) {
-	cut.pt = make_point( 0, 0, i*zstep );
-	cut.nml = make_vector( 0, 0, 1 );
-	this_set_end = track_tris.current_end;
-	for ( j = track_tris.current_start; j <= this_set_end; j++ ) {
-	    num_tris = cut_triangle( &track_tris.tri[j%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+1)%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+2)%MAX_TRIS],
-				     cut );
-	    track_tris.current_end = (track_tris.current_end + num_tris - 1)%MAX_TRIS;
-	}
-    }
-
-    /*
-     * Make diagonal cuts
-     */
-    for( i = (int)((minx/xstep)+0.9999), j = (int)((minz/zstep)+0.9999);
-	 (i < (int)(maxx/xstep)) && (j < (int)(maxz/zstep));
-	 i++, j++) {
-	if ( (i+j)%2 != 0 ) {
-	    i--;
-	}
-	cut.pt = make_point( i*xstep, 0, j*zstep );
-	cut.nml = make_vector( 1, 0, 1 );
-	cut.nml.normalize();
-	for ( k = track_tris.current_start; k <= this_set_end; k++ ) {
-	    num_tris = cut_triangle( &track_tris.tri[k%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+1)%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+2)%MAX_TRIS],
-				     cut );
-	    track_tris.current_end = (track_tris.current_end + num_tris - 1)%MAX_TRIS;
-	}
-    }
-
-    /*
-     * Make other diagonal cuts
-     */
-    for( i = (int)((minx/xstep)+0.9999), j = (int)(maxz/zstep);
-	 (i < (int)(maxx/xstep)) && (j > (int)((minz/zstep) + 0.9999));
-	 i++, j--) {
-	if ( (i+j)%2 != 0 ) {
-	    i--;
-	}
-	cut.pt = make_point( i*xstep, 0, j*zstep );
-	cut.nml = make_vector( 1, 0, 1 );
-	cut.nml.normalize();
-	for ( k = track_tris.current_start; k <= this_set_end; k++ ) {
-	    num_tris = cut_triangle( &track_tris.tri[k%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+1)%MAX_TRIS],
-				     &track_tris.tri[(track_tris.current_end+2)%MAX_TRIS],
-				     cut );
-	    track_tris.current_end = (track_tris.current_end + num_tris - 1)%MAX_TRIS;
-	}
-    }
-
-
-    /* Reset first, next and num_tris */
-    if (track_tris.current_start <= track_tris.current_end) {
-	num_new = track_tris.current_end - track_tris.current_start + 1;
-	track_tris.num_tris = track_tris.num_tris + num_new;
-	track_tris.next_mark = (track_tris.current_end+1)%MAX_TRIS;
-	if ( ((track_tris.num_tris - num_new) > 0) &&
-	     (track_tris.first_mark >= track_tris.current_start) && 
-	     (track_tris.first_mark <= track_tris.current_end) ) {
-	    track_tris.num_tris = track_tris.num_tris - (track_tris.current_end - track_tris.first_mark + 1);
-	    track_tris.first_mark = track_tris.next_mark;
-	}
-
-    } else {
-	num_new = (track_tris.current_end + 1) + (MAX_TRIS - track_tris.current_start);
-	track_tris.num_tris = track_tris.num_tris + num_new;
-	track_tris.next_mark = (track_tris.current_end+1)%MAX_TRIS;
-	if (track_tris.first_mark >= track_tris.current_start) {
-	    track_tris.num_tris = track_tris.num_tris - (track_tris.current_end + 1) - 
-		(MAX_TRIS - track_tris.first_mark);
-	    track_tris.first_mark = track_tris.next_mark;
-	} else if (track_tris.first_mark <= track_tris.current_end) {
-	    track_tris.num_tris = track_tris.num_tris - (track_tris.current_end - track_tris.first_mark + 1);
-	    track_tris.first_mark = track_tris.next_mark;
-	}
-
-    }
-
-    for ( i = 0; i < num_new; i++ ) {
-	track_tris.alpha[(track_tris.current_start+i)%MAX_TRIS] = alpha;
-	track_tris.track_type[(track_tris.current_start+i)%MAX_TRIS] = track_type;
-	track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[0].y() = 
-	    find_y_coord( track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[0].x(), 
-			  track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[0].z() ) +
-	    TRACK_HEIGHT; 
-	track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[1].y() =
-	    find_y_coord( track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[1].x(), 
-			  track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[1].z() ) +
-	    TRACK_HEIGHT; 
-	track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[2].y() = 
-	    find_y_coord( track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[2].x(), 
-			  track_tris.tri[(track_tris.current_start+i)%MAX_TRIS].p[2].z() ) +
-	    TRACK_HEIGHT; 
-    }
-
-}
-
-static void add_tri_tracks_from_quad( track_quad_t *q )
-{
-    add_tri_tracks_from_tri( q->v1, q->v2, q->v3, q->t1, q->t2, q->t3,
-			     &q->track_type, &q->alpha );
-    add_tri_tracks_from_tri( q->v2, q->v4, q->v3, q->t2, q->t4, q->t3,
-			     &q->track_type, &q->alpha );
-}
-
-#endif
-
-
-
-void init_track_marks(void)
-{
-    track_marks.current_mark = 0;
-    track_marks.next_mark = 0;
-    track_marks.last_mark_time = -99999;
-    track_marks.last_mark_pos = ppogl::Vec3d(-9999, -9999, -9999);
-    continuing_track = false;
-#ifdef TRACK_TRIANGLES
-    track_tris.first_mark = 0;
-    track_tris.next_mark = 0;
-    track_tris.num_tris = 0;
-#endif
-}
-
-
-
-void draw_track_marks(void)
-{
-#ifdef TRACK_TRIANGLES
-    draw_tri_tracks();
-#else
-    if(PPConfig.getBool("track_marks") == false) {
-		return;
-    }   
-
 	int current_quad, num_quads;
     int first_quad;
     TrackQuad *q, *qnext;
@@ -364,21 +65,19 @@ void draw_track_marks(void)
     set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
     setup_course_lighting();
 
-    num_quads = MIN( track_marks.current_mark, MAX_TRACK_MARKS -
-		     track_marks.next_mark + track_marks.current_mark );
-    first_quad = track_marks.current_mark - num_quads;
+    num_quads = MIN( current_mark, MAX_TRACK_MARKS -
+		     next_mark + current_mark );
+    first_quad = current_mark - num_quads;
 
     for ( current_quad = 0;
 	  current_quad < num_quads;
 	  current_quad++ ) 
     {
-	q = &track_marks.quads[(first_quad + current_quad)%MAX_TRACK_MARKS];
+	q = &quads[(first_quad + current_quad)%MAX_TRACK_MARKS];
 
 	trackColor.a() = q->alpha;
 	set_material( trackColor, ppogl::Color::black, 1.0 );
 
-	//glBindTexture( GL_TEXTURE_2D, texid[q->track_type] );
-	
 	switch (q->track_type){
 		case TRACK_HEAD:
 			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.head);
@@ -437,7 +136,7 @@ void draw_track_marks(void)
 		gl::End();
 		gl::Begin(GL_QUADS);
 		
-	    qnext = &track_marks.quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
+	    qnext = &quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
 	    while (( qnext->track_type == TRACK_MARK ) && (current_quad+1 < num_quads)) {
 		current_quad++;
 		
@@ -447,7 +146,7 @@ void draw_track_marks(void)
 			gl::Begin(GL_QUADS);		
 		}
 				
-		q = &track_marks.quads[(first_quad+current_quad)%MAX_TRACK_MARKS];
+		q = &quads[(first_quad+current_quad)%MAX_TRACK_MARKS];
 		trackColor.a() = qnext->alpha;
 		set_material( trackColor, ppogl::Color::black, 1.0 );
 		
@@ -468,23 +167,22 @@ void draw_track_marks(void)
 		gl::TexCoord( q->t3.x(), q->t3.y() );
 		gl::Vertex( q->v3.x(), q->v3.y(), q->v3.z() );
 		
-		qnext = &track_marks.quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
+		qnext = &quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
 	    }
 	    gl::End();
 	}
 
     }
-#endif
-
 }
 
-void break_track_marks( void )
+void
+TrackMarks::discontinue()
 {
     TrackQuad *qprev, *qprevprev;
-    qprev = &track_marks.quads[(track_marks.current_mark-1)%MAX_TRACK_MARKS];
-    qprevprev = &track_marks.quads[(track_marks.current_mark-2)%MAX_TRACK_MARKS];
+    qprev = &quads[(current_mark-1)%MAX_TRACK_MARKS];
+    qprevprev = &quads[(current_mark-2)%MAX_TRACK_MARKS];
 
-    if (track_marks.current_mark > 0) {
+    if (current_mark > 0) {
 	qprev->track_type = TRACK_TAIL;
 	qprev->t1 = ppogl::Vec2d(0.0, 0.0);
 	qprev->t2 = ppogl::Vec2d(1.0, 0.0);
@@ -493,12 +191,13 @@ void break_track_marks( void )
 	qprevprev->t3.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
 	qprevprev->t4.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
     }
-    track_marks.last_mark_time = -99999;
-    track_marks.last_mark_pos = ppogl::Vec3d(-9999, -9999, -9999);
+    last_mark_time = -99999;
+    last_mark_pos = ppogl::Vec3d(-9999, -9999, -9999);
     continuing_track = false;
 }
 
-void add_track_mark( Player& plyr )
+void
+TrackMarks::update()
 {
 	
     if(PPConfig.getBool("track_marks") == false) {
@@ -526,15 +225,15 @@ void add_track_mark( Player& plyr )
 	float old_terrain_weight=0;
 	unsigned int i;
 
-    q = &track_marks.quads[track_marks.current_mark%MAX_TRACK_MARKS];
-    qprev = &track_marks.quads[(track_marks.current_mark-1)%MAX_TRACK_MARKS];
-    qprevprev = &track_marks.quads[(track_marks.current_mark-2)%MAX_TRACK_MARKS];
+    q = &quads[current_mark%MAX_TRACK_MARKS];
+    qprev = &quads[(current_mark-1)%MAX_TRACK_MARKS];
+    qprevprev = &quads[(current_mark-2)%MAX_TRACK_MARKS];
 
-    vector_from_last_mark = plyr.pos - track_marks.last_mark_pos;
+    vector_from_last_mark = player->pos - last_mark_pos;
     dist_from_last_mark = vector_from_last_mark.normalize();
 	
 	
-    get_surface_type(plyr.pos.x(), plyr.pos.z(), terrain_weights);
+    get_surface_type(player->pos.x(), player->pos.z(), terrain_weights);
     
 	break_marks=true;
 	for (i=0;i<num_terrains;i++){
@@ -551,45 +250,45 @@ void add_track_mark( Player& plyr )
 	}
 	
 	if (break_marks==true){
-		break_track_marks();
+		discontinue();
 		return;
 	}
 
-    vel = plyr.vel;
+    vel = player->vel;
     speed = vel.normalize();
     if (speed < SPEED_TO_START_TRENCH) {
-	break_track_marks();
-	return;
+		discontinue();
+		return;
     }
 
-    width_vector = plyr.direction^ppogl::Vec3d( 0, 1, 0 );
+    width_vector = player->direction^ppogl::Vec3d( 0, 1, 0 );
     magnitude = width_vector.normalize();
     if ( magnitude == 0 ) {
-	break_track_marks();
-	return;
+		discontinue();
+		return;
     }
 
     left_vector = (TRACK_WIDTH/2.0)*width_vector;
     right_vector = (-TRACK_WIDTH/2.0)*width_vector;
-    left_wing =  plyr.pos - left_vector;
-    right_wing = plyr.pos - right_vector;
+    left_wing =  player->pos - left_vector;
+    right_wing = player->pos - right_vector;
     left_y = find_y_coord( left_wing.x(), left_wing.z() );
     right_y = find_y_coord( right_wing.x(), right_wing.z() );
     if (fabs(left_y-right_y) > MAX_TRACK_DEPTH) {
-	break_track_marks();
-	return;
+		discontinue();
+		return;
     }
 
-    surf_plane = get_local_course_plane( plyr.pos );
-    dist_from_surface = surf_plane.distance( plyr.pos );
+    surf_plane = get_local_course_plane( player->pos );
+    dist_from_surface = surf_plane.distance( player->pos );
     comp_depth = terrain_compression;
     if ( dist_from_surface >= (2*comp_depth) ) {
-	break_track_marks();
-	return;
+		discontinue();
+		return;
     }
 
     if (!continuing_track) {
-	break_track_marks();
+		discontinue();
 	q->track_type = TRACK_HEAD;
 	q->v1 = ppogl::Vec3d( left_wing.x(), left_y + TRACK_HEIGHT, left_wing.z() );
 	q->v2 = ppogl::Vec3d( right_wing.x(), right_y + TRACK_HEIGHT, right_wing.z() );
@@ -597,9 +296,9 @@ void add_track_mark( Player& plyr )
 	q->n2 = find_course_normal( q->v2.x(), q->v2.z());
 	q->t1 = ppogl::Vec2d(0.0, 0.0);
 	q->t2 = ppogl::Vec2d(1.0, 0.0);
-	track_marks.next_mark = track_marks.current_mark + 1;
+	next_mark = current_mark + 1;
     } else {
-	if ( track_marks.next_mark == track_marks.current_mark ) {
+	if ( next_mark == current_mark ) {
 	    q->v1 = qprev->v3;
 	    q->v2 = qprev->v4;
 	    q->n1 = qprev->n3;
@@ -607,7 +306,7 @@ void add_track_mark( Player& plyr )
 	    q->t1 = qprev->t3; 
 	    q->t2 = qprev->t4;
 	    if ( qprev->track_type != TRACK_HEAD ) {
-		qprev->track_type = TRACK_MARK;
+			qprev->track_type = TRACK_MARK;
 	    }
 	    q->track_type = TRACK_MARK;
 	}
@@ -624,16 +323,61 @@ void add_track_mark( Player& plyr )
 	    q->t4 = ppogl::Vec2d(1.0, q->t2.y() + tex_end);
 	}
 
-#ifdef TRACK_TRIANGLES
-	add_tri_tracks_from_quad(q);
-#endif
-	track_marks.current_mark++;
-	track_marks.next_mark = track_marks.current_mark;
+	current_mark++;
+	next_mark = current_mark;
     }
 
     q->alpha = MIN( (2*comp_depth-dist_from_surface)/(4*comp_depth), 1.0 );
 		
-    track_marks.last_mark_time = GameMgr::getInstance().time;
+    last_mark_time = GameMgr::getInstance().time;
     continuing_track = true;
 
 }
+
+void
+TrackMarks::init()
+{
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+	    trackMarks[i].current_mark = 0;
+		trackMarks[i].next_mark = 0;
+		trackMarks[i].last_mark_time = -99999;
+		trackMarks[i].last_mark_pos = ppogl::Vec3d(-9999, -9999, -9999);
+		trackMarks[i].continuing_track = false;
+		
+		//new stuff
+		trackMarks[i].player = &(players[i]);		
+	}
+}
+
+
+
+// begin new stuff
+
+
+TrackMarks::TrackMarks()
+ : player(NULL)
+{	
+}
+
+void
+TrackMarks::discontinueAllPlayers()
+{
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+		trackMarks[i].discontinue();
+	}
+}
+
+void
+TrackMarks::drawAllPlayers()
+{
+	if(PPConfig.getBool("track_marks") == false) {
+		return;
+    }
+	
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+		trackMarks[i].draw();
+	}	
+}
+
+
+TrackMarks trackMarks[2];

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -26,9 +26,55 @@
 
 #include "player.h"
 
-void init_track_marks(void);
-void draw_track_marks(void);
-void add_track_mark( Player& plyr );
-void break_track_marks(void);
+#define MAX_TRACK_MARKS 1000
 
-#endif /* _TRACK_MARKS_H_ */
+enum TrackTypes
+{
+    TRACK_HEAD,
+    TRACK_MARK,
+    TRACK_TAIL,
+    NUM_TRACK_TYPES
+};
+
+struct TrackQuad
+{
+    ppogl::Vec3d v1, v2, v3, v4;
+    ppogl::Vec2d t1, t2, t3, t4;
+    ppogl::Vec3d n1, n2, n3, n4;
+    TrackTypes track_type;
+	int terrain;
+    double alpha;
+};
+
+class TrackMarks
+{
+public:
+
+// begin old stuff
+	void draw();
+	void update();
+	void discontinue();
+
+	TrackQuad quads[MAX_TRACK_MARKS];
+    int current_mark;
+    int next_mark;
+    double last_mark_time;
+    ppogl::Vec3d last_mark_pos;
+	bool continuing_track;
+// end old stuff
+
+	TrackMarks();
+	
+	///reference for the player
+	Player* player;
+		
+// static stuff
+
+	static void init();
+	static void discontinueAllPlayers();
+	static void drawAllPlayers();	
+};
+
+extern TrackMarks trackMarks[2];
+
+#endif // _TRACK_MARKS_H_

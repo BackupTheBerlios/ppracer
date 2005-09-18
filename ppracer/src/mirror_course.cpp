@@ -138,7 +138,7 @@ void set_course_mirroring( bool state )
     if ( mirrored != state ) {
 		mirror_key_frame();
 		mirror_course();
-		init_track_marks();
+		TrackMarks::init();
     }
     mirrored = state;
     

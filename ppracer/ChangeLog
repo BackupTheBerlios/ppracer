@@ -2,6 +2,9 @@
 2005-09-18  Volker Stroebel <volker@planetpenguin.de>
 	* data/courses/* data/events/*
 	updated color palettes for element images
+	
+	* src/track_marks.* src/*
+	added multiplayer support to trackmarks
 
 2005-09-17  Volker Stroebel <volker@planetpenguin.de>
 	* data/courses/* data/events/*
