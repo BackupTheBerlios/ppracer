@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,7 +22,7 @@
 #ifndef _MIRROR_COURSE_H_
 #define _MIRROR_COURSE_H_
 
-void set_course_mirroring( bool state );
-bool get_course_mirroring( );
+void set_course_mirroring(bool state);
+void reset_course_mirroring();
 
 #endif // _MIRROR_COURSE_H_

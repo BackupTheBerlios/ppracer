@@ -5,6 +5,9 @@
 	
 	* src/track_marks.* src/*
 	added multiplayer support to trackmarks
+	
+	* src/mirror_course.* src/load_course.cpp
+	fixed crash in course mirroring
 
 2005-09-17  Volker Stroebel <volker@planetpenguin.de>
 	* data/courses/* data/events/*

@@ -32,7 +32,8 @@
 
 static bool mirrored = false;
 
-void mirror_course() 
+void
+mirror_course() 
 {
     int x, y;
     int idx1, idx2;
@@ -117,7 +118,8 @@ void mirror_course()
     Course::setStartPt( start_pt );
 }
 
-void mirror_key_frame()
+void
+mirror_key_frame()
 {
     float course_width, course_length;
     int num_frames;
@@ -133,18 +135,19 @@ void mirror_key_frame()
     }
 }
 
-void set_course_mirroring( bool state )
+void
+set_course_mirroring(bool state)
 {
-    if ( mirrored != state ) {
+	if(mirrored!=state){
 		mirror_key_frame();
 		mirror_course();
-		TrackMarks::init();
+		TrackMarks::init();		
+		mirrored = state;
     }
-    mirrored = state;
-    
 }
 
-bool get_course_mirroring( )
+void
+reset_course_mirroring()
 {
-    return mirrored;
+	mirrored=false;
 }

@@ -212,7 +212,7 @@ reset_course()
     start_pt.y() = 0;
     base_height_value = 127;
 	
-    set_course_mirroring(false);
+    reset_course_mirroring();
 
     reset_lights();
     fogPlane.reset();
