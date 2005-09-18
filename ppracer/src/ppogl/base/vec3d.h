@@ -65,6 +65,15 @@ public:
 	friend Vec3d operator*(const double scalar, const Vec3d& vec);
 	friend double operator*(const Vec3d& vec1,const Vec3d& vec2);
 	friend Vec3d operator^(const Vec3d& vec1,const Vec3d& vec2);
+
+	/// print formated values to an std::ostream
+	friend inline std::ostream& operator << (std::ostream& output, const Vec3d& vec)
+	{
+		output 	<< vec.values[0] << ":"
+				<< vec.values[1] << ":"
+				<< vec.values[2];		
+		return output;
+	}
 };
 
 

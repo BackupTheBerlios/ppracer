@@ -741,7 +741,7 @@ elements_cb(ppogl::Script *vm)
 			std::map<std::string, ppogl::RefPtr<ModelType> >::iterator modelit;
 			for(modelit=modelTypes.begin();modelit!=modelTypes.end();modelit++){
 				if( (*modelit).second->color.compareRGB(*it) ){
-					// yes, that's the right item
+					// yes, that's the right model
 				
 					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*courseDim.x();
 					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*courseDim.y();
@@ -765,7 +765,7 @@ elements_cb(ppogl::Script *vm)
 					double y = find_y_coord(x,z) + (*itemit).second->above_ground;
 					
 					if( (*itemit).second->reset_point ){
-						resetLocs.push_back(ppogl::Vec2d(x,z));
+						resetLocs.push_back(ppogl::Vec2d(x,z));					
 						found=true;
 						break;						
 					}else{
@@ -832,7 +832,7 @@ model_spec_cb(ppogl::Script *vm)
 	// attach model to map
 	// an existing model with the same name will be replaced
 	modelTypes[name]=model;
-	
+		
 	return 0;
 }
 
@@ -849,16 +849,16 @@ reset_point_cb(ppogl::Script *vm)
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(1);
-		item->color.values[i]=vm->getInt();
+		item->color.values[i]=vm->getInt();	
 		vm->pop(2);	
 	}
 	vm->pop();
-	
+			
 	item->reset_point = true;
 	item->type = ItemType::UNCOLLECTABLE;
-	
+		
 	itemTypes["reset_point"]=item;
-	
+		
 	return 0;
 }	
 		

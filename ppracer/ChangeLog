@@ -1,4 +1,12 @@
 
+2005-09-18  Volker Stroebel <volker@planetpenguin.de>
+	* data/courses/* data/events/*
+	updated color palettes for element images
+
+2005-09-17  Volker Stroebel <volker@planetpenguin.de>
+	* data/courses/* data/events/*
+	fixed reset points in element images
+
 2005-09-14  Volker Stroebel <volker@planetpenguin.de>
 	* data/translations/*
 	added swedish translations

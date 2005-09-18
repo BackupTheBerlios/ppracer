@@ -56,6 +56,16 @@ public:
 	
 	void set(const float *v);
 	void set(const double *v);
+	
+	
+	/// print formated values to an std::ostream
+	friend inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
+	{
+		output 	<< vec.values[0] << ":"
+				<< vec.values[1] << ":"
+				<< vec.values[2];		
+		return output;
+	}	
 };
 
 

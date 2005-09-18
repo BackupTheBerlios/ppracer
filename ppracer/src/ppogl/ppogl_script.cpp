@@ -45,7 +45,8 @@
 
 // some utility functions
 
-static int my_chdir(ppogl::Script *vm)
+static int
+my_chdir(ppogl::Script *vm)
 {
 	std::string dir=vm->getString(1);
 	bool result = ppogl::os::chdir(dir);
@@ -53,7 +54,8 @@ static int my_chdir(ppogl::Script *vm)
 	return 1;
 }
 
-static int my_cwd(ppogl::Script *vm)
+static int
+my_cwd(ppogl::Script *vm)
 {
 	std::string dir = ppogl::os::cwd();
 	if(dir.empty()){
@@ -64,7 +66,8 @@ static int my_cwd(ppogl::Script *vm)
 	}
 }
 
-static int my_dir(ppogl::Script *vm)
+static int
+my_dir(ppogl::Script *vm)
 {
 	std::string path = vm->getString(1);
 	bool only_dirs=false;
@@ -83,6 +86,23 @@ static int my_dir(ppogl::Script *vm)
 	return 1;
 }
 
+static int
+my_isFile(ppogl::Script *vm)
+{
+	std::string path=vm->getString(1);
+	bool result = ppogl::os::isFile(path);
+	vm->pushBool(result);
+	return 1;
+}
+
+static int
+my_isDirectory(ppogl::Script *vm)
+{
+	std::string path=vm->getString(1);
+	bool result = ppogl::os::isDirectory(path);
+	vm->pushBool(result);
+	return 1;
+}
 
 static void
 my_printfunc(HSQUIRRELVM vm, const SQChar *s, ...) 
@@ -100,6 +120,8 @@ static const struct ppogl::Script::Lib ppogllib[]={
 	{"cd",my_chdir},
 	{"cwd",my_cwd},
 	{"dir",my_dir},
+	{"isFile",my_isFile},
+	{"isDirectory",my_isDirectory},
 	{NULL, NULL}
 };
 	

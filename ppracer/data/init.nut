@@ -321,7 +321,9 @@ function ppcourse::register(table)
 
 foreach(val in dir){
 	temp_data = "courses/"+val;
-	dofile("courses/"+val+"/description.nut");
+	if(ppogl.isFile("courses/"+val+"/description.nut")){
+		dofile("courses/"+val+"/description.nut");
+	}
 }
 
 dofile("events/events.nut");

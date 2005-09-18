@@ -58,6 +58,14 @@ public:
 	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2);
 	friend Vec2d operator-(const Vec2d& vec1,const double value);
 
+	/// print formated values to an std::ostream
+	friend inline std::ostream& operator << (std::ostream& output, const Vec2d& vec)
+	{
+		output 	<< vec.values[0] << ":"
+				<< vec.values[1];		
+		return output;
+	}
+	
 };
 
 } //namespace ppogl
