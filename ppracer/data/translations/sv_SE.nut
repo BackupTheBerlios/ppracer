@@ -14,7 +14,7 @@ Translation.set("Credits", "Tack till");
 Translation.set("Quit", "Avsluta");
 
 //configuration
-//Translation.set("General", "");
+Translation.set("General", "Allmänt");
 Translation.set("Video", "Video");
 Translation.set("Audio", "Ljud");
 Translation.set("Keyboard", "Tangentbord");
@@ -25,7 +25,7 @@ Translation.set("Cancel", "Avbryt");
 Translation.set("Ok", "OK");
 
 //general configuration
-//Translation.set("General Configuration","");
+Translation.set("General Configuration","Allmänna Inställningar");
 Translation.set("Language:", "Språk:");
 Translation.set("Show UI Snow:", "Visa Snö i Menyerna:");
 Translation.set("Display FPS:", "Visa FPS:");
@@ -61,6 +61,7 @@ Translation.set("Brake:", "Bromsa:");
 Translation.set("Jump:", "Hoppa:");
 Translation.set("Trick:", "Gör trick:");
 Translation.set("Reset:", "Återställ:");
+Translation.set("Pause:", "Paus:");
 
 //joystick configuration
 Translation.set("Joystick Configuration", "Joystickinställningar");
@@ -104,7 +105,7 @@ Translation.set("Herring: %3d", "Fiskar: %3d");
 Translation.set("Score: %6d", "Poäng: %6d");
 Translation.set("Max speed: %3d km/h", "Högsta hastighet: %3d km/h");
 Translation.set("Was flying: %.01f %% of time", "Flög: %.01f %% av tiden");
-Translation.set("Race aborted", "Tävling avbruten");
+Translation.set("Race aborted", "Loppet avbrutet");
 Translation.set("You beat your best score!", "Du slog ditt bästa resultat!");
 Translation.set("Congratulations! You won the event!", "Grattis! Du vann loppet!");
 Translation.set("Congratulations! You won the cup!", "Grattis! Du vann turneringen!");
@@ -122,3 +123,11 @@ Translation.set("H|%03d", "%03d");
 Translation.set("H|%02d:%02d:%02d", "%02d:%02d:%02d");
 //speed counter
 Translation.set("H|%.0f", "%.0f");
+
+//Credits
+Translation.set("Development Team", "Utvecklare");
+Translation.set("Translators", "Översättare");
+Translation.set("Contributors", "Bidragsgivare");
+Translation.set("Tux Racer Development Team", "Utvecklare av Tux Racer");
+Translation.set("Music", "Musik");
+Translation.set("Thanks To:", "Tack Till");
