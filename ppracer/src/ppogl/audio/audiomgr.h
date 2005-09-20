@@ -31,6 +31,8 @@
 
 namespace ppogl{
 
+#ifdef HAVE_SDL_MIXER
+	
 /// The audio manager singleton
 class AudioMgr
  : public Singleton<AudioMgr>
@@ -80,6 +82,53 @@ public:
 	static int sqLoadSound(ppogl::Script *vm);
 	static int sqBindSound(ppogl::Script *vm);
 };
+
+#else
+	
+class AudioMgr
+ : public Singleton<AudioMgr>
+{
+public:
+	enum{
+		FQ_11 = 11025,
+	    FQ_22 = 22050,
+	    FQ_44 = 44100	
+	};
+	
+	enum Format{
+		FORMAT_8 = 8,
+	    FORMAT_16 = 16	
+	};
+	
+	AudioMgr(){};
+	~AudioMgr(){};
+
+	bool init(int freq, Format format, bool stereo=true, int buffers=2048){return true;};
+
+	bool loadMusic(const std::string &binding, const std::string &filename){return true;};
+	bool bindMusic(const std::string &binding, const std::string &name){return true;};
+	bool unbindMusic(const std::string &binding){return true;};
+	
+	bool playMusic(const std::string &binding){return true;};
+	bool stopMusic(const std::string &binding){return true;};
+	
+	bool loadSound(const std::string &binding, const std::string &filename){return true;};
+	bool bindSound(const std::string &binding, const std::string &name){return true;};
+	bool unbindSound(const std::string &binding){return true;};
+	
+	bool playSound(const std::string &binding, int loops=-1){return true;};
+	bool stopSound(const std::string &binding){return true;};
+	void stopAllSounds(){};
+		
+	// callbacks for squirrel
+	static int sqLoadMusic(ppogl::Script *vm){return 0;};
+	static int sqBindMusic(ppogl::Script *vm){return 0;};
+
+	static int sqLoadSound(ppogl::Script *vm){return 0;};
+	static int sqBindSound(ppogl::Script *vm){return 0;};
+};
+
+#endif // HAVE_SDL_MIXER
 
 } //namepsace ppogl
 

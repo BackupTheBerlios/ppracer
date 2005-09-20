@@ -22,9 +22,13 @@
 
 #include "../base/refptr.h"
 
-#include <SDL_mixer.h>
+#ifdef HAVE_SDL_MIXER
+	#include <SDL_mixer.h>
+#endif
 
 namespace ppogl{
+
+#ifdef HAVE_SDL_MIXER
 
 ///A class for playing a sound
 class Sound : public RefObject
@@ -48,6 +52,23 @@ public:
 };
 
 typedef RefPtr<Sound> SoundRef;
+
+#else
+// stubs used if there is no SDL_mixer
+
+class Sound : public RefObject
+{
+public:	
+	Sound(const std::string &filename){};
+	~Sound(){};
+
+	void start(int loops=-1){};
+	void stop(bool hard=false){};
+};
+
+typedef RefPtr<Sound> SoundRef;
+
+#endif // HAVE_SDL_MIXER
 
 } //namepsace ppogl
 

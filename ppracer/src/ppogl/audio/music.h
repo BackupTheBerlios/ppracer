@@ -22,11 +22,15 @@
 
 #include "../base/refptr.h"
 
-#include <SDL_mixer.h>
+#ifdef HAVE_SDL_MIXER
+	#include <SDL_mixer.h>
+#endif
 
 namespace ppogl{
 	
-///A class for playback a music file
+#ifdef HAVE_SDL_MIXER
+	
+///A class for playing a music file
 class Music : public RefObject
 {
 private:
@@ -44,7 +48,23 @@ public:
 	bool stop();
 };
 
+
 typedef RefPtr<Music> MusicRef;
+
+#else
+// stubs used if there is no SDL_mixer
+
+class Music : public RefObject
+{
+public:	
+	Music(const std::string &filename){};
+	~Music(){};
+	bool start(){return true;};
+	bool stop(){return true;};
+};
+typedef RefPtr<Music> MusicRef;
+
+#endif
 
 } //namepsace ppogl
 

@@ -19,6 +19,8 @@
 
 #include "sound.h"
 
+#ifdef HAVE_SDL_MIXER
+
 namespace ppogl{
 		
 Sound::Sound(const std::string &filename)
@@ -88,3 +90,5 @@ Sound::stop(bool hard)
 }
 
 } //namepsace ppogl
+
+#endif //HAVE_SDL_MIXER

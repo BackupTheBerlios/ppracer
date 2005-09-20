@@ -1,4 +1,8 @@
 
+2005-09-20  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/audio/*
+	fixed compilation without SDL_mixer
+
 2005-09-18  Volker Stroebel <volker@planetpenguin.de>
 	* data/courses/* data/events/*
 	updated color palettes for element images

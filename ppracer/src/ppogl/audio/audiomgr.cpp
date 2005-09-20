@@ -19,12 +19,16 @@
 
 #include "audiomgr.h"
 
-#include "SDL_mixer.h"
+#ifdef HAVE_SDL_MIXER
+	#include "SDL_mixer.h"
+#endif // HAVE_SDL_MIXER
 
 namespace ppogl{
 		
 PPOGL_SINGLETON(AudioMgr);
-
+	
+#ifdef HAVE_SDL_MIXER
+	
 AudioMgr::AudioMgr()
  : m_initialized(false)
 {
@@ -275,5 +279,7 @@ AudioMgr::sqBindSound(ppogl::Script *vm)
 
 	return 0;
 }
+
+#endif // HAVE_SDL_MIXER
 
 } //namepsace ppogl

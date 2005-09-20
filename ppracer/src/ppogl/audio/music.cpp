@@ -19,6 +19,8 @@
 
 #include "music.h"
 
+#ifdef HAVE_SDL_MIXER
+
 namespace ppogl{
 	
 Music::Music(const std::string &filename)
@@ -74,3 +76,5 @@ Music::stop()
 
 
 } //namepsace ppogl
+
+#endif // HAVE_SDL_MIXER
