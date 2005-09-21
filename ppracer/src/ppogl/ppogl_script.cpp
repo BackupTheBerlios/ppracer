@@ -253,7 +253,7 @@ Script::isKeyInTable(const std::string& key, int index)
 	return exists;
 }
 
-std::string
+const std::string
 Script::getStringFromTable(const std::string& key, int index)
 {
 	pushString(key);
@@ -305,7 +305,7 @@ Script::getBoolFromTable(const std::string& key, int index)
 	return boolean;	
 }
 
-std::string
+const std::string
 Script::getString(int index)
 {
 	const SQChar* value;

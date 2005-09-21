@@ -47,9 +47,9 @@ Image::Image(int width,int height, int depth)
 	}
 }
 
-Image::~Image(void)
+Image::~Image()
 {
-	if(data!=0) delete data;	
+	if(data!=0) delete [] data;	
 }
 
 Image*

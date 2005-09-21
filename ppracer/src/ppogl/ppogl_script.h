@@ -61,12 +61,12 @@ public:
 
 	bool isKeyInTable(const std::string& key, int index=-1);
 	
-	std::string getStringFromTable(const std::string& key, int index=-1);
+	const std::string getStringFromTable(const std::string& key, int index=-1);
 	double getFloatFromTable(const std::string& key, int index=-1);
 	int getIntFromTable(const std::string& key, int index=-1);
 	bool getBoolFromTable(const std::string& key, int index=-1);
 
-	std::string getString(int index=-1);
+	const std::string getString(int index=-1);
 	double getFloat(int index=-1);
 	int getInt(int index=-1);
 	bool getBool(int index=-1);

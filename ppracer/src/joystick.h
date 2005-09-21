@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -30,6 +30,5 @@ double get_joystick_y_axis();
 bool is_joystick_button_down( int button ); 
 bool is_joystick_continue_button_down();
 int get_joystick_down_button();
-
 
 #endif // _JOYSTICK_H_

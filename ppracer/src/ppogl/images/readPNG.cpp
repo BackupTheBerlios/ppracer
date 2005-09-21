@@ -132,7 +132,7 @@ ReadPNG::loadData(png_structp png_ptr, int depth)
 
 ReadPNG::~ReadPNG()
 {
-	if(data!=NULL) delete(data);
+	if(data!=NULL) delete [] data;
 }
 
 } //namespace ppogl

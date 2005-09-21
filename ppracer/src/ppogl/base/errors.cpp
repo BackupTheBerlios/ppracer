@@ -42,10 +42,9 @@ Log::Instance()
 }
 
 Log::Log()
-
- : m_level(LogWarning),
-   mp_logfile(NULL)
+ : m_level(LogWarning)
 {
+	m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
 }
 
 
@@ -59,20 +58,11 @@ Log::~Log()
 void
 Log::setFilename(const std::string& filename)
 {
-	if(mp_logfile!=NULL){
-		delete mp_logfile;
-	}
-	
-	if(filename.empty()){
-		//not using a logfile
-		mp_logfile=NULL;
-	}else{
-		//try to open logfile
-		mp_logfile = new std::ofstream(filename.c_str());
+	//try to open logfile
+	m_logfile.open(filename.c_str());
 		
-		if(mp_logfile==NULL){
-			PP_WARNING("unable to open logfile: " << filename);
-		}
+	if(!m_logfile){
+		PP_WARNING("unable to open logfile: " << filename);
 	}	
 }
 	
@@ -92,30 +82,22 @@ Log::mesg(int mode,
 {
 	//check if we should handle this message
 	if(checkLevel(mode)==false) return;
-	
-	std::ostream *logstream;
-	
-	if(mp_logfile==NULL){
-		logstream = &std::cerr;
-	}else{
-		logstream = mp_logfile;
-	}
 		
 	if(mode==LogMessage){
-		*logstream << "Message: ";
+		m_logfile << "Message: ";
 	}else if(mode==LogWarning){
-		*logstream << "Warning: ";
+		m_logfile << "Warning: ";
 	}else if(mode==LogError){
-		*logstream << "Error: ";
+		m_logfile << "Error: ";
 	}else if(mode==LogPedantic){
-		*logstream << "Pedantic Warning: ";
+		m_logfile << "Pedantic Warning: ";
 	}else{
-		*logstream << "Log("<< mode << "): ";
+		m_logfile << "Log("<< mode << "): ";
 	}
 		
-	*logstream << message << std::endl;
-	*logstream << "File: " << file << std::endl;
-	*logstream << "Line: " << line << "\n" << std::endl;
+	m_logfile << message << std::endl;
+	m_logfile << "File: " << file << std::endl;
+	m_logfile << "Line: " << line << "\n" << std::endl;
 		
 	if(mode==LogError){
 		throw ppogl::Error();
@@ -123,14 +105,10 @@ Log::mesg(int mode,
 }
 
 /// Returns ostream for logging
-std::ostream*
+std::ostream&
 Log::getStream()
 {
-	if(mp_logfile==NULL){
-		return &std::cerr;
-	}else{
-		return mp_logfile;
-	}
+	return m_logfile;
 }
 
 bool
@@ -138,12 +116,12 @@ Log::checkLevel(int mode)
 {
 	if(mode>0){
 		// custom mode
-		// todo: implment me!!!
-		if(mp_logfile){
-			return true;
-		}else{		
+		// todo: implement me!!!
+		//if(m_logfile){
+		//	return true;
+		//}else{		
 			return false;
-		}
+		//}
 	}else{
 		// default modes
 		return(mode<=m_level);

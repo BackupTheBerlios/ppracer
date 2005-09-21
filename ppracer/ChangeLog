@@ -1,4 +1,8 @@
 
+2005-09-21  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	several small fixes and code cleanups
+
 2005-09-20  Volker Stroebel <volker@planetpenguin.de>
 	* data/translations/sv_SE.nut
 	updated swedish translation

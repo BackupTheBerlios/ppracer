@@ -107,6 +107,8 @@ dir::dir(std::string path, const bool only_dirs)
 		}
 		push_back(entry->d_name);
 	}
+	
+	closedir(dir);
 }
 
 bool

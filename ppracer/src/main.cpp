@@ -146,26 +146,22 @@ void init_log()
 {
     ppogl::Log::Instance()->setFilename("diagnostic_log.txt");
 
-	std::ostream* stream;
-	stream = ppogl::Log::Instance()->getStream();
+	std::ostream& stream =
+			ppogl::Log::Instance()->getStream();
 	
-	if(stream==NULL){
-		return;
-	}
-	
-	*stream << "PlanetPenguin Racer Diagnostic Log\n" << std::endl;
+	stream << "PlanetPenguin Racer Diagnostic Log\n" << std::endl;
 		
 	time_t t = time( NULL );
-	*stream << "Generated:       " << asctime( gmtime( &t ) ); 
-	*stream << "PPRacer Version: " << VERSION << std::endl;
-	*stream << "OS:              ";
+	stream << "Generated:       " << asctime( gmtime( &t ) ); 
+	stream << "PlanetPenguin Racer Version: " << VERSION << std::endl;
+	stream << "OS:              ";
 	
 	char buff[BUFF_LEN];
 	
     if ( get_os_version( buff, sizeof( buff ) ) == 0 ) {
-		*stream << buff << "\n" << std::endl;
+		stream << buff << "\n" << std::endl;
     } else {
-		*stream << "Could not determine!\n" << std::endl;
+		stream << "Could not determine!\n" << std::endl;
     }  
 }
 
@@ -175,8 +171,8 @@ main(int argc, char *argv[])
     try{ // used to catch all unhandled Errors and Assertions		
 	
 		// print copyright notice 
-    	std::cout << "PlanetPenguin Racer " VERSION " --  http://racer.planetpenguin.de" << std::endl;
-	    std::cout << "(c) 2004-2005 The PPRacer team" << std::endl;
+    	std::cout << "PlanetPenguin Racer " VERSION " -- http://racer.planetpenguin.de" << std::endl;
+	    std::cout << "(c) 2004-2005 PlanetPenguin Racer team" << std::endl;
 	    std::cout << "(c) 1999-2001 Jasmin F. Patry" << std::endl;
 	    std::cout << "<jfpatry@sunspirestudios.com>" << std::endl;
 	    std::cout << "PlanetPenguin Racer comes with ABSOLUTELY NO WARRANTY."<< std::endl;

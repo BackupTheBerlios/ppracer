@@ -78,7 +78,7 @@ Font::draw(const std::string& string, ppogl::Vec2d position)
 	}
 	gl::PopMatrix();
 
-	delete u_string;	
+	delete [] u_string;	
 }
 
 void
@@ -121,7 +121,7 @@ Font::advance(const std::string& string)
 	
 	float adv = mp_font->Advance(u_string);
 	
-	delete u_string;
+	delete [] u_string;
 	return adv;	
 }
 

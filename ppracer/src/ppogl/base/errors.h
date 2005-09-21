@@ -72,7 +72,7 @@ public:
 				const std::string& file, int line,
 				const std::string& description);
 
-	std::ostream* getStream();
+	std::ostream& getStream();
 
 	~Log();
 
@@ -88,7 +88,7 @@ private:
 	int m_level;
 
 	/// a pointer to the logfile stream (if spezified)
-	std::ofstream* mp_logfile;
+	std::ofstream m_logfile;
 };
 
 #ifndef PPOGL_NO_LOGGIN

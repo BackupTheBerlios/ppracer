@@ -25,6 +25,7 @@ namespace ppogl{
 	
 Widget::Widget()
  : m_focused(false),
+   m_clicked(false),
    m_hasFocus(false),
    m_insensitive(false)
 {

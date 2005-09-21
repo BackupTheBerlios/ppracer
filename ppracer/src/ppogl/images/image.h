@@ -29,7 +29,7 @@ class Image
 {
 public:
 	Image(int width=0,int height=0, int depth=3);
-	~Image(void);
+	~Image();
 	
 	unsigned char* data;
 	unsigned short width, height;
