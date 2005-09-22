@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,24 +22,49 @@
 #ifndef _TUX_H_
 #define _TUX_H_
 
-#include "ppgltk/ppgltk.h"
+#include <string>
 
-void adjust_tux_joints( double turnFact, bool isBraking, 
-			double paddling_factor, double speed,
-			pp::Vec3d net_force, double jump_factor );
-void  load_tux();
-void  draw_tux();
-char* get_tux_root_node();
-char* get_tux_left_shoulder_joint();
-char* get_tux_right_shoulder_joint();
-char* get_tux_left_hip_joint();
-char* get_tux_right_hip_joint();
-char* get_tux_left_knee_joint();
-char* get_tux_right_knee_joint();
-char* get_tux_left_ankle_joint();
-char* get_tux_right_ankle_joint();
-char* get_tux_tail_joint();
-char* get_tux_neck();
-char* get_tux_head();
+#include "ppogl/base/vec3d.h"
 
-#endif /* _TUX_H_ */
+class Tux
+{
+public:
+	std::string rootNode;
+	std::string leftShoulderJoint;
+	std::string rightShoulderJoint;
+	std::string leftHipJoint;
+	std::string rightHipJoint;
+	std::string leftKneeJoint;
+	std::string rightKneeJoint;
+	std::string leftAnkleJoint;
+	std::string rightAnkleJoint;
+	std::string tailJoint;
+	std::string neck;
+	std::string head;
+
+	void adjustJoints(	double turnFact, bool isBraking, 
+						double paddling_factor, double speed,
+						ppogl::Vec3d net_force, double jump_factor );
+
+	void draw();
+
+	std::string& getRootNode(){return rootNode;}
+	std::string& getLeftShoulderJoint(){return leftShoulderJoint;}
+	std::string& getRightShoulderJoint(){return rightShoulderJoint;}
+	std::string& getLeftHipJoint(){return leftHipJoint;}
+	std::string& getRightHipJoint(){return rightHipJoint;}
+	std::string& getLeftKneeJoint(){return leftKneeJoint;}
+	std::string& getRightKneeJoint(){return rightKneeJoint;}
+	std::string& getLeftAnkleJoint(){return leftAnkleJoint ;}
+	std::string& getRightAnkleJoint(){return rightAnkleJoint;}
+	std::string& getTailJoint(){return tailJoint;}
+	std::string& getNeck(){return neck;}
+	std::string& getHead(){return head;}
+
+};
+
+extern Tux tux[2];
+
+void register_tux_callbacks();
+
+#endif // _TUX_H_

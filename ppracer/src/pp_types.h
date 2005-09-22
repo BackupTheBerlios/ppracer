@@ -73,23 +73,6 @@ struct Light
     GLfloat quadratic_attenuation;
 };
 
-/// Key frame for animation sequences
-struct KeyFrame
-{
-    float time;
-    ppogl::Vec3d pos;
-	
-	/// angle of rotation about y axis
-    float yaw;
-	
-	/// angle of rotation about x axis
-    float pitch;
-    float l_shldr;
-    float r_shldr;
-    float l_hip;
-    float r_hip;
-}; 
-
 /// Scene graph node types.
 enum Geometry
 { 

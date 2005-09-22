@@ -242,7 +242,8 @@ reset_course()
 	
     course_loaded = false;
 
-    reset_key_frame();
+    keyFrames[0].reset();
+	keyFrames[1].reset();
 } 
 
 void

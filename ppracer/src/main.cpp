@@ -288,10 +288,12 @@ main(int argc, char *argv[])
     // Placeholder name until we give players way to enter name
     players[0].name = "tux";
 	players[0].loadData();
+	players[0].num = 0;
 	
 	if(GameMode::exp_multiscreen!=GameMode::MULTISCREEN_NONE){
 	    players[1].name = "tux2";
 		players[1].loadData();
+		players[1].num=1;
 	}
 
     GameMode::mode = GameMode::NO_MODE;

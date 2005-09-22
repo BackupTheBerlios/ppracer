@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -26,11 +26,46 @@
 
 #include "player.h"
 
-void get_key_frame_data( key_frame_t **fp, int *n );
-void init_key_frame();
-void reset_key_frame();
-void update_key_frame( Player& plyr, double dt );
-void mirror_keyframe();
-void register_key_frame_callbacks( Tcl_Interp *ip );
+#define MAX_NUM_KEY_FRAMES 128
 
-#endif
+/// Key frame for animation sequences
+
+struct KeyFrame
+{
+    float time;
+    ppogl::Vec3d pos;
+	
+	/// angle of rotation about y axis
+    float yaw;
+	
+	/// angle of rotation about x axis
+    float pitch;
+    float l_shldr;
+    float r_shldr;
+    float l_hip;
+    float r_hip;
+}; 
+
+
+class PlayerKeyFrames
+{		
+public:
+	KeyFrame frames[MAX_NUM_KEY_FRAMES];
+	int numFrames;
+	double keyTime;
+	int player;	
+
+	PlayerKeyFrames():numFrames(0){}
+
+	void init(int plyr);
+	void getData(KeyFrame **fp, int *n);
+	void reset();
+	void update(Player& plyr, double dt);
+	void mirror();
+};
+
+extern PlayerKeyFrames keyFrames[2];
+
+void register_key_frame_callbacks();
+
+#endif // _KEYFRAME_H_

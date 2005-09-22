@@ -59,22 +59,23 @@ RacingMode::loop(float timestep)
 		postPlayer(0,timestep);
 				
 	}else{
+		prePlayer(0,timestep);
+		prePlayer(1,timestep);
+		
 		// player 0 (first player)
+				
 		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
 		reshape(resolutionX, resolutionY, 0);
-		
-		prePlayer(0,timestep);
 		renderCourse(0, timestep);
-		postPlayer(0,timestep);
 				
 		// player 1 (second player)
 		setup_view_frustum( players[1], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
 		reshape(resolutionX, resolutionY, 1);
-		
-		prePlayer(1,timestep);
 		renderCourse(1, timestep);	
+					
+		postPlayer(0,timestep);
 		postPlayer(1,timestep);
 	}
 	
@@ -118,9 +119,11 @@ RacingMode::renderCourse(int player, float timestep)
 		draw_particles(players[player]);
     }
 
-    draw_tux();
-    draw_tux_shadow();
-
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+		tux[i].draw();
+		draw_tux_shadow(i);
+	}
+	
 	if(player==0){
     	HUD1.draw(players[0], resolutionX, resolutionY);
 	}else if(player==1){

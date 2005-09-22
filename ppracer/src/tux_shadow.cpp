@@ -30,7 +30,7 @@
 
 #define SHADOW_HEIGHT 0.1
 
-void draw_tux_shadow()
+void draw_tux_shadow(int player)
 {
     if(!GameConfig::drawTuxShadow){
 		return;
@@ -53,7 +53,7 @@ void draw_tux_shadow()
 	
     model_matrix.makeIdentity();
 
-    std::string& tux_root_node_name = get_tux_root_node();
+    std::string& tux_root_node_name = tux[player].getRootNode();
 
     if(get_scene_node(tux_root_node_name, &tux_root_node ) != true){
 		PP_ERROR( "couldn't find tux's root node" );

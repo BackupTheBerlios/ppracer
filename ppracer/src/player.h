@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *  
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -161,10 +161,10 @@ public:
 		
 
     /// current position
-	pp::Vec3d pos;   
+	ppogl::Vec3d pos;   
 	
     /// current velocity
-	pp::Vec3d vel;
+	ppogl::Vec3d vel;
 	
 	/// current orientation
 	pp::Quat orientation; 
@@ -173,16 +173,16 @@ public:
 	bool orientation_initialized;
 	
     /// vector sticking out of bellybutton (assuming on back)
-	pp::Vec3d plane_nml;
+	ppogl::Vec3d plane_nml;
 	
 	/// vector sticking out of feet
-	pp::Vec3d direction; 
+	ppogl::Vec3d direction; 
 	
     /// net force on player 
-	pp::Vec3d net_force;
+	ppogl::Vec3d net_force;
 	
     /// terrain force on player
-	pp::Vec3d normal_force;  
+	ppogl::Vec3d normal_force;  
 	
     /// is plyr in the air?
 	bool airborne;
@@ -191,15 +191,23 @@ public:
 	bool collision;
 	
 	/// player control data
-	control_t control;
+	Control control;
 
     /// player's view point
-	view_t view;
+	View view;
 	
-	float getCoursePercentage();	    
+	/// amount of time the player has been flying
+	double airbornetime;
+
+	
+	float getCoursePercentage();
+
+	/// position of the player in the player array
+	/// this is a hack that will be removed later
+	int num;
 };
 
 ///global array of players
-extern Player players[1];
+extern Player players[2];
 
 #endif // _PLAYER_H_

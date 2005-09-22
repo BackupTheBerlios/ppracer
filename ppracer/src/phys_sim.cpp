@@ -590,7 +590,8 @@ static void update_paddling( Player& plyr )
     }
 }
 
-void set_tux_pos( Player& plyr, ppogl::Vec3d new_pos )
+void
+set_tux_pos( Player& plyr, ppogl::Vec3d new_pos )
 {
     float playWidth, playLength;
     float courseWidth, courseLength;
@@ -619,13 +620,14 @@ void set_tux_pos( Player& plyr, ppogl::Vec3d new_pos )
 
     disp_y = new_pos.y() + TUX_Y_CORRECTION_ON_STOMACH; 
 
-    std::string& tuxRoot = get_tux_root_node();
+    std::string& tuxRoot = tux[plyr.num].getRootNode();
     reset_scene_node( tuxRoot );
     translate_scene_node( tuxRoot, 
 			  ppogl::Vec3d( new_pos.x(), disp_y, new_pos.z() ) );
 } 
 
-bool check_tree_collisions( Player& plyr, ppogl::Vec3d pos, 
+bool
+check_tree_collisions( Player& plyr, ppogl::Vec3d pos, 
 			      ppogl::Vec3d *tree_loc, float *tree_diam )
 {
     if(GameConfig::disableCollisionDetection){
@@ -706,7 +708,7 @@ bool check_tree_collisions( Player& plyr, ppogl::Vec3d pos,
         mat.makeTranslation( loc.x(), loc.y(), loc.z() );
         trans_polyhedron( mat, ph2 );
 
-	std::string& tux_root = get_tux_root_node();
+	std::string& tux_root = tux[plyr.num].getRootNode();
 	reset_scene_node( tux_root );
 	translate_scene_node( tux_root, 
 			      ppogl::Vec3d( pos.x(), pos.y(), pos.z() ) );
@@ -964,7 +966,8 @@ static ppogl::Vec3d adjust_surf_nml_for_roll( Player& plyr,
 }
 
 
-void adjust_orientation( Player& plyr, float dtime, ppogl::Vec3d vel,
+void
+adjust_orientation( Player& plyr, float dtime, ppogl::Vec3d vel,
 			 float dist_from_surface, ppogl::Vec3d surf_nml )
 {
     ppogl::Vec3d new_x, new_y, new_z; 
@@ -1028,7 +1031,7 @@ void adjust_orientation( Player& plyr, float dtime, ppogl::Vec3d vel,
 
     inv_cob_mat.transpose(cob_mat);
 
-    std::string& tux_root = get_tux_root_node();
+    std::string& tux_root = tux[plyr.num].getRootNode();
     transform_scene_node( tux_root, cob_mat, inv_cob_mat ); 
 }
 
@@ -1698,7 +1701,8 @@ void solve_ode_system( Player& plyr, float dtime )
  * Updates Tux's position taking into account gravity, friction, tree 
  * collisions, etc.  This is the main physics function.
  */
-void update_player_pos( Player& plyr, float dtime )
+void
+update_player_pos( Player& plyr, float dtime )
 {
     ppogl::Vec3d surf_nml;   /* normal vector of terrain */
     ppogl::Vec3d tmp_vel;
@@ -1754,12 +1758,13 @@ void update_player_pos( Player& plyr, float dtime )
 	    JUMP_FORCE_DURATION;
     } 
 
-    adjust_tux_joints( plyr.control.turn_animation, plyr.control.is_braking,
+	tux[plyr.num].adjustJoints( plyr.control.turn_animation, plyr.control.is_braking,
 		       paddling_factor, speed, local_force, flap_factor );
 }
 
 
-void init_physical_simulation()
+void
+init_physical_simulation()
 {
     ppogl::Vec3d nml;
     pp::Matrix rotMat;

@@ -124,8 +124,8 @@ Reset::loop(float timeStep)
     }
 
     if (tux_visible) { 
-		draw_tux();
-		draw_tux_shadow();
+		tux[0].draw();
+		draw_tux_shadow(0);
     } 
     if (++tux_visible_count > 3) {
 		tux_visible = !tux_visible;

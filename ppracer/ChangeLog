@@ -1,4 +1,11 @@
 
+2005-09-22  Volker Stroebel <volker@planetpenguin.de>
+	* src/tux.cpp/h src/keyframe.cpp/h
+	add support for multiple models
+
+	* src/racingmode.cpp
+	draw all players in multiplayer mode
+
 2005-09-21  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	several small fixes and code cleanups

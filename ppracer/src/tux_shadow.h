@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,10 +24,10 @@
 
 #include "pp_types.h"
 
-void draw_tux_shadow();
-void traverse_dag_for_shadow( scene_node_t *node, pp::Matrix model_matrix );
+void draw_tux_shadow(int player);
+void traverse_dag_for_shadow( SceneNode *node, pp::Matrix model_matrix );
 void draw_shadow_sphere( pp::Matrix model_matrix );
 void draw_shadow_vertex( double x, double y, double z, 
 			 pp::Matrix model_matrix );
 
-#endif /* _TUX_SHADOW_H_ */
+#endif // _TUX_SHADOW_H_

@@ -26,6 +26,7 @@
 #include "course_quad.h"
 #include "track_marks.h"
 #include "course_mgr.h"
+#include "game_mgr.h"
 #include "elements.h"
 
 #include <iostream>
@@ -125,14 +126,16 @@ mirror_key_frame()
     int num_frames;
     KeyFrame *frames;
 
-    get_key_frame_data( &frames, &num_frames );
+	for(int player=0; player<GameMgr::getInstance().numPlayers; player++){
+		keyFrames[player].getData(&frames, &num_frames);
 
-    Course::getDimensions( &course_width, &course_length );
+    	Course::getDimensions( &course_width, &course_length );
 
-    for(int i=0; i<num_frames; i++){
-		frames[i].yaw = - frames[i].yaw;
-		frames[i].pos.x() = course_width - frames[i].pos.x();
-    }
+   		for(int i=0; i<num_frames; i++){	
+			frames[i].yaw = - frames[i].yaw;
+			frames[i].pos.x() = course_width - frames[i].pos.x();
+    	}
+	}
 }
 
 void

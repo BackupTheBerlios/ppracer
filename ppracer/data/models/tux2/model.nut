@@ -1,11 +1,11 @@
 //
 //Globals
 //
-local xlation_node = ":t1";
-local rotation_node = ":t1";
-local root = ":t1";
+local xlation_node = ":t2";
+local rotation_node = ":t2";
+local root = ":t2";
 
-tux.root_node(1,root);
+tux.root_node(2,root);
 
 // Material Properties
 
@@ -13,8 +13,8 @@ tux.material("white_penguin",
             [0.58,0.58,0.58],
 			[0.2,0.2,0.2],
 			50.0);
-tux.material("black_penguin",
-			[0.1,0.1,0.1],
+tux.material("blue_penguin",
+			[0.1,0.1,0.9],
 			[0.5,0.5,0.5],
 			20.0);
 tux.material("beak_color",
@@ -38,7 +38,7 @@ function makeBody(l_parent)
 {
     local torso_bl = l_parent + ":b";
     tux.sphere(l_parent, "b", 1.0);
-    tux.surfaceproperty(torso_bl,"black_penguin");
+    tux.surfaceproperty(torso_bl,"blue_penguin");
     tux.scale(torso_bl,[0,0,0],[0.95,1.0,0.8]);
 
     local torso_wh1 = l_parent + ":w1";
@@ -49,12 +49,12 @@ function makeBody(l_parent)
     tux.shadow(torso_wh1,"off");
 }
 
-tux.transform(":", "t1");
-root = ":t1";
-xlation_node = ":t1";
+tux.transform(":", "t2");
+root = ":t2";
+xlation_node = ":t2";
 
-tux.transform(":t1", "r1");
-rotation_node = ":t1:r1";
+tux.transform(":t2", "r1");
+rotation_node = ":t2:r1";
 tux.scale(rotation_node,[0,0,0],[0.35,0.35,0.35]);
 
 		
@@ -89,7 +89,7 @@ tux.rotate(neck_xlate, "y", 90);
 
 tux.transform(neck_xlate,"neckjt");
 local neck_joint = neck_xlate + ":neckjt";
-tux.neck(1,neck_joint);
+tux.neck(2,neck_joint);
 
 tux.transform(neck_joint,"t4");
 local neck_org = neck_joint + ":t4";
@@ -102,7 +102,7 @@ tux.scale(neck_scale,[0,0,0],[0.45,0.5,0.45]);
 
 tux.sphere(neck_scale,"neck", 0.8);
 local neck = neck_scale + ":neck";
-tux.surfaceproperty(neck,"black_penguin");
+tux.surfaceproperty(neck,"blue_penguin");
 
 tux.sphere(neck_scale,"neckw",0.66);
 local neckw = neck_scale + ":neckw";
@@ -123,7 +123,7 @@ local head_joint_rot = head_xlate+ ":hdjtrot";	// head joint for rotation
 
 tux.transform(head_joint_rot, "hdjt");
 local head_joint = head_joint_rot + ":hdjt";	// head joint
-tux.head(1,head_joint);
+tux.head(2,head_joint);
 
 tux.transform(head_joint, "hdorg");
 local head_org = head_joint + ":hdorg";
@@ -132,7 +132,7 @@ tux.translate(head_org,[0,0.20,0]);
 
 tux.sphere(head_org, "hd", 1.0);
 local head = head_org + ":hd";
-tux.surfaceproperty(head, "black_penguin");
+tux.surfaceproperty(head, "blue_penguin");
 tux.scale(head,[0,0,0], [0.42,0.5,0.42]);
 
 // create beak
@@ -209,7 +209,7 @@ tux.rotate(luparm_xlate, "x", 90);
 
 tux.transform(luparm_xlate, "lshjt");
 local lshoulder_joint = luparm_xlate + ":lshjt";       // left shoulder joint
-tux.left_shoulder(1,lshoulder_joint);
+tux.left_shoulder(2,lshoulder_joint);
 
 tux.transform(lshoulder_joint, "luarmorg");
 local luparm_org = lshoulder_joint + ":luarmorg";
@@ -218,7 +218,7 @@ tux.translate(luparm_org, [-0.22, 0, 0]);
 
 tux.sphere(luparm_org, "uparm", 0.66);
 local luparm= luparm_org +":uparm";
-tux.surfaceproperty(luparm, "black_penguin");
+tux.surfaceproperty(luparm, "blue_penguin");
 tux.scale(luparm, [0, 0, 0], [0.34, 0.1, 0.2]);
 
 //right
@@ -230,7 +230,7 @@ tux.rotate(ruparm_xlate, "x", -90);
 
 tux.transform(ruparm_xlate, "rshjt");                // right shoulder joint
 local rshoulder_joint= ruparm_xlate +":rshjt";
-tux.right_shoulder(1,rshoulder_joint);
+tux.right_shoulder(2,rshoulder_joint);
 
 tux.transform(rshoulder_joint, "ruarmorg");
 local ruparm_org= rshoulder_joint +":ruarmorg";
@@ -239,7 +239,7 @@ tux.translate(ruparm_org, [-0.22, 0, 0]);
 
 tux.sphere(ruparm_org, "uparm", 0.66);
 local ruparm = ruparm_org +":uparm";
-tux.surfaceproperty(ruparm,"black_penguin");
+tux.surfaceproperty(ruparm,"blue_penguin");
 tux.scale(ruparm, [0, 0, 0], [0.34, 0.1, 0.2]);
 
 //
@@ -263,7 +263,7 @@ tux.translate(llowarm_org, [-0.19, 0, 0]);
 
 tux.sphere(llowarm_org, "llowarm", 0.66);
 local llowarm= llowarm_org + ":llowarm";
-tux.surfaceproperty(llowarm, "black_penguin");
+tux.surfaceproperty(llowarm, "blue_penguin");
 tux.scale(llowarm, [0, 0, 0], [0.30, 0.07, 0.15]);
 
 // right
@@ -283,7 +283,7 @@ tux.translate(rlowarm_org, [-0.19, 0, 0]);
 
 tux.sphere(rlowarm_org, "rlowarm", 0.66);
 local rlowarm= rlowarm_org +":rlowarm";
-tux.surfaceproperty(rlowarm, "black_penguin");
+tux.surfaceproperty(rlowarm, "blue_penguin");
 tux.scale(rlowarm, [0, 0, 0], [0.30, 0.07, 0.15]);
 
 //
@@ -307,7 +307,7 @@ tux.translate(lhand_org, [-0.10, 0, 0]);
 
 tux.sphere(lhand_org, "lhand", 0.5);
 local lhand= lhand_org +":lhand";
-tux.surfaceproperty(lhand, "black_penguin");
+tux.surfaceproperty(lhand, "blue_penguin");
 tux.scale(lhand, [0, 0, 0], [0.12, 0.05, 0.12]);
 
 // right
@@ -327,7 +327,7 @@ tux.translate(rhand_org, [-0.10, 0, 0]);
 
 tux.sphere(rhand_org, "rhand", 0.5);
 local rhand= rhand_org +":rhand";
-tux.surfaceproperty(rhand, "black_penguin");
+tux.surfaceproperty(rhand, "blue_penguin");
 tux.scale(rhand, [0, 0, 0], [0.12, 0.05, 0.12]);
 
 //
@@ -343,7 +343,7 @@ tux.rotate(lthigh_xlate, "y", 110);
 
 tux.transform(lthigh_xlate, "lhipjt");               // left hip joint
 local lhip_joint= lthigh_xlate +":lhipjt";
-tux.left_hip(1,lhip_joint);
+tux.left_hip(2,lhip_joint);
 
 tux.transform(lhip_joint, "lthgorg");
 local lthigh_org= lhip_joint +":lthgorg";
@@ -357,7 +357,7 @@ tux.scale(lthigh, [0, 0, 0], [0.07, 0.30, 0.07]);
 
 tux.sphere(lthigh_org, "lhipball", 0.5);
 local lhipball= lthigh_org +":lhipball";
-tux.surfaceproperty(lhipball, "black_penguin");
+tux.surfaceproperty(lhipball, "blue_penguin");
 tux.translate(lhipball, [0.0, 0.05, 0.0]);
 tux.scale(lhipball, [0, 0, 0], [0.09, 0.18, 0.09]);
 tux.shadow(lhipball,"off");
@@ -370,7 +370,7 @@ tux.rotate(rthigh_xlate, "y", -110);
 
 tux.transform(rthigh_xlate, "rhipjt");               // right hip joint
 local rhip_joint= rthigh_xlate +":rhipjt";
-tux.right_hip(1,rhip_joint);
+tux.right_hip(2,rhip_joint);
 
 tux.transform(rhip_joint, "rthgorg");
 local rthigh_org= rhip_joint +":rthgorg";
@@ -384,7 +384,7 @@ tux.scale(rthigh, [0, 0, 0], [0.07, 0.30, 0.07]);
 
 tux.sphere(rthigh_org, "rhipball", 0.5);
 local rhipball= rthigh_org +":rhipball";
-tux.surfaceproperty(rhipball, "black_penguin");
+tux.surfaceproperty(rhipball, "blue_penguin");
 tux.translate(rhipball, [0.0, 0.05, 0.0]);
 tux.scale(rhipball, [0, 0, 0], [0.09, 0.18, 0.09]);
 tux.shadow(rhipball,"off");
@@ -401,7 +401,7 @@ tux.rotate(lcalf_xlate, "y", 90);
 
 tux.transform(lcalf_xlate, "lkneejt");               // left knee joint
 local lknee_joint= lcalf_xlate +":lkneejt";    
-tux.left_knee(1,lknee_joint);
+tux.left_knee(2,lknee_joint);
 
 tux.transform(lknee_joint, "lclforg");
 local lcalf_org= lknee_joint +":lclforg";
@@ -421,7 +421,7 @@ tux.rotate(rcalf_xlate, "y", -90);
 
 tux.transform(rcalf_xlate, "rkneejt");               // right knee joint
 local rknee_joint= rcalf_xlate +":rkneejt";
-tux.right_knee(1,rknee_joint);
+tux.right_knee(2,rknee_joint);
 
 tux.transform(rknee_joint, "rclforg");
 local rcalf_org= rknee_joint +":rclforg";
@@ -480,7 +480,7 @@ tux.rotate(lfoot_xlate, "y", -50);
 
 tux.transform(lfoot_xlate, "lankjt");
 local lankle_joint= lfoot_xlate +":lankjt";          // left ankle joint
-tux.left_ankle(1,lankle_joint);
+tux.left_ankle(2,lankle_joint);
 
 makeFoot(lankle_joint);
 
@@ -492,7 +492,7 @@ tux.rotate(rfoot_xlate, "y", 50);
 
 tux.transform(rfoot_xlate, "rankjt");
 local rankle_joint= rfoot_xlate +":rankjt";          // right ankle joint
-tux.right_ankle(1,rankle_joint);
+tux.right_ankle(2,rankle_joint);
 
 makeFoot(rankle_joint);
 
@@ -506,7 +506,7 @@ tux.rotate(tail_xlate, "x", -60);
 
 tux.transform(tail_xlate, "tail_joint");
 local tail_joint= tail_xlate +":tail_joint";        // tail joint
-tux.tail(1,tail_joint);
+tux.tail(2,tail_joint);
 
 tux.transform(tail_joint, "tail_orig");
 local tail_orig= tail_joint +":tail_orig";
@@ -514,5 +514,5 @@ tux.translate(tail_orig, [0, 0.15, 0]);
 
 tux.sphere(tail_orig, "tail", 0.5);
 local tail= tail_orig +":tail";
-tux.surfaceproperty(tail, "black_penguin");
+tux.surfaceproperty(tail, "blue_penguin");
 tux.scale(tail, [0, 0, 0], [0.2, 0.3, 0.1]);

@@ -19,6 +19,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "keyframe.h"
+
 #include "tux.h"
 #include "phys_sim.h"
 #include "hier.h"
@@ -26,38 +28,40 @@
 
 #include "ppogl/base/defs.h"
 
-#define MAX_NUM_KEY_FRAMES 128
+PlayerKeyFrames keyFrames[2];
 
-static KeyFrame frames[MAX_NUM_KEY_FRAMES];
-static int numFrames = 0;
-static double keyTime;
+static double
+interp( double frac, double v1, double v2 ) 
+{
+    return frac*v1 + (1.-frac)*v2;
+}
 
-void get_key_frame_data( KeyFrame **fp, int *n )
+void
+PlayerKeyFrames::getData(KeyFrame **fp, int *n)
 {
     *fp = frames;
     *n = numFrames;
 }
 
-void reset_key_frame()
+void
+PlayerKeyFrames::reset()
 {
     keyTime = 0;
     numFrames = 0;
 } 
 
-void init_key_frame()
+void
+PlayerKeyFrames::init(int plyr)
 {
     keyTime = frames[0].time;
-
-    reset_scene_node( get_tux_head() );
-    reset_scene_node( get_tux_neck() );
+	player=plyr;
+	
+    reset_scene_node( tux[player].getHead() );
+    reset_scene_node( tux[player].getNeck() );
 } 
 
-double interp( double frac, double v1, double v2 ) 
-{
-    return frac*v1 + (1.-frac)*v2;
-} 
-
-void update_key_frame( Player& plyr, double dt )
+void
+PlayerKeyFrames::update(Player& plyr, double dt)
 {
     int idx;
     double frac;
@@ -65,22 +69,22 @@ void update_key_frame( Player& plyr, double dt )
     double v;
     pp::Matrix cob_mat, rot_mat;
 
-    std::string& root = get_tux_root_node();
-    std::string& lsh  = get_tux_left_shoulder_joint();
-    std::string& rsh  = get_tux_right_shoulder_joint();
-    std::string& lhp  = get_tux_left_hip_joint();
-    std::string& rhp  = get_tux_right_hip_joint();
-    std::string& lkn  = get_tux_left_knee_joint();
-    std::string& rkn  = get_tux_right_knee_joint();
-    std::string& lank = get_tux_left_ankle_joint();
-    std::string& rank = get_tux_right_ankle_joint();
-    std::string& head = get_tux_head();
-    std::string& neck = get_tux_neck();
-    std::string& tail = get_tux_tail_joint();
+    std::string& root = tux[player].getRootNode();
+    std::string& lsh  = tux[player].getLeftShoulderJoint();
+    std::string& rsh  = tux[player].getRightShoulderJoint();
+    std::string& lhp  = tux[player].getLeftHipJoint();
+    std::string& rhp  = tux[player].getRightHipJoint();
+    std::string& lkn  = tux[player].getLeftKneeJoint();
+    std::string& rkn  = tux[player].getRightKneeJoint();
+    std::string& lank = tux[player].getLeftAnkleJoint();
+    std::string& rank = tux[player].getRightAnkleJoint();
+    std::string& head = tux[player].getHead();
+    std::string& neck = tux[player].getNeck();
+    std::string& tail = tux[player].getTailJoint();
 
     keyTime += dt;
 
-    for (idx = 1; idx < numFrames; idx ++) {
+    for(idx = 1; idx < numFrames; idx ++) {
         if ( keyTime < frames[idx].time )
             break;
     } 
@@ -151,41 +155,48 @@ void update_key_frame( Player& plyr, double dt )
 static int
 key_frame_cb(ppogl::Script *vm) 
 {
-    KeyFrame frame;
-    ppogl::Vec2d start_pt = Course::getStartPt();
-
-    if(numFrames == MAX_NUM_KEY_FRAMES ){
-        PP_WARNING("tux.key_frame: max. num. of frames reached");
-		return 0;
-    } 
-
-    if(vm->getTop()!=10){
+   	ppogl::Vec2d start_pt = Course::getStartPt();
+	
+    if(vm->getTop()!=11){
 		PP_WARNING("tux.key_frame: Invalid number of arguments");
 		return 0;
     } 
-
-	frame.time = vm->getFloat(1);
+	
+	int player = vm->getInt(1);
+	if(player!=1 && player !=2){
+		PP_WARNING("tux.key_frame: Player " << player << " not supported");
+		return 0;
+	}
+	player--;
+	
+	if(keyFrames[player].numFrames == MAX_NUM_KEY_FRAMES ){
+        PP_WARNING("tux.key_frame: max. num. of frames reached");
+		return 0;
+    }	
+	
+	KeyFrame frame;
+	frame.time = vm->getFloat(2);
   
-	frame.pos.x() = vm->getFloat(2) + start_pt.x();
+	frame.pos.x() = vm->getFloat(3) + start_pt.x();
     
-	frame.pos.z() = (-1)*vm->getFloat(3) + start_pt.y();
+	frame.pos.z() = (-1)*vm->getFloat(4) + start_pt.y();
     
-	frame.pos.y() = vm->getFloat(4);
+	frame.pos.y() = vm->getFloat(5);
   
-	frame.yaw = vm->getFloat(5);
+	frame.yaw = vm->getFloat(6);
    
-	frame.pitch = vm->getFloat(6);
+	frame.pitch = vm->getFloat(7);
     
-	frame.l_shldr = vm->getFloat(7);
+	frame.l_shldr = vm->getFloat(8);
 
-	frame.r_shldr = vm->getFloat(8);
+	frame.r_shldr = vm->getFloat(9);
     
-	frame.l_hip = vm->getFloat(9);
+	frame.l_hip = vm->getFloat(10);
  
-	frame.r_hip = vm->getFloat(10);
+	frame.r_hip = vm->getFloat(11);
     
-    frames[numFrames] = frame;
-    numFrames++;
+    keyFrames[player].frames[keyFrames[player].numFrames] = frame;
+    keyFrames[player].numFrames++;
 
     return 0;
 } 

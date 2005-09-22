@@ -52,8 +52,6 @@ Intro::Intro()
 {
 	ppogl::Vec2d start_pt = Course::getStartPt();
 
-    init_key_frame();
-
     GameMgr::getInstance().time = 0.0;
     
 	if(Benchmark::getMode()==Benchmark::PAUSED){
@@ -62,6 +60,10 @@ Intro::Intro()
 		for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
 			players[i].pos.x() = start_pt.x();
     		players[i].pos.z() = start_pt.y();
+			
+			// move second player to a different position
+			players[i].pos.x() += i*2;
+			
 		}
 	}
     init_physical_simulation();
@@ -69,7 +71,8 @@ Intro::Intro()
 	clear_particles();
 	
 	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
-	    players[i].vel = ppogl::Vec3d(0,0,0);
+		keyFrames[i].init(i);	    
+		players[i].vel = ppogl::Vec3d(0,0,0);
 		players[i].herring = 0;
     	players[i].score = 0;
     	players[i].airbornetime = 0.0;
@@ -97,8 +100,11 @@ Intro::preDisplay(float timeStep)
 	    	abort(players[0]);
 	    	return;
 		}
-    }
-    update_key_frame(players[0], timeStep);
+    }	
+	
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
+		keyFrames[i].update(players[i], timeStep);
+	}
 }
 
 void

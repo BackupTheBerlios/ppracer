@@ -106,14 +106,15 @@ void traverse_dag_for_view_point( SceneNode *node, pp::Matrix trans )
     } 
 }
 
-ppogl::Vec3d get_tux_view_pt( Player& plyr ) 
+ppogl::Vec3d
+get_tux_view_pt(Player& plyr) 
 { 
     pp::Matrix trans;
     SceneNode *tux_root_node;
 
     trans.makeIdentity();
 
-    std::string& tux_root_node_name = get_tux_root_node();
+    std::string& tux_root_node_name = tux[plyr.num].getRootNode();
 
     if( get_scene_node( tux_root_node_name, &tux_root_node ) != true ) {
 		PP_ERROR( "couldn't load tux's root node" );

@@ -259,6 +259,7 @@ Audio.loadSound("ice_sound",
 				"sounds/tux_on_ice1.wav");
 
 dofile("models/tux/model.nut");
+dofile("models/tux2/model.nut");
 
 // temporary terrain file
 ppcourse.terrain_file <- "";
@@ -281,6 +282,7 @@ function ppcourse::theme_init(theme)
 	ppcourse.load_elements(ppcourse.elements_file);
 	ppcourse.load_terrain(ppcourse.terrain_file);
 	::dofile(::data_dir+"/models/tux/model_walk.nut");
+	::dofile(::data_dir+"/models/tux2/model_walk.nut");
 }
 
 // load theme pack
