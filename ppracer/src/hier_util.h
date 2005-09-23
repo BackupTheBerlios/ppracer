@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,26 +24,27 @@
 
 #include "pp_types.h"
 
-#include "ppgltk/alg/poly.h"
+#include "ppogl/sg/geoms.h"
 
-void draw_sphere( int num_divisions );
 
-void traverse_dag( scene_node_t *node, material_t *mat );
+void draw_sphere(int num_divisions);
 
-pp::Vec3d make_normal( pp::Polygon p, pp::Vec3d *v );
+void traverse_dag(SceneNode *node, Material *mat);
 
-bool intersect_polygon( pp::Polygon p, pp::Vec3d *v );
+ppogl::Vec3d make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v);
 
-bool intersect_polyhedron( pp::Polyhedron p );
+bool intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v);
 
-pp::Polyhedron copy_polyhedron( pp::Polyhedron ph );
+bool intersect_polyhedron(const ppogl::Polyhedron& p);
 
-void free_polyhedron( pp::Polyhedron ph ) ;
+ppogl::Polyhedron copy_polyhedron(const ppogl::Polyhedron& ph);
 
-void trans_polyhedron( pp::Matrix mat, pp::Polyhedron ph );
+void free_polyhedron(const ppogl::Polyhedron& ph);
 
-bool  check_polyhedron_collision_with_dag( 
-    scene_node_t *node, pp::Matrix modelMatrix, pp::Matrix invModelMatrix,
-    pp::Polyhedron ph );
+void trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph);
 
-#endif
+bool check_polyhedron_collision_with_dag(
+    SceneNode *node,const pp::Matrix& modelMatrix, const pp::Matrix& invModelMatrix,
+    const ppogl::Polyhedron& ph );
+
+#endif // _HIER_UTIL_H

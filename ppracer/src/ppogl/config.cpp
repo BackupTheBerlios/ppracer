@@ -35,7 +35,7 @@ Config::Config()
 }
 	
 void
-Config::init(ppogl::Script *vm, std::string table)
+Config::init(ppogl::Script *vm, const std::string& table)
 /// initialize the Config dingleton with the Script vm and the table name
 {
 	m_vm = vm;
@@ -43,7 +43,7 @@ Config::init(ppogl::Script *vm, std::string table)
 }
 
 double
-Config::getDouble(std::string key)
+Config::getDouble(const std::string& key)
 /// return double value from config table
 {
 	if(m_vm==NULL){
@@ -65,7 +65,7 @@ Config::getDouble(std::string key)
 }
 
 int
-Config::getInt(std::string key)
+Config::getInt(const std::string& key)
 /// return integer value from config table
 {
 	if(m_vm==NULL){
@@ -87,7 +87,7 @@ Config::getInt(std::string key)
 }
 
 std::string
-Config::getString(std::string key)
+Config::getString(const std::string& key)
 /// return string from config table
 {
 	if(m_vm==NULL){
@@ -110,7 +110,7 @@ Config::getString(std::string key)
 }
 
 bool
-Config::getBool(std::string key)
+Config::getBool(const std::string& key)
 /// return boolean value from config table
 {
 	if(m_vm==NULL){
@@ -133,7 +133,7 @@ Config::getBool(std::string key)
 }
 
 void
-Config::setDouble(std::string key, double value)
+Config::setDouble(const std::string& key, double value)
 /// set double value for key
 {
 	if(m_vm==NULL){
@@ -154,7 +154,7 @@ Config::setDouble(std::string key, double value)
 }
 
 void
-Config::setInt(std::string key, int value)
+Config::setInt(const std::string& key, int value)
 /// set integer value for key
 {
 	if(m_vm==NULL){
@@ -175,7 +175,7 @@ Config::setInt(std::string key, int value)
 }
 	
 void
-Config::setString(std::string key, std::string value)
+Config::setString(const std::string& key, const std::string& value)
 /// set string for key
 {
 	if(m_vm==NULL){
@@ -196,7 +196,7 @@ Config::setString(std::string key, std::string value)
 }
 
 void
-Config::setBool(std::string key, bool value)
+Config::setBool(const std::string& key, bool value)
 /// set boolean value for key
 {
 	if(m_vm==NULL){

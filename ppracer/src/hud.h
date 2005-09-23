@@ -21,36 +21,34 @@
 #define _HUD_H_
 
 #include "player.h"
-#include "textures.h"
-#include "ppgltk/font.h"
+#include "ppogl/font.h"
+#include "ppogl/textures.h"
 
 #define HUD_MAX_ITEMS 16
 
 class HUD
 {
 public:
-	HUD(void);
+	HUD();
 
 	struct Element{
 		Element();
 		int type;
 		int x,y;
-		pp::Font *font;
-		GLuint texture;
+		ppogl::FontRef font;
+		ppogl::TextureRef texture;
 		int width,height,size;
 		std::string string;
 		wchar_t u_string[16];
 		int angle;
 	};	
 
-	void draw(Player& plyr);
-	void reset(void);
+	void draw(Player& plyr, int width, int height);
+	void reset();
 	bool add(Element newElement);			
-	bool update(const int i, Element newElement);
-		
+	bool update(const int i,Element newElement);
 
 private:
-		
 	Element m_element[HUD_MAX_ITEMS];
 	int m_numElements;
 	
@@ -62,21 +60,24 @@ private:
 	void speed(const int i, const double speed);
 	void gauge(const int i, const double speed, const double energy);
 	void bar(const int i, double percentage);
-	void coursePercentage(const int i);
+	void coursePercentage(const int i,const Player& plyr);
 		
 	void draw_partial_tri_fan(const double fraction);
-	pp::Vec2d calc_new_fan_pt(const double angle);
+	ppogl::Vec2d calc_new_fan_pt(const double angle);
 	void start_tri_fan(void);
 
 	void fix_xy(int &x, int &y, const int asc=0, const int width=0);
 	void initGauge();
 	
-	GLuint m_energymaskTex;
-	GLuint m_speedmaskTex;
-	GLuint m_outlineTex;	
+	ppogl::TextureRef m_energymaskTex;
+	ppogl::TextureRef m_speedmaskTex;
+	ppogl::TextureRef m_outlineTex;	
+	
+	int m_width;
+	int m_height;
 };
 
 extern HUD HUD1;
-
+extern HUD HUD2;
 
 #endif // _HUD_H_

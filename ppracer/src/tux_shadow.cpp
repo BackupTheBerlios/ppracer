@@ -30,7 +30,8 @@
 
 #define SHADOW_HEIGHT 0.1
 
-void draw_tux_shadow(int player)
+void
+draw_tux_shadow(int player)
 {
     if(!GameConfig::drawTuxShadow){
 		return;
@@ -53,7 +54,7 @@ void draw_tux_shadow(int player)
 	
     model_matrix.makeIdentity();
 
-    std::string& tux_root_node_name = tux[player].getRootNode();
+	const std::string& tux_root_node_name = tux[player].getRootNode();
 
     if(get_scene_node(tux_root_node_name, &tux_root_node ) != true){
 		PP_ERROR( "couldn't find tux's root node" );
@@ -62,7 +63,8 @@ void draw_tux_shadow(int player)
     traverse_dag_for_shadow( tux_root_node, model_matrix );
 }
 
-void traverse_dag_for_shadow( SceneNode *node, pp::Matrix model_matrix )
+void
+traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 {
     pp::Matrix new_model_matrix;
     SceneNode *child;
@@ -84,7 +86,8 @@ void traverse_dag_for_shadow( SceneNode *node, pp::Matrix model_matrix )
     } 
 }
 
-void draw_shadow_sphere( pp::Matrix model_matrix )
+void
+draw_shadow_sphere(const pp::Matrix& model_matrix)
 {
     double theta, phi, d_theta, d_phi, eps, twopi;
     double x, y, z;
@@ -181,8 +184,9 @@ void draw_shadow_sphere( pp::Matrix model_matrix )
 
 } 
 
-void draw_shadow_vertex( double x, double y, double z, 
-			 pp::Matrix model_matrix )
+void
+draw_shadow_vertex(double x, double y, double z, 
+			 const pp::Matrix& model_matrix )
 {
     ppogl::Vec3d pt;
     double old_y;

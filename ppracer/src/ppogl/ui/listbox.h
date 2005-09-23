@@ -59,7 +59,7 @@ public:
 
 	typedef typename std::list<Element>::iterator iterator;
 
-    virtual void draw(ppogl::Vec2d position);
+    virtual void draw(const ppogl::Vec2d& position);
 
 	typename std::list<Element>::iterator addElement(const std::string& label, T data);
 
@@ -70,7 +70,7 @@ public:
 	typename std::list<Element>::iterator& getSelected();
 	T getSelectedData();
 
-	void setPosition(ppogl::Vec2d position);
+	void setPosition(const ppogl::Vec2d& position);
 
 	void upButtonCallback();
 	void downButtonCallback();
@@ -122,7 +122,7 @@ ListBox<T>::ListBox(int width, int height)
 
 template <class T>	
 void
-ListBox<T>::setPosition(ppogl::Vec2d position)
+ListBox<T>::setPosition(const ppogl::Vec2d& position)
 {
 	// set position of the widget
 	Widget::setPosition(position);
@@ -205,11 +205,13 @@ ListBox<T>::getSelectedData()
   
 template <class T> 
 void
-ListBox<T>::draw(ppogl::Vec2d position)
+ListBox<T>::draw(const ppogl::Vec2d& pos)
 {
 	updateButtonStates();
 	
 	ppogl::Vec2d temp = m_size;
+	ppogl::Vec2d position = pos;
+
 	temp.x()-=32;
 	
 	if(m_hasFocus){
@@ -217,6 +219,7 @@ ListBox<T>::draw(ppogl::Vec2d position)
 	}else{
 		ppogl::drawRectangle(position,temp);
 	}
+	
 	position.x()+=4;
 	position.y()+=4;
 	temp.x()-=8;

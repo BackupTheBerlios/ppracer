@@ -30,8 +30,9 @@
 
 #if USE_GLUSPHERE
 
-// Draws a sphere using gluSphere
-void draw_sphere( int num_divisions )
+/// Draws a sphere using gluSphere
+void
+draw_sphere(int num_divisions)
 {
     GLUquadricObj *qobj;
 
@@ -48,7 +49,8 @@ void draw_sphere( int num_divisions )
 
 #else 
 
-void draw_sphere( int num_divisions )
+void
+draw_sphere(int num_divisions)
 {
     double theta, phi, d_theta, d_phi, eps, twopi;
     double x, y, z;
@@ -155,7 +157,9 @@ void draw_sphere( int num_divisions )
 
 #endif // USE_GLUSPHERE 
 
-static GLuint get_sphere_display_list( int divisions ) {
+static GLuint
+get_sphere_display_list(int divisions)
+{
     static bool initialized = false;
     static int num_display_lists;
     static GLuint *display_lists = NULL;
@@ -200,7 +204,8 @@ static GLuint get_sphere_display_list( int divisions ) {
 
 /* Traverses the DAG structure and draws the nodes
  */
-void traverse_dag( SceneNode *node, Material *mat )
+void
+traverse_dag(SceneNode *node, Material *mat)
 {
     SceneNode *child;
 
@@ -241,7 +246,8 @@ void traverse_dag( SceneNode *node, Material *mat )
  * polygon; points in polygon must be specifed in counter-clockwise direction
  * when viewed from outside the shape for the normal to be outward-facing
  */
-ppogl::Vec3d make_normal( ppogl::Polygon p, ppogl::Vec3d *v )
+ppogl::Vec3d
+make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v)
 {
     PP_REQUIRE( p.numVertices > 2, "number of vertices must be > 2" );
 
@@ -263,7 +269,8 @@ ppogl::Vec3d make_normal( ppogl::Polygon p, ppogl::Vec3d *v )
 
 /* Returns true iff the specified polygon intersections a unit-radius sphere
  * centered at the origin.  */
-bool intersect_polygon( ppogl::Polygon p, ppogl::Vec3d *v )
+bool
+intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
 {
     Ray ray; 
     ppogl::Vec3d nml, edge_nml, edge_vec;
@@ -344,7 +351,8 @@ bool intersect_polygon( ppogl::Polygon p, ppogl::Vec3d *v )
 
 /* returns true iff polyhedron intersects unit-radius sphere centered
    at origin */
-bool intersect_polyhedron( ppogl::Polyhedron p )
+bool
+intersect_polyhedron(const ppogl::Polyhedron& p)
 {
     bool hit = false;
     int i;
@@ -360,7 +368,8 @@ bool intersect_polyhedron( ppogl::Polyhedron p )
 
 /*--------------------------------------------------------------------------*/
 
-ppogl::Polyhedron copy_polyhedron( ppogl::Polyhedron ph )
+ppogl::Polyhedron
+copy_polyhedron(const ppogl::Polyhedron& ph)
 {
     ppogl::Polyhedron newph = ph;
     newph.vertices = new ppogl::Vec3d[ph.num_vertices];
@@ -374,26 +383,28 @@ ppogl::Polyhedron copy_polyhedron( ppogl::Polyhedron ph )
 
 /*--------------------------------------------------------------------------*/
 
-void free_polyhedron( ppogl::Polyhedron ph ) 
+void
+free_polyhedron(const ppogl::Polyhedron& ph) 
 {
     delete[] ph.vertices;
 } 
 
 /*--------------------------------------------------------------------------*/
 
-void trans_polyhedron( pp::Matrix mat, ppogl::Polyhedron ph )
+void
+trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph)
 {
-    int i;
-    for (i=0; i<ph.num_vertices; i++) {
-        ph.vertices[i] = mat.transformPoint(ph.vertices[i]);
-    }
+	for(int i=0; i<ph.num_vertices; i++) {
+		ph.vertices[i] = mat.transformPoint(ph.vertices[i]);
+		}
 }
 
 /*--------------------------------------------------------------------------*/
 
-bool check_polyhedron_collision_with_dag( 
-    SceneNode *node, pp::Matrix modelMatrix, pp::Matrix invModelMatrix,
-    ppogl::Polyhedron ph)
+bool
+check_polyhedron_collision_with_dag(SceneNode *node,
+	const pp::Matrix& modelMatrix, const pp::Matrix& invModelMatrix,
+    const ppogl::Polyhedron& ph)
 {
     pp::Matrix newModelMatrix, newInvModelMatrix;
     SceneNode *child;

@@ -71,7 +71,7 @@ class Item
 	double m_diameter, m_height;
 
 public:
-	Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d position);
+	Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d& position);
 		
 	inline bool isDrawable(){ return m_drawable; };
 	inline void setDrawable(const bool state=true){ m_drawable=state; };
@@ -98,10 +98,8 @@ public:
 	inline void setHeight(const double height){m_height=height;};
 
 	
-	
 	void draw(ppogl::Vec3d normal);
-	void setNormal(ppogl::Vec3d normal);
-
+	void setNormal(const ppogl::Vec3d& normal);
 };
 
 class ModelType : public ppogl::RefObject
@@ -129,7 +127,7 @@ class Model
 	ppogl::RefPtr<ModelType> m_type;
 	ppogl::Vec3d m_position;
 public:
-	Model(ppogl::RefPtr<ModelType> type, const ppogl::Vec3d position):m_type(type), m_position(position){};
+	Model(ppogl::RefPtr<ModelType> type, const ppogl::Vec3d& position):m_type(type), m_position(position){};
 	
 	inline ppogl::Polyhedron* getPolyhedron(){return m_type->ph;};
 	inline ppogl::Vec3d& getPosition(){return m_position;};

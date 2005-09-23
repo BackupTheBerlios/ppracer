@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -20,12 +20,6 @@
 #ifndef _SNOW_H_
 #define _SNOW_H_
 
-#include "ppgltk/ppgltk.h"
-
- 
-void init_snow( pp::Vec3d eyepoint);
-void update_snow( double time_step, bool windy, pp::Vec3d eyepoint );
-void draw_snow( pp::Vec3d eyepoint );
-
+// please fill me with code :)
 
 #endif // _SNOW_H_

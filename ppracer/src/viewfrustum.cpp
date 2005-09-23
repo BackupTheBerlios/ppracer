@@ -41,7 +41,7 @@ static bool p_vertex_code_z[6];
 
 
 void
-setup_view_frustum(Player& plyr,
+setup_view_frustum(const Player& plyr,
 			double near_dist, double far_dist,
 			int multiscreen)
 {
@@ -59,32 +59,32 @@ setup_view_frustum(Player& plyr,
 		half_fov_horiz*=2; 	
 	}
 
-    /* create frustum in viewing coordinates */
+    // create frustum in viewing coordinates
 
-    /* near */
+    // near
     frustum_planes[0] = pp::Plane(0, 0, 1, near_dist);
     
-    /* far */
+    // far
     frustum_planes[1] = pp::Plane(0, 0, -1, -far_dist);
 
-    /* left */
+    // left
     frustum_planes[2] = pp::Plane( -cos(half_fov_horiz), 0, 
 				    sin(half_fov_horiz), 0 );
 
-    /* right */
+    // right
     frustum_planes[3] = pp::Plane( cos(half_fov_horiz), 0, 
 				    sin(half_fov_horiz), 0 );
 
-    /* top */
+    // top
     frustum_planes[4] = pp::Plane( 0, cos(half_fov),  
 				    sin(half_fov), 0 );
 
-    /* bottom */
+    // bottom
     frustum_planes[5] = pp::Plane( 0, -cos(half_fov),  
 				    sin(half_fov), 0 );
 
 
-    /* We now transform frustum to world coordinates */
+    // We now transform frustum to world coordinates
     for (i=0; i<6; i++) {
 	pt = plyr.view.inv_view_mat.transformPoint(
 	    origin + (-frustum_planes[i].d*frustum_planes[i].nml) );
@@ -159,22 +159,22 @@ ClipResult clip_aabb_to_view_frustum( const ppogl::Vec3d& min, const ppogl::Vec3
     return intersect;
 }
 
-pp::Plane get_far_clip_plane()
+const pp::Plane& get_far_clip_plane()
 {
     return frustum_planes[1];
 }
 
-pp::Plane get_left_clip_plane()
+const pp::Plane& get_left_clip_plane()
 {
     return frustum_planes[2];
 }
 
-pp::Plane get_right_clip_plane()
+const pp::Plane& get_right_clip_plane()
 {
     return frustum_planes[3];
 }
 
-pp::Plane get_bottom_clip_plane()
+const pp::Plane& get_bottom_clip_plane()
 {
     return frustum_planes[5];
 }

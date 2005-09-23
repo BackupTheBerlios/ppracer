@@ -306,7 +306,7 @@ ModelAC::setSimpleColor(long matno)
 }
 
 int
-ModelAC::stringToObjectType(std::string& string)
+ModelAC::stringToObjectType(const std::string& string)
 {
     if (string=="world")
         return(OBJECT_WORLD);

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,12 +24,12 @@
 
 void reset_course_quadtree();
 
-void init_course_quadtree( float *elevation, int nx, int nz, 
+void init_course_quadtree(const float *elevation, int nx, int nz, 
 			   double scalex, double scalez,
-			   pp::Vec3d view_pos, double detail );
+			   const ppogl::Vec3d& view_pos);
 
-void update_course_quadtree( const pp::Vec3d view_pos, const float detail );
+void update_course_quadtree(const ppogl::Vec3d& view_pos);
 
 void render_course_quadtree();
 
-#endif /* _COURSE_QUAD_H_ */
+#endif // _COURSE_QUAD_H_

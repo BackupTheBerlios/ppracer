@@ -67,7 +67,7 @@ Textarea::Textarea(int width, int height)
 }
 
 void
-Textarea::draw(ppogl::Vec2d position)
+Textarea::draw(const ppogl::Vec2d& position)
 {
 	ppogl::drawRectangle(position,m_size);
 	
@@ -94,7 +94,7 @@ Textarea::draw(ppogl::Vec2d position)
 }
 
 void
-Textarea::setPosition(ppogl::Vec2d position)
+Textarea::setPosition(const ppogl::Vec2d& position)
 {
 	// set position of the widget
 	Widget::setPosition(position);

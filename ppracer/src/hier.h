@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,34 +24,35 @@
 
 #include "pp_types.h"
 
-#include "ppgltk/alg/poly.h"
-
+#include "ppogl/sg/geoms.h"
 
 #define MIN_SPHERE_DIVISIONS 3
 #define MAX_SPHERE_DIVISIONS 16
 
-extern int get_scene_node( const char *node_name, scene_node_t **node );
+bool get_scene_node(const std::string& node_name, SceneNode **node );
 
-extern char* reset_scene_node(char *node);
-extern char* rotate_scene_node(const char *node, char axis, double angle);
-extern char* translate_scene_node(const char *node, pp::Vec3d trans);
-extern char* scale_scene_node(const char *node, pp::Vec3d origin, double factor[3]);
-extern char* transform_scene_node(char *node, pp::Matrix mat, pp::Matrix invMat);
+void reset_scene_node(const std::string& node);
 
-extern char* set_scene_node_material(const char *node, const char *mat);
-extern char* create_material(const char *mat, pp::Color d, pp::Color s, double s_exp);
+std::string rotate_scene_node(const std::string& node, char axis, double angle);
+std::string translate_scene_node(const std::string& node, const ppogl::Vec3d& trans);
+std::string scale_scene_node(const std::string& node, const ppogl::Vec3d& origin, const ppogl::Vec3d& factor);
+std::string transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invMat);
 
-extern char* set_scene_resolution(char *resolution);
+std::string set_scene_node_material(const std::string& node, const std::string& mat);
 
-extern char* set_scene_node_shadow_state( const char *node, const char *state );
-extern char* set_scene_node_eye( const char *node, const char *which_eye );
+void create_material(const std::string& mat, const ppogl::Color& d, const ppogl::Color& s, double s_exp);
 
-extern char* create_tranform_node(const char *parent, const char *name);
-extern char* create_sphere_node( const char *parent_name, const char *child_name, double resolution );
+std::string set_scene_resolution(const std::string& resolution);
 
-extern void initialize_scene_graph();
+std::string set_scene_node_shadow_state(const std::string& node, const std::string& state );
+std::string set_scene_node_eye(const std::string& node, const std::string& which_eye );
 
-extern void draw_scene_graph( char *node );
-extern  bool collide( char *node, pp::Polyhedron ph );
+std::string create_tranform_node(const std::string& parent, const std::string& name);
+std::string create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution );
 
-#endif
+void initialize_scene_graph();
+
+void draw_scene_graph(const std::string& node );
+bool collide(const std::string& node, const ppogl::Polyhedron& ph );
+
+#endif // _HIER_H_

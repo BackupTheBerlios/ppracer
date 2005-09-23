@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -24,20 +24,19 @@
 
 #include "loop.h"
 
-#include "ppgltk/alg/color.h"
+#include "ppogl/base/color.h"
 
 
 class Reset : public GameMode
 {
-	const pp::Color m_textColor;
+	const ppogl::Color m_textColor;
 	double m_resetStartTime;
 	bool m_positionReset;
 	
 public:
 	Reset();
-	~Reset();
 
-	void loop(float timeStep);
+	void loop(float timestep);
 };
 
 #endif

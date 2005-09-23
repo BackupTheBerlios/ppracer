@@ -29,7 +29,7 @@ class Frame : public Widget
 public:
 	Frame(int width=256, int height=256);
 
-	virtual void draw(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
 };
 
 } //namepsace ppogl

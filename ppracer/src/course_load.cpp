@@ -106,25 +106,25 @@ Course::getAngle()
 	return course_angle;
 } 
 
-ppogl::Vec2d
+const ppogl::Vec2d&
 Course::getStartPt()
 {
 	return start_pt;
 }
 
 void
-Course::setStartPt(ppogl::Vec2d p)
+Course::setStartPt(const ppogl::Vec2d& p)
 {
 	start_pt = p;
 }
 
-std::string&
+const std::string&
 Course::getAuthor()
 {
 	return courseAuthor; 
 }
 
-std::string&
+const std::string&
 Course::getName()
 {
 	return courseName;
@@ -305,7 +305,7 @@ Course::fillGLArrays()
 }
 
 void
-Course::load(std::string& course)
+Course::load(const std::string& course)
 {
     reset_course();
 	HUD1.reset();

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -18,12 +18,12 @@
  */
 
 #include "player.h"
-#include "game_config.h"
 #include "course_load.h"
+#include "stuff.h"
 
 #define PLAYER_MAX_LIVES 5
 
-Player players[1];
+Player players[2];
 
 
 PlayerCourseData::PlayerCourseData()
@@ -222,7 +222,7 @@ Player::isFirstIncompleteCup( std::list<EventData>::iterator event,
 	} else {
 		//check if previous cup was completed
 		cup--;
-		return isCupComplete((*event).name,(*cup).name);
+		return isCupComplete((*event).getName(),(*cup).getName());
 	}
 }
 
@@ -324,13 +324,7 @@ Player::updateOpenCourseData(std::string course, double time,
 bool
 Player::saveData()
 {
-	char buff[256];
-
-    if (get_config_dir_name( buff, 255 ) != 0) {
-		return false;
-    }
-	
-	std::string filename(buff);
+	std::string filename=get_config_dir_name();
 	
 	filename+="/";
 	filename+=name;
@@ -371,12 +365,8 @@ bool
 Player::loadData()
 {
 	char buff[256];
-
-    if (get_config_dir_name( buff, 255 ) != 0) {
-		return false;
-    }
 	
-	std::string filename(buff);
+	std::string filename = get_config_dir_name();
 	
 	filename+="/";
 	filename+=name;
@@ -424,15 +414,15 @@ Player::loadData()
 
 
 float
-Player::getCoursePercentage()
+Player::getCoursePercentage() const
 ///returns the the percentage of the course completion related to 
 ///the player position in the heightmap
 {
-	if(pos.y<0){
+	if(pos.y()<0){
 		float x,y;	
-		get_course_dimensions( &x,&y );
-		float correction = 100/tan((get_course_angle())*M_PI/180.0);
-		return (((-1)*pos.y)/y)*correction;
+		Course::getDimensions( &x,&y );
+		float correction = 100/tan((Course::getAngle())*M_PI/180.0);
+		return (((-1)*pos.y())/y)*correction;
 	}else{
 		return 0;
 	}

@@ -32,9 +32,9 @@ class Button : public Label
 	
 public:
 	Button();
-	Button(const std::string& text, const std::string binding="");
+	Button(const std::string& text, const std::string& binding="");
 
-	virtual void draw(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
 };
 
 

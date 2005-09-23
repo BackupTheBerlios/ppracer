@@ -18,23 +18,7 @@
  */
 
 #include "snow.h"
-#include "gl_util.h"
-#include "course_render.h"
-#include "render_util.h"
-#include "loop.h"
 
-
-void init_snow( ppogl::Vec3d eyepoint )
-{
-
-}
-
-void update_snow( double time_step, bool windy, ppogl::Vec3d eyepoint )
-{
-
-} 
-
-void draw_snow( ppogl::Vec3d eyepoint )
-{
-
-}
+/*
+ * Stub file intended for the snow system
+ */

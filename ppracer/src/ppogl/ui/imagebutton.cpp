@@ -92,7 +92,7 @@ ImageButton::setHilitState(int state)
 }
 
 void
-ImageButton::draw(ppogl::Vec2d position)
+ImageButton::draw(const ppogl::Vec2d& position)
 {	
 	if(m_border>0){
 		ppogl::drawRectangle(position-ppogl::Vec2d(m_border,m_border),

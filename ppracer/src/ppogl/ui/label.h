@@ -38,7 +38,7 @@ public:
 	Label();
 	Label(const std::string& text, const std::string binding="");
 
-	virtual void draw(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
 
 	void setText(const std::string& text);
 	std::string& getText(){return m_text;};	

@@ -40,7 +40,7 @@ public:
 	Entry(int width=176);
 
 	bool keyboardEvent(SDLKey key, SDLMod mod, bool release);
-	virtual void draw(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
 	void setClicked(bool clicked);
 
 

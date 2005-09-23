@@ -49,7 +49,7 @@ public:
 		return values[position];
 	}
 	
-	Vec2d(void);
+	Vec2d();
 	Vec2d(const double x, const double y);
 	Vec2d(const double *v);	
 	

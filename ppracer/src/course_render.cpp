@@ -77,12 +77,26 @@ static ppogl::Vec3d eye_pt;
  * Function definitions
  */
 
-void set_course_clipping( bool state ) { clip_course = state; }
-void set_course_eye_point( ppogl::Vec3d pt ) { eye_pt = pt; }
+void
+set_course_clipping(bool state)
+{
+	clip_course = state;
+}
 
-ppogl::Vec3d* get_course_normals() { return nmls; } 
+void
+set_course_eye_point(const ppogl::Vec3d& pt)
+{
+	eye_pt = pt;
+}
 
-void calc_normals()
+ppogl::Vec3d*
+get_course_normals()
+{
+	return nmls;
+} 
+
+void
+calc_normals()
 {
     float *elevation;
     float courseWidth, courseLength;
@@ -276,7 +290,8 @@ void calc_normals()
     } 
 } 
 
-void setup_course_tex_gen()
+void
+setup_course_tex_gen()
 {
     static ppogl::Vec4f xplane(1.0 / TEX_SCALE, 0.0, 0.0, 0.0);
     static ppogl::Vec4f zplane(0.0, 0.0, 1.0 / TEX_SCALE, 0.0);
@@ -284,7 +299,8 @@ void setup_course_tex_gen()
     gl::TexGen( GL_T, GL_OBJECT_PLANE, zplane );
 }
 
-void render_course()
+void
+render_course()
 {
     int nx, ny;
 
@@ -301,7 +317,8 @@ void render_course()
     render_course_quadtree();
 }
 
-void draw_sky(ppogl::Vec3d pos)
+void
+draw_sky(const ppogl::Vec3d& pos)
 {
   ppogl::TextureRef texture[6];
 
@@ -416,7 +433,8 @@ void draw_sky(ppogl::Vec3d pos)
 
 }
 
-void draw_elements() 
+void
+draw_elements() 
 {
     ppogl::Vec3d  normal;
     double  fwd_clip_limit, bwd_clip_limit;
@@ -481,7 +499,8 @@ void draw_elements()
   \date    Modified: 2000-08-31
 */
 
-void draw_fog_plane()
+void
+draw_fog_plane()
 {
     if(fogPlane.isEnabled()==false){
 		return;
@@ -572,7 +591,7 @@ void draw_fog_plane()
 
     set_gl_options( FOG_PLANE );
 
-    ppogl::Color &fogColor = fogPlane.getColor();
+    const ppogl::Color &fogColor = fogPlane.getColor();
 
     gl::Color(fogColor);
 

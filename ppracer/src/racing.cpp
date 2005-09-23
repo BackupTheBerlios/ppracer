@@ -99,8 +99,6 @@ Racing::Racing()
 		players[i].control.jumping = false;
 		players[i].control.jump_charging = false;
 		players[i].max_speed = 0;
-		
-		init_snow(players[i].view.pos);
 	}
    
     if(GameMode::prevmode != PAUSED){

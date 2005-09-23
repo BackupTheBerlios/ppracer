@@ -44,7 +44,7 @@
 class Course
 {
 public:
-	static void load(std::string& course);
+	static void load(const std::string& course);
 	static float* getElevData();
 	static int* getTerrainData();
 	static float getAngle();
@@ -55,11 +55,11 @@ public:
 	static float getTerrainBaseHeight(float distance);
 	static float getTerrainMaxHeight(float distance);
 	static void getDivisions(int *nx, int *ny);
-	static void setStartPt(ppogl::Vec2d p);
-	static ppogl::Vec2d getStartPt();
+	static void setStartPt(const ppogl::Vec2d& p);
+	static const ppogl::Vec2d& getStartPt();
 
-	static std::string& getAuthor();
-	static std::string& getName(); 
+	static const std::string& getAuthor();
+	static const std::string& getName(); 
 
 	static void getGLArrays(GLubyte **vertex_normal_arr);
 

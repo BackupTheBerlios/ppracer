@@ -24,9 +24,9 @@
 namespace ppogl{
 	
 void
-drawRectangle(ppogl::Vec2d position,
-			  ppogl::Vec2d size,
-			  ppogl::Color color)
+drawRectangle(const ppogl::Vec2d& position,
+			  const ppogl::Vec2d& size,
+			  const ppogl::Color& color)
 {
 	gl::PushMatrix();
 	{
@@ -41,10 +41,10 @@ drawRectangle(ppogl::Vec2d position,
 }
 
 void
-drawRectangle(ppogl::Vec2d position,
-			  ppogl::Vec2d size,
+drawRectangle(const ppogl::Vec2d& position,
+			  const ppogl::Vec2d& size,
 			  ppogl::TextureRef texture,
-			  ppogl::Color color)
+			  const ppogl::Color& color)
 {
 	gl::PushMatrix();
 	{
@@ -76,11 +76,11 @@ drawRectangle(ppogl::Vec2d position,
 }
 
 void
-drawRectangle(	ppogl::Vec2d position,
-				ppogl::Vec2d size,
+drawRectangle(	const ppogl::Vec2d& position,
+				const ppogl::Vec2d& size,
 				ppogl::TextureRef texture,
-				ppogl::Vec4f texcoords,
-				ppogl::Color color)
+				const ppogl::Vec4f& texcoords,
+				const ppogl::Color& color)
 {
 	gl::PushMatrix();
 	{

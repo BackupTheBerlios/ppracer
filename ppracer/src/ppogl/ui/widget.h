@@ -55,12 +55,12 @@ public:
 	Widget();
 	virtual ~Widget();
 
-	void setPosition(ppogl::Vec2d position);
+	void setPosition(const ppogl::Vec2d& position);
 
-	virtual void draw(ppogl::Vec2d position) = 0;
+	virtual void draw(const ppogl::Vec2d& position) = 0;
 
-	inline ppogl::Vec2d& getSize(){return m_size;};
-	inline ppogl::Vec2d& getPosition(){return m_position;};
+	inline const ppogl::Vec2d& getSize(){return m_size;};
+	inline const ppogl::Vec2d& getPosition(){return m_position;};
 	
 	void removeFocus();
 	inline bool hasFocus(){return m_hasFocus;};

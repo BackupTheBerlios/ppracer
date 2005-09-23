@@ -128,7 +128,7 @@ static void backsb(double *matrix, int n, double *soln)
 
 namespace pp {
 	
-Matrix::Matrix(const Quat quat)
+Matrix::Matrix(const Quat& quat)
 {
     data[0][0] = 1.0 - 2.0 * ( quat.y * quat.y + quat.z * quat.z );
     data[1][0] =       2.0 * ( quat.x * quat.y - quat.w * quat.z );
@@ -213,7 +213,7 @@ Matrix::makeScaling(const double x, const double y, const double z )
 }
 
 void
-Matrix::makeRotationAboutVector(const ppogl::Vec3d u, const double angle )
+Matrix::makeRotationAboutVector(const ppogl::Vec3d& u, const double angle )
 {
 	Matrix rx,irx, ry, iry;
 	
@@ -275,7 +275,7 @@ Matrix::transpose(const Matrix& matrix)
 }
 
 Matrix
-Matrix::operator*(const Matrix matrix) const
+Matrix::operator*(const Matrix& matrix) const
 {
 	Matrix ret;
  
@@ -291,7 +291,7 @@ Matrix::operator*(const Matrix matrix) const
 }
 
 ppogl::Vec3d
-Matrix::transformVector(const ppogl::Vec3d v) const
+Matrix::transformVector(const ppogl::Vec3d& v) const
 {   
 	return ppogl::Vec3d(
 		v.x() * data[0][0] + v.y() * data[1][0] + v.z() * data[2][0],
@@ -302,7 +302,7 @@ Matrix::transformVector(const ppogl::Vec3d v) const
 	
 		
 ppogl::Vec3d
-Matrix::transformPoint(const ppogl::Vec3d p) const
+Matrix::transformPoint(const ppogl::Vec3d& p) const
 {
 	return ppogl::Vec3d(
     	p.x() * data[0][0] + p.y() * data[1][0] + p.z() * data[2][0] + data[3][0],
@@ -314,9 +314,9 @@ Matrix::transformPoint(const ppogl::Vec3d p) const
 void
 Matrix::makeChangeOfBasisMatrix(Matrix& mat,
 				Matrix& invMat,
-				const ppogl::Vec3d w1,
-				const ppogl::Vec3d w2,
-				const ppogl::Vec3d w3)
+				const ppogl::Vec3d& w1,
+				const ppogl::Vec3d& w2,
+				const ppogl::Vec3d& w3)
 {
 	mat.makeIdentity();
     mat.data[0][0] = w1.x();
@@ -341,7 +341,8 @@ Matrix::makeChangeOfBasisMatrix(Matrix& mat,
     invMat.data[2][2] = w3.z();
 }
 
-Plane::Plane( const double x, const double y, const double z, const double d ){
+Plane::Plane(const double x, const double y, const double z, const double d)
+{
 	nml.x()=x;
 	nml.y()=y;
 	nml.z()=z;
@@ -422,7 +423,7 @@ Quat::Quat(const ppogl::Vec3d& s, const ppogl::Vec3d& t)
 // source:
 // http://www.gamasutra.com/features/19980703/quaternions_01.htm
 //
-Quat::Quat(const Matrix matrix)
+Quat::Quat(const Matrix& matrix)
 {
     static int nxt[3] = {1, 2, 0};
     double tr = matrix.data[0][0] + matrix.data[1][1] + matrix.data[2][2];
@@ -474,13 +475,13 @@ Quat::set(const double x, const double y, const double z, const double w)
 
 
 Quat
-Quat::conjugate(void) const
+Quat::conjugate() const
 {
 	return Quat(-x, -y, -z, w);	
 }
 
 ppogl::Vec3d
-Quat::rotate( const ppogl::Vec3d& v ) const
+Quat::rotate(const ppogl::Vec3d& v) const
 {
     Quat p(v.x(),v.y(),v.z(),1.0);
     Quat res_q = (*this)*(p*conjugate());
@@ -501,7 +502,7 @@ Quat::operator*(const Quat& quat) const{
 
 
 Quat 
-Quat::interpolate(const Quat& q, Quat r,double t )
+Quat::interpolate(const Quat& q, Quat r, double t )
 {
 	Quat res;
     double cosphi;
@@ -539,10 +540,5 @@ Quat::interpolate(const Quat& q, Quat r,double t )
 
     return res;
 }
-
-
-
-
-
 
 } //namespace pp

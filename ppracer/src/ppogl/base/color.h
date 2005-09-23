@@ -51,8 +51,9 @@ public:
 		PP_REQUIRE(position>=0 && position<=3,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-
-	Color(const float red = 1.0f, const float green = 1.0f, const float blue = 1.0f, const float alpha=1.0f);	
+	
+	Color();
+	Color(const float red, const float green, const float blue, const float alpha=1.0f);	
 	Color(const float *color);
 	Color(const double *color);
 		
@@ -102,7 +103,8 @@ public:
 		return values[position];
 	}
 	
-	Color4c(const unsigned char red = 255, const unsigned char green = 255, const unsigned char blue = 255, const unsigned char alpha = 255);	
+	Color4c();
+	Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha = 255);	
 	Color4c(const unsigned char *color);
 	
 	void set(const unsigned char *color);

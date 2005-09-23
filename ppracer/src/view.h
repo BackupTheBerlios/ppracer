@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -26,12 +26,11 @@
 
 #include "player.h"
 
-void set_view_mode( Player& plyr, view_mode_t mode );
-view_mode_t get_view_mode( Player& plyr );
-void traverse_dag_for_view_point( scene_node_t *node, pp::Matrix trans );
-pp::Vec3d get_tux_view_pt();
-void set_tux_eye( tux_eye_t which_eye, pp::Vec3d pt );
-void update_view( Player& plyr, double dt );
-void setup_view_matrix( Player& plyr );
+void set_view_mode(Player& plyr, ViewMode mode);
+ViewMode get_view_mode(const Player& plyr);
+void traverse_dag_for_view_point(SceneNode *node, const pp::Matrix& trans);
+void set_tux_eye(TuxEye which_eye, const ppogl::Vec3d& pt);
+void update_view(Player& plyr, double dt);
+void setup_view_matrix(Player& plyr);
 
-#endif /* _VIEWMODE_H_ */
+#endif // _VIEWMODE_H_

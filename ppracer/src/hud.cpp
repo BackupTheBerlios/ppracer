@@ -534,7 +534,7 @@ HUD::fix_xy(int &x, int &y, const int asc, const int width)
 }
 
 void
-HUD::coursePercentage(const int i, Player& plyr)
+HUD::coursePercentage(const int i, const Player& plyr)
 {
 	if(m_element[i].font){
 		char string[BUFF_LEN];

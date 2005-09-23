@@ -63,7 +63,7 @@ public:
 
 	inline void setMode(Mode mode){m_mode=mode;};
 
-	virtual void draw(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
 	virtual void setClicked(bool clicked=true);
 };
 

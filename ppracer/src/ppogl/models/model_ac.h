@@ -107,12 +107,12 @@ class ModelAC
 	int m_numPalette;
 	int m_startMatIndex;
 		
-	int loadTexture(const char *fileName);
+	int loadTexture(const char *filename);
 	void prepareRender();	
 	void render(ModelObject *ob);
 	void setColor(long matno);
 	void setSimpleColor(long matno);
-	int stringToObjectType(std::string& string);
+	int stringToObjectType(const std::string& string);
 	ModelObject* loadObject(FILE *f, ModelObject *parent);
 	void objectCalculateVertexNormals(ModelObject *ob);
 	void calculateVertexNormals(ModelObject *ob);
@@ -123,7 +123,7 @@ class ModelAC
 	void CalculateTriNormal(ppogl::Vec3d *v1, ppogl::Vec3d *v2, ppogl::Vec3d *v3, ppogl::Vec3d *n);
 		
 public:
-	ModelAC(const std::string& fileName);
+	ModelAC(const std::string& filename);
 
 	ppogl::ModelObject* getModel(){return mp_model;}
 	int getDisplayList();

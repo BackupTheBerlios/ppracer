@@ -50,7 +50,8 @@
 #define max(x,y) ((x)>(y)?(x):(y))
 
 
-typedef struct _particle_t {
+typedef struct _particle_t
+{
     ppogl::Vec2d pt;
     double size;
     ppogl::Vec2d vel;
@@ -66,12 +67,14 @@ static ppogl::Vec2d last_push_position;
 static double last_update_time = -1;
 static bool push_position_initialized = false;
 
-static double frand()
+static double
+frand()
 {
     return double(rand())/RAND_MAX;
 } 
 
-static void make_particle( int i, double x, double y )
+static void
+make_particle(int i, double x, double y)
 {
     double p_dist;
     int type;
@@ -98,15 +101,17 @@ static void make_particle( int i, double x, double y )
     }
 }
 
-void init_ui_snow( void )
+void
+init_ui_snow()
 {
-    for( int i=0; i<num_particles; i++) {
-		make_particle( i, frand(), frand() );
+    for(int i=0; i<num_particles; i++){
+		make_particle(i, frand(), frand());
     }
-    push_position = ppogl::Vec2d( 0.0, 0.0 );
+    push_position = ppogl::Vec2d(0.0, 0.0);
 }
 
-void update_ui_snow( double time_step, bool windy )
+void
+update_ui_snow(double time_step, bool windy)
 {
     ppogl::Vec2d *v, f;
     ppogl::Vec2d *pt;
@@ -206,7 +211,8 @@ void update_ui_snow( double time_step, bool windy )
     }
 } 
 
-void draw_ui_snow()
+void
+draw_ui_snow()
 {
     ppogl::Vec2d *pt, *tex_min, *tex_max;
     double size;
@@ -265,7 +271,7 @@ void draw_ui_snow()
 } 
 
 void
-reset_ui_snow_cursor_pos( ppogl::Vec2d pos ) 
+reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos ) 
 {
     push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolutionX),
 				  pos.y()/double(GameMode::resolutionY) );
@@ -274,7 +280,7 @@ reset_ui_snow_cursor_pos( ppogl::Vec2d pos )
 }
 
 void 
-push_ui_snow( ppogl::Vec2d pos )
+push_ui_snow(const ppogl::Vec2d& pos)
 {
     push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolutionX),
 				  pos.y()/double(GameMode::resolutionY) );
@@ -285,9 +291,9 @@ push_ui_snow( ppogl::Vec2d pos )
 }
 
 void
-make_ui_snow( ppogl::Vec2d pos )
+make_ui_snow(const ppogl::Vec2d& pos)
 {
-    if ( num_particles < MAX_NUM_PARTICLES ) {
+    if(num_particles < MAX_NUM_PARTICLES){
 		make_particle( num_particles, pos.x()/GameMode::resolutionX, pos.y()/GameMode::resolutionY);
 		num_particles++;
     }

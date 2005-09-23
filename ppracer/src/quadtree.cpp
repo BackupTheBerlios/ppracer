@@ -1,17 +1,18 @@
-// quadtree.cpp	-thatcher 9/15/1999 Copyright 1999-2000 Thatcher Ulrich
-
-// Code for quadtree terrain manipulation, meshing, and display.
-
-// This code may be freely modified and redistributed.  I make no
-// warrantees about it; use at your own risk.  If you do incorporate
-// this code into a project, I'd appreciate a mention in the credits.
-//
-// Thatcher Ulrich <tu@tulrich.com>
-
-// Modified for use in Tux Racer by Jasmin Patry <jfpatry@cgl.uwaterloo.ca>
-
-// Modifications for use in ppracer by Volker Stroebel <volker@planetpenguin.de>
-
+/*
+ * quadtree.cpp	-thatcher 9/15/1999 Copyright 1999-2000 Thatcher Ulrich
+ *
+ * Code for quadtree terrain manipulation, meshing, and display.
+ *
+ * This code may be freely modified and redistributed.  I make no
+ * warrantees about it; use at your own risk.  If you do incorporate
+ * this code into a project, I'd appreciate a mention in the credits.
+ *
+ * Thatcher Ulrich <tu@tulrich.com>
+ *
+ * Modified for use in Tux Racer by Jasmin Patry <jfpatry@cgl.uwaterloo.ca>
+ *
+ * Modifications for use in ppracer by Volker Stroebel <volker@planetpenguin.de>
+ */
 
 #include "course_load.h"
 #include "fog.h"

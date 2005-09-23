@@ -22,7 +22,7 @@
 #include "ppogl/base/glwrappers.h"
 
 
-Item::Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d position)
+Item::Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d& position)
  : m_type(type),
    m_position(position),
    m_drawable(true),
@@ -78,7 +78,7 @@ Item::draw(ppogl::Vec3d normal)
 }
 
 void
-Item::setNormal(ppogl::Vec3d normal)
+Item::setNormal(const ppogl::Vec3d& normal)
 {
 	m_normal = normal;
 	m_useNormal = true;

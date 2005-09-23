@@ -200,7 +200,7 @@ public:
 	double airbornetime;
 
 	
-	float getCoursePercentage();
+	float getCoursePercentage() const;
 
 	/// position of the player in the player array
 	/// this is a hack that will be removed later

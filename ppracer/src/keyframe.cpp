@@ -69,18 +69,18 @@ PlayerKeyFrames::update(Player& plyr, double dt)
     double v;
     pp::Matrix cob_mat, rot_mat;
 
-    std::string& root = tux[player].getRootNode();
-    std::string& lsh  = tux[player].getLeftShoulderJoint();
-    std::string& rsh  = tux[player].getRightShoulderJoint();
-    std::string& lhp  = tux[player].getLeftHipJoint();
-    std::string& rhp  = tux[player].getRightHipJoint();
-    std::string& lkn  = tux[player].getLeftKneeJoint();
-    std::string& rkn  = tux[player].getRightKneeJoint();
-    std::string& lank = tux[player].getLeftAnkleJoint();
-    std::string& rank = tux[player].getRightAnkleJoint();
-    std::string& head = tux[player].getHead();
-    std::string& neck = tux[player].getNeck();
-    std::string& tail = tux[player].getTailJoint();
+    const std::string& root = tux[player].getRootNode();
+    const std::string& lsh  = tux[player].getLeftShoulderJoint();
+    const std::string& rsh  = tux[player].getRightShoulderJoint();
+    const std::string& lhp  = tux[player].getLeftHipJoint();
+    const std::string& rhp  = tux[player].getRightHipJoint();
+    const std::string& lkn  = tux[player].getLeftKneeJoint();
+    const std::string& rkn  = tux[player].getRightKneeJoint();
+    const std::string& lank = tux[player].getLeftAnkleJoint();
+    const std::string& rank = tux[player].getRightAnkleJoint();
+    const std::string& head = tux[player].getHead();
+    const std::string& neck = tux[player].getNeck();
+    const std::string& tail = tux[player].getTailJoint();
 
     keyTime += dt;
 

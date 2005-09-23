@@ -27,7 +27,7 @@
 #include "ppogl/base/os.h"
  
 ppogl::Vec3d
-projectIntoPlane(const ppogl::Vec3d nml, const ppogl::Vec3d v)
+projectIntoPlane(const ppogl::Vec3d& nml, const ppogl::Vec3d& v)
 {
 	return v-nml*v*nml;
 }

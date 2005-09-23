@@ -27,12 +27,12 @@ void reset_course_list();
 void calc_normals();
 void setup_course_tex_gen();
 void render_course();
-void draw_background(double fov, double aspect );
-void draw_sky(ppogl::Vec3d pos);
+void draw_background(double fov, double aspect);
+void draw_sky(const ppogl::Vec3d& pos);
 void draw_elements() ;
-void set_course_clipping( bool state );
-void set_course_eye_point( ppogl::Vec3d pt );
-void set_course_fog( bool state);
+void set_course_clipping(bool state);
+void set_course_eye_point(const ppogl::Vec3d& pt);
+void set_course_fog(bool state);
 void draw_fog_plane();
 
-#endif
+#endif // _COURSE_RENDER_H_

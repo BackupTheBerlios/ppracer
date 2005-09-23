@@ -27,20 +27,20 @@
 
 namespace ppogl{
 	
-void drawRectangle(	ppogl::Vec2d position,
-					ppogl::Vec2d size,
-					ppogl::Color color=ppogl::Color());
+void drawRectangle(	const ppogl::Vec2d& position,
+					const ppogl::Vec2d& size,
+					const ppogl::Color& color=ppogl::Color::white);
 	
-void drawRectangle(	ppogl::Vec2d position,
-					ppogl::Vec2d size,
+void drawRectangle(	const ppogl::Vec2d& position,
+					const ppogl::Vec2d& size,
 					ppogl::TextureRef texture,
-					ppogl::Color color=ppogl::Color());	
+					const ppogl::Color& color=ppogl::Color::white);	
 	
-void drawRectangle(	ppogl::Vec2d position,
-					ppogl::Vec2d size,
+void drawRectangle(	const ppogl::Vec2d& position,
+					const ppogl::Vec2d& size,
 					ppogl::TextureRef texture,
-					ppogl::Vec4f texcoords,
-					ppogl::Color color=ppogl::Color());	
+					const ppogl::Vec4f& texcoords,
+					const ppogl::Color& color=ppogl::Color::white);	
 
 } //namepsace ppogl
 

@@ -32,13 +32,12 @@
  * Constants 
  */
 
-/* Distance by which to push back far clip plane, to ensure that the
+/** Distance by which to push back far clip plane, to ensure that the
    fogging plane is drawn (m) */
 #define FAR_CLIP_FUDGE_AMOUNT 5
 
-static const ppogl::Color textColor(0.0, 0.0, 0.0);
-
-void reshape(int w, int h, int multiscreen)
+void
+reshape(int w, int h, int multiscreen)
 {
 	if(multiscreen<0){
 		//not in multiscreen mode
@@ -69,7 +68,8 @@ void reshape(int w, int h, int multiscreen)
 	}
 } 
 
-void flat_mode()
+void
+flat_mode()
 {
     set_gl_options( TEXT );
 
@@ -80,12 +80,15 @@ void flat_mode()
     gl::LoadIdentity();
 }
 
-void draw_overlay() {
+void
+draw_overlay()
+{
     gl::Color(0.0, 0.0, 1.0, 0.1);
     gl::Rect(0, 0, 640, 480);
 } 
 
-void clear_rendering_context()
+void
+clear_rendering_context()
 {
     gl::DepthMask( GL_TRUE );
     gl::ClearColor(ppogl::Color(0.5, 0.6, 0.9));
@@ -95,7 +98,8 @@ void clear_rendering_context()
 	     | GL_STENCIL_BUFFER_BIT );
 }
 
-void set_material( const ppogl::Color diffuse, const ppogl::Color specular,
+void
+set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
 			 const double specular_exp )
 ///Sets the material properties
 {
@@ -108,10 +112,11 @@ void set_material( const ppogl::Color diffuse, const ppogl::Color specular,
 } 
 
 
-void draw_billboard( Player& plyr, 
-		     ppogl::Vec3d center_pt, double width, double height, 
+void
+draw_billboard(const Player& plyr, 
+		     const ppogl::Vec3d& center_pt, double width, double height, 
 		     bool use_world_y_axis, 
-		     ppogl::Vec2d min_tex_coord, ppogl::Vec2d max_tex_coord )
+		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord )
 {
     ppogl::Vec3d pt;
     ppogl::Vec3d x_vec;

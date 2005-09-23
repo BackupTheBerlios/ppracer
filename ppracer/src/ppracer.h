@@ -156,10 +156,7 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 
 #define BUFF_LEN 512
 
-/* Multiplayer is not yet supported */
-#define MAX_PLAYERS 1
-
-/* Number of lives players get to complete a cup */
+/// Number of lives players get to complete a cup
 #define INIT_NUM_LIVES 4
 
 /// The custom log modes 
@@ -180,6 +177,7 @@ enum DebugMode{
     NUM_DEBUG_MODES
 };
 
+/// multiplier for scaling the textures to match the terrains
 #define TEX_SCALE 6
 
 #include "ppogl/ppogl_script.h"
@@ -187,4 +185,4 @@ enum DebugMode{
 /// global instance of the lua interpreter
 extern ppogl::Script script;
 
-#endif
+#endif // _PPRACER_H_

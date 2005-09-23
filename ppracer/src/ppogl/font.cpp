@@ -143,7 +143,7 @@ Font::getFTFont()
 	return mp_font;
 }
 	
-wchar_t*
+const wchar_t*
 Font::utf8ToUnicode(const std::string& string)
 {
 	wchar_t ch;
@@ -218,10 +218,10 @@ FontMgr::~FontMgr()
 }
 
 bool
-FontMgr::registerFont(const std::string& binding, const std::string& fileName, unsigned int size, const ppogl::Color &color)
+FontMgr::registerFont(const std::string& binding, const std::string& filename, unsigned int size, const ppogl::Color &color)
 {
 	//todo: check wether the font alrady exists	
-	m_bindings[binding] = FontRef(new ppogl::Font(fileName, size, color));
+	m_bindings[binding] = FontRef(new ppogl::Font(filename, size, color));
 	return true;
 }
 

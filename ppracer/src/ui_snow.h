@@ -26,9 +26,9 @@
 
 void init_ui_snow();
 void update_ui_snow(double time_step, bool windy);
-void push_ui_snow(ppogl::Vec2d pos);
+void push_ui_snow(const ppogl::Vec2d& pos);
 void draw_ui_snow();
-void make_ui_snow(ppogl::Vec2d pos);
-void reset_ui_snow_cursor_pos(ppogl::Vec2d pos);
+void make_ui_snow(const ppogl::Vec2d& pos);
+void reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos);
 
-#endif /* _UI_SNOW_H_ */
+#endif // _UI_SNOW_H_

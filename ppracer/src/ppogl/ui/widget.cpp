@@ -40,7 +40,7 @@ Widget::~Widget()
 }
 	
 void
-Widget::setPosition(ppogl::Vec2d position)
+Widget::setPosition(const ppogl::Vec2d& position)
 ///set the position of the widget
 {
 	m_position = position;	

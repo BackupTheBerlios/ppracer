@@ -44,23 +44,22 @@ public:
 
 	void adjustJoints(	double turnFact, bool isBraking, 
 						double paddling_factor, double speed,
-						ppogl::Vec3d net_force, double jump_factor );
+						const ppogl::Vec3d& net_force, double jump_factor );
 
 	void draw();
 
-	std::string& getRootNode(){return rootNode;}
-	std::string& getLeftShoulderJoint(){return leftShoulderJoint;}
-	std::string& getRightShoulderJoint(){return rightShoulderJoint;}
-	std::string& getLeftHipJoint(){return leftHipJoint;}
-	std::string& getRightHipJoint(){return rightHipJoint;}
-	std::string& getLeftKneeJoint(){return leftKneeJoint;}
-	std::string& getRightKneeJoint(){return rightKneeJoint;}
-	std::string& getLeftAnkleJoint(){return leftAnkleJoint ;}
-	std::string& getRightAnkleJoint(){return rightAnkleJoint;}
-	std::string& getTailJoint(){return tailJoint;}
-	std::string& getNeck(){return neck;}
-	std::string& getHead(){return head;}
-
+	const std::string& getRootNode(){return rootNode;}
+	const std::string& getLeftShoulderJoint(){return leftShoulderJoint;}
+	const std::string& getRightShoulderJoint(){return rightShoulderJoint;}
+	const std::string& getLeftHipJoint(){return leftHipJoint;}
+	const std::string& getRightHipJoint(){return rightHipJoint;}
+	const std::string& getLeftKneeJoint(){return leftKneeJoint;}
+	const std::string& getRightKneeJoint(){return rightKneeJoint;}
+	const std::string& getLeftAnkleJoint(){return leftAnkleJoint ;}
+	const std::string& getRightAnkleJoint(){return rightAnkleJoint;}
+	const std::string& getTailJoint(){return tailJoint;}
+	const std::string& getNeck(){return neck;}
+	const std::string& getHead(){return head;}
 };
 
 extern Tux tux[2];

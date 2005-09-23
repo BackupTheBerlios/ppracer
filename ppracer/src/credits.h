@@ -29,18 +29,17 @@ class Credits : public GameMode
 		ppogl::FontRef font;
 		std::string text;
 	};
-
+	
 	CLine *lines;
-
 	double m_yOffset;
 	
-	void drawText( float timeStep );
+	void drawText(float timestep);
 
 public:
 	Credits();
 	~Credits();
 
-	void loop(float timeStep);
+	void loop(float timestep);
 	bool mouseButtonReleaseEvent(int button, int x, int y);
 	bool keyReleaseEvent(SDLKey key);
 };

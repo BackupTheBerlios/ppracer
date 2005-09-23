@@ -21,6 +21,12 @@
 
 namespace ppogl{
 
+Alignment::Alignment()
+ : m_horizontal(0.0f),
+   m_vertical(0.0f)
+{	
+}
+	
 Alignment::Alignment(float horizontal, float vertical)
  : m_horizontal(horizontal),
    m_vertical(vertical)

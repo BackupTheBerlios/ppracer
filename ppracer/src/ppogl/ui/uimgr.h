@@ -60,11 +60,11 @@ public:
 	bool keyboardEvent(SDLKey key, SDLMod mod, bool release);
 
 	/// set the dimension of the box in which the ui gets drawn
-	inline void setBoxDimension(ppogl::Vec2d dimension){m_boxDimension=dimension;};
+	inline void setBoxDimension(const ppogl::Vec2d& dimension){m_boxDimension=dimension;};
 
 	void grabFocus(ppogl::Widget* widget, bool focus);
 	
-	ppogl::Vec2d getCursorPosition(){return m_cursorPosition;};
+	const ppogl::Vec2d& getCursorPosition(){return m_cursorPosition;};
 };	
 
 } //namepsace ppogl

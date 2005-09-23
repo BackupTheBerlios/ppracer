@@ -28,16 +28,17 @@ namespace ppogl {
 class Image
 {
 public:
-	Image(int width=0,int height=0, int depth=3);
+	Image();
+	Image(unsigned short width, unsigned short height, unsigned char depth=3);
 	~Image();
 	
 	unsigned char* data;
 	unsigned short width, height;
 	unsigned char depth;
 		
-	bool writeToFile(const std::string& fileName) const;
+	bool writeToFile(const std::string& filename) const;
 		
-	static Image* readFile(const std::string& fileName);
+	static Image* readFile(const std::string& filename);
 
 
 	class iterator
@@ -108,7 +109,7 @@ public:
 #include <GL/glu.h>
 
 namespace glu{
-	inline GLint Build2DMipmaps(GLenum target, ppogl::Image& image){return gluBuild2DMipmaps(target, image.depth, image.width, image.height, (image.depth == 3)?(GL_RGB):(GL_RGBA), GL_UNSIGNED_BYTE, image.data);}
+	inline GLint Build2DMipmaps(GLenum target, const ppogl::Image& image){return gluBuild2DMipmaps(target, image.depth, image.width, image.height, (image.depth == 3)?(GL_RGB):(GL_RGBA), GL_UNSIGNED_BYTE, image.data);}
 } // namespace glu
 
 #endif // _PPOGL_IMAGE_H

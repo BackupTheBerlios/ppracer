@@ -28,11 +28,11 @@ namespace ppogl {
 
 class ReadPNG : public Image
 {
-	void loadData(png_structp png_ptr, int depth);
+	void loadData(png_structp png_ptr, unsigned char depth);
 	
 public:
 	
-	ReadPNG(const std::string& fileName);
+	ReadPNG(const std::string& filename);
 	~ReadPNG();
 };
 

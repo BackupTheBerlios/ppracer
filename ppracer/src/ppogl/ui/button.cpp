@@ -29,7 +29,7 @@ Button::Button()
 	m_hilitFont = ppogl::UITheme::getInstance().hilitLabelFont;		
 }
 	
-Button::Button(const std::string& text, const std::string binding)
+Button::Button(const std::string& text, const std::string& binding)
  : Label(text,binding)
 ///construct button object with the given text and binding
 {	
@@ -37,7 +37,7 @@ Button::Button(const std::string& text, const std::string binding)
 }
 
 void
-Button::draw(ppogl::Vec2d position)
+Button::draw(const ppogl::Vec2d& position)
 ///draw button at the specified position
 {
 	if(m_insensitive){

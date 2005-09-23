@@ -124,12 +124,12 @@ public:
 		return (m_pointer != NULL);
 	}
 
-	inline bool operator==(const RefPtr<T>& ref)
+	inline bool operator==(const RefPtr<T>& ref) const
 	{
 		return (m_pointer == ref.m_pointer);
 	}
 
-	inline bool operator!=(const RefPtr<T>& ref)
+	inline bool operator!=(const RefPtr<T>& ref) const
 	{
 		return (m_pointer != ref.m_pointer);
 	}

@@ -31,7 +31,7 @@ std::list<EventData> eventList;
 
 
 
-std::string&
+const std::string&
 CupData::getName()
 {
 	std::map<std::string, std::string>::iterator it;
@@ -45,12 +45,12 @@ CupData::getName()
 }
 
 void
-CupData::setName(std::string name, std::string lang)
+CupData::setName(const std::string& name, const std::string& lang)
 {
 	m_names[lang]=name;
 }
 
-std::string&
+const std::string&
 EventData::getName()
 {
 	std::map<std::string, std::string>::iterator it;
@@ -64,11 +64,10 @@ EventData::getName()
 }
 
 void
-EventData::setName(std::string name, std::string lang)
+EventData::setName(const std::string& name, const std::string& lang)
 {
 	m_names[lang]=name;
 }
-
 
 
 static int
@@ -115,7 +114,7 @@ register_course_cb(ppogl::Script *vm)
     return 0;
 }
 
-std::string&
+const std::string&
 CourseData::getName()
 {
 	std::map<std::string, std::string>::iterator it;
@@ -128,7 +127,7 @@ CourseData::getName()
 	}
 }
 
-std::string&
+const std::string&
 CourseData::getDescription()
 {
 	std::map<std::string, std::string>::iterator it;
@@ -142,13 +141,13 @@ CourseData::getDescription()
 }
 		
 void
-CourseData::setName(std::string name, std::string lang)
+CourseData::setName(const std::string& name, const std::string& lang)
 {
 	names[lang]=name;
 }
 
 void
-CourseData::setDescription(std::string description, std::string lang)
+CourseData::setDescription(const std::string& description, const std::string& lang)
 {
 	descriptions[lang]=description;		
 }

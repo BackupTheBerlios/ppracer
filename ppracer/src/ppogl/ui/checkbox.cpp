@@ -34,7 +34,7 @@ CheckBox::CheckBox()
 }
 
 void
-CheckBox::draw(ppogl::Vec2d position)
+CheckBox::draw(const ppogl::Vec2d& position)
 {
 	ppogl::TextureRef texture =
 		ppogl::UITheme::getInstance().checkBoxTex;

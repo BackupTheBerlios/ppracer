@@ -36,7 +36,8 @@ private:
 	void checkVertical();
 
 public:
-	Alignment(float horizontal=0.0f, float vertical=0.0f);
+	Alignment();
+	Alignment(float horizontal, float vertical);
 	
 	void left()		{ m_horizontal=0.0f; signalChanged.Emit();}; ///horizontal align left
 	void right()	{ m_horizontal=1.0f; signalChanged.Emit();}; ///horizontal align right

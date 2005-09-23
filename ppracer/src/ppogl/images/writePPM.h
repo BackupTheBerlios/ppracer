@@ -33,7 +33,7 @@ namespace ppogl {
 class WritePPM
 {
 public:
-	WritePPM(const std::string& , const Image& image);
+	WritePPM(const std::string& filename, const Image& image);
 	~WritePPM(){};
 };
 

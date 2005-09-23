@@ -34,17 +34,17 @@ class Config : public Singleton<Config>
 public:
 	Config();
 	
-	void init(ppogl::Script *vm, std::string table="ppconfig");
+	void init(ppogl::Script *vm, const std::string& table="ppconfig");
 	
-	double getDouble(std::string key);
-	int getInt(std::string key);
-	std::string getString(std::string key);
-	bool getBool(std::string key);
+	double getDouble(const std::string& key);
+	int getInt(const std::string& key);
+	std::string getString(const std::string& key);
+	bool getBool(const std::string& key);
 
-	void setDouble(std::string key, double value);
-	void setInt(std::string key, int value);
-	void setString(std::string key, std::string value);
-	void setBool(std::string key, bool value);
+	void setDouble(const std::string& key, double value);
+	void setInt(const std::string& key, int value);
+	void setString(const std::string& key, const std::string& value);
+	void setBool(const std::string& key, bool value);
 
 private:
 	ppogl::Script *m_vm;

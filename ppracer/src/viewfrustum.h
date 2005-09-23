@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -26,21 +26,21 @@
 
 #include "player.h"
 
-#include "ppgltk/alg/plane.h"
-
-typedef enum {
+enum ClipResult{
     NoClip,
     SomeClip,
     NotVisible
-} clip_result_t;
+};
 
-void setup_view_frustum( Player& plyr, double near, double far );
+void setup_view_frustum(const Player& plyr,
+			double near_dist, double far_dist,
+			int multiscreen=-1);
 
-clip_result_t clip_aabb_to_view_frustum( const pp::Vec3d& min, const pp::Vec3d& max );
+ClipResult clip_aabb_to_view_frustum(const ppogl::Vec3d& min, const ppogl::Vec3d& max);
 
-pp::Plane get_far_clip_plane();
-pp::Plane get_left_clip_plane();
-pp::Plane get_right_clip_plane();
-pp::Plane get_bottom_clip_plane();
+const pp::Plane& get_far_clip_plane();
+const pp::Plane& get_left_clip_plane();
+const pp::Plane& get_right_clip_plane();
+const pp::Plane& get_bottom_clip_plane();
  
-#endif /* _VIEWFRUSTUM_H_ */
+#endif // _VIEWFRUSTUM_H_

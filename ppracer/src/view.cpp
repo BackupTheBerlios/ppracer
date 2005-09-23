@@ -28,64 +28,67 @@
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
 
-/* This defines the camera height "target" for all cameras; 
+/** This defines the camera height "target" for all cameras; 
    cameras can go below this because of interpolation (m) */
 #define MIN_CAMERA_HEIGHT  1.5
 
-/* Absolute lower bound on camera height above terrain (m) */
+/// Absolute lower bound on camera height above terrain (m)
 #define ABSOLUTE_MIN_CAMERA_HEIGHT  0.3
 
-/* Distance of camera from player (m) */
+/// Distance of camera from player (m)
 #define CAMERA_DISTANCE 4.0
 
-/* Angle that camera should look above the slope of the terrain (deg) */
+/// Angle that camera should look above the slope of the terrain (deg)
 #define CAMERA_ANGLE_ABOVE_SLOPE 10
 
-/* Angle at which to position player in camera below the horizontal (deg) */
+/// Angle at which to position player in camera below the horizontal (deg)
 #define PLAYER_ANGLE_IN_CAMERA 20
 
-/* Maximum downward pitch of camera (deg)  */
+/// Maximum downward pitch of camera (deg)
 #define MAX_CAMERA_PITCH 40
 
-/* Time constant for interpolation of camera position in "behind" mode (s) */
+/// Time constant for interpolation of camera position in "behind" mode (s)
 #define BEHIND_ORBIT_TIME_CONSTANT 0.06
 
-/* Time constant for interpolation of camera orientation in 
+/** Time constant for interpolation of camera orientation in 
    "behind" mode (s) */
 #define BEHIND_ORIENT_TIME_CONSTANT 0.06
 
-/* Time constant for interpolation of camera position in "follow" mode (s) */
+/// Time constant for interpolation of camera position in "follow" mode (s)
 #define FOLLOW_ORBIT_TIME_CONSTANT 0.06
 
-/* Time constant for interpolation of orientation position in 
+/** Time constant for interpolation of orientation position in 
    "follow" mode (s) */
 #define FOLLOW_ORIENT_TIME_CONSTANT 0.06
 
-/* This places an upper limit on the interpolation, which prevent excessive
+/** This places an upper limit on the interpolation, which prevent excessive
    "jumping" of the camera during the occaisonal slow frame */
 #define MAX_INTERPOLATION_VALUE 0.3
 
-/* Speed above which interpolation is "normal" (m/s) */
+/// Speed above which interpolation is "normal" (m/s)
 #define BASELINE_INTERPOLATION_SPEED 4.5
 
-/* Speed below which no camera position interpolation occurs (m/s) */
+/// Speed below which no camera position interpolation occurs (m/s)
 #define NO_INTERPOLATION_SPEED 2.0
 
-static ppogl::Vec3d   tux_eye_pts[2];
-static ppogl::Vec3d   tux_view_pt;
+static ppogl::Vec3d tux_eye_pts[2];
+static ppogl::Vec3d tux_view_pt;
 
-void set_view_mode( Player& plyr, ViewMode mode )
+void
+set_view_mode(Player& plyr, ViewMode mode)
 {
     plyr.view.mode = mode;
     PP_LOG( DEBUG_VIEW, "View mode: " << plyr.view.mode );
 } 
 
-ViewMode get_view_mode( Player& plyr )
+ViewMode
+get_view_mode(const Player& plyr)
 {
     return plyr.view.mode;
 } 
 
-void traverse_dag_for_view_point( SceneNode *node, pp::Matrix trans )
+void
+traverse_dag_for_view_point(SceneNode *node, const pp::Matrix& trans)
 {
     pp::Matrix new_trans;
     SceneNode *child;
@@ -107,14 +110,14 @@ void traverse_dag_for_view_point( SceneNode *node, pp::Matrix trans )
 }
 
 ppogl::Vec3d
-get_tux_view_pt(Player& plyr) 
+get_tux_view_pt(const Player& plyr) 
 { 
     pp::Matrix trans;
     SceneNode *tux_root_node;
 
     trans.makeIdentity();
 
-    std::string& tux_root_node_name = tux[plyr.num].getRootNode();
+	const std::string& tux_root_node_name = tux[plyr.num].getRootNode();
 
     if( get_scene_node( tux_root_node_name, &tux_root_node ) != true ) {
 		PP_ERROR( "couldn't load tux's root node" );
@@ -127,7 +130,8 @@ get_tux_view_pt(Player& plyr)
     return tux_view_pt; 
 }
 
-void set_tux_eye( TuxEye which_eye, ppogl::Vec3d pt ) 
+void
+set_tux_eye(TuxEye which_eye, const ppogl::Vec3d& pt) 
 {
     tux_eye_pts[ which_eye ] = pt;
 
@@ -135,7 +139,6 @@ void set_tux_eye( TuxEye which_eye, ppogl::Vec3d pt )
     tux_view_pt.y() = ( tux_eye_pts[0].y() + tux_eye_pts[1].y() ) / 2.0; 
     tux_view_pt.z() = ( tux_eye_pts[0].z() + tux_eye_pts[1].z() ) / 2.0; 
 }
-
 
 /*! 
   Interpolates between camera positions.
@@ -153,9 +156,10 @@ void set_tux_eye( TuxEye which_eye, ppogl::Vec3d pt )
   \date    Created:  2000-08-26
   \date    Modified: 2000-08-26
 */
-ppogl::Vec3d interpolate_view_pos( ppogl::Vec3d plyr_pos1, ppogl::Vec3d plyr_pos2,
+ppogl::Vec3d
+interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos2,
 			      double max_vec_angle,
-			      ppogl::Vec3d pos1, ppogl::Vec3d pos2,
+			      const ppogl::Vec3d& pos1, const ppogl::Vec3d& pos2,
 			      double dist, double dt,
 			      double time_constant )
 {
@@ -220,7 +224,8 @@ ppogl::Vec3d interpolate_view_pos( ppogl::Vec3d plyr_pos1, ppogl::Vec3d plyr_pos
   \date    Created:  2000-08-26
   \date    Modified: 2000-08-26
 */
-void interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
+void
+interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
 			     ppogl::Vec3d *p_up2, ppogl::Vec3d *p_dir2,
 			     double dt, double time_constant )
 {
@@ -275,7 +280,8 @@ void interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
     p_dir2->z() = -cob_mat2.data[2][2];
 }
 
-void setup_view_matrix( Player& plyr ) 
+void
+setup_view_matrix(Player& plyr) 
 {
     ppogl::Vec3d view_x, view_y, view_z;
     pp::Matrix view_mat;
@@ -335,7 +341,8 @@ void setup_view_matrix( Player& plyr )
   \date    Created:  2000-08-26
   \date    Modified: 2000-08-26
 */
-void update_view( Player& plyr, double dt )
+void
+update_view(Player& plyr, double dt)
 {
     ppogl::Vec3d view_pt;
     ppogl::Vec3d view_dir, up_dir, vel_dir, view_vec;

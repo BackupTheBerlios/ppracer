@@ -40,7 +40,7 @@ Tux tux[2];
 void
 Tux::adjustJoints( double turnFact, bool isBraking, 
 			double paddling_factor, double speed,
-			ppogl::Vec3d net_force, double flap_factor )
+			const ppogl::Vec3d& net_force, double flap_factor )
 {
     double turning_angle[2] = {0., 0.};
     double paddling_angle = 0.;

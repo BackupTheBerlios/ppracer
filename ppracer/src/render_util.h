@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,29 +22,28 @@
 #ifndef _RENDER_UTIL_H_
 #define _RENDER_UTIL_H_
 
-#include "ppgltk/alg/color.h"
-#include "ppgltk/alg/vec2d.h"
-#include "ppgltk/alg/vec3d.h"
+#include "ppogl/base/color.h"
+#include "ppogl/base/vec2d.h"
+#include "ppogl/base/vec3d.h"
 
 //#include "player.h"
 //reduce dependencies
 class Player;
 
-
 #define NEAR_CLIP_DIST 0.1
 
+void reshape( int w, int h, int multiscreen=-1);
 
-void reshape( int w, int h );
 void flat_mode();
 void draw_overlay();
 void clear_rendering_context();
 void configure_fog();
-void set_material( const pp::Color diffuse, const pp::Color specular,
+void set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
 		   const double specular_exp );
 
-void draw_billboard( Player& plyr,
-		     pp::Vec3d center_pt, double width, double height, 
+void draw_billboard(const Player& plyr,
+		     const ppogl::Vec3d& center_pt, double width, double height, 
 		     bool use_world_y_axis, 
-		     pp::Vec2d min_tex_coord, pp::Vec2d max_tex_coord );
+		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord );
 
 #endif // _RENDER_UTIL_H_

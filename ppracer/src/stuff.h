@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,9 +22,28 @@
 #ifndef _STUFF_H_
 #define _STUFF_H_
 
-#include "ppgltk/alg/vec3d.h"
+#include "ppogl/base/vec3d.h"
 
-pp::Vec3d projectIntoPlane(const pp::Vec3d nml, const pp::Vec3d v);
+#include <string>
+
+#if defined(WIN32)
+#  define CONFIG_DIR "config"
+#else
+#  define CONFIG_DIR ".ppracer"
+#endif // defined(WIN32)
+
+#define CONFIG_FILE "config.nut"
+
+
+#ifndef DATA_DIR
+#  if defined(WIN32)
+#    define DATA_DIR "."
+#  else
+#    define DATA_DIR PP_DATADIR
+#  endif // defined(WIN32)
+#endif
+
+ppogl::Vec3d projectIntoPlane(const ppogl::Vec3d& nml, const ppogl::Vec3d& v);
 
 void getTimeComponents(	float time,
 						int& minutes,
@@ -32,5 +51,9 @@ void getTimeComponents(	float time,
 			  			int& hundredths );
 
 float getClockTime();
+
+std::string get_config_dir_name();
+std::string get_config_file_name();
+void write_config_file();
 
 #endif // _STUFF_H_

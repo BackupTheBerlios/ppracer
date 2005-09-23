@@ -1,22 +1,21 @@
-// quadtree.hpp	-thatcher 9/15/1999 Copyright 1999-2000 Thatcher Ulrich
-
-// Data structures for quadtree terrain storage.
-
-// This code may be freely modified and redistributed.  I make no
-// warrantees about it; use at your own risk.  If you do incorporate
-// this code into a project, I'd appreciate a mention in the credits.
-//
-// Thatcher Ulrich <tu@tulrich.com>
-
-// Modified for use in Tux Racer by Jasmin Patry <jfpatry@cgl.uwaterloo.ca>
-
-// Modifications for use in ppracer by Volker Stroebel <volker@planetpenguin.de>
-
-
+/*
+ * quadtree.hpp	-thatcher 9/15/1999 Copyright 1999-2000 Thatcher Ulrich
+ *
+ * Data structures for quadtree terrain storage.
+ *
+ * This code may be freely modified and redistributed.  I make no
+ * warrantees about it; use at your own risk.  If you do incorporate
+ * this code into a project, I'd appreciate a mention in the credits.
+ *
+ * Thatcher Ulrich <tu@tulrich.com>
+ *
+ * Modified for use in Tux Racer by Jasmin Patry <jfpatry@cgl.uwaterloo.ca>
+ *
+ * Modifications for use in ppracer by Volker Stroebel <volker@planetpenguin.de>
+ */
 
 #ifndef _QUADTREE_H_
 #define _QUADTREE_H_
-
 
 #include "viewfrustum.h"
 
@@ -29,13 +28,14 @@ enum VertexLoc
 
 struct HeightMapInfo
 {
-	float *Data;
+	const float *Data;
     int	XOrigin, ZOrigin;
     int	XSize, ZSize;
     int	RowWidth;
     int	Scale;
 
-   	inline float Sample(int x, int z) const{
+   	inline float Sample(int x, int z) const
+	{
 		if ( x >= XSize ) {
 			x = XSize - 1;
 		}

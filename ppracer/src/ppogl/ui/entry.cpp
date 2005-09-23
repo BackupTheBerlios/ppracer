@@ -51,7 +51,7 @@ Entry::setText(const std::string& text)
 }
 
 void
-Entry::draw(ppogl::Vec2d position)
+Entry::draw(const ppogl::Vec2d& position)
 {
 	if(m_hasFocus){
 		ppogl::drawRectangle(position,m_size,ppogl::Color(1.0, 0.9, 0.0));

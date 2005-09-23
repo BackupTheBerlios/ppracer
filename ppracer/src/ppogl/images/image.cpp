@@ -30,26 +30,27 @@
 
 namespace ppogl {
 	
-Image::Image(int width,int height, int depth)
+Image::Image()
+ : width(0),
+   height(0),
+   depth(0),
+   data(NULL)
 {
-	if(width>0 && height>0 && depth>0 && depth <4){ 
-		this->width=width;
-		this->height=height;
-		this->depth=depth;
-		this->data=new unsigned char[width*height*depth];
-		return;
-	}else{
-		this->width=0;
-		this->height=0;
-		this->depth=0;
-		this->data=0;
-		return;
-	}
+}	
+
+Image::Image(unsigned short width, unsigned short height, unsigned char depth)
+{
+	PP_REQUIRE(depth==3 || depth==4,"Unsupoorted depth for image: " << depth);
+	this->width=width;
+	this->height=height;
+	this->depth=depth;
+	this->data=new unsigned char[width*height*depth];
+	return;
 }
 
 Image::~Image()
 {
-	if(data!=0) delete [] data;	
+	if(data!=NULL) delete [] data;	
 }
 
 Image*

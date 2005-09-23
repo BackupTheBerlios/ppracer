@@ -87,12 +87,12 @@ Benchmark::setMaxFrames(int frames)
 }
 
 void
-Benchmark::setPosition(ppogl::Vec2d &position)
+Benchmark::setPosition(const ppogl::Vec2d& position)
 {
 	sm_pos = position;
 }
 
-ppogl::Vec2d&
+const ppogl::Vec2d&
 Benchmark::getPosition()
 {
 	return sm_pos;

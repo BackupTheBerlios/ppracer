@@ -24,7 +24,7 @@
 namespace ppogl {
 
 Vec2d::Vec2d()
-{
+{	
 	values[0]=0.0;
 	values[1]=0.0;
 }

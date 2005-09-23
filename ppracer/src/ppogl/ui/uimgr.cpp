@@ -116,7 +116,7 @@ UIManager::mouseEvent(int x, int y)
 	
 	std::list<ppogl::Widget*>::iterator it;
 	for(it=m_widgets.begin();it!=m_widgets.end();it++){
-		ppogl::Vec2d &size = (*it)->getSize();
+		const ppogl::Vec2d &size = (*it)->getSize();
 		ppogl::Vec2d position = 
 			getWidgetPosition((*it)->alignment.alignPosition(
 								(*it)->getPosition(),

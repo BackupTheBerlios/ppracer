@@ -27,7 +27,7 @@
 static int screenshot_num = 0;
 
 bool
-take_screenshot(const std::string& fileName)
+take_screenshot(const std::string& filename)
 {
 	int viewport[4];
 	gl::GetValue(GL_VIEWPORT, viewport);
@@ -46,7 +46,7 @@ take_screenshot(const std::string& fileName)
 			);
 	}
 	
-	return image.writeToFile(fileName);
+	return image.writeToFile(filename);
 }
 
 void

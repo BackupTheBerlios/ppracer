@@ -24,8 +24,6 @@
 static int
 tux_rotate(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string nodename;
     std::string axis ="0";
     double angle ;
@@ -48,21 +46,14 @@ tux_rotate(ppogl::Script *vm)
     // obtain the angle
 	angle = vm->getFloat(3);
     
-    errmsg = rotate_scene_node(nodename,axis.c_str()[0],angle);
-
-    // report error, if any
-    if(!errmsg.empty()){
-		PP_WARNING(errmsg);
-    }
-  
+    rotate_scene_node(nodename,axis.c_str()[0],angle);
+ 
     return 0;
 }
 
 static int
 tux_translate(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string nodename;
     ppogl::Vec3d vec;
 
@@ -81,14 +72,9 @@ tux_translate(ppogl::Script *vm)
 		vec.values[i]=vm->getFloat();
 		vm->pop(2);		
 	}
-  
-    errmsg = translate_scene_node(nodename,vec);
-
-    // report error, if any
-    if(!errmsg.empty()) {
-        PP_WARNING("tux.translate: " << errmsg << "\n" << nodename); 
-    }
-  
+	
+	translate_scene_node(nodename,vec);
+ 
     return 0;
 }
 
@@ -194,12 +180,9 @@ tux_sphere(ppogl::Script *vm)
     return 0;
 }
 
-
 static int
 tux_material(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string mat_name;
     ppogl::Color diffuse;
     ppogl::Color specular;
@@ -231,12 +214,8 @@ tux_material(ppogl::Script *vm)
     // obtain specular exponent
 	spec_exp = vm->getFloat(4);
 
-	errmsg = create_material(mat_name, diffuse, specular, spec_exp);
+	create_material(mat_name, diffuse, specular, spec_exp);
 
-    // report error, if any
-    if(!errmsg.empty()){
-        PP_WARNING(errmsg);
-    }
     return 0;
 }
 

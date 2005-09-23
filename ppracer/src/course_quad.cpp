@@ -68,18 +68,17 @@ get_root_level(int nx, int nz)
 }
 
 static void
-Vec3fo_float_array( float dest[3], ppogl::Vec3d src )
+Vec3fo_float_array(float dest[3],const ppogl::Vec3d& src)
 {
     dest[0] = src.x();
     dest[1] = src.y();
     dest[2] = src.z();
 }
 
-
 void
-init_course_quadtree( float *elevation, int nx, int nz, 
+init_course_quadtree(const float *elevation, int nx, int nz, 
 			   double scalex, double scalez,
-			   ppogl::Vec3d view_pos)
+			   const ppogl::Vec3d& view_pos)
 {
     HeightMapInfo hm;
 
@@ -140,13 +139,13 @@ init_course_quadtree( float *elevation, int nx, int nz,
 
 
 void
-update_course_quadtree( const ppogl::Vec3d view_pos)
+update_course_quadtree(const ppogl::Vec3d& view_pos)
 {
     float ViewerLoc[3];
 
-    Vec3fo_float_array( ViewerLoc, view_pos );
+    Vec3fo_float_array(ViewerLoc, view_pos);
 
-    root->Update( root_corner_data, ViewerLoc);
+    root->Update(root_corner_data, ViewerLoc);
 }
 
 void

@@ -78,7 +78,7 @@ Label::setText(const std::string& text)
 
 
 void
-Label::draw(ppogl::Vec2d position)
+Label::draw(const ppogl::Vec2d& position)
 {
 	if(m_insensitive && m_insensitiveFont){
 		m_insensitiveFont->draw(m_text,position);

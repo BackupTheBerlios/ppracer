@@ -605,7 +605,7 @@ set_tux_pos(Player& plyr, ppogl::Vec3d new_pos)
 
     disp_y = new_pos.y() + TUX_Y_CORRECTION_ON_STOMACH; 
 
-    std::string& tuxRoot = tux[plyr.num].getRootNode();
+    const std::string& tuxRoot = tux[plyr.num].getRootNode();
     reset_scene_node( tuxRoot );
     translate_scene_node( tuxRoot, 
 			  ppogl::Vec3d( new_pos.x(), disp_y, new_pos.z() ) );
@@ -693,7 +693,7 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
         mat.makeTranslation( loc.x(), loc.y(), loc.z() );
         trans_polyhedron( mat, ph2 );
 
-	std::string& tux_root = tux[plyr.num].getRootNode();
+	const std::string& tux_root = tux[plyr.num].getRootNode();
 	reset_scene_node( tux_root );
 	translate_scene_node( tux_root, 
 			      ppogl::Vec3d( pos.x(), pos.y(), pos.z() ) );
@@ -1017,7 +1017,7 @@ adjust_orientation(Player& plyr, float dtime, ppogl::Vec3d vel,
 
     inv_cob_mat.transpose(cob_mat);
 
-    std::string& tux_root = tux[plyr.num].getRootNode();
+    const std::string& tux_root = tux[plyr.num].getRootNode();
     transform_scene_node( tux_root, cob_mat, inv_cob_mat ); 
 }
 

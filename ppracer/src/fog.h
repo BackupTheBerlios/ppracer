@@ -43,7 +43,7 @@ public:
 	
 	inline bool isEnabled() const {return m_isOn;}
 	inline void setEnabled(const bool state=true){m_isOn=state;}
-	inline ppogl::Color& getColor() {return m_color;}
+	inline const ppogl::Color& getColor() {return m_color;}
 	inline void setColor(ppogl::Color color){m_color=color;}
 	inline void setMode(const GLint mode){m_mode=mode;}
 	inline void setDensity(const GLfloat density){m_density=density;}

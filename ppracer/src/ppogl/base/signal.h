@@ -231,7 +231,6 @@ public:
 
 	void Emit(R1 r1, R2 r2)
 	{
-
 		if (mSlot) {
 			Argument2<R1,R2> arg(r1,r2);
 			mSlot->Call(&arg);

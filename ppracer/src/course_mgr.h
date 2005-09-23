@@ -1,8 +1,6 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
- *
- * Copyright (C) 1999-2001 Jasmin F. Patry
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,47 +24,69 @@
 #include "pp_types.h"
 
 #include <list>
+#include <map>
 #include <string>
-
-class CourseData;
-
-struct CupData {
-    std::string name;
-	std::string icon;
-    std::list<CourseData> raceList;
-};
-
-struct EventData {
-    std::string name;
-	std::string icon;
-    std::list<CupData> cupList;
-};
 
 class CourseData
 {
 public:
-	CourseData(){};
+	CourseData()
+	 : par_time(0),
+	   condition(RACE_CONDITIONS_SUNNY),
+	   mirrored(false),
+	   windy(false),
+	   snowing(false)
+	{};
 	~CourseData(){};
 
 	std::string course;
-	std::string name;
-	std::string description;
-	std::string contributed;	
+	std::map<std::string, std::string> names;
+	std::map<std::string, std::string> descriptions;
+	std::string author;	
+		
+	const std::string& getName();	
+	const std::string& getDescription();
+		
+	void setName(const std::string& name, const std::string& lang="default");
+	void setDescription(const std::string& description, const std::string& lang="default");
 		
 	double par_time;
     int herring_req[DIFFICULTY_NUM_LEVELS];
+	int score_req[DIFFICULTY_NUM_LEVELS];
 	double time_req[DIFFICULTY_NUM_LEVELS];
-	double score_req[DIFFICULTY_NUM_LEVELS];
+
+	RaceConditions condition;
 	bool mirrored;
-	race_conditions_t condition;
 	bool windy;
 	bool snowing;
+};
+
+class CupData
+{
+	std::map<std::string, std::string> m_names;
+public:
+	const std::string& getName();
+	void setName(const std::string& name, const std::string& lang="default");
+
+    std::list<CourseData> raceList;
+};
+
+class EventData
+{	
+	std::map<std::string, std::string> m_names;
+	
+public:
+	const std::string& getName();
+	void setName(const std::string& name, const std::string& lang="default");
+	
+	std::list<CupData> cupList;
 };
 
 extern std::list<CourseData> openCourseList;
 extern std::list<EventData> eventList;
 
-void init_course_manager();
-void register_course_manager_callbacks( Tcl_Interp *ip );
+
+// register scripting callbacks
+void register_course_manager_callbacks();
 
 #endif // _COURSE_MGR_H

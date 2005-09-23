@@ -23,11 +23,11 @@
 
 namespace ppogl {
 
-WritePPM::WritePPM(const std::string& fileName, const Image& image)
+WritePPM::WritePPM(const std::string& filename, const Image& image)
 {
 	std::ofstream file;
 
-	file.open(fileName.c_str());
+	file.open(filename.c_str());
 
 	file << "P6\n# A Raw PPM file"
 		<< "\n# width\n" << int(image.width)

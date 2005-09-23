@@ -222,7 +222,7 @@ struct Control
 };
 
 
-// do we realy need this?
+/// Max number of terrains types
 #define NUM_TERRAIN_TYPES 64
 
 #endif // _PP_TYPES_H_

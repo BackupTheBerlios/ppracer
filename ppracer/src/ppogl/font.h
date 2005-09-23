@@ -45,7 +45,7 @@ private:
 	ppogl::Color m_color;
 
 public:	
-	Font(const std::string& fileName, unsigned int size, const ppogl::Color &color);
+	Font(const std::string& filename, unsigned int size, const ppogl::Color &color);
 
 	Font(FTFont *font, const ppogl::Color &color);
 
@@ -74,7 +74,7 @@ public:
 //static stuff	
 public:
 	/// returns the unicode of the utf8 string.
-	static wchar_t* utf8ToUnicode(const std::string& );
+	static const wchar_t* utf8ToUnicode(const std::string& string);
 
 	/// fills the buff array with the unicode string.
 	static void utf8ToUnicode(wchar_t* buff, const std::string& string);

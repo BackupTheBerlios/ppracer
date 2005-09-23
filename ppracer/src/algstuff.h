@@ -36,40 +36,39 @@ class Quat;
 class Matrix
 {
 public:
-	
 	union{
 		double data[4][4];
 		double rawdata[16];
 	};
 
-	Matrix(void){};
-	Matrix(const Quat quat);
+	Matrix(){};
+	Matrix(const Quat& quat);
 
-	Matrix operator*(const Matrix matrix) const;
+	Matrix operator*(const Matrix& matrix) const;
 		
 	void makeIdentity(void);
 	void makeRotation(const double angle, const char axis);
 	void makeTranslation(const double x, const double y, const double z);
 	void makeScaling(const double x, const double y, const double z );
-	void makeRotationAboutVector(const ppogl::Vec3d u, const double angle );
+	void makeRotationAboutVector(const ppogl::Vec3d& u, const double angle );
 
 	void transpose(const Matrix& mat);
 		
-	ppogl::Vec3d  transformVector(const ppogl::Vec3d v) const;
-	ppogl::Vec3d  transformPoint(const ppogl::Vec3d p) const;
+	ppogl::Vec3d  transformVector(const ppogl::Vec3d& v) const;
+	ppogl::Vec3d  transformPoint(const ppogl::Vec3d& p) const;
 		
 	static void makeChangeOfBasisMatrix(Matrix& mat,
 				Matrix& invMat,
-				const ppogl::Vec3d w1,
-				const ppogl::Vec3d w2,
-				const ppogl::Vec3d w3);	
+				const ppogl::Vec3d& w1,
+				const ppogl::Vec3d& w2,
+				const ppogl::Vec3d& w3);	
 };
 
 /// Plane class
 class Plane
 {
 public:
-	Plane(void){}
+	Plane(){};
 	Plane(const double x, const double y, const double z, const double d);
 
 	double distance(const ppogl::Vec3d& point) const;
@@ -85,10 +84,10 @@ class Quat
 public:
 	double x, y ,z, w;
 
-	Quat(void){};
+	Quat(){};
 	Quat(const double x, const double y, const double z, const double w);	
 	Quat(const ppogl::Vec3d& s, const ppogl::Vec3d& t);
-	Quat(const Matrix matrix);
+	Quat(const Matrix& matrix);
 	
 	
 	void set(const double x, const double y, const double z, const double w);	
@@ -113,7 +112,7 @@ public:
 
 namespace gl{
 	
-	inline void MultMatrix(pp::Matrix &matrix){glMultMatrixd(matrix.rawdata);}
+	inline void MultMatrix(const pp::Matrix& matrix){glMultMatrixd(matrix.rawdata);}
 	
 } //namespace gl
 

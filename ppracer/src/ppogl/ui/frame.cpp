@@ -31,7 +31,7 @@ Frame::Frame(int width, int height)
 }
 
 void
-Frame::draw(ppogl::Vec2d position)
+Frame::draw(const ppogl::Vec2d& position)
 {
 	ppogl::drawRectangle(position,m_size);
   	ppogl::drawRectangle(position+4, m_size-8,

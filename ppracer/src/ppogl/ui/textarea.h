@@ -54,8 +54,8 @@ protected:
 public:
 	Textarea(int width=256, int height=128);
 
-	virtual void draw(ppogl::Vec2d position);
-	void setPosition(ppogl::Vec2d position);
+	virtual void draw(const ppogl::Vec2d& position);
+	void setPosition(const ppogl::Vec2d& position);
 
 	void updateButtonStates();
 	void updateButtonPositions();

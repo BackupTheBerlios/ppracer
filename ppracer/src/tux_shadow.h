@@ -25,9 +25,9 @@
 #include "pp_types.h"
 
 void draw_tux_shadow(int player);
-void traverse_dag_for_shadow( SceneNode *node, pp::Matrix model_matrix );
-void draw_shadow_sphere( pp::Matrix model_matrix );
-void draw_shadow_vertex( double x, double y, double z, 
-			 pp::Matrix model_matrix );
+void traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix);
+void draw_shadow_sphere(const pp::Matrix& model_matrix);
+void draw_shadow_vertex(double x, double y, double z, 
+			 const pp::Matrix& model_matrix );
 
 #endif // _TUX_SHADOW_H_

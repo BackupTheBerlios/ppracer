@@ -49,7 +49,7 @@ Material g_hier_default_material ={
 /* Add a new node name to the node name hash table.
    node_name contains the child's name only. */
 static bool
-add_scene_node( std::string& parent_name, std::string& node_name, SceneNode *node ) 
+add_scene_node( const std::string& parent_name, const std::string& node_name, SceneNode *node ) 
 {
     //int newEntry;
 	
@@ -69,7 +69,7 @@ add_scene_node( std::string& parent_name, std::string& node_name, SceneNode *nod
 
 /* Get node pointer from node name */
 bool
-get_scene_node(std::string& node_name, SceneNode **node ) 
+get_scene_node(const std::string& node_name, SceneNode **node ) 
 {
 	std::map<std::string, SceneNode *>::iterator it;
 	
@@ -88,14 +88,14 @@ get_scene_node(std::string& node_name, SceneNode **node )
 
 /* Add a new material name to the material name hash table. */
 void
-add_material(std::string& mat_name, Material *mat)
+add_material(const std::string& mat_name, Material *mat)
 {
     materials[mat_name]=mat;
 }
 
 /* Get material pointer from material name */
 bool 
-get_material(std::string& mat_name, Material **mat ) 
+get_material(const std::string& mat_name, Material **mat ) 
 {
     std::map<std::string, Material*>::iterator it;
 
@@ -110,7 +110,8 @@ get_material(std::string& mat_name, Material **mat )
 /* Creates a new node, add the node to the hash table, and inserts the
    node into the DAG.  Default values are given to all fields except
    the type-specific ones (geom, param).  */
-std::string create_scene_node(std::string& parent_name, std::string& child_name, 
+std::string
+create_scene_node(const std::string& parent_name, const std::string& child_name, 
 			 SceneNode **node )
 {
     SceneNode *parent, *child;
@@ -153,23 +154,22 @@ std::string create_scene_node(std::string& parent_name, std::string& child_name,
     return "";
 } 
 
-std::string
-reset_scene_node( std::string& node ) 
+void
+reset_scene_node(const std::string& node) 
 {  
     SceneNode *nodePtr;
 
     if(get_scene_node( node, &nodePtr )!= true){
-        return "No such node";
+        // node doesn't exist
+		return;
     } 
 
     nodePtr->trans.makeIdentity();
     nodePtr->invtrans.makeIdentity();
-
-    return "";
 }
 
 std::string 
-rotate_scene_node(std::string& node, char axis, double angle ) 
+rotate_scene_node(const std::string& node, char axis, double angle ) 
 {
     SceneNode *nodePtr;
     pp::Matrix rotMatrix;
@@ -188,7 +188,7 @@ rotate_scene_node(std::string& node, char axis, double angle )
 }
 
 std::string 
-translate_scene_node(std::string& node, ppogl::Vec3d vec ) 
+translate_scene_node(const std::string& node, const ppogl::Vec3d& vec ) 
 {
     SceneNode *nodePtr;
     pp::Matrix xlateMatrix;
@@ -207,7 +207,7 @@ translate_scene_node(std::string& node, ppogl::Vec3d vec )
 }
 
 std::string 
-scale_scene_node(std::string& node, ppogl::Vec3d center, ppogl::Vec3d factor) 
+scale_scene_node(const std::string& node, const ppogl::Vec3d& center, const ppogl::Vec3d& factor) 
 {
     SceneNode *nodePtr;
     pp::Matrix matrix;
@@ -238,7 +238,7 @@ scale_scene_node(std::string& node, ppogl::Vec3d center, ppogl::Vec3d factor)
 }
 
 std::string 
-transform_scene_node(std::string& node, pp::Matrix mat, pp::Matrix invmat ) 
+transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invmat ) 
 {
     SceneNode *nodePtr;
 
@@ -253,7 +253,7 @@ transform_scene_node(std::string& node, pp::Matrix mat, pp::Matrix invmat )
 }
 
 std::string 
-set_scene_node_material(std::string& node, std::string& mat) 
+set_scene_node_material(const std::string& node, const std::string& mat) 
 {
     Material *matPtr;
     SceneNode *nodePtr;
@@ -272,7 +272,7 @@ set_scene_node_material(std::string& node, std::string& mat)
 }
 
 std::string 
-set_scene_node_shadow_state(std::string& node, std::string& state) 
+set_scene_node_shadow_state(const std::string& node, const std::string& state) 
 {
     SceneNode *nodePtr;
 
@@ -292,7 +292,7 @@ set_scene_node_shadow_state(std::string& node, std::string& state)
 }
 
 std::string 
-set_scene_node_eye(std::string& node, std::string& which_eye )
+set_scene_node_eye(const std::string& node, const std::string& which_eye )
 {
     SceneNode *nodePtr;
 
@@ -314,7 +314,7 @@ set_scene_node_eye(std::string& node, std::string& which_eye )
 }
 
 std::string 
-create_tranform_node(std::string& parent_name, std::string& child_name ) 
+create_tranform_node(const std::string& parent_name, const std::string& child_name ) 
 {
     SceneNode *node;
     std::string msg = create_scene_node(parent_name, child_name, &node);
@@ -328,7 +328,7 @@ create_tranform_node(std::string& parent_name, std::string& child_name )
 }
 
 std::string
-create_sphere_node(std::string& parent_name, std::string& child_name, double resolution ) 
+create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution ) 
 {
     SceneNode *node;
 
@@ -348,9 +348,9 @@ create_sphere_node(std::string& parent_name, std::string& child_name, double res
     return msg;
 }
 
-std::string 
-create_material(std::string& mat, ppogl::Color diffuse, 
-		 ppogl::Color specular, double specular_exp ) 
+void
+create_material(const std::string& mat, const ppogl::Color& diffuse, 
+		 const ppogl::Color& specular, double specular_exp ) 
 {
     Material *matPtr;
 
@@ -370,11 +370,10 @@ create_material(std::string& mat, ppogl::Color diffuse,
     matPtr->specular_exp = specular_exp;
 
 	add_material( mat, matPtr );
-
-    return "";
 }
 
-void initialize_scene_graph() 
+void
+initialize_scene_graph() 
 {
     /* Initialize state */
 
@@ -391,7 +390,8 @@ void initialize_scene_graph()
     g_hier_default_material.specular_exp = 0.0;
 }
 
-void draw_scene_graph(std::string& node)
+void
+draw_scene_graph(const std::string& node)
 {
     SceneNode *nodePtr;
 
@@ -403,7 +403,8 @@ void draw_scene_graph(std::string& node)
     
 } 
 
-bool collide(std::string& node, ppogl::Polyhedron ph )
+bool
+collide(const std::string& node, const ppogl::Polyhedron& ph)
 {
     SceneNode *nodePtr;
     pp::Matrix mat, invmat;
