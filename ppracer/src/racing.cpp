@@ -345,11 +345,17 @@ Racing::prePlayer(int plyr, float timestep)
 	}
     }
 
-    update_player_pos( player, timestep );
-	 
 	GameMgr::getInstance().time += timestep;
 	if(airborne) player.airbornetime += timestep;
 }
+
+void
+Racing::preDisplay(float timestep)
+{
+	// run physsim to calculate new postion of the players
+	update_player_pos(timestep);	
+}
+
 
 void
 Racing::postDisplay(float timeStep)

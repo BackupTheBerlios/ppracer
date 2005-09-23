@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -26,34 +26,39 @@
 
 #include "player.h"
 
-#include "ppgltk/alg/plane.h"
-
-/* Acceleration due to gravity m/s^2 */
+/// Acceleration due to gravity m/s^2 
 #define EARTH_GRAV 9.81
 
 #define M_PER_SEC_TO_KM_PER_H 3.6
 
 #define KM_PER_H_TO_M_PER_SEC ( 1.0 / M_PER_SEC_TO_KM_PER_H )
 
-/* Speed at which paddling ceases to be effective (m/s) */
+/// Speed at which paddling ceases to be effective (m/s)
 #define MAX_PADDLING_SPEED ( 60.0 * KM_PER_H_TO_M_PER_SEC ) 
 
-/* Time over which constant jump force is applied */
+/// Time over which constant jump force is applied
 #define JUMP_FORCE_DURATION 0.20
 
-void 	set_wind_velocity(pp::Vec3d velocity, float scale);
-void      increment_turn_fact( Player& plyr, float amt );
-//void      set_gravity( bool low );
-void      set_friction_coeff( const float fric[3] ); 
-//void      set_friction( const bool useFriction );
-float  get_min_y_coord();
-pp::Vec3d  find_course_normal( const float x, const float z );
-float  find_y_coord( float x, float z );
-void      get_surface_type( float x, float z, float weights[] );
-pp::Plane   get_local_course_plane( pp::Vec3d pt );
-float  get_compression_depth( const int terrain ); 
-void      set_tux_pos( Player& plyr, pp::Vec3d newPos );
-void      update_player_pos( Player& plyr, float dtime );
-void      init_physical_simulation();
+void set_wind_velocity(ppogl::Vec3d velocity, float scale);
+
+void increment_turn_fact(Player& plyr, float amt);
+
+float get_min_y_coord();
+
+ppogl::Vec3d find_course_normal(const float x, const float z);
+
+float find_y_coord(float x, float z);
+
+void get_surface_type(float x, float z, float weights[]);
+
+pp::Plane get_local_course_plane(ppogl::Vec3d pt);
+
+float get_compression_depth(const int terrain); 
+
+void set_tux_pos(Player& plyr, ppogl::Vec3d newPos);
+
+void update_player_pos(float timestep);
+
+void init_physical_simulation();
 
 #endif // _PHYS_SIM_H_

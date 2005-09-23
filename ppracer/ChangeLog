@@ -1,4 +1,9 @@
 
+2005-09-23  Volker Stroebel <volker@planetpenguin.de>
+	* src/phys_sim.cpp/h src/nmrcl.cpp/
+	cleanups in physical simulation and ODESolver
+	removed unused solver
+
 2005-09-22  Volker Stroebel <volker@planetpenguin.de>
 	* src/tux.cpp/h src/keyframe.cpp/h
 	add support for multiple models

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,25 +22,35 @@
 #ifndef _RACING_H_
 #define _RACING_H_
 
-#include "loop.h"
+#include "racingmode.h"
+#include "player.h"
 
-class Racing : public GameMode
+class Racing : public RacingMode
 {
-	bool m_rightTurn;
-	bool m_leftTurn;
-	bool m_trickModifier;
-	bool m_paddling;
-	bool m_charging;
-	bool m_braking;
-	double m_chargeStartTime;
-	int m_lastTerrain;
-	
-	void calcJumpAmt( double time_step );
+	/// struct holding several state for the players
+	struct States
+	{
+		States();
+		double chargeStartTime;
+		int lastTerrain;
+		bool rightTurn;
+		bool leftTurn;
+		bool trickModifier;
+		bool paddling;
+		bool charging;
+		bool braking;
+	}m_state[2];
+		
+	void calcJumpAmt(int player);
+
 public:
 	Racing();
 	~Racing();
 
-	void loop(float timeStep);
+	void preDisplay(float timestep);
+	void postDisplay(float timeStep);
+	
+	void prePlayer(int player, float timestep);
 
 	bool keyboardEvent(SDLKey key, bool release);
 	bool keyPressEvent(SDLKey key);

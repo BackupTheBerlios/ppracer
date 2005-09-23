@@ -41,20 +41,21 @@ RacingMode::RacingMode()
 void
 RacingMode::loop(float timestep)
 {
-	//things to do before displaying
-	preDisplay(timestep);
-
 	//update the FPS counter for this frame
     fpsCounter.update();
 	
 	// the multiplayer stuff is experimental
 	if(GameMode::exp_multiscreen<0){
+		// player 0 (first player)
+		prePlayer(0,timestep);
+		
+		//things to do before displaying
+		preDisplay(timestep);
+		
 		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
 				GameConfig::forwardClipDistance);
 		reshape(resolutionX, resolutionY);
 		
-		// player 0 (first player)
-		prePlayer(0,timestep);
 		renderCourse(0, timestep);
 		postPlayer(0,timestep);
 				
@@ -62,6 +63,9 @@ RacingMode::loop(float timestep)
 		prePlayer(0,timestep);
 		prePlayer(1,timestep);
 		
+		//things to do before displaying
+		preDisplay(timestep);
+				
 		// player 0 (first player)
 				
 		setup_view_frustum( players[0], NEAR_CLIP_DIST, 

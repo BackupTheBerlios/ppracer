@@ -69,7 +69,7 @@ Reset::loop(float timeStep)
 
     fogPlane.setup();
 
-    update_player_pos( players[0], EPS );
+    update_player_pos(EPS);
 	
     update_view( players[0], EPS );
 

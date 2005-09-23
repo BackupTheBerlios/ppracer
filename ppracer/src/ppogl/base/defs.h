@@ -32,8 +32,9 @@
 /// get the larger value
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
-/// the smallest floating-point number
+/// the smallest floatingpoint number
 #define EPS 1e-13
+
 
 /// rount the float to the nearest (integer) value
 #define ROUND_TO_NEAREST(x) ( int((x)+0.5) )
