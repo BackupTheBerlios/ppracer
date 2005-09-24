@@ -136,9 +136,9 @@ UIManager::mouseButtonEvent(int button, int state)
 {
 	std::list<ppogl::Widget*>::iterator it;
 	for(it=m_widgets.begin();it!=m_widgets.end();it++){
-		if(button==SDL_BUTTON_WHEELUP && (*it)->isFocused()){
+		if(button==SDL_BUTTON_WHEELUP && state == SDL_PRESSED && (*it)->isFocused())
 			(*it)->wheelUpEvent();
-		}else if(button==SDL_BUTTON_WHEELDOWN && (*it)->isFocused()){
+		}else if(button==SDL_BUTTON_WHEELDOWN && state == SDL_PRESSED && (*it)->isFocused()){
 			(*it)->wheelDownEvent();
 		}else if(button==SDL_BUTTON_LEFT){		
 			(*it)->setClicked(state==SDL_PRESSED && (*it)->isFocused());

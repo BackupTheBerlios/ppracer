@@ -1,4 +1,8 @@
 
+2005-09-24  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/ui/uimgr.cpp
+	fixed handling of mousewheel
+
 2005-09-23  Volker Stroebel <volker@planetpenguin.de>
 	* src/phys_sim.cpp/h src/nmrcl.cpp/
 	cleanups in physical simulation and ODESolver
