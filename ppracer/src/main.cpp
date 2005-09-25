@@ -204,24 +204,15 @@ main(int argc, char *argv[])
 		
 	if(ppogl::os::isFile(cfile)){
 		script.doFile(cfile);
-		
 		// check whether the user set the data directory per commandline option
 		if(data_dir.empty()){
 			data_dir = PPConfig.getString("data_dir");
-		}else{
-			PPConfig.setString("data_dir",data_dir);
 		}
-		
-		PP_MESSAGE("Load config file");	
-	}else if(data_dir.empty()==false){
-		// no config file and user has set the data_dir with the commandline option
-		PPConfig.setString("data_dir",data_dir);
-	}
-	
-	if(data_dir.empty()){
+		PP_MESSAGE("Load config file");		
+	}else if(data_dir.empty()){
 		data_dir = DATA_DIR;
 	}
-	
+
 	if(ppogl::os::isDirectory(data_dir)==false){
 		PP_ERROR("Unable to find data dir: " << data_dir <<"\n\tUse \"ppracer -d YOUR_DATA_DIRECTORY\"");
 	}
@@ -232,8 +223,8 @@ main(int argc, char *argv[])
 		
 	script.doFile(data_dir+"/config.nut");
 
-	data_dir = PPConfig.getString("data_dir");
-	
+	PPConfig.setString("data_dir",data_dir);
+
     /* Setup diagnostic log if requested */
     if(PPConfig.getBool("write_diagnostic_log")){
 		init_log();

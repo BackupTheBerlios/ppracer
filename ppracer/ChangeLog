@@ -7,6 +7,9 @@
 
 	* configure.in src/ppracer.h
 	changed version to 0.5alpha
+	
+	* src/main.cpp
+	fixed custom data_dir
 
 2005-09-24  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/ui/uimgr.cpp
