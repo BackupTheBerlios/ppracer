@@ -151,5 +151,22 @@ isDirectory(const std::string& name, const bool follow_link)
 	return S_ISDIR(attrs.st_mode);
 }
 
+/// base directory
+static std::string baseDir;
+
+void
+setBaseDir()
+/// set current working directory to be base directory
+{
+	baseDir=os::cwd();
+}
+
+const std::string&
+getBaseDir()
+/// return base directory
+{
+	return baseDir;
+}
+
 } // namespace os
 } // namespace ppogl

@@ -21,8 +21,11 @@
 
 #include "ppracer.h"
 #include "screenshot.h"
+#include "ppogl/base/os.h"
 #include "ppogl/images/image.h"
 #include "ppogl/base/glwrappers.h"
+
+#include <sstream>
 
 static int screenshot_num = 0;
 
@@ -52,9 +55,16 @@ take_screenshot(const std::string& filename)
 void
 screenshot()
 {
-    char buff[20];
-    snprintf(buff, 20, "tux_sshot_%d.ppm", screenshot_num++);
-    if(!take_screenshot(buff)){
+    screenshot_num++;
+		
+	std::stringstream temp(std::ios::in| std::ios::out | std::ios::trunc);
+
+	temp << ppogl::os::getBaseDir() 
+		 << PP_DIR_SEPARATOR
+	     << screenshot_num
+		 << ".ppm";
+
+	if(!take_screenshot(temp.str())){
         PP_WARNING("Couldn't save screenshot");
     };
 }

@@ -44,7 +44,7 @@
 #if defined( NATIVE_WIN32_COMPILER )
 /* Need to manually define some things that autoconf defines for
    us in config.h */
-#   define VERSION "0.3.9"
+#   define VERSION "0.5alpha"
 #   define HAVE_SDL_MIXER 1
 #   define HAVE_SDL_JOYSTICKOPEN 1
 
@@ -147,13 +147,6 @@ tmp |= ((x) >> 8)  & 0x00ff; \
 (x) = tmp; \
 }
 
-/* Directory separator */
-#ifdef WIN32
-#   define DIR_SEPARATOR "\\"
-#else
-#   define DIR_SEPARATOR "/"
-#endif
-
 #define BUFF_LEN 512
 
 /// Number of lives players get to complete a cup
@@ -184,5 +177,8 @@ enum DebugMode{
 
 /// global instance of the lua interpreter
 extern ppogl::Script script;
+
+///release name
+#define PP_RELEASE_NAME "0.5alpha (Den Blembel kamma faj ned dringg'n)"
 
 #endif // _PPRACER_H_

@@ -183,6 +183,8 @@ nobase_dist_ppdata_DATA = \
 		events/events.nut	\
 		models/tux/model.nut	\
 		models/tux/model_walk.nut	\
+		models/tux2/model.nut	\
+		models/tux2/model_walk.nut	\
 		translations/ru_RU.nut	\
 		translations/en_GB.nut	\
 		translations/it_IT.nut	\

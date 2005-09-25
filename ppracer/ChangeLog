@@ -1,7 +1,19 @@
 
+2005-09-25
+	* src/videoconfig.cpp
+	fixed fullscreen checkbox
+	check resolution for min width/height
+	check duplication of resolutions 
+
+	* configure.in src/ppracer.h
+	changed version to 0.5alpha
+
 2005-09-24  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/ui/uimgr.cpp
 	fixed handling of mousewheel
+		
+	* src/screenshot.cpp
+	save files in the right directory
 
 2005-09-23  Volker Stroebel <volker@planetpenguin.de>
 	* src/phys_sim.cpp/h src/nmrcl.cpp/

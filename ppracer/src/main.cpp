@@ -57,7 +57,8 @@ ppogl::Script script;
 
 #define WINDOW_TITLE "PlanetPenguin Racer " VERSION
 
-void showHelpMessage()
+void
+showHelpMessage()
 {
 	std::cout << 
 		"Usage: ppracer [OPTION...]\n"
@@ -135,14 +136,15 @@ getopts( int argc, char *argv[] )
 }
 
 // this function is called on exit
-void cleanup(void)
+void
+cleanup(void)
 {
     write_config_file();
 	winsys_shutdown();
 }
 
-static
-void init_log()
+static void
+init_log()
 {
     ppogl::Log::Instance()->setFilename("diagnostic_log.txt");
 
@@ -179,6 +181,9 @@ main(int argc, char *argv[])
 	    std::cout << "This is free software,\nand you are welcome to redistribute it under certain conditions."<< std::endl;
 	    std::cout << "See http://www.gnu.org/copyleft/gpl.html for details.\n" << std::endl;
 
+		// set current directory to be used as base
+		ppogl::os::setBaseDir();
+						
 		// parse comandline options
 		getopts(argc,argv);
 		

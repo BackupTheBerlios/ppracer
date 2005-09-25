@@ -34,8 +34,14 @@
 
 #include "winsys.h"
 #include "stuff.h"
-
 #include "ppogl/base/defs.h"
+
+#include <sstream>
+
+#include <iostream>
+
+#define RES_MIN_WIDTH 600
+#define RES_MIN_HEIGHT 400
 
 VideoConfig::VideoConfig()
  : 	m_resolutionLbl(_("Resolution:")),
@@ -66,13 +72,14 @@ VideoConfig::VideoConfig()
 	initVideoModes();
 	
 	{
-		char buff[16];
-		snprintf(buff,16,"%d x %d",
-				 resolutionX,
-				 resolutionY);
-		if(!m_resolutionListBox.setSelected(buff)){
-			m_resolutionListBox.addElement(buff, Resolution(resolutionX,resolutionY));
-			m_resolutionListBox.setSelected(buff);	
+		std::stringstream temp(std::ios::in| std::ios::out | std::ios::trunc);
+		temp << resolutionX 
+		     << " x "
+		     << resolutionY;
+
+		if(!m_resolutionListBox.setSelected(temp.str())){
+			m_resolutionListBox.addElement(temp.str(), Resolution(resolutionX,resolutionY));
+			m_resolutionListBox.setSelected(temp.str());	
 		}		
 	}
 		
@@ -148,7 +155,7 @@ VideoConfig::apply()
 	}
 	
 	if (m_fullscreenBox.isSelected() != PPConfig.getBool("fullscreen")){
-		PPConfig.setInt("fullscreen",m_fullscreenBox.isSelected());
+		PPConfig.setBool("fullscreen",m_fullscreenBox.isSelected());
 		updatevideo=true;
 	}
 	
@@ -187,7 +194,6 @@ VideoConfig::initVideoModes()
  */
 {
 	SDL_Rect **modes;
-	int i;
 
 	// get available fullscreen OpenGL modes
 	if(!PPConfig.getBool("disable_videomode_autodetection")){	
@@ -208,12 +214,41 @@ VideoConfig::initVideoModes()
 
 		PP_WARNING("No standard modes detected");
 	}else{
-		char buff[16];
+		std::list<std::string> registered;	
 		
 		// fill list with modes
-		for(i=0; modes[i]; ++i){
-			snprintf(buff,16,"%d x %d", modes[i]->w, modes[i]->h);
-			m_resolutionListBox.addElement(buff, Resolution(modes[i]->w,modes[i]->h));
-		}	
+		for(int i=0; modes[i]; ++i){
+			if(	modes[i]->w < RES_MIN_WIDTH || 
+				modes[i]->w < RES_MIN_HEIGHT)
+			{
+				// resolution is too small	
+				continue;
+			}			
+			
+			std::stringstream temp(std::ios::in| std::ios::out | std::ios::trunc);
+			temp << modes[i]->w 
+			     << " x "
+			     << modes[i]->h;
+			
+			
+			std::list<std::string>::iterator it;	
+			bool found=false;
+			
+			for(it=registered.begin(); it!=registered.end(); it++){
+				if((*it)==temp.str()){
+					found=true;
+					break;
+				}
+			}
+			
+			if(found){
+				// mode already registered
+				continue;				
+			}else{
+				//new mode
+				registered.push_back(temp.str());
+				m_resolutionListBox.addElement(temp.str(), Resolution(modes[i]->w,modes[i]->h));
+			}				
+		}
 	}
 }

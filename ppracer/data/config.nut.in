@@ -346,7 +346,7 @@ pause_key = 112,
 screenshot_key_description = @"
 Key binding to make a screenshot
 ",
-screenshot_key = 115,
+screenshot_key = 105,
 
 joystick_x_axis_description = @"
 Joystick axis to use for turning (numbering starts at 0)

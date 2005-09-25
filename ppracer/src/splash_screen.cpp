@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,67 +22,67 @@
 #include "splash_screen.h"
 
 #include "gl_util.h"
-#include "textures.h"
 
-#include "ppgltk/audio/audio.h"
-#include "ppgltk/alg/glhelper.h"
+#include "ppogl/textures.h"
+#include "ppogl/ui.h"
+
+#include "ppogl/base/glstuff.h"
  
 SplashScreen::SplashScreen()
-{		
-	pp::Vec2d pos(getparam_x_resolution()/2,getparam_y_resolution()/2);
+ : m_anykeyLbl(_("PRESS ANY KEY TO START"),"event_and_cup_label"),
+   m_versionLbl(PP_RELEASE_NAME, "race_requirements_label")
+{
+	ppogl::Vec2d pos(resolutionX/2,resolutionY/2);
 	
-	mp_anykeyLbl = new pp::Label(pos,"event_and_cup_label",_("PRESS ANY KEY TO START"));
-	mp_anykeyLbl->alignment.center();
-	mp_anykeyLbl->alignment.top();
+	m_anykeyLbl.setPosition(pos);
+	m_anykeyLbl.alignment.set(0.5,0.0);
 	
-    play_music( "splash_screen" );
+	m_versionLbl.setPosition(ppogl::Vec2d(resolutionX-5,5));
+	m_versionLbl.alignment.right();
+	
+    ppogl::AudioMgr::getInstance().playMusic("splash_screen");
 }
 
 SplashScreen::~SplashScreen()
 {
-	// there is no need to keep the logo in memory
-	unbind_texture( "splash_screen" );
-	flush_textures();
-	
-	delete mp_anykeyLbl;
+	// we don't need this binding anymore
+	ppogl::TextureMgr::getInstance().unbind("splash_screen");
+	ppogl::AudioMgr::getInstance().unbindMusic("splash_screen");
 }
 
 void
 SplashScreen::loop(float timeStep)
 {
-	update_audio();
-
-    clear_rendering_context();
     set_gl_options( GUI );
-    UIMgr.setupDisplay();
-
+	
 	drawSnow(timeStep);
 
 	{
-		pp::Vec2d pos(getparam_x_resolution()/2 -256,getparam_y_resolution()/2);
-		pp::Vec2d size(512, 256);
-		ppGL::draw::rect("splash_screen", pos, size);
+		ppogl::Vec2d pos(resolutionX/2 -256,resolutionY/2);
+		ppogl::Vec2d size(512, 256);
+		ppogl::TextureRef texture =
+			ppogl::TextureMgr::getInstance().get("splash_screen");
+		ppogl::drawRectangle(pos, size, texture);
 	}	
 
-    UIMgr.draw();
-
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-    winsys_swap_buffers();	
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY,
+										 false); // don't draw decorations	
+		
+    reshape(resolutionX, resolutionY);
 }
 
 
 bool
 SplashScreen::mouseButtonReleaseEvent(int button, int x, int y)
 {
-	set_game_mode( GAME_TYPE_SELECT );
-	winsys_post_redisplay();
+	setMode( GAME_TYPE_SELECT );
 	return true;
 }
 
 bool
 SplashScreen::keyReleaseEvent(SDLKey key)
 {
-	set_game_mode( GAME_TYPE_SELECT );
-	winsys_post_redisplay();
+	setMode( GAME_TYPE_SELECT );
 	return true;
 }

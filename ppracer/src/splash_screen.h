@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -23,12 +23,14 @@
 
 #include "loop.h"
 
-#include "ppgltk/label.h"
+#include "ppogl/ui/label.h"
+
 
 class SplashScreen : public GameMode
 {
-	pp::Label *mp_anykeyLbl;
-	
+	ppogl::Label m_anykeyLbl;
+	ppogl::Label m_versionLbl;
+
 	void drawLogo();
 	
 public:

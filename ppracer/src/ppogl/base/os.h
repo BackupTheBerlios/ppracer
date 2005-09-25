@@ -23,8 +23,15 @@
 #include <string>
 #include <list>
 
+#ifdef WIN32
+	/// the directory separator character
+	#define PP_DIR_SEPARATOR '\\'
+#else
+	/// the directory separator character
+	#define PP_DIR_SEPARATOR '/'	
+#endif
+
 namespace ppogl {
-	
 	
 ///OS dependant functionality
 namespace os {
@@ -34,7 +41,7 @@ bool chdir(const std::string& dir);
 std::string cwd();
 
 bool mkdir(const std::string& dir);	
-	
+		
 /// A class for handling directory content
 class dir : public std::list<std::string>
 {
@@ -45,6 +52,8 @@ public:
 bool isFile(const std::string& name, const bool follow_link=false);
 bool isDirectory(const std::string& name, const bool follow_link=false);
 
+void setBaseDir();
+const std::string& getBaseDir();
 
 } // namespace os
 } // namespace ppogl
