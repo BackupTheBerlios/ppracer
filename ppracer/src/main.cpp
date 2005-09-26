@@ -137,7 +137,7 @@ getopts( int argc, char *argv[] )
 
 // this function is called on exit
 void
-cleanup(void)
+cleanup()
 {
     write_config_file();
 	winsys_shutdown();
@@ -198,6 +198,8 @@ main(int argc, char *argv[])
 	
 	ppogl::Config::getInstance().init(&script,"ppconfig");
 	
+	bool create_cfile=true;
+	
 	if(cfile.empty()){
 		cfile=get_config_file_name();
 	}
@@ -208,7 +210,8 @@ main(int argc, char *argv[])
 		if(data_dir.empty()){
 			data_dir = PPConfig.getString("data_dir");
 		}
-		PP_MESSAGE("Load config file");		
+		PP_MESSAGE("Load config file");
+		create_cfile=false;
 	}else if(data_dir.empty()){
 		data_dir = DATA_DIR;
 	}
@@ -225,6 +228,10 @@ main(int argc, char *argv[])
 
 	PPConfig.setString("data_dir",data_dir);
 
+	if(create_cfile){
+		write_config_file();
+	}
+	
     /* Setup diagnostic log if requested */
     if(PPConfig.getBool("write_diagnostic_log")){
 		init_log();

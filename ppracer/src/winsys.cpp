@@ -25,6 +25,9 @@
 
 #include "ppogl/base/glwrappers.h"
 
+extern void cleanup();
+
+
 /* Windowing System Abstraction Layer */
 /* Abstracts creation of windows, handling of events, etc. */
 
@@ -121,7 +124,7 @@ void setup_sdl_video_mode()
     height = PPConfig.getInt("y_resolution");
 
     if ( ( screen = SDL_SetVideoMode( width, height, bpp, video_flags ) ) ==  NULL ){
-    	PP_ERROR( "Couldn't initialize video: " << SDL_GetError() );
+		PP_ERROR( "Couldn't initialize video: " << SDL_GetError() );
     }
 	
 	GameMode::resolutionX = width;
@@ -300,11 +303,10 @@ void winsys_process_events()
   \date    Created:  2000-10-20
   \date    Modified: 2000-10-20
 */
-extern void cleanup(void);
 
-void winsys_exit( int code )
+void
+winsys_exit(int code)
 {
-    cleanup();
-    
-    exit( code );
+    cleanup();	
+	exit(code);
 }
