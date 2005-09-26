@@ -20,7 +20,7 @@ Translation.set("Keyboard","Tastatur");
 
 //config mode
 Translation.set("Cancel","Abbrechen");
-Translation.set("Ok","Übernehmen");
+//Translation.set("Ok","Übernehmen");
 
 //general configuration
 //Translation.set("General Configuration","Allgemeine Konfiguration");
@@ -90,7 +90,7 @@ Translation.set("Needed to advance:","Benötigt:");
 Translation.set("You can't enter this race yet.","Du musst erst die vorherigen Rennen gewinnen");
 
 //loading
-Translation.set("Loading, Please Wait...","Laden Abfahrt, bitte warten...");
+Translation.set("Loading, Please Wait...","Lade Abfahrt, bitte warten...");
 
 //paused
 Translation.set("Resume","Weiterspielen");
