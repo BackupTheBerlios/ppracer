@@ -1,4 +1,6 @@
 
+=== ppracer 0.5 alpha ===
+
 2005-09-25
 	* src/videoconfig.cpp
 	fixed fullscreen checkbox
