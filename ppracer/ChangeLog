@@ -1,8 +1,17 @@
 
-
 2005-09-27
 	* data/config.nut.in
 	fixed several default settings
+	
+	* src/ppogl/audio/audiomgr.cpp/h
+	check if audiomgr is initialized
+	added possibility to disable sound and music
+	
+	* src/main.cpp
+	fixed initialisation of AudioMgr
+	
+	* src/audioconfig.cpp
+	fixed most problems in audioconfig (still needs some work)
 
 2005-09-26
 	* data/translations/de_DE.nut

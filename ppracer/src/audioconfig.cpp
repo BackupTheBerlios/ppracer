@@ -39,13 +39,15 @@ AudioConfig::AudioConfig()
 	m_audioLbl.setPosition(position);
 	m_audioBox.setPosition(position2);
 	m_audioBox.alignment.right();
-	
+	m_audioBox.setSelected(PPConfig.getBool("disable_audio"));
+		
 	position.y()-=40;
 	position2.y()-=40;
 	
 	m_soundLbl.setPosition(position);
 	m_soundBox.setPosition(position2);
 	m_soundBox.alignment.right();
+	m_soundBox.setSelected(PPConfig.getBool("sound_enabled"));
 	
 	position.y()-=40;
 	position2.y()-=40;
@@ -53,6 +55,8 @@ AudioConfig::AudioConfig()
 	m_musicLbl.setPosition(position);
 	m_musicBox.setPosition(position2);
 	m_musicBox.alignment.right();
+	m_musicBox.setSelected(PPConfig.getBool("music_enabled"));
+
 	
 	position.y()-=40;
 	position2.y()-=40;
@@ -60,6 +64,7 @@ AudioConfig::AudioConfig()
 	m_stereoLbl.setPosition(position);
 	m_stereoBox.setPosition(position2);
 	m_stereoBox.alignment.right();
+	m_stereoBox.setSelected(PPConfig.getBool("audio_stereo"));
 	
 	position.y()-=60;
 	position2.y()-=60;
@@ -95,7 +100,7 @@ AudioConfig::AudioConfig()
 void
 AudioConfig::apply()
 {
-	PPConfig.setBool("no_audio",m_audioBox.isSelected());
+	PPConfig.setBool("disable_audio",m_audioBox.isSelected());
 	PPConfig.setBool("sound_enabled",m_soundBox.isSelected());
 	PPConfig.setBool("music_enabled",m_musicBox.isSelected());
 	PPConfig.setBool("audio_stereo",m_stereoBox.isSelected());
@@ -107,5 +112,18 @@ AudioConfig::apply()
 	PPConfig.setInt("audio_freq_mode",(*freqit).data);
 		
 	write_config_file();
-	setMode( GameMode::prevmode );
+	
+	if(ppogl::AudioMgr::getInstance().isInitialized()==false){
+		PP_WARNING("Fixme: Enabling audio needs restart :(");		
+	}
+		
+	if(m_audioBox.isSelected()){
+		ppogl::AudioMgr::getInstance().enableSound(false);
+		ppogl::AudioMgr::getInstance().enableMusic(false);
+	}else{
+		ppogl::AudioMgr::getInstance().enableSound(m_soundBox.isSelected());
+		ppogl::AudioMgr::getInstance().enableMusic(m_musicBox.isSelected());
+	}	
+	
+	setMode(GameMode::prevmode);
 }

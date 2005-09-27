@@ -30,7 +30,9 @@ PPOGL_SINGLETON(AudioMgr);
 #ifdef HAVE_SDL_MIXER
 	
 AudioMgr::AudioMgr()
- : m_initialized(false)
+ : m_initialized(false),
+   m_soundEnabled(true),
+   m_musicEnabled(true)
 {
 }
 
@@ -69,7 +71,6 @@ AudioMgr::init(	int freq, Format format,
 	
 	if(Mix_OpenAudio(freq, sdl_format, channels, buffers)<0){
 		PP_WARNING("Unable to open audio device:\n"
-			"Audio deviced opened:\n"
 			"FQ: " << freq << "Hz\n" << format <<
 			"bit " << (stereo?"Stereo":"Mono") << 
 			"\n" << SDL_GetError());
@@ -79,14 +80,37 @@ AudioMgr::init(	int freq, Format format,
 			"Audio deviced opened:\n"
 			"FQ: " << freq << "Hz\n" << format <<
 			"bit " << (stereo?"Stereo":"Mono"));
+		
+		m_initialized=true;
+		return true;
 	}
-	
-	return true;
 }
+
+void
+AudioMgr::enableSound(bool enable)
+{
+	if(!enable){
+		stopAllSounds();
+	}	
+	m_soundEnabled=enable;
+}
+
+void
+AudioMgr::enableMusic(bool enable)
+{
+	if(!enable){
+		stopAllMusic();
+	}	
+	m_musicEnabled=enable;
+}
+
+
 
 bool
 AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
 {
+	if(!m_initialized || !m_musicEnabled) return true;
+	
 	MusicRef music =
 		new Music(filename);
 	
@@ -98,6 +122,8 @@ AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
 bool
 AudioMgr::bindMusic(const std::string &binding, const std::string &name)
 {
+	if(!m_initialized || !m_musicEnabled) return true;
+	
 	std::map<std::string, MusicRef>::iterator it;
 
 	if((it=m_musicBindings.find(name))!=m_musicBindings.end()){
@@ -112,6 +138,8 @@ AudioMgr::bindMusic(const std::string &binding, const std::string &name)
 bool
 AudioMgr::unbindMusic(const std::string &binding)
 {
+	if(!m_initialized || !m_musicEnabled) return true;
+
 	std::map<std::string, MusicRef>::iterator it;
 	
 	it = m_musicBindings.find(binding);
@@ -127,6 +155,9 @@ AudioMgr::unbindMusic(const std::string &binding)
 bool
 AudioMgr::playMusic(const std::string &binding)
 {
+	if(!m_initialized || !m_musicEnabled) return true;
+
+	
 	std::map<std::string, MusicRef>::iterator it;
 
 	if((it=m_musicBindings.find(binding))!=m_musicBindings.end()){
@@ -145,6 +176,8 @@ AudioMgr::playMusic(const std::string &binding)
 bool 
 AudioMgr::stopMusic(const std::string &binding)
 {
+	if(!m_initialized || !m_musicEnabled) return true;
+	
 	std::map<std::string, MusicRef>::iterator it;
 
 	if((it=m_musicBindings.find(binding))!=m_musicBindings.end()){
@@ -156,10 +189,23 @@ AudioMgr::stopMusic(const std::string &binding)
 	}	
 }
 
+void
+AudioMgr::stopAllMusic()
+{
+	if(!m_initialized) return;
+	
+	std::map<std::string, MusicRef>::iterator it;
+	
+	for(it=m_musicBindings.begin(); it!=m_musicBindings.end(); it++){
+		(*it).second->stop();		
+	}
+}
 
 bool
 AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 {
+	if(!m_initialized || !m_soundEnabled) return true;
+
 	SoundRef sound =
 		new Sound(filename);
 	
@@ -171,6 +217,8 @@ AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 bool
 AudioMgr::bindSound(const std::string &binding, const std::string &name)
 {
+	if(!m_initialized || !m_soundEnabled) return true;
+	
 	std::map<std::string, SoundRef>::iterator it;
 
 	if((it=m_soundBindings.find(name))!=m_soundBindings.end()){
@@ -185,6 +233,8 @@ AudioMgr::bindSound(const std::string &binding, const std::string &name)
 bool
 AudioMgr::unbindSound(const std::string &binding)
 {
+	if(!m_initialized || !m_soundEnabled) return true;
+	
 	std::map<std::string, SoundRef>::iterator it;
 	
 	it = m_soundBindings.find(binding);
@@ -200,6 +250,8 @@ AudioMgr::unbindSound(const std::string &binding)
 bool
 AudioMgr::playSound(const std::string &binding, int loops)
 {
+	if(!m_initialized || !m_soundEnabled) return true;
+	
 	std::map<std::string, SoundRef>::iterator it;
 
 	if((it=m_soundBindings.find(binding))!=m_soundBindings.end()){
@@ -214,6 +266,8 @@ AudioMgr::playSound(const std::string &binding, int loops)
 bool 
 AudioMgr::stopSound(const std::string &binding)
 {
+	if(!m_initialized || !m_soundEnabled) return true;
+	
 	std::map<std::string, SoundRef>::iterator it;
 
 	if((it=m_soundBindings.find(binding))!=m_soundBindings.end()){
@@ -228,13 +282,14 @@ AudioMgr::stopSound(const std::string &binding)
 void
 AudioMgr::stopAllSounds()
 {
+	if(!m_initialized || !m_soundEnabled) return;
+	
 	std::map<std::string, SoundRef>::iterator it;
 	
 	for(it=m_soundBindings.begin(); it!=m_soundBindings.end(); it++){
 		(*it).second->stop(true);		
 	}
 }
-
 
 int
 AudioMgr::sqLoadMusic(ppogl::Script *vm)

@@ -210,10 +210,10 @@ to false will help improve performance.
 ",
 terrain_blending = true,
 
-no_audio_description = @"
+disable_audio_description = @"
 If true, then audio in the game is completely disabled.
 ",
-no_audio = false,
+disable_audio = false,
 
 sound_enabled_description = @"
 Use this to turn sound effects on and off.

@@ -39,6 +39,8 @@ class AudioMgr
 {
 private:
 	bool m_initialized;	
+	bool m_soundEnabled;
+	bool m_musicEnabled;
 	
 	std::map<std::string, MusicRef> m_musicBindings;
 	std::map<std::string, SoundRef> m_soundBindings;
@@ -59,13 +61,17 @@ public:
 	~AudioMgr();
 
 	bool init(int freq, Format format, bool stereo=true, int buffers=2048);
-
+	void enableSound(bool enable=true);
+	void enableMusic(bool enable=true);
+	bool isInitialized(){return m_initialized;};
+		
 	bool loadMusic(const std::string &binding, const std::string &filename);
 	bool bindMusic(const std::string &binding, const std::string &name);
 	bool unbindMusic(const std::string &binding);
 	
 	bool playMusic(const std::string &binding);
 	bool stopMusic(const std::string &binding);
+	void stopAllMusic();
 	
 	bool loadSound(const std::string &binding, const std::string &filename);
 	bool bindSound(const std::string &binding, const std::string &name);

@@ -273,9 +273,46 @@ main(int argc, char *argv[])
 	register_hier_callbacks();
     register_tux_callbacks();
 	
-	// init audio	
-	ppogl::AudioMgr::getInstance().init(44100,ppogl::AudioMgr::FORMAT_16);
+	// init audio
+	if(PPConfig.getBool("disable_audio")==false){
+		bool stereo = PPConfig.getBool("audio_stereo");
+		ppogl::AudioMgr::Format format;
+		int freq;
+		
+		switch(PPConfig.getInt("audio_format_mode")){
+			case 0:
+				format = ppogl::AudioMgr::FORMAT_8;
+				break;
+			case 1:
+				format = ppogl::AudioMgr::FORMAT_16;
+				break;
+			default:
+				format = ppogl::AudioMgr::FORMAT_8;
+		}
 
+		switch(PPConfig.getInt("audio_freq_mode")){
+			case 0:
+				freq = ppogl::AudioMgr::FQ_11;
+				break;
+			case 1:
+				freq = ppogl::AudioMgr::FQ_22;
+				break;
+			case 2:
+				freq = ppogl::AudioMgr::FQ_44;
+				break;
+			default:
+				freq = ppogl::AudioMgr::FQ_11;
+		}
+		ppogl::AudioMgr::getInstance().init(freq,format,stereo);
+			
+		if(PPConfig.getBool("sound_enabled")==false){
+			ppogl::AudioMgr::getInstance().enableSound(false);
+		}
+		if(PPConfig.getBool("music_enabled")==false){
+			ppogl::AudioMgr::getInstance().enableMusic(false);
+		}
+	}
+		
 	// Setup translations
 	script.doFile(data_dir+"/translations/languages.nut");	
 	script.doFile(data_dir+"/translations/"+PPConfig.getString("ui_language")+".nut");		

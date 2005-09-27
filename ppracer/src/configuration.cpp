@@ -79,6 +79,9 @@ Configuration::Configuration()
     m_backBtn.setPosition(position);
     m_backBtn.alignment.center();
     m_backBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::back));		
+
+	// ensure music is played if setting have changed in the audio configuration
+    ppogl::AudioMgr::getInstance().playMusic("start_screen");
 }
 
 void
