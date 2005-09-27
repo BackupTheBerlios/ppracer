@@ -61,10 +61,12 @@ Sound::start(int loops)
     			PP_WARNING("Unable to start sound: " << Mix_GetError());
 			}
 		}
-		m_counter++;
+		if(loops<0){
+			m_counter++;
+		}
 	}else{
 		PP_PEDANTIC("Unable to start not loaded sound");	
-	}	
+	}
 }
 	
 void
