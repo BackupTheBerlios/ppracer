@@ -120,7 +120,7 @@ texture_filter = 5,
 ui_language_description = @"
 Sets the language for the ui
 ",
-ui_language = "de_DE",
+ui_language = "en_GB",
 
 always_save_event_race_data_description = @"
 only for cheating purpose
@@ -160,7 +160,7 @@ display_course_percentage = true,
 display_fps_description = @"
 Set this to true to display the current framerate in Hz.
 ",
-display_fps = true,
+display_fps = false,
 
 draw_tux_shadow_description = @"
 Set this to true to display Tux's shadow.

@@ -62,6 +62,7 @@ SplashScreen::loop(float timeStep)
 		ppogl::Vec2d size(512, 256);
 		ppogl::TextureRef texture =
 			ppogl::TextureMgr::getInstance().get("splash_screen");
+			
 		ppogl::drawRectangle(pos, size, texture);
 	}	
 

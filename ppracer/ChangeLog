@@ -1,5 +1,10 @@
 
-2005-09-25
+
+2005-09-27
+	* data/config.nut.in
+	fixed several default settings
+
+2005-09-26
 	* data/translations/de_DE.nut
 	fixed translations
 	
