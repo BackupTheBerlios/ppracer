@@ -101,12 +101,17 @@ Paused::postDisplay(float timestep)
 bool
 Paused::keyPressEvent(SDLKey key)
 {
-	if(Benchmark::getMode() == Benchmark::PAUSED){
-		setMode( GAME_OVER );
+	// continue race if pause key is pressed	
+	if(key==PPConfig.getInt("pause_key")){
+		if(Benchmark::getMode() == Benchmark::PAUSED){
+			setMode( GAME_OVER );
+		}else{
+			setMode( RACING );
+		}
+		return true;
 	}else{
-		setMode( RACING );
+		return false;
 	}
-	return true;
 }
 
 void

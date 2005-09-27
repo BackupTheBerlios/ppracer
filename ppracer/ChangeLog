@@ -12,6 +12,9 @@
 	
 	* src/audioconfig.cpp
 	fixed most problems in audioconfig (still needs some work)
+	
+	* src/paused.cpp
+	only continue if configured pause key is pressed
 
 2005-09-26
 	* data/translations/de_DE.nut

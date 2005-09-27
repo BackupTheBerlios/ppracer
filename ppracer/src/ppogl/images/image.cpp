@@ -31,10 +31,10 @@
 namespace ppogl {
 	
 Image::Image()
- : width(0),
+ : data(NULL),
+   width(0),
    height(0),
-   depth(0),
-   data(NULL)
+   depth(0)
 {
 }	
 
