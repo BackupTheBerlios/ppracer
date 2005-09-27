@@ -69,7 +69,8 @@ Paused::Paused()
 
 	m_paused=true;
 	
-	ppogl::AudioMgr::getInstance().playMusic("paused");
+	//ppogl::AudioMgr::getInstance().playMusic("paused");
+	ppogl::AudioMgr::getInstance().stopAllMusic();
 }
 
 void

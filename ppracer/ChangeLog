@@ -15,6 +15,7 @@
 	
 	* src/paused.cpp
 	only continue if configured pause key is pressed
+	stop music playback (pausing the music is not implemented yet)
 
 2005-09-26
 	* data/translations/de_DE.nut
