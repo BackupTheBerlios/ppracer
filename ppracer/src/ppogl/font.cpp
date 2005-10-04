@@ -220,6 +220,8 @@ FontMgr::~FontMgr()
 bool
 FontMgr::registerFont(const std::string& binding, const std::string& filename, unsigned int size, const ppogl::Color &color)
 {
+	PP_LOG(LogFonts,"Loading font: " << binding << " -> " << filename << " Size: " << size << " Color: " << color); 
+	
 	//todo: check wether the font alrady exists	
 	m_bindings[binding] = FontRef(new ppogl::Font(filename, size, color));
 	return true;
@@ -228,6 +230,8 @@ FontMgr::registerFont(const std::string& binding, const std::string& filename, u
 bool
 FontMgr::bindFont(const std::string& binding, const std::string& fontName)
 {
+	PP_LOG(LogFonts,"Binding font: " << binding << " -> " << fontName);
+	
 	FontRef font = get(fontName);
 	if(!font) return false;
 		
@@ -238,6 +242,8 @@ FontMgr::bindFont(const std::string& binding, const std::string& fontName)
 bool
 FontMgr::bindFont(const std::string& binding, const std::string& fontName, const ppogl::Color &color)
 {
+	PP_LOG(LogFonts,"Binding font: " << binding << " -> " << fontName << " Color: " << color);
+	
 	FontRef font = get(fontName);
 	if(!font) return false;
 		

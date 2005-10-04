@@ -113,6 +113,7 @@ GameMode::mainLoop()
 			delete GameMode::currentMode;
 		}
 		GameMode::prevmode = GameMode::mode;
+		PP_MESSAGE("Switching mode: " << new_mode);
 
 		switch(new_mode){
 			case SPLASH:

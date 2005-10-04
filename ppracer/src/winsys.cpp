@@ -70,7 +70,8 @@ void winsys_warp_pointer( int x, int y )
   \date    Created:  2000-10-20
   \date    Modified: 2000-10-20
 */
-void setup_sdl_video_mode()
+void
+setup_sdl_video_mode()
 {
     Uint32 video_flags = SDL_OPENGL; 
     int bpp = 0;
@@ -123,10 +124,12 @@ void setup_sdl_video_mode()
 	
     height = PPConfig.getInt("y_resolution");
 
+	PP_MESSAGE("Init video: " << width << "x" << height << " bpp:" << bpp);  
+	
     if ( ( screen = SDL_SetVideoMode( width, height, bpp, video_flags ) ) ==  NULL ){
 		PP_ERROR( "Couldn't initialize video: " << SDL_GetError() );
     }
-	
+		
 	GameMode::resolutionX = width;
 	GameMode::resolutionY = height;
 	
@@ -145,7 +148,9 @@ void setup_sdl_video_mode()
 void
 winsys_init(char *window_title, char *icon_title)
 {
-    Uint32 sdl_flags = SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE;
+    PP_MESSAGE("Init SDL");
+	
+	Uint32 sdl_flags = SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE;
 
     /*
      * Initialize SDL
@@ -174,7 +179,8 @@ winsys_init(char *window_title, char *icon_title)
 */
 void winsys_shutdown()
 {
-    SDL_Quit();
+    PP_MESSAGE("Quit SDL");
+	SDL_Quit();
 }
 
 /*---------------------------------------------------------------------------*/

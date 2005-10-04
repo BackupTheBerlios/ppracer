@@ -39,7 +39,7 @@ AudioMgr::AudioMgr()
 AudioMgr::~AudioMgr()
 {
 	if(m_initialized){
-		Mix_CloseAudio();	
+		Mix_CloseAudio();
 	}
 }
 
@@ -76,9 +76,9 @@ AudioMgr::init(	int freq, Format format,
 			"\n" << SDL_GetError());
 		return false;
 	}else{
-	    PP_LOG(ppogl::LogSound,
-			"Audio deviced opened:\n"
-			"FQ: " << freq << "Hz\n" << format <<
+	    PP_LOG(ppogl::LogAudio,
+			"Audio deviced opened:"
+			"FQ: " << freq << "Hz " << format <<
 			"bit " << (stereo?"Stereo":"Mono"));
 		
 		m_initialized=true;
@@ -111,8 +111,9 @@ AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
 {
 	if(!m_initialized || !m_musicEnabled) return true;
 	
-	MusicRef music =
-		new Music(filename);
+	PP_LOG(LogAudio,"Loading music: " << binding << " -> " << filename);
+	
+	MusicRef music = new Music(filename);
 	
 	m_musicBindings[binding]=music;
 	
@@ -124,6 +125,8 @@ AudioMgr::bindMusic(const std::string &binding, const std::string &name)
 {
 	if(!m_initialized || !m_musicEnabled) return true;
 	
+	PP_LOG(LogAudio,"Binding music: " << binding << " -> " << name);
+
 	std::map<std::string, MusicRef>::iterator it;
 
 	if((it=m_musicBindings.find(name))!=m_musicBindings.end()){
@@ -140,6 +143,8 @@ AudioMgr::unbindMusic(const std::string &binding)
 {
 	if(!m_initialized || !m_musicEnabled) return true;
 
+	PP_LOG(LogAudio,"Unbinding music: " << binding );
+	
 	std::map<std::string, MusicRef>::iterator it;
 	
 	it = m_musicBindings.find(binding);
@@ -206,6 +211,8 @@ AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 {
 	if(!m_initialized || !m_soundEnabled) return true;
 
+	PP_LOG(LogAudio,"Loading sound: " << binding << " -> " << filename);
+	
 	SoundRef sound =
 		new Sound(filename);
 	
@@ -218,6 +225,8 @@ bool
 AudioMgr::bindSound(const std::string &binding, const std::string &name)
 {
 	if(!m_initialized || !m_soundEnabled) return true;
+	
+	PP_LOG(LogAudio,"Binding sound: " << binding << " -> " << name);
 	
 	std::map<std::string, SoundRef>::iterator it;
 
@@ -234,6 +243,8 @@ bool
 AudioMgr::unbindSound(const std::string &binding)
 {
 	if(!m_initialized || !m_soundEnabled) return true;
+	
+	PP_LOG(LogAudio,"Unbinding sound: " << binding);
 	
 	std::map<std::string, SoundRef>::iterator it;
 	

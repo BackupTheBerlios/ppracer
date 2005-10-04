@@ -307,7 +307,9 @@ Course::fillGLArrays()
 void
 Course::load(const std::string& course)
 {
-    reset_course();
+    PP_MESSAGE("Load course");
+	
+	reset_course();
 	HUD1.reset();
 	HUD2.reset();
 	
@@ -338,9 +340,10 @@ Course::load(const std::string& course)
     course_loaded = true;
 } 
 
-static inline int intensity_to_terrain( const int intensity )
+static inline
+int intensity_to_terrain(const int intensity)
 {
-	for (unsigned int i=0; i<num_terrains; i++) {
+	for(unsigned int i=0; i<num_terrains; i++) {
 		if (terrain_texture[i].value == intensity){
 			terrain_texture[i].count++;
 			return i;
@@ -416,7 +419,9 @@ angle_cb(ppogl::Script *vm)
 static int
 elev_cb(ppogl::Script *vm)
 {
-    ppogl::Image *elev_img;
+    PP_MESSAGE("Loading elevation");
+	
+	ppogl::Image *elev_img;
     float slope;
     int   x,y;
     int   pad;
@@ -477,10 +482,10 @@ sort_terrain(const int x, const int y)
 static int
 terrain_cb(ppogl::Script *vm)
 {
-    ppogl::Image *terrain_img;
-    int   x,y;
-    int   pad;
-    int   idx;
+    PP_MESSAGE("Loading terrain");
+	
+	ppogl::Image *terrain_img;
+    int idx;
 	int	terrain_value;
 	int	image_pointer;
 
@@ -506,14 +511,11 @@ terrain_cb(ppogl::Script *vm)
 
     terrain = new int[nx*ny];
 	PP_CHECK_ALLOC(terrain);
-	
-	pad = 0;
-	
-    for (y=0; y<ny; y++) {
-        for (x=0; x<nx; x++) {
-			
-            idx = (nx-1-x) + nx*(ny-1-y);	
-			image_pointer=(x+nx*y)*terrain_img->depth+pad;
+		
+    for(int y=0; y<ny; y++){
+        for(int x=0; x<nx; x++){
+			idx = (nx-1-x) + nx*(ny-1-y);	
+			image_pointer=(x+nx*y)*terrain_img->depth;
 			
 			terrain_value=terrain_img->data[image_pointer] +
 						(terrain_img->data[image_pointer+1] << 8)+ 
@@ -712,7 +714,9 @@ elev_scale_cb(ppogl::Script *vm)
 static int
 elements_cb(ppogl::Script *vm)
 {
-    if(vm->getTop()!=1){
+	PP_MESSAGE("Loading elements position");
+	
+	if(vm->getTop()!=1){
 		PP_WARNING("ppcourse.elements: Invalid number of arguments");
 		return 0;
 	}

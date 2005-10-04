@@ -182,6 +182,8 @@ Script::~Script()
 bool
 Script::doFile(const std::string& filename)
 {
+	PP_MESSAGE("Running script: "<< filename);
+	
 	std::string::size_type pos;
 	
 	pos = filename.find_last_of('/');

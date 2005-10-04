@@ -97,6 +97,8 @@ write_config_file()
 {
 	PP_REQUIRE(cfile.empty()!=true, "Filename for configuration file is empty");
 
+	PP_MESSAGE("Writing config file: " <<cfile); 
+	
 	//call script function "write_config_to_file" with argument "cfile"
 	script.pushRootTable();
 	script.pushString("write_config_to_file");

@@ -40,6 +40,8 @@ ReadPNG::ReadPNG(const std::string& filename)
         return;
 	}
 		
+	PP_LOG(LogImages,"Loading PNG image: " << filename);
+	
     png_structp png_ptr = png_create_read_struct
        (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 		

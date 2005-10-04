@@ -6,7 +6,10 @@
 	
 	* src/ppogl/base/error.* src/main.cpp src/gl_utils.cpp
 	improved log system
-	added commandline options	
+	added commandline options
+	
+	* src/*
+	add log messages to several files
 
 2005-09-27
 	* data/config.nut.in

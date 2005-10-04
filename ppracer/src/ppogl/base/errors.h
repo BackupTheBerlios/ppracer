@@ -35,12 +35,14 @@ enum{
 	LogMessage  = -1000,
 	
 	LogPPOGL	= -1001,
-	LogAlg		= -1002,
-	LogSound	= -1003,	
+	LogBase		= -1002,
+	LogAudio	= -1003,	
 	LogUI		= -1004,
-	LogFont		= -1005,
+	LogFonts	= -1005,
 	LogImages	= -1006,
-	LogTextures	= -1006,
+	LogTextures	= -1007,
+	LogOS		= -1008,
+	LogModels	= -1009,
 	
 	LogWarning  = -2000,
 	LogError    = -3000,

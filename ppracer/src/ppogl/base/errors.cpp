@@ -19,12 +19,26 @@
  
 #include "errors.h"
 #include "os.h"
+#include "defs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 
 namespace ppogl {
+	
+static const char* LevelMessages[] = {
+	"NULL",
+	"PPOGL",
+	"Base",
+	"Audio",
+	"UI",
+	"Font",
+	"Images",
+	"Textures",
+	"OS",
+	"Models"
+};	
 
 // the pointer to the one and only instance (singleton)
 Log* Log::sm_instance = NULL;
@@ -105,6 +119,8 @@ Log::mesg(int mode,
 		m_logfile << "Error: ";
 	}else if(mode==LogPedantic){
 		m_logfile << "Pedantic Warning: ";
+	}else if(mode<-1000 && mode > int(PP_NUM_ELEMENTS(LevelMessages))*(-1)-1000){
+		m_logfile << "Log("<< LevelMessages[mode*(-1)-1000] << "): ";		
 	}else{
 		m_logfile << "Log("<< mode << "): ";
 	}

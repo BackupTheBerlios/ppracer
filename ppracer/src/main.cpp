@@ -246,7 +246,7 @@ main(int argc, char *argv[])
 	if(ppogl::os::isFile(data_dir+"/config.nut")==false){
 		PP_ERROR("Unable to find needed file config.nut in the data dir: " << data_dir <<"\n\tUse \"ppracer -d YOUR_DATA_DIRECTORY\"");
 	}
-		
+	
 	script.doFile(data_dir+"/config.nut");
 
 	PPConfig.setString("data_dir",data_dir);
@@ -289,6 +289,8 @@ main(int argc, char *argv[])
     register_tux_callbacks();
 	
 	// init audio
+	PP_MESSAGE("Init audio");	
+	
 	if(PPConfig.getBool("disable_audio")==false){
 		bool stereo = PPConfig.getBool("audio_stereo");
 		ppogl::AudioMgr::Format format;
@@ -328,6 +330,7 @@ main(int argc, char *argv[])
 		}
 	}
 		
+	PP_MESSAGE("Load translation: " << PPConfig.getString("ui_language"));
 	// Setup translations
 	script.doFile(data_dir+"/translations/languages.nut");	
 	script.doFile(data_dir+"/translations/"+PPConfig.getString("ui_language")+".nut");		
@@ -337,7 +340,9 @@ main(int argc, char *argv[])
 	// load "cached" configuration values
 	GameConfig::update();
 
+	PP_MESSAGE("Init joystick");
     init_joystick();
+		
 	init_ui_snow();
   
 	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
@@ -360,10 +365,7 @@ main(int argc, char *argv[])
 	
 	winsys_show_cursor( false );
 
-	/* 
-     * ...and off we go!
-     */
-
+	PP_MESSAGE("Entering event loop");
     winsys_process_events();
 	
     return 0;
@@ -375,7 +377,7 @@ main(int argc, char *argv[])
 		 * destruction during program termination.
 		 * If we see the abort message (see below) we known
 		 * that the exception is thrown within main().
-		 */		
+		 */
 		std::cerr << "Aborting main function :(" << std::endl;	
 		abort();
 	}

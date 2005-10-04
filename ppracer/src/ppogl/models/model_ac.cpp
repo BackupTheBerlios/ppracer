@@ -64,15 +64,6 @@ Surface::Surface()
 Surface::~Surface()
 {
 	//todo: check if we need to free something
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
 
 ModelObject::ModelObject()
@@ -123,7 +114,8 @@ ModelAC::ModelAC(const std::string& fileName)
    m_numPalette(0),
    m_startMatIndex(0)
 {
-    FILE *f = fopen(fileName.c_str(), "r");
+    PP_LOG(LogModels,"Loading model" << fileName);
+	FILE *f = fopen(fileName.c_str(), "r");
    
     if (f == NULL){
 		PP_WARNING("Can't open ac3d model file: "<< fileName);
@@ -146,6 +138,7 @@ ModelAC::ModelAC(const std::string& fileName)
 int
 ModelAC::getDisplayList()
 {
+	PP_LOG(LogModels,"Creating display list for model");
 	int list;
     list = gl::GenLists(1);
     gl::NewList(list,GL_COMPILE);

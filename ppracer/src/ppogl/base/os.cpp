@@ -44,6 +44,8 @@ chdir(const std::string& dir)
 {	
 	PP_REQUIRE(dir.empty()!=true,"Directory name is empty"); 
 
+	PP_LOG(LogOS,"Changing directory: " << dir);
+	
 	if(::chdir(dir.c_str())){
 		PP_PEDANTIC("Error changing working directory: " << dir);
 		return false;

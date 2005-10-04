@@ -25,6 +25,8 @@ namespace ppogl {
 
 WritePPM::WritePPM(const std::string& filename, const Image& image)
 {
+	PP_LOG(LogImages,"Writing image to file:" << filename);
+	
 	std::ofstream file;
 
 	file.open(filename.c_str());
