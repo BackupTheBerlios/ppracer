@@ -74,6 +74,9 @@ showHelpMessage()
 		"  -m <number-of-frames>    number of frames after which the playback gets aborted\n"
 		"  -t <milliseconds>        timestep for each frame\n"
 		"\n"
+		"Logging/Messages\n"
+		"  -l <filename>            save log to file\n"
+		"  -v                       be more verbose\n"
 		"Experimental\n"
 		"  --multiplayer            experimental multiplayer mode\n"
 		<< std::endl;	
@@ -81,6 +84,9 @@ showHelpMessage()
 
 std::string cfile;
 std::string data_dir;
+
+static unsigned char verbose=0;
+static bool diagnostics=false;
 
 static void
 getopts( int argc, char *argv[] )
@@ -131,6 +137,14 @@ getopts( int argc, char *argv[] )
 			}
 		}else if( !strcmp( argv[i],"--multiplayer") ){
 			GameMode::exp_multiscreen=GameMode::MULTISCREEN_HORIZ;
+		}else if( !strcmp( argv[i],"-l") ){
+			i++;
+			if(argv[i] != NULL){
+				diagnostics=true;
+				ppogl::Log::Instance()->setFilename(argv[i]);
+			}
+		}else if( !strcmp( argv[i],"-v") ){
+			verbose++;
 		}
 	}	
 }
@@ -146,8 +160,6 @@ cleanup()
 static void
 init_log()
 {
-    ppogl::Log::Instance()->setFilename("diagnostic_log.txt");
-
 	std::ostream& stream =
 			ppogl::Log::Instance()->getStream();
 	
@@ -186,7 +198,18 @@ main(int argc, char *argv[])
 						
 		// parse comandline options
 		getopts(argc,argv);
-		
+			
+		// set logging to be verbose if possible
+		if(verbose){
+			init_log();
+			ppogl::Log::Instance()->setLevel(ppogl::LogUnknown);
+			if(verbose>1){
+				// set log system to print long messages
+				ppogl::Log::Instance()->setVerbose(true);
+				init_log();
+			}
+		}
+				
     	// seed the random number generator
     	srand( time(NULL) );
 	
@@ -232,11 +255,6 @@ main(int argc, char *argv[])
 		write_config_file();
 	}
 	
-    /* Setup diagnostic log if requested */
-    if(PPConfig.getBool("write_diagnostic_log")){
-		init_log();
-	}
-
     /* 
      * Initialize rendering context, create window
      */
@@ -252,11 +270,8 @@ main(int argc, char *argv[])
 
     init_opengl_extensions();
 
-    /* Print OpenGL debugging information if requested */
-    /*if ( debug_mode_is_active( DEBUG_GL_INFO ) ) {
-		PP_LOG( DEBUG_GL_INFO, "OpenGL information:" );
-		print_gl_info();
-    }*/
+    // print OpenGL debugging information
+    if(verbose)	print_gl_info();
 
     /* 
      * Load the game data and initialize game state

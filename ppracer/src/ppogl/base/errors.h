@@ -68,6 +68,7 @@ public:
 
 	void setFilename(const std::string& filename);
 	void setLevel(int level);
+	void setVerbose(bool verbose);
 
 	void mesg(int mode,
 				const std::string& file, int line,
@@ -90,6 +91,9 @@ private:
 
 	/// a pointer to the logfile stream (if spezified)
 	std::ofstream m_logfile;
+
+	/// show long log format
+	bool m_verbose;
 };
 
 #ifndef PPOGL_NO_LOGGIN

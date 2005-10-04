@@ -449,7 +449,8 @@ gl_value_t gl_values[] = {
     { "depth bits", GL_DEPTH_BITS, GL_INT },
     { "stencil bits", GL_STENCIL_BITS, GL_INT } };
 
-void print_gl_info()
+void
+print_gl_info()
 {
     const char *extensions;
     char *p, *oldp;
@@ -457,68 +458,62 @@ void print_gl_info()
     GLint int_val;
     GLfloat float_val;
     GLboolean boolean_val;
-
-    fprintf( stderr,
-	     "  vendor: %s\n", 
-	     gl::GetString(GL_VENDOR) );
-
-    fprintf( stderr,
-	     "  renderer: %s\n", 
-	     gl::GetString(GL_RENDERER) );
-
-    fprintf( stderr,
-	     "  version: %s\n", 
-	     gl::GetString(GL_VERSION) );
-
-	//extensions = string_copy( (char*) glGetString( GL_EXTENSIONS ) );
-	//oldp = extensions;
 	
+	std::ostream& stream =
+			ppogl::Log::Instance()->getStream();
+	stream << "OpenGL information:" << std::endl;
+	stream << "  vendor: " << gl::GetString(GL_VENDOR) << std::endl;
+	stream << "  renderer: " << gl::GetString(GL_RENDERER) << std::endl;
+	stream << "  version: " << gl::GetString(GL_VERSION) << std::endl;
+
 	extensions = gl::GetString(GL_EXTENSIONS);
-
+	
 	oldp = new char[strlen(extensions)+1];
-	extensions = oldp;
 	strcpy(oldp, extensions);
-
-    fprintf( stderr, "  extensions:\n" );
+	extensions = oldp;
+	
+    stream << "  extensions:" << std::endl;
 	
     while ( (p=strchr(oldp,' ')) ) {
 		*p='\0';
-		fprintf( stderr, "    %s\n", oldp );
+		stream << "    " << oldp << std::endl;
 		oldp = p+1;
     }
 	
-	if ( *oldp ) {
-		fprintf( stderr, "    %s\n", oldp );
+	if(*oldp){
+		stream << "    " << oldp << std::endl;
     }
 	
 	delete extensions;
 	
-    for ( i=0; i<sizeof(gl_values)/sizeof(gl_values[0]); i++) {
-	fprintf( stderr, "  %s: ", gl_values[i].name );
+    for(i=0; i<sizeof(gl_values)/sizeof(gl_values[0]); i++){
+	stream << "  " << gl_values[i].name << ": ";
 
 	switch( gl_values[i].type ) {
 	case GL_INT:
 	    gl::GetValue(gl_values[i].value, &int_val);
-	    fprintf( stderr, "%d", int_val );
+	    stream << int(int_val);
 	    break;
 
 	case GL_FLOAT:
 	    gl::GetValue(gl_values[i].value, &float_val);
-	    fprintf( stderr, "%f", float_val );
+	    stream << float(float_val);
 	    break;
 
 	case GL_UNSIGNED_BYTE:
 	    gl::GetValue(gl_values[i].value, &boolean_val);
-	    fprintf( stderr, "%d", boolean_val );
-	    break;
+	    if(boolean_val){
+			stream << "true";
+		}else{	
+			stream << "false";
+	    }
+		break;
 
 	default:
 	    PP_NOT_REACHED();
 	}
 
-	fprintf( stderr, "\n" );
+	stream << std::endl;
     }
-
-
-    fprintf( stderr, "\n" );
+	stream << std::endl;
 }

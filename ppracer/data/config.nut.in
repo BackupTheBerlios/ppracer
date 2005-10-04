@@ -262,12 +262,6 @@ If true, then the players will leave track marks in the snow.
 ",
 track_marks = true,
 
-write_diagnostic_log_description = @"
-If true, then a file called diagnostic_log.txt will be generated
-which you should attach to any bug reports you make.
-",
-write_diagnostic_log = false,
-
 turn_left_key_description = @"
 Key binding for turning left
 ",
@@ -393,7 +387,7 @@ function write_config_to_file(filename)
 	file.writestr("/*\nPlanetPenguin Racer Configuration file\nVersion: @VERSION@\n*/\n\n");
 	file.writestr("ppconfig <- {\n");
 	
-	foreach(index, value in ppconfig){
+	foreach(index, value in PPConfigDefaults){
 		if(index.slice(-11) != "description"){
 			file.writestr("/*\n"+index+"\n");
 			file.writestr(ppconfig[index+"_description"]);

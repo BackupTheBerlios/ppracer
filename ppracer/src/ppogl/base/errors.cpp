@@ -18,6 +18,7 @@
  */
  
 #include "errors.h"
+#include "os.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,16 +55,23 @@ Log::~Log()
 	
 
 /// Set the file for the log.
-/// You can reset it with NULL.
 void
 Log::setFilename(const std::string& filename)
 {
-	//try to open logfile
-	m_logfile.open(filename.c_str());
-		
-	if(!m_logfile){
-		PP_WARNING("unable to open logfile: " << filename);
-	}	
+	if(filename.empty()){
+		//reset logfile to stderr
+		PP_WARNING("unable to open logfile: filename is empty");
+	}else{
+		//try to open logfile
+		std::ofstream* filestr = new std::ofstream;
+		filestr->open(filename.c_str());
+		if(filestr->is_open()){
+			m_logfile.std::ios::rdbuf(filestr->rdbuf());
+		}else{
+			m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
+			PP_WARNING("unable to open logfile: " << filename << " -> in: " << ppogl::os::cwd());
+		}
+	}
 }
 	
 /// Set the logging level
@@ -73,6 +81,12 @@ Log::setLevel(int level)
 	m_level=level;
 }
 
+/// Set log system to use long messages
+void
+Log::setVerbose(bool verbose)
+{
+	m_verbose=verbose;	
+}
 
 /// Sends the message to std::cerr or the logfile.
 void 
@@ -96,9 +110,12 @@ Log::mesg(int mode,
 	}
 		
 	m_logfile << message << std::endl;
-	m_logfile << "File: " << file << std::endl;
-	m_logfile << "Line: " << line << "\n" << std::endl;
-		
+
+	if(m_verbose){	
+		m_logfile << "File: " << file << std::endl;
+		m_logfile << "Line: " << line << "\n" << std::endl;
+	}
+	
 	if(mode==LogError){
 		throw ppogl::Error();
 	}	
