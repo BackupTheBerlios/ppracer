@@ -75,7 +75,7 @@ Texture::load_texture(const std::string& filename, int filter)
 
 	m_width = image->width;
 	m_height = image->height;
-	
+		
 	delete image;
 }
 

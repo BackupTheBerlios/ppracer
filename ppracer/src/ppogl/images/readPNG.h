@@ -33,9 +33,7 @@ class ReadPNG : public Image
 public:
 	
 	ReadPNG(const std::string& filename);
-	~ReadPNG();
 };
-
 
 } //namespace ppogl
 

@@ -63,7 +63,16 @@ Surface::Surface()
 	
 Surface::~Surface()
 {
-	//todo: check if we need to free something	
+	//todo: check if we need to free something
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 ModelObject::ModelObject()

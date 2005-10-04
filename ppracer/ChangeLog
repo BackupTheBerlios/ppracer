@@ -1,4 +1,9 @@
 
+2005-10-03
+	* src/*
+	fixed several memleaks
+	code cleanups
+
 2005-09-27
 	* data/config.nut.in
 	fixed several default settings

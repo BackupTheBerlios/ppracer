@@ -28,7 +28,7 @@
 #include <string>
 
 std::map<std::string, SceneNode *> nodes;
-std::map<std::string, Material*> materials;
+std::map<std::string, Material> materials;
 
 
 /*
@@ -51,8 +51,6 @@ Material g_hier_default_material ={
 static bool
 add_scene_node( const std::string& parent_name, const std::string& node_name, SceneNode *node ) 
 {
-    //int newEntry;
-	
     // Add the current node to the hash table 
 	std::string new_name;
 	
@@ -86,30 +84,23 @@ get_scene_node(const std::string& node_name, SceneNode **node )
 	return true;
 }
 
-/* Add a new material name to the material name hash table. */
-void
-add_material(const std::string& mat_name, Material *mat)
-{
-    materials[mat_name]=mat;
-}
-
 /* Get material pointer from material name */
 bool 
 get_material(const std::string& mat_name, Material **mat ) 
 {
-    std::map<std::string, Material*>::iterator it;
+    std::map<std::string, Material>::iterator it;
 
 	if((it=materials.find(mat_name))!=materials.end()){
-		*mat = (*it).second;
+		*mat = &(*it).second;
 		return true;
 	}else{
 		return false;
 	}
 }
 
-/* Creates a new node, add the node to the hash table, and inserts the
+/** Creates a new node, add the node to the hash table, and inserts the
    node into the DAG.  Default values are given to all fields except
-   the type-specific ones (geom, param).  */
+   the type-specific ones (geom, param). */
 std::string
 create_scene_node(const std::string& parent_name, const std::string& child_name, 
 			 SceneNode **node )
@@ -123,7 +114,7 @@ create_scene_node(const std::string& parent_name, const std::string& child_name,
     child = new SceneNode;
 	PP_CHECK_ALLOC(child);
 	
-    /* Initialize node */
+    // Initialize node
     child->parent = parent;
     child->next = NULL;
     child->child = NULL;
@@ -139,7 +130,7 @@ create_scene_node(const std::string& parent_name, const std::string& child_name,
     }
 
 
-    /* Add node to parent's children */
+    // Add node to parent's children 
     if ( parent != NULL ) {
         if ( parent->child == NULL ) {
             parent->child = child;
@@ -352,24 +343,21 @@ void
 create_material(const std::string& mat, const ppogl::Color& diffuse, 
 		 const ppogl::Color& specular, double specular_exp ) 
 {
-    Material *matPtr;
+    Material material;
 
-    matPtr = new Material;
-	PP_CHECK_ALLOC(matPtr);
-		
-    matPtr->diffuse.r() = diffuse.r();
-    matPtr->diffuse.g() = diffuse.g();
-    matPtr->diffuse.b() = diffuse.b();
-    matPtr->diffuse.a() = 1.0;
+    material.diffuse.r() = diffuse.r();
+    material.diffuse.g() = diffuse.g();
+    material.diffuse.b() = diffuse.b();
+    material.diffuse.a() = 1.0;
 
-    matPtr->specular.r() = specular.r();
-    matPtr->specular.g() = specular.g();
-    matPtr->specular.b() = specular.b();
-    matPtr->specular.a() = 1.0;
+    material.specular.r() = specular.r();
+    material.specular.g() = specular.g();
+    material.specular.b() = specular.b();
+    material.specular.a() = 1.0;
 
-    matPtr->specular_exp = specular_exp;
-
-	add_material( mat, matPtr );
+    material.specular_exp = specular_exp;
+	
+	materials[mat]=material;
 }
 
 void

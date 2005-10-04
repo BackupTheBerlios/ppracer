@@ -187,9 +187,9 @@ EventRaceSelect::updateStatusMsg()
 	
 	m_statusLbl.setText(msg);
 		
-	int minutes;
-	int seconds;
-	int hundredths;
+	int minutes=0;
+	int seconds=0;
+	int hundredths=0;
 
 	getTimeComponents( m_data.time, minutes, seconds, hundredths );
 		
@@ -298,7 +298,7 @@ EventRaceSelect::updateData()
 				"Assumption about number of lives invalid -- "
 				"need to recode this part" );
 
-	for (int i=0; i<4; i++ ){
+	for(int i=0; i<4; i++ ){
 		if(players[0].getLives() > i){
 			m_livesImg[i].setState(1);	
 		}else{

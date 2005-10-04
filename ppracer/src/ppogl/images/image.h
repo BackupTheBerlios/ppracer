@@ -30,8 +30,9 @@ class Image
 public:
 	Image();
 	Image(unsigned short width, unsigned short height, unsigned char depth=3);
-	~Image();
-	
+	virtual ~Image();	
+
+
 	unsigned char* data;
 	unsigned short width, height;
 	unsigned char depth;

@@ -727,7 +727,7 @@ elements_cb(ppogl::Script *vm)
 	}
 	
 	elementsImg = ppogl::Image::readFile(filename);
-    if(elementsImg->data == NULL){
+    if(elementsImg==NULL || elementsImg->data == NULL){
 		PP_WARNING( "ppcourse.load_elements: couldn't load image: " << filename);
 		return 0;
     }
@@ -784,6 +784,8 @@ elements_cb(ppogl::Script *vm)
 		}	
 	}
 			
+	delete elementsImg;
+	
 	return 0;
 }
 

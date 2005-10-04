@@ -3,7 +3,7 @@ local bunny_hill = {
 	name = "events/herring_run/bunny_hill",
 	herrings =[23, 23, 23, 23],
 	times = [37, 35, 32, 30],
-	score = [0, 0, 0, 0],
+	scores = [0, 0, 0, 0],
 };
 
 local twisty_slope = {

@@ -20,6 +20,7 @@
 #ifndef _PPOGL_ERRORS_H
 #define _PPOGL_ERRORS_H
 
+#include <iostream>
 #include <fstream>
 #include <sstream>
 

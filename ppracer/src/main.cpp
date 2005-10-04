@@ -324,18 +324,14 @@ main(int argc, char *argv[])
 
     init_joystick();
 	init_ui_snow();
-
-    // Placeholder name until we give players way to enter name
-    players[0].name = "tux";
-	players[0].loadData();
-	players[0].num = 0;
-	
-	if(GameMode::exp_multiscreen!=GameMode::MULTISCREEN_NONE){
-	    players[1].name = "tux2";
-		players[1].loadData();
-		players[1].num=1;
+  
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+		// Placeholder name until we give players way to enter name
+		players[i].name = "tux";
+		players[i].loadData();
+		players[i].num = i;
 	}
-
+	
     GameMode::mode = GameMode::NO_MODE;
 	
 	if(Benchmark::getMode()==Benchmark::NONE){

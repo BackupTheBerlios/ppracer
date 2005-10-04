@@ -80,32 +80,32 @@ init_course_quadtree(const float *elevation, int nx, int nz,
 			   double scalex, double scalez,
 			   const ppogl::Vec3d& view_pos)
 {
-    HeightMapInfo hm;
+	HeightMapInfo hm;
 
-    hm.Data = elevation;
-    hm.XOrigin = 0;
-    hm.ZOrigin = 0;
-    hm.XSize = nx;
-    hm.ZSize = nz;
-    hm.RowWidth = hm.XSize;
-    hm.Scale = 0;
+	hm.data = elevation;
+	hm.xOrigin = 0;
+	hm.zOrigin = 0;
+	hm.xSize = nx;
+	hm.zSize = nz;
+	hm.rowWidth = hm.xSize;
+	hm.scale = 0;
 
-    root_corner_data.Square = NULL;
-    root_corner_data.ChildIndex = 0;
-    root_corner_data.Level = get_root_level( nx, nz );
+    root_corner_data.square = NULL;
+    root_corner_data.childIndex = 0;
+    root_corner_data.level = get_root_level( nx, nz );
     root_corner_data.xorg = 0;
     root_corner_data.zorg = 0;
 
     for(int i=0; i<4; i++){
-		root_corner_data.Verts[i] = 0;
-		root_corner_data.Verts[i] = 0;
+		root_corner_data.verts[i] = 0;
+		root_corner_data.verts[i] = 0;
     }
 
     root = new quadsquare( &root_corner_data );
 
-    root->AddHeightMap( root_corner_data, hm );
-    root->SetScale( scalex, scalez );
-    root->SetTerrain(Course::getTerrainData() );
+    root->addHeightMap( root_corner_data, hm );
+    root->setScale( scalex, scalez );
+    root->setTerrain(Course::getTerrainData() );
 
 	//update static configuration
 	GameConfig::update();	
@@ -113,16 +113,16 @@ init_course_quadtree(const float *elevation, int nx, int nz,
     // Debug info.
     //print_debug( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
     PP_LOG( DEBUG_QUADTREE, "max error = " <<
-		 root->RecomputeError(root_corner_data));
+		 root->recomputeError(root_corner_data));
 
     // Get rid of unnecessary nodes in flat-ish areas.
     PP_LOG( DEBUG_QUADTREE, 
 		 "Culling unnecessary nodes (detail factor = " << CULL_DETAIL_FACTOR << ")...");
-    root->StaticCullData(root_corner_data, CULL_DETAIL_FACTOR);
+    root->staticCullData(root_corner_data, CULL_DETAIL_FACTOR);
 
     // Post-cull debug info.
-    PP_LOG( DEBUG_QUADTREE, "nodes = " << root->CountNodes());
-    PP_LOG( DEBUG_QUADTREE, "max error = " << root->RecomputeError(root_corner_data));
+    PP_LOG( DEBUG_QUADTREE, "nodes = " << root->countNodes());
+    PP_LOG( DEBUG_QUADTREE, "max error = " << root->recomputeError(root_corner_data));
 
 
     // Run the update function a few times before we start rendering
@@ -133,7 +133,7 @@ init_course_quadtree(const float *elevation, int nx, int nz,
     Vec3fo_float_array( ViewerLoc, view_pos );
 
     for(int i = 0; i < 10; i++){
-		root->Update(root_corner_data, reinterpret_cast<const float*>(ViewerLoc));
+		root->update(root_corner_data, reinterpret_cast<const float*>(ViewerLoc));
     }
 }
 
@@ -145,7 +145,7 @@ update_course_quadtree(const ppogl::Vec3d& view_pos)
 
     Vec3fo_float_array(ViewerLoc, view_pos);
 
-    root->Update(root_corner_data, ViewerLoc);
+    root->update(root_corner_data, ViewerLoc);
 }
 
 void
@@ -153,7 +153,7 @@ render_course_quadtree()
 {
     GLubyte *vnc_array;
 
-    Course::getGLArrays( &vnc_array );
+    Course::getGLArrays(&vnc_array);
 
-    root->Render( root_corner_data, vnc_array );
+    root->render(root_corner_data, vnc_array);
 }

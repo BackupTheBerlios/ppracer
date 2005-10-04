@@ -28,21 +28,21 @@ enum VertexLoc
 
 struct HeightMapInfo
 {
-	const float *Data;
-    int	XOrigin, ZOrigin;
-    int	XSize, ZSize;
-    int	RowWidth;
-    int	Scale;
+	const float *data;
+    int	xOrigin, zOrigin;
+    int	xSize, zSize;
+    int	rowWidth;
+    int	scale;
 
-   	inline float Sample(int x, int z) const
+   	inline float sample(int x, int z) const
 	{
-		if ( x >= XSize ) {
-			x = XSize - 1;
+		if(x>=xSize){
+			x=xSize-1;
 		}
-		if ( z >= ZSize ) {
-			z = ZSize - 1;
+		if(z>=zSize){
+			z=zSize-1;
 		}
-		return Data[ x + z * RowWidth ];
+		return data[x+z*rowWidth];
 	}
 };
 
@@ -52,12 +52,12 @@ class quadsquare;
 // relevant but transitory data.
 struct quadcornerdata
 {
-    const quadcornerdata* Parent;
-    quadsquare*	Square;
-    int	ChildIndex;
-    int	Level;
+    const quadcornerdata* parent;
+    quadsquare*	square;
+    int	childIndex;
+    int	level;
     int	xorg, zorg;
-	float Verts[4];
+	float verts[4];
 };
 
 
@@ -86,58 +86,58 @@ class quadsquare
     static GLuint VertexArrayMinIdx[NUM_TERRAIN_TYPES];
     static GLuint VertexArrayMaxIdx[NUM_TERRAIN_TYPES];
 
-    static void MakeTri( int a, int b, int c, int terrain );
-    static void MakeSpecialTri( int a, int b, int c);
-    static void MakeNoBlendTri( int a, int b, int c, int terrain );
+    static void makeTri( int a, int b, int c, int terrain );
+    static void makeSpecialTri( int a, int b, int c);
+    static void makeNoBlendTri( int a, int b, int c, int terrain );
 
-    static void DrawTris(int terrain);
-    static void DrawEnvmapTris(GLuint MapTexId, int terrain);
-    static void InitArrayCounters();
+    static void drawTris(int terrain);
+    static void drawEnvmapTris(GLuint MapTexId, int terrain);
+    static void initArrayCounters();
 
 public:
     quadsquare(quadcornerdata* pcd);
     ~quadsquare();
 
-    void	AddHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm);
-    void	StaticCullData(const quadcornerdata& cd, const float ThresholdDetail);	
-    float	RecomputeError(const quadcornerdata& cd);
-    int	CountNodes();
+    void addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm);
+    void staticCullData(const quadcornerdata& cd, const float ThresholdDetail);	
+    float recomputeError(const quadcornerdata& cd);
+    int	countNodes();
 	
-    void	Update(const quadcornerdata& cd, const float ViewerLocation[3]);
-    void	Render(const quadcornerdata& cd, GLubyte *vnc_array);
+    void update(const quadcornerdata& cd, const float ViewerLocation[3]);
+    void render(const quadcornerdata& cd, GLubyte *vnc_array);
 
-    float	GetHeight(const quadcornerdata& cd, const float x, const float z);
+    float getHeight(const quadcornerdata& cd, const float x, const float z);
 
-	inline void SetScale(const float x, const float z)
+	inline void setScale(const float x, const float z)
 	{
     	ScaleX = x;
     	ScaleZ = z;
 	};
 
-	inline void	SetTerrain(int *terrain){Terrain = terrain;};
+	inline void	setTerrain(int *terrain){Terrain = terrain;};
 	
 private:
-    void	EnableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd);
-    quadsquare*	EnableDescendant(int count, int stack[], const quadcornerdata& cd);
-    void	EnableChild(int index, const quadcornerdata& cd);
-    void	NotifyChildDisable(const quadcornerdata& cd, int index);
+    void	enableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd);
+    quadsquare*	enableDescendant(int count, int stack[], const quadcornerdata& cd);
+    void	enableChild(int index, const quadcornerdata& cd);
+    void	notifyChildDisable(const quadcornerdata& cd, int index);
 
-    void	ResetTree();
-    void	StaticCullAux(const quadcornerdata& cd, const float ThresholdDetail, const int TargetLevel);
+    void	resetTree();
+    void	staticCullAux(const quadcornerdata& cd, const float ThresholdDetail, const int TargetLevel);
 
-    quadsquare*	GetNeighbor(const int dir, const quadcornerdata& cd) const;
-    void	CreateChild(int index, const quadcornerdata& cd);
-    void	SetupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
+    quadsquare*	getNeighbor(const int dir, const quadcornerdata& cd) const;
+    void	createChild(int index, const quadcornerdata& cd);
+    void	setupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
 
-    void	UpdateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
-    void	RenderAux(const quadcornerdata& cd, ClipResult vi);
-    void	RenderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
-    void	SetStatic(const quadcornerdata& cd);
-	int InitVert(const int i, const int x, const int z);
+    void	updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
+    void	renderAux(const quadcornerdata& cd, ClipResult vi);
+    void	renderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
+    void	setStatic(const quadcornerdata& cd);
+	int initVert(const int i, const int x, const int z);
 
-    bool	VertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
-    bool	BoxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
-    ClipResult ClipSquare( const quadcornerdata& cd );
+    bool	vertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
+    bool	boxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
+    ClipResult clipSquare( const quadcornerdata& cd );
 
 };
 

@@ -19,7 +19,7 @@
 
 #include "readPNG.h"
 
-namespace ppogl {
+namespace ppogl{
 
 ReadPNG::ReadPNG(const std::string& filename)
 {
@@ -128,11 +128,6 @@ ReadPNG::loadData(png_structp png_ptr, unsigned char depth)
 	
 	png_read_image(png_ptr, row_pointers);
 	delete [] row_pointers;
-}
-
-ReadPNG::~ReadPNG()
-{
-	if(data!=NULL) delete [] data;
 }
 
 } //namespace ppogl

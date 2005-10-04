@@ -50,7 +50,7 @@ Image::Image(unsigned short width, unsigned short height, unsigned char depth)
 
 Image::~Image()
 {
-	if(data!=NULL) delete [] data;	
+	if(data!=NULL) delete [] data;
 }
 
 Image*
@@ -64,7 +64,7 @@ Image::readFile(const std::string& filename)
 		
 		// check if the image contains valid data
 		if(image->data!=NULL){
-			return image;		
+			return image;
 		} else {
 			delete image;
 			PP_WARNING("Unable to load images: " << filename);
