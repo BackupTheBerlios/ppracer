@@ -10,6 +10,9 @@
 	
 	* src/*
 	add log messages to several files
+	
+	* src/ppogl/audio/audiomgr.* src/main.cpp data/config.nut.in
+	added music and sound volume control
 
 2005-09-27
 	* data/config.nut.in

@@ -247,6 +247,16 @@ Valid values are:
 ",
 audio_format_mode = 1,
 
+sound_volume_description = @"
+This controls the volume of sounds.
+",
+sound_volume = 80,
+
+music_volume_description = @"
+This controls the volume of sounds.
+",
+music_volume = 80,
+
 do_intro_animation_description = @"
 If false, then the introductory animation sequence will be skipped.
 ",

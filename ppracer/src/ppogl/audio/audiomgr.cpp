@@ -104,7 +104,29 @@ AudioMgr::enableMusic(bool enable)
 	m_musicEnabled=enable;
 }
 
+void
+AudioMgr::setMusicVolume(int volume)
+{
+	if(!m_initialized) return;
+	
+	if(volume<0) volume=0;
+	else if(volume>100) volume=100;
+	volume = MIX_MAX_VOLUME * volume/100;
+	
+	Mix_VolumeMusic(volume);
+}
 
+void
+AudioMgr::setSoundVolume(int volume)
+{
+	if(!m_initialized) return;
+	
+	if(volume<0) volume=0;
+	else if(volume>100) volume=100;
+	volume = MIX_MAX_VOLUME * volume/100;
+	
+	Mix_Volume(-1,volume);
+}
 
 bool
 AudioMgr::loadMusic(const std::string &binding, const std::string &filename)

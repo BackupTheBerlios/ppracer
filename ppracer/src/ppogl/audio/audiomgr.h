@@ -63,6 +63,10 @@ public:
 	bool init(int freq, Format format, bool stereo=true, int buffers=2048);
 	void enableSound(bool enable=true);
 	void enableMusic(bool enable=true);
+	
+	void setMusicVolume(int volume);
+	void setSoundVolume(int volume);
+	
 	bool isInitialized(){return m_initialized;};
 		
 	bool loadMusic(const std::string &binding, const std::string &filename);
@@ -110,7 +114,13 @@ public:
 	~AudioMgr(){};
 
 	bool init(int freq, Format format, bool stereo=true, int buffers=2048){return true;};
-
+	void enableSound(bool enable=true){return;}
+	void enableMusic(bool enable=true){return;}
+	
+	void setMusicVolume(int volume){return;}
+	void setSoundVolume(int volume){return;}
+	
+	bool isInitialized(){return false;};
 	bool loadMusic(const std::string &binding, const std::string &filename){return true;};
 	bool bindMusic(const std::string &binding, const std::string &name){return true;};
 	bool unbindMusic(const std::string &binding){return true;};

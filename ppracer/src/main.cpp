@@ -328,6 +328,12 @@ main(int argc, char *argv[])
 		if(PPConfig.getBool("music_enabled")==false){
 			ppogl::AudioMgr::getInstance().enableMusic(false);
 		}
+		
+		// set volumes
+		ppogl::AudioMgr::getInstance().setMusicVolume(
+			PPConfig.getInt("music_volume"));
+		ppogl::AudioMgr::getInstance().setSoundVolume(
+			PPConfig.getInt("sound_volume"));		
 	}
 		
 	PP_MESSAGE("Load translation: " << PPConfig.getString("ui_language"));
