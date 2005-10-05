@@ -77,6 +77,8 @@ libppogl_a_SOURCES = 		\
 	ui/textarea.h		\
 	ui/frame.cpp		\
 	ui/frame.h		\
+	ui/scale.cpp		\
+	ui/scale.h		\
 	\
 	\
 	audio/sound.cpp		\
