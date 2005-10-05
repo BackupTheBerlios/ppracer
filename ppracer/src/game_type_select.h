@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,22 +21,19 @@
 #define _GAME_TYPE_SELECT_H_
 
 #include "loop.h"
-#include "ppgltk/button.h"
-
+#include "ppogl/ui.h"
+#include "ppogl/ui/scale.h"
 
 class GameTypeSelect : public GameMode
 {
-	pp::Button* mp_enterEventBtn;
-	pp::Button* mp_practiceBtn;
-	pp::Button* mp_configureBtn;
-	pp::Button* mp_creditsBtn;
-	pp::Button* mp_quitBtn;
-	
-	void setWidgetPositions();
+	ppogl::Button m_enterEventBtn;
+	ppogl::Button m_practiceBtn;
+	ppogl::Button m_configureBtn;
+	ppogl::Button m_creditsBtn;
+	ppogl::Button m_quitBtn;
 	
 public:
 	GameTypeSelect();
-	~GameTypeSelect();
 
 	void loop(float timeStep);
 	bool keyPressEvent(SDLKey key);

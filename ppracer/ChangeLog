@@ -1,4 +1,11 @@
 
+2005-10-04
+	* src/ppogl/ui/scale.*
+	added hscale widget (horizontal slider)
+	
+	* src/audioconfig.*
+	replaced enable sound/music checkboxes with volume controls
+
 2005-10-03
 	* src/*
 	fixed several memleaks

@@ -26,10 +26,10 @@ AudioConfig::AudioConfig()
  : m_bpsListLbl(_("Bits Per Sample:")),
    m_freqListLbl(_("Samples Per Second:")),
    m_audioLbl(_("Disable Audio:")),
-   m_soundLbl(_("Sound Effects:")),
-   m_musicLbl(_("Music:")),
    m_stereoLbl(_("Stereo:")),
-   m_warningLbl(_("(needs restart)"))
+   m_warningLbl(_("(needs restart)")),
+   m_soundVolumeLbl(_("Sound Volume:")),
+   m_musicVolumeLbl(_("Music Volume:"))  
 {
 	setTitle(_("Audio Configuration"));
 
@@ -40,23 +40,6 @@ AudioConfig::AudioConfig()
 	m_audioBox.setPosition(position2);
 	m_audioBox.alignment.right();
 	m_audioBox.setSelected(PPConfig.getBool("disable_audio"));
-		
-	position.y()-=40;
-	position2.y()-=40;
-	
-	m_soundLbl.setPosition(position);
-	m_soundBox.setPosition(position2);
-	m_soundBox.alignment.right();
-	m_soundBox.setSelected(PPConfig.getBool("sound_enabled"));
-	
-	position.y()-=40;
-	position2.y()-=40;
-	
-	m_musicLbl.setPosition(position);
-	m_musicBox.setPosition(position2);
-	m_musicBox.alignment.right();
-	m_musicBox.setSelected(PPConfig.getBool("music_enabled"));
-
 	
 	position.y()-=40;
 	position2.y()-=40;
@@ -65,6 +48,24 @@ AudioConfig::AudioConfig()
 	m_stereoBox.setPosition(position2);
 	m_stereoBox.alignment.right();
 	m_stereoBox.setSelected(PPConfig.getBool("audio_stereo"));
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_soundVolumeLbl.setPosition(position);
+	m_soundVolumeHScl.setPosition(position2);
+	m_soundVolumeHScl.alignment.right();
+	m_soundVolumeHScl.setValue(
+			PPConfig.getInt("sound_volume")/100.0f);
+	
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_musicVolumeLbl.setPosition(position);
+	m_musicVolumeHScl.setPosition(position2);
+	m_musicVolumeHScl.alignment.right();
+	m_musicVolumeHScl.setValue(
+			PPConfig.getInt("music_volume")/100.0f);
 	
 	position.y()-=60;
 	position2.y()-=60;
@@ -101,9 +102,17 @@ void
 AudioConfig::apply()
 {
 	PPConfig.setBool("disable_audio",m_audioBox.isSelected());
-	PPConfig.setBool("sound_enabled",m_soundBox.isSelected());
-	PPConfig.setBool("music_enabled",m_musicBox.isSelected());
 	PPConfig.setBool("audio_stereo",m_stereoBox.isSelected());
+	
+	int soundVolume = int(m_soundVolumeHScl.getValue()*100.0f);
+	if(soundVolume<=0) PPConfig.setBool("sound_enabled",false);	
+	else PPConfig.setBool("sound_enabled",true);
+	PPConfig.setInt("sound_volume",soundVolume);
+
+	int musicVolume = int(m_musicVolumeHScl.getValue()*100.0f);
+	if(musicVolume<=0) PPConfig.setBool("music_enabled",false);	
+	else PPConfig.setBool("music_enabled",true);
+	PPConfig.setInt("music_volume",musicVolume);
 	
 	ppogl::ListBox<int>::iterator bpsit = m_bpsListBox.getSelected();
 	PPConfig.setInt("audio_format_mode",(*bpsit).data);
@@ -121,9 +130,12 @@ AudioConfig::apply()
 		ppogl::AudioMgr::getInstance().enableSound(false);
 		ppogl::AudioMgr::getInstance().enableMusic(false);
 	}else{
-		ppogl::AudioMgr::getInstance().enableSound(m_soundBox.isSelected());
-		ppogl::AudioMgr::getInstance().enableMusic(m_musicBox.isSelected());
+		ppogl::AudioMgr::getInstance().enableSound(soundVolume>0);
+		ppogl::AudioMgr::getInstance().enableMusic(musicVolume>0);
+		
+		ppogl::AudioMgr::getInstance().setSoundVolume(soundVolume);
+		ppogl::AudioMgr::getInstance().setMusicVolume(musicVolume);
 	}	
-	
+		
 	setMode(GameMode::prevmode);
 }

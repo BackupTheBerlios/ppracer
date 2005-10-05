@@ -37,6 +37,7 @@ UITheme::UITheme()
 	
 	checkBoxTex = ppogl::TextureMgr::getInstance().get("checkmark");
 	listBoxTex = ppogl::TextureMgr::getInstance().get("listbox_arrows");
+	hScaleTex = ppogl::TextureMgr::getInstance().get("hscale_arrows");	
 }
 
 void

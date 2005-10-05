@@ -21,32 +21,33 @@
 
 #include "configmode.h"
 
-#include "ppgltk/listbox.h"
-#include "ppgltk/checkbox.h"
-
-typedef struct{
-	std::string name;
-	int data;
-}bps_t, freq_t;
+#include "ppogl/ui.h"
 
 class AudioConfig : public ConfigMode
 {
-	pp::Listbox<bps_t> *mp_bpsListbox;
-	pp::Listbox<freq_t> *mp_freqListbox;
+	ppogl::Label  m_bpsListLbl;
+	ppogl::ListBox<int> m_bpsListBox;
 	
-	std::list<bps_t> m_bpsList;
-	std::list<freq_t> m_freqList;
+	ppogl::Label m_freqListLbl;
+	ppogl::ListBox<int> m_freqListBox;
 	
-	pp::CheckBox *mp_audioBox;
-	pp::CheckBox *mp_soundBox;
-	pp::CheckBox *mp_musicBox;
-	pp::CheckBox *mp_stereoBox;
+	ppogl::Label m_audioLbl;
+	ppogl::CheckBox m_audioBox;
+	
+	ppogl::Label m_stereoLbl;
+	ppogl::CheckBox m_stereoBox;
 			
+	ppogl::Label m_warningLbl;
+	
+	ppogl::Label m_soundVolumeLbl;
+	ppogl::HScale m_soundVolumeHScl;
+	
+	ppogl::Label m_musicVolumeLbl;
+	ppogl::HScale m_musicVolumeHScl;
+	
 public:
 	AudioConfig();
-	~AudioConfig();
 
-	void setWidgetPositions();
 	void apply();
 };
 

@@ -25,7 +25,6 @@
 
 #include "ppogl/ui/label.h"
 
-
 class SplashScreen : public GameMode
 {
 	ppogl::Label m_anykeyLbl;

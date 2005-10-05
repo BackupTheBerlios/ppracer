@@ -253,7 +253,7 @@ This controls the volume of sounds.
 sound_volume = 80,
 
 music_volume_description = @"
-This controls the volume of sounds.
+This controls the volume of music.
 ",
 music_volume = 80,
 

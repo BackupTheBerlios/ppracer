@@ -177,6 +177,9 @@ Textures.load("listbox_arrows",
 			  "textures/listbox_arrows.png");
 Textures.bind("textarea_arrows","listbox_arrows");
 
+Textures.load("hscale_arrows",
+			  "textures/hscale_arrows.png");
+
 Textures.load("mirror_button",
 			  "textures/mirror_button.png");
 

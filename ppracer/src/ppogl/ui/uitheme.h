@@ -53,8 +53,11 @@ public:
 	///default texture for checkboxes
 	ppogl::TextureRef checkBoxTex;
 	
-	//default texture for up/down buttons in listboxes	
+	///default texture for up/down buttons in listboxes	
 	ppogl::TextureRef listBoxTex;
+	
+	///default texture for buttons in hscale widgets
+	ppogl::TextureRef hScaleTex;
 
 	///draw the background for the ui
 	void drawDecoration(int width, int height);

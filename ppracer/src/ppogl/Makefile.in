@@ -65,9 +65,9 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	button.$(OBJEXT) label.$(OBJEXT) uimgr.$(OBJEXT) \
 	uitheme.$(OBJEXT) alignment.$(OBJEXT) checkbox.$(OBJEXT) \
 	listbox.$(OBJEXT) imagebutton.$(OBJEXT) entry.$(OBJEXT) \
-	textarea.$(OBJEXT) frame.$(OBJEXT) sound.$(OBJEXT) \
-	music.$(OBJEXT) audiomgr.$(OBJEXT) geoms.$(OBJEXT) \
-	model.$(OBJEXT) model_ac.$(OBJEXT)
+	textarea.$(OBJEXT) frame.$(OBJEXT) scale.$(OBJEXT) \
+	sound.$(OBJEXT) music.$(OBJEXT) audiomgr.$(OBJEXT) \
+	geoms.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -271,6 +271,8 @@ libppogl_a_SOURCES = \
 	ui/textarea.h		\
 	ui/frame.cpp		\
 	ui/frame.h		\
+	ui/scale.cpp		\
+	ui/scale.h		\
 	\
 	\
 	audio/sound.cpp		\
@@ -364,6 +366,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ppogl_script.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readPNG.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/refptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sound.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textarea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textures.Po@am__quote@
@@ -754,6 +757,20 @@ frame.obj: ui/frame.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ui/frame.cpp' object='frame.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o frame.obj `if test -f 'ui/frame.cpp'; then $(CYGPATH_W) 'ui/frame.cpp'; else $(CYGPATH_W) '$(srcdir)/ui/frame.cpp'; fi`
+
+scale.o: ui/scale.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT scale.o -MD -MP -MF "$(DEPDIR)/scale.Tpo" -c -o scale.o `test -f 'ui/scale.cpp' || echo '$(srcdir)/'`ui/scale.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/scale.Tpo" "$(DEPDIR)/scale.Po"; else rm -f "$(DEPDIR)/scale.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ui/scale.cpp' object='scale.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scale.o `test -f 'ui/scale.cpp' || echo '$(srcdir)/'`ui/scale.cpp
+
+scale.obj: ui/scale.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT scale.obj -MD -MP -MF "$(DEPDIR)/scale.Tpo" -c -o scale.obj `if test -f 'ui/scale.cpp'; then $(CYGPATH_W) 'ui/scale.cpp'; else $(CYGPATH_W) '$(srcdir)/ui/scale.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/scale.Tpo" "$(DEPDIR)/scale.Po"; else rm -f "$(DEPDIR)/scale.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ui/scale.cpp' object='scale.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scale.obj `if test -f 'ui/scale.cpp'; then $(CYGPATH_W) 'ui/scale.cpp'; else $(CYGPATH_W) '$(srcdir)/ui/scale.cpp'; fi`
 
 sound.o: audio/sound.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sound.o -MD -MP -MF "$(DEPDIR)/sound.Tpo" -c -o sound.o `test -f 'audio/sound.cpp' || echo '$(srcdir)/'`audio/sound.cpp; \
