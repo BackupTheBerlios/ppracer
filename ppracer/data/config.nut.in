@@ -179,12 +179,6 @@ performance, and vice versa.
 ",
 course_detail_level = 100,
 
-terrain_error_scale_description = @"
-Amount to scale terrain errors by in order to be comparable to
-height errors.
-",
-terrain_error_scale = 0.2,
-
 disable_fog_description = @"
 If true, then fog will be turned off.
 ",

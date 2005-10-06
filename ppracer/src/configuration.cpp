@@ -27,6 +27,7 @@ static GameMode::Mode preConfigMode = GameMode::NO_MODE;
 Configuration::Configuration()
  : m_titleLbl(_("Configuration"),"heading"),
    m_generalBtn(_("General")),
+   m_graphicsBtn(_("Graphics")),
    m_videoBtn(_("Video")),
    m_audioBtn(_("Audio")),
    m_keyboardBtn(_("Keyboard")),
@@ -50,6 +51,12 @@ Configuration::Configuration()
 	m_generalBtn.alignment.center();
     m_generalBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::general));
 	
+	position.y()-=40;
+	
+	m_graphicsBtn.setPosition(position);
+	m_graphicsBtn.alignment.center();
+	m_graphicsBtn.signalClicked.Connect(ppogl::CreateSlot(this,&Configuration::graphics));	
+
 	position.y()-=40;
 	
 	m_videoBtn.setPosition(position);
@@ -125,6 +132,12 @@ void
 Configuration::general()
 {
 	setMode( CONFIG_GENERAL );
+}
+
+void
+Configuration::graphics()
+{
+	setMode( CONFIG_GRAPHICS );
 }
 
 void

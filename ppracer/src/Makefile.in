@@ -72,8 +72,9 @@ am_ppracer_OBJECTS = course_load.$(OBJEXT) course_mgr.$(OBJEXT) \
 	audioconfig.$(OBJEXT) configmode.$(OBJEXT) \
 	configuration.$(OBJEXT) generalconfig.$(OBJEXT) \
 	joystickconfig.$(OBJEXT) keyboardconfig.$(OBJEXT) \
-	stuff.$(OBJEXT) ui_snow.$(OBJEXT) game_mgr.$(OBJEXT) \
-	racingmode.$(OBJEXT) bench.$(OBJEXT) algstuff.$(OBJEXT)
+	graphicsconfig.$(OBJEXT) stuff.$(OBJEXT) ui_snow.$(OBJEXT) \
+	game_mgr.$(OBJEXT) racingmode.$(OBJEXT) bench.$(OBJEXT) \
+	algstuff.$(OBJEXT)
 ppracer_OBJECTS = $(am_ppracer_OBJECTS)
 ppracer_LDADD = $(LDADD)
 ppracer_DEPENDENCIES = ppogl/libppogl.a sqstdlib/libsqstdlib.a \
@@ -327,6 +328,8 @@ ppracer_SOURCES = \
 	joystickconfig.h			\
 	keyboardconfig.cpp			\
 	keyboardconfig.h			\
+	graphicsconfig.cpp			\
+	graphicsconfig.h			\
 	stuff.cpp				\
 	stuff.h					\
 	ui_snow.cpp				\
@@ -427,6 +430,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameconfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generalconfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/graphicsconfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hier_cb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hier_util.Po@am__quote@

@@ -22,6 +22,12 @@
 #include "stuff.h"
 #include "game_mgr.h"
 
+/// minimum terrain error scale
+#define MIN_TES 0.01f
+
+/// maximum terrain error scale
+#define MAX_TES 0.20f
+
 GeneralConfig::GeneralConfig()
  : m_uiSnowLbl(_("Show UI Snow:")),
    m_fpsLbl(_("Display FPS:")),

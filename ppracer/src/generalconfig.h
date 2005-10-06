@@ -16,13 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _GRAPHICS_CONFIG_H
-#define _GRAPHICS_CONFIG_H
+#ifndef _GENERAL_CONFIG_H
+#define _GENERAL_CONFIG_H
 
 #include "configmode.h"
 
 #include "ppogl/ui.h"
-
 #include "ppogl/ui/listbox.h"
 
 class GeneralConfig : public ConfigMode
@@ -44,7 +43,7 @@ class GeneralConfig : public ConfigMode
 	
 	ppogl::CheckBox m_shadowsBox;
 	ppogl::Label    m_shadowsLbl;
-	
+
 	ppogl::Label    m_langListLbl;
 	ppogl::ListBox<std::string> m_langListBox;
 
@@ -54,4 +53,4 @@ public:
 	void apply();
 };
 
-#endif // _GRAPHICS_CONFIG_H
+#endif // _GENERAL_CONFIG_H

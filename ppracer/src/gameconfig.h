@@ -26,7 +26,6 @@ extern bool enableStencilBuffer;
 extern bool drawTuxShadow;
 extern int tuxShadowSphereDivisions;
 	
-extern float terrainErrorScale;
 extern float courseDetails;
 extern bool useCVA;
 extern bool useTerrainEnvmap;

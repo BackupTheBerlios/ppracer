@@ -1,4 +1,11 @@
 
+2005-10-05
+	* src/graphicsconfig.*
+	added graphics configuration
+	terrain detail level
+	texture detail level
+	player detail level
+
 2005-10-04
 	* src/ppogl/ui/scale.*
 	added hscale widget (horizontal slider)

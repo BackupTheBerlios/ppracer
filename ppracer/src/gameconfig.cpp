@@ -26,7 +26,6 @@ bool enableStencilBuffer=false;
 bool drawTuxShadow=true;
 int tuxShadowSphereDivisions=3;
 	
-float terrainErrorScale=0.2;
 float courseDetails=100;
 bool useCVA=true;
 bool useTerrainEnvmap=true;
@@ -51,7 +50,6 @@ update()
 	drawTuxShadow = PPConfig.getBool("draw_tux_shadow");
 	tuxShadowSphereDivisions = PPConfig.getInt("tux_shadow_sphere_divisions");
 	
-	terrainErrorScale = PPConfig.getDouble("terrain_error_scale");
 	courseDetails = PPConfig.getInt("course_detail_level");
 	useCVA = PPConfig.getBool("use_cva");
 	useTerrainEnvmap = PPConfig.getBool("terrain_envmap");

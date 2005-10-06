@@ -25,18 +25,21 @@
 #include "quadtree.h"
 #include "gameconfig.h"
 
+/* Amount to scale terrain errors by in order to be comparable to
+   height errors */
+#define TERRAIN_ERROR_SCALE 0.15
 
 /* Distance at which we force the activation of vertices that lie on
    texture edges */
-#define VERTEX_FORCE_THRESHOLD 120
+#define VERTEX_FORCE_THRESHOLD 110
 
 /* Maximum Distance at which we magnify the error term (to minimize
    popping near the camera */
-#define ERROR_MAGNIFICATION_THRESHOLD 30
-
+#define ERROR_MAGNIFICATION_THRESHOLD 25
 
 /* Amount to magnify errors by within ERROR_MAGNIFICATION_THRESHOLD */
 #define ERROR_MAGNIFICATION_AMOUNT 3
+
 
 /* Environment map alpha value, integer from 0-255 */ 
 #define ENV_MAP_ALPHA 50
@@ -332,7 +335,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 
 	    if ( different_terrains ) {
 		ForceSouthVert = true;
-		terrain_error = GameConfig::terrainErrorScale * whole * whole;
+		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
 	    } else {
 		ForceSouthVert = false;
 	    }
@@ -368,7 +371,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 
 	    if ( different_terrains ) {
 		ForceEastVert = true;
-		terrain_error = GameConfig::terrainErrorScale * whole * whole;
+		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
 	    } else {
 		ForceEastVert = false;
 	    }
@@ -461,7 +464,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     terrain_error *= whole * whole;
 
     /* and finally scale it so that it's comparable to height error */
-    terrain_error *= GameConfig::terrainErrorScale;
+    terrain_error *= TERRAIN_ERROR_SCALE;
 
     if ( terrain_error > maxerror ) {
 	maxerror = terrain_error;
@@ -803,8 +806,8 @@ quadsquare::vertexTest(int x, float y, int z, float error, const float Viewer[3]
     if ( d < ERROR_MAGNIFICATION_THRESHOLD ) {
 		error *= ERROR_MAGNIFICATION_AMOUNT;
     }
-
-    return error * GameConfig::courseDetails  > d;
+	
+    return (error * GameConfig::courseDetails) > d;
 }
 
 
@@ -825,7 +828,7 @@ quadsquare::boxTest(int x, int z, float size, float miny, float maxy, float erro
 		error *= ERROR_MAGNIFICATION_AMOUNT;
     }
 
-    if ( error * GameConfig::courseDetails > d ) {
+    if ( (error * GameConfig::courseDetails) > d ) {
 		return true;
     }
 
@@ -984,25 +987,15 @@ void
 quadsquare::drawTris(int terrain)
 {
     int tmp_min_idx = VertexArrayMinIdx[terrain];
-    if ( glLockArraysEXT_p && GameConfig::useCVA) {
-
-	/*
-	if ( getparam_cva_hack() ) {
-	    // This is a hack that seems to fix the "psychedelic colors" on 
-	    //   some drivers (TNT/TNT2, for example)
-	    if ( tmp_min_idx == 0 ) {
-		tmp_min_idx = 1;
-	    }
-	} 
-	*/
-	glLockArraysEXT_p( tmp_min_idx, 
-			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1 ); 
+    if(glLockArraysEXT_p && GameConfig::useCVA){
+		glLockArraysEXT_p(tmp_min_idx, 
+			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1); 
     }
 
-    gl::DrawElements( GL_TRIANGLES, VertexArrayCounter[terrain],
-		    GL_UNSIGNED_INT, VertexArrayIndices[terrain] );
+    gl::DrawElements(GL_TRIANGLES, VertexArrayCounter[terrain],
+		    GL_UNSIGNED_INT, VertexArrayIndices[terrain]);
 
-    if ( glUnlockArraysEXT_p && GameConfig::useCVA) {
+    if(glUnlockArraysEXT_p && GameConfig::useCVA){
 		glUnlockArraysEXT_p();
     }
 }
@@ -1047,9 +1040,6 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 	initArrayCounters();
 	renderAux(cd, SomeClip);
-
-	
-	//for (j=0; j<(int)num_terrains; j++) {
 	
 	std::list<int>::iterator it;
 	for (it=usedTerrains.begin(); it!=usedTerrains.end(); it++) {
@@ -1060,7 +1050,6 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 		for (i=0; i<int(VertexArrayCounter[(*it)]);i++){
 			idx = VertexArrayIndices[(*it)][i];
-			//colorval(idx, 3) =  ( (*it)<= Terrain[idx] ) ? 255 : 0;
 			colorval(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
 

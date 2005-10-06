@@ -28,6 +28,7 @@ class Configuration : public GameMode
 {
 	ppogl::Label m_titleLbl;
 	ppogl::Button m_generalBtn;
+	ppogl::Button m_graphicsBtn;
 	ppogl::Button m_videoBtn;
 	ppogl::Button m_audioBtn;
 	ppogl::Button m_keyboardBtn;	
@@ -44,6 +45,7 @@ public:
 
 	void back();
 	void general();
+	void graphics();
 	void video();
 	void audio();
 	void keyboard();

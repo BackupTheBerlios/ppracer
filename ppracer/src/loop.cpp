@@ -48,6 +48,7 @@
 #include "audioconfig.h"
 #include "keyboardconfig.h"
 #include "joystickconfig.h"
+#include "graphicsconfig.h"
 
 #include "game_mgr.h"
 
@@ -167,20 +168,23 @@ GameMode::mainLoop()
 			case CONFIG_JOYSTICK:
 				GameMode::currentMode = new JoystickConfig();
 				break;
+			case CONFIG_GRAPHICS:
+				GameMode::currentMode = new GraphicsConfig();
+				break;
 			case EVENT_RACE_SELECT:
 				GameMode::currentMode = new EventRaceSelect();
 				break;
 			case BENCHMARK:
 				GameMode::currentMode = new Benchmark();
 				break;
-			default:{}
-				//todo: add fallback			
+			default:
+				PP_NOT_REACHED();
 		}
 		
 		GameMode::mode = new_mode;
 	
 		// Reset time step clock so that there isn't a sudden
-		//  jump when we start the new mode 
+		// jump when we start the new mode 
 		GameMgr::getInstance().resetTimeStep();
 	}
 	

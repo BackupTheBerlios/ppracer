@@ -120,6 +120,8 @@ ppracer_SOURCES =				\
 	joystickconfig.h			\
 	keyboardconfig.cpp			\
 	keyboardconfig.h			\
+	graphicsconfig.cpp			\
+	graphicsconfig.h			\
 	stuff.cpp				\
 	stuff.h					\
 	ui_snow.cpp				\
