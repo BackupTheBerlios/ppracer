@@ -130,7 +130,7 @@ Tux::draw()
     // XXX: For some reason, inserting this call here makes Tux render
     // with correct lighting under Mesa 3.1. I'm guessing it's a Mesa bug.
     //
-    gl::Material( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, ppogl::Color::black);
+    //gl::Material( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, ppogl::Color::black);
 
     set_gl_options( TUX );
 

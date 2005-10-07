@@ -35,15 +35,6 @@ class GeneralConfig : public ConfigMode
 	ppogl::CheckBox m_coursePercentageBox;
 	ppogl::Label    m_coursePercentageLbl;
 	
-	ppogl::CheckBox m_fogBox;
-	ppogl::Label    m_fogLbl;
-	
-	ppogl::CheckBox m_reflectionsBox;
-	ppogl::Label    m_reflectionsLbl;
-	
-	ppogl::CheckBox m_shadowsBox;
-	ppogl::Label    m_shadowsLbl;
-
 	ppogl::Label    m_langListLbl;
 	ppogl::ListBox<std::string> m_langListBox;
 

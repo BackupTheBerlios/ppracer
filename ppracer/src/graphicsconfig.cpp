@@ -35,15 +35,48 @@
 
 
 GraphicsConfig::GraphicsConfig()
- : m_terrainDetailLbl(_("Terrain Details:")),
-   m_textureDetailLbl(_("Texture Details:")),
+ : m_fogLbl(_("Draw Fog:")),
+   m_reflectionsLbl(_("Reflections:")),
+   m_shadowsLbl(_("Shadows:")),
+   m_detailsLbl(_("Detail settings")),
+   m_terrainDetailLbl(_("Terrain:")),
+   m_textureDetailLbl(_("Textures:")),
    m_warningLbl(_("(needs restart)")),
-   m_playerDetailLbl(_("Player Model Details:"))
+   m_playerDetailLbl(_("Player Model:"))
 {
 	setTitle(_("Graphics Configuration"));	
 			
 	ppogl::Vec2d position(40,350);
 	ppogl::Vec2d position2(600,350);
+		
+	m_fogLbl.setPosition(position);
+	m_fogBox.setPosition(position2);
+	m_fogBox.alignment.right();
+	m_fogBox.setSelected(!PPConfig.getBool("disable_fog"));
+
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_reflectionsLbl.setPosition(position);
+	m_reflectionsBox.setPosition(position2);
+	m_reflectionsBox.alignment.right();
+	m_reflectionsBox.setSelected(PPConfig.getBool("terrain_envmap"));
+
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_shadowsLbl.setPosition(position);
+	m_shadowsBox.setPosition(position2);
+	m_shadowsBox.alignment.right();
+	m_shadowsBox.setSelected(PPConfig.getBool("draw_tux_shadow"));
+		
+	position.y()-=50;
+	position2.y()-=50;
+	
+	m_detailsLbl.setPosition(position);
+	
+	position.y()-=40;
+	position2.y()-=40;
 	
 	m_terrainDetailLbl.setPosition(position);
 	m_terrainDetailHScl.setPosition(position2);
@@ -59,8 +92,8 @@ GraphicsConfig::GraphicsConfig()
 	m_textureDetailHScl.setStep(0.2f);
 	m_textureDetailHScl.setValue(getTextureDetailLevel());
 	
-	position.y()-=60;
-	position2.y()-=60;
+	position.y()-=50;
+	position2.y()-=50;
 	
 	m_warningLbl.setPosition(position);
 	
@@ -127,10 +160,14 @@ GraphicsConfig::setPlayerDetailLevel(float value)
 void
 GraphicsConfig::apply()
 {
+	PPConfig.setBool("disable_fog", !m_fogBox.isSelected());
+	PPConfig.setBool("terrain_envmap", m_reflectionsBox.isSelected());
+	PPConfig.setBool("draw_tux_shadow", m_shadowsBox.isSelected());
+	
 	setTerrainDetailLevel(m_terrainDetailHScl.getValue());
 	setTextureDetailLevel(m_textureDetailHScl.getValue());
 	setPlayerDetailLevel(m_playerDetailHScl.getValue());
- 	
+ 		
 	write_config_file();
 
 	setMode( GameMode::prevmode );

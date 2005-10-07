@@ -147,14 +147,6 @@ getopts( int argc, char *argv[] )
 	}	
 }
 
-// this function is called on exit
-void
-cleanup()
-{
-    write_config_file();
-	winsys_shutdown();
-}
-
 static void
 init_log()
 {
@@ -258,8 +250,6 @@ main(int argc, char *argv[])
      */
     winsys_init(WINDOW_TITLE, WINDOW_TITLE);
 	
-    /* Ingore key-repeat messages */
-    winsys_enable_key_repeat(false);
 
     /* 
      * Initial OpenGL settings 
@@ -367,8 +357,8 @@ main(int argc, char *argv[])
 	
     GameMgr::getInstance().difficulty = DIFFICULTY_LEVEL_NORMAL;
 	
-	winsys_show_cursor( false );
-
+	SDL_ShowCursor(false);
+	
 	PP_MESSAGE("Entering event loop");
     winsys_process_events();
 	

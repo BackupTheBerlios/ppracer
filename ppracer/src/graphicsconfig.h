@@ -25,6 +25,17 @@
 
 class GraphicsConfig : public ConfigMode
 {
+	ppogl::CheckBox m_fogBox;
+	ppogl::Label    m_fogLbl;
+	
+	ppogl::CheckBox m_reflectionsBox;
+	ppogl::Label    m_reflectionsLbl;
+	
+	ppogl::CheckBox m_shadowsBox;
+	ppogl::Label    m_shadowsLbl;
+		
+	ppogl::Label    m_detailsLbl;
+	
 	ppogl::HScale   m_terrainDetailHScl;
 	ppogl::Label    m_terrainDetailLbl;
 	

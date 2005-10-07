@@ -22,19 +22,10 @@
 #include "stuff.h"
 #include "game_mgr.h"
 
-/// minimum terrain error scale
-#define MIN_TES 0.01f
-
-/// maximum terrain error scale
-#define MAX_TES 0.20f
-
 GeneralConfig::GeneralConfig()
  : m_uiSnowLbl(_("Show UI Snow:")),
    m_fpsLbl(_("Display FPS:")),
    m_coursePercentageLbl(_("Display Progress Bar:")),
-   m_fogLbl(_("Draw Fog:")),
-   m_reflectionsLbl(_("Reflections:")),
-   m_shadowsLbl(_("Shadows:")),
    m_langListLbl(_("Language:")),
    m_langListBox(240)
 {
@@ -87,30 +78,6 @@ GeneralConfig::GeneralConfig()
 	m_coursePercentageBox.setPosition(position2);
 	m_coursePercentageBox.alignment.right();
 	m_coursePercentageBox.setSelected(PPConfig.getBool("display_course_percentage"));
-	
-	position.y()-=40;
-	position2.y()-=40;
-	
-	m_fogLbl.setPosition(position);
-	m_fogBox.setPosition(position2);
-	m_fogBox.alignment.right();
-	m_fogBox.setSelected(!PPConfig.getBool("disable_fog"));
-
-	position.y()-=40;
-	position2.y()-=40;
-	
-	m_reflectionsLbl.setPosition(position);
-	m_reflectionsBox.setPosition(position2);
-	m_reflectionsBox.alignment.right();
-	m_reflectionsBox.setSelected(PPConfig.getBool("terrain_envmap"));
-
-	position.y()-=40;
-	position2.y()-=40;
-	
-	m_shadowsLbl.setPosition(position);
-	m_shadowsBox.setPosition(position2);
-	m_shadowsBox.alignment.right();
-	m_shadowsBox.setSelected(PPConfig.getBool("draw_tux_shadow"));
 }
 
 void
@@ -123,9 +90,6 @@ GeneralConfig::apply()
 	PPConfig.setBool("ui_snow", m_uiSnowBox.isSelected());
 	PPConfig.setBool("display_fps", m_fpsBox.isSelected());
 	PPConfig.setBool("display_course_percentage", m_coursePercentageBox.isSelected());
-	PPConfig.setBool("disable_fog", !m_fogBox.isSelected());
-	PPConfig.setBool("terrain_envmap", m_reflectionsBox.isSelected());
-	PPConfig.setBool("draw_tux_shadow", m_shadowsBox.isSelected());
 	
 	write_config_file();
 

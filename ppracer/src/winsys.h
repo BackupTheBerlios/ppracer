@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -18,25 +18,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef WINSYS_H
-#define WINSYS_H 1
 
-#include "SDL.h"
+#ifndef _WINSYS_H_
+#define _WINSYS_H_
 
 void setup_sdl_video_mode();
-void winsys_post_redisplay();
+void winsys_init(char *window_title, char *icon_title);
+void winsys_process_events(); // never returns
 
-void winsys_swap_buffers();
-void winsys_enable_key_repeat( bool enabled );
-void winsys_warp_pointer( int x, int y );
-void winsys_show_cursor( bool visible );
+void winsys_exit(int code);
 
-void winsys_init( int *argc, char **argv, char *window_title,
-		  char *icon_title );
-void winsys_shutdown();
-
-void winsys_process_events(); /* Never returns */
-
-void winsys_exit( int code );
-
-#endif /* WINSYS_H */
+#endif // _WINSYS_H_

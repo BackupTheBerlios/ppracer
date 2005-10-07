@@ -22,54 +22,10 @@
 #include "winsys.h"
 #include "loop.h"
 #include "render_util.h"
+#include "stuff.h"
 
 #include "ppogl/base/glwrappers.h"
 
-extern void cleanup();
-
-
-/* Windowing System Abstraction Layer */
-/* Abstracts creation of windows, handling of events, etc. */
-
-#if defined( HAVE_SDL_MIXER )
-#   include "SDL_mixer.h"
-#endif
-
-static SDL_Surface *screen = NULL;
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Copies the OpenGL back buffer to the front buffer
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_swap_buffers()
-{
-    SDL_GL_SwapBuffers();
-}
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Moves the mouse pointer to (x,y)
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_warp_pointer( int x, int y )
-{
-    SDL_WarpMouse( x, y );
-}
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Sets up the SDL OpenGL rendering context
-  \author  jfpatry
-  \date    Created:  2000-10-20
-  \date    Modified: 2000-10-20
-*/
 void
 setup_sdl_video_mode()
 {
@@ -96,24 +52,19 @@ setup_sdl_video_mode()
 	}
 
     switch(PPConfig.getInt("bpp_mode")){
-    case 0:
-		/* Use current bpp */
-		bpp = 0;
-	break;
-
-    case 1:
-		/* 16 bpp */
-		bpp = 16;
-	break;
-
-    case 2:
-		/* 32 bpp */
-		bpp = 32;
-	break;
-
-    default:
-		PPConfig.setInt("bpp_mode", 0);
-		bpp = 0;
+    	case 0:
+			bpp = 0;
+			break;
+    	case 1:
+			bpp = 16;
+			break;
+	    case 2:
+			bpp = 32;
+			break;
+    	default:
+			PPConfig.setInt("bpp_mode", 0);
+			bpp = 0;
+			break;
     }
 
     width = PPConfig.getInt("x_resolution");
@@ -126,8 +77,8 @@ setup_sdl_video_mode()
 
 	PP_MESSAGE("Init video: " << width << "x" << height << " bpp:" << bpp);  
 	
-    if ( ( screen = SDL_SetVideoMode( width, height, bpp, video_flags ) ) ==  NULL ){
-		PP_ERROR( "Couldn't initialize video: " << SDL_GetError() );
+    if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
+		PP_ERROR("Couldn't initialize video: " << SDL_GetError());
     }
 		
 	GameMode::resolutionX = width;
@@ -136,183 +87,92 @@ setup_sdl_video_mode()
 	gl::Viewport(0,0,width,height);
 }
 
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Initializes the OpenGL rendering context, and creates a window (or 
-  sets up fullscreen mode if selected)
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
 void
 winsys_init(char *window_title, char *icon_title)
 {
-    PP_MESSAGE("Init SDL");
-	
+	PP_MESSAGE("Init SDL");
 	Uint32 sdl_flags = SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE;
-
-    /*
-     * Initialize SDL
-     */
-    if(SDL_Init(sdl_flags) < 0){
+	if(SDL_Init(sdl_flags) < 0){
 		PP_ERROR("Couldn't initialize SDL: " << SDL_GetError());
-    }
+	}
 
-    /* 
-     * Init video 
-     */
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	// init video 
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    setup_sdl_video_mode();
+	setup_sdl_video_mode();
 
-    SDL_WM_SetCaption(window_title, icon_title);
-}
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Deallocates resources in preparation for program termination
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_shutdown()
-{
-    PP_MESSAGE("Quit SDL");
-	SDL_Quit();
-}
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Enables/disables key repeat messages from being generated
-  \return  
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_enable_key_repeat( bool enabled )
-{
-    if ( enabled ) {
-	SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY,
-			     SDL_DEFAULT_REPEAT_INTERVAL );
-    } else {
+	SDL_WM_SetCaption(window_title, icon_title);
+	
 	SDL_EnableKeyRepeat( 0, 0 );
-    }
 }
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Shows/hides mouse cursor
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_show_cursor( bool visible )
-{
-    SDL_ShowCursor( visible );
-}
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Processes and dispatches events.  This function never returns.
-  \return  No.
-  \author  jfpatry
-  \date    Created:  2000-10-19
-  \date    Modified: 2000-10-19
-*/
-void winsys_process_events()
+ 
+void
+winsys_process_events()
 {
 	SDL_Event event; 
     int x, y;
 
-    while (true) {
+    while(true){
+		SDL_LockAudio();
+		SDL_UnlockAudio();
 
-	SDL_LockAudio();
-	SDL_UnlockAudio();
+		while(SDL_PollEvent(&event)){
+			switch(event.type){
+				case SDL_KEYDOWN:
+					SDL_GetMouseState(&x, &y);
+					loop_keyboard_func(event.key.keysym.sym,
+							event.key.keysym.mod, false, x, y);
+					break;
+	    		case SDL_KEYUP:
+					SDL_GetMouseState( &x, &y );
+					loop_keyboard_func( event.key.keysym.sym,
+							event.key.keysym.mod, true, x, y);
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+				case SDL_MOUSEBUTTONUP:
+					loop_mouse_func( event.button.button,
+				   			event.button.state,
+				   			event.button.x,
+				   			event.button.y );
+					break;
+				case SDL_MOUSEMOTION:
+					if(event.motion.state){
+		    			// buttons are down
+						loop_mouse_motion_func( event.motion.x, event.motion.y );
+					}else{
+		    			// no buttons are down
+						loop_mouse_motion_func( event.motion.x, event.motion.y );
+					}
+					break;
+	    		case SDL_VIDEORESIZE:
+					PPConfig.setInt("x_resolution",event.resize.w);
+					PPConfig.setInt("y_resolution",event.resize.h);
+					setup_sdl_video_mode();
+		    		reshape(event.resize.w, event.resize.h);
+					break;
+				case SDL_QUIT:
+					winsys_exit(0);		
+					break;
+	    	}
 
-	while ( SDL_PollEvent( &event ) ) {
-	    
-	    switch ( event.type ) {
-	    case SDL_KEYDOWN:
-		    SDL_GetMouseState( &x, &y );
-			loop_keyboard_func( event.key.keysym.sym,
-						event.key.keysym.mod,
-				      	false,
-				      	x, y );
-			break;
-
-	    case SDL_KEYUP:
-		    SDL_GetMouseState( &x, &y );
-		    loop_keyboard_func( event.key.keysym.sym,
-				      	event.key.keysym.mod,
-				      	true,
-				      	x, y );
-		break;
-
-	    case SDL_MOUSEBUTTONDOWN:
-	    case SDL_MOUSEBUTTONUP:
-			loop_mouse_func( event.button.button,
-				   event.button.state,
-				   event.button.x,
-				   event.button.y );
-		break;
-
-	    case SDL_MOUSEMOTION:
-		if ( event.motion.state ) {
-		    /* buttons are down */
-			loop_mouse_motion_func( event.motion.x,
-					event.motion.y );
-		} else {
-		    /* no buttons are down */
-			loop_mouse_motion_func( event.motion.x,
-						event.motion.y );
+	    	SDL_LockAudio();
+	    	SDL_UnlockAudio();
 		}
-		break;
 
-	    case SDL_VIDEORESIZE:
-			PPConfig.setInt("x_resolution",event.resize.w);
-			PPConfig.setInt("y_resolution",event.resize.h);
-			setup_sdl_video_mode();
-		    reshape( event.resize.w,
-				     event.resize.h );
-		break;
-			
-		case SDL_QUIT:
-			winsys_exit(0);		
-			break;
-		
-	    }
+		GameMode::mainLoop();
 
-	    SDL_LockAudio();
-	    SDL_UnlockAudio();
-	}
-
-	GameMode::mainLoop();
-
-	/* Delay for 1 ms.  This allows the other threads to do some
-	   work (otherwise the audio thread gets starved). */
-	SDL_Delay(1);
-
+		// delay for 1ms to alow other threads to do some work
+		SDL_Delay(1);
     }
 
-    /* Never exits */
     PP_NOT_REACHED();
 }
-
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Exits the program
-  \author  jfpatry
-  \date    Created:  2000-10-20
-  \date    Modified: 2000-10-20
-*/
 
 void
 winsys_exit(int code)
 {
-    cleanup();	
+    write_config_file();
+	PP_MESSAGE("Quit SDL");
+	SDL_Quit();
 	exit(code);
 }
