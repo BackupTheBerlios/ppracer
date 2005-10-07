@@ -28,7 +28,6 @@
 #include "track_marks.h"
 #include "viewfrustum.h"
 #include "course_load.h"
-#include "course_quad.h"
 #include "elements.h"
 
 #include "ppogl/base/defs.h"

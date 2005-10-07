@@ -21,7 +21,6 @@
 
 #include "course_load.h"
 #include "course_render.h"
-#include "course_quad.h"
 #include "game_mgr.h"
 
 #include "ppogl/base/glwrappers.h"

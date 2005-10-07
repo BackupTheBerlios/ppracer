@@ -23,7 +23,6 @@
 #include "course_render.h"
 #include "keyframe.h"
 #include "phys_sim.h"
-#include "course_quad.h"
 #include "track_marks.h"
 #include "course_mgr.h"
 #include "game_mgr.h"
