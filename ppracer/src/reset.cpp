@@ -76,15 +76,13 @@ Reset::loop(float timeStep)
     setup_view_frustum( players[0], NEAR_CLIP_DIST, 
 			PPConfig.getInt("forward_clip_distance") );
 
-    draw_sky(players[0].view.pos);
+    courseRenderer.setClipping(true);
 
-    draw_fog_plane();
+	setup_course_lighting();
+	
 
-    set_course_clipping( true );
-    set_course_eye_point( players[0].view.pos );
-    setup_course_lighting();
-    render_course();
-    draw_elements();
+	courseRenderer.render(players[0].view.pos);
+	
 
     if((elapsed_time > BLINK_IN_PLACE_TIME) && (!m_positionReset)){
 			

@@ -19,84 +19,43 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "course_load.h"
 #include "course_render.h"
-#include "phys_sim.h"
-#include "hier_util.h"
-#include "gl_util.h"
-#include "render_util.h"
-#include "fog.h"
-#include "course_quad.h"
-#include "viewfrustum.h"
-#include "track_marks.h"
-#include "gameconfig.h"
 
+#include "render_util.h"
+#include "gl_util.h"
+#include "gameconfig.h"
+#include "fog.h"
+#include "track_marks.h"
+#include "viewfrustum.h"
+#include "course_load.h"
+#include "course_quad.h"
 #include "elements.h"
 
 #include "ppogl/base/defs.h"
 #include "ppogl/base/vec4f.h"
 #include "ppogl/base/glwrappers.h"
 
-#include <iostream>
-
-/* 
- *  Constants 
- */
- 
-
-/* How long to make the flat part at the bottom of the course, as a
-   fraction of the total length of the course */
-#define FLAT_SEGMENT_FRACTION 0.2
-
-/* Aspect ratio of background texture */
-#define BACKGROUND_TEXTURE_ASPECT 3.0
-
-
-/*
- * Statics 
- */
-
-/* The course normal vectors */
-static ppogl::Vec3d *nmls = NULL;
-
-/* Should we activate clipping when drawing the course? */
-static bool clip_course = false;
-
-/* If clipping is active, it will be based on a camera located here */
-static ppogl::Vec3d eye_pt;
-
-
-/* Macros for converting indices in height map to world coordinates */
+/// Macros for converting indices in height map to world coordinates
 #define XCD(x) (  double(x) / (nx-1.) * courseWidth )
+
+/// Macros for converting indices in height map to world coordinates
 #define ZCD(y) ( -double(y) / (ny-1.) * courseLength )
 
-#define NORMAL(x, y) ( nmls[ (x) + nx * (y) ] )
+#define NORMAL(x, y) ( mp_nmls[ (x) + nx * (y) ] )
 
+#define CULL_DETAIL_FACTOR 25
 
-/*
- * Function definitions
- */
+CourseRenderer courseRenderer;
 
-void
-set_course_clipping(bool state)
+CourseRenderer::CourseRenderer()
+ : mp_nmls(NULL),
+   m_clip(false),
+   mp_root(NULL)
 {
-	clip_course = state;
 }
 
 void
-set_course_eye_point(const ppogl::Vec3d& pt)
-{
-	eye_pt = pt;
-}
-
-ppogl::Vec3d*
-get_course_normals()
-{
-	return nmls;
-} 
-
-void
-calc_normals()
+CourseRenderer::calcNormals()
 {
     float *elevation;
     float courseWidth, courseLength;
@@ -109,10 +68,10 @@ calc_normals()
     Course::getDimensions( &courseWidth, &courseLength );
     Course::getDivisions( &nx, &ny );
 
-    if(nmls!=NULL) delete[] nmls;
+    if(mp_nmls!=NULL) delete[] mp_nmls;
       
-	nmls = new ppogl::Vec3d[nx*ny]; 
-	PP_CHECK_ALLOC(nmls);
+	mp_nmls = new ppogl::Vec3d[nx*ny]; 
+	PP_CHECK_ALLOC(mp_nmls);
 
     for ( y=0; y<ny; y++) {
         for ( x=0; x<nx; x++) {
@@ -288,10 +247,10 @@ calc_normals()
         } 
 #undef POINT
     } 
-} 
+}
 
 void
-setup_course_tex_gen()
+CourseRenderer::setupTexGen()
 {
     static ppogl::Vec4f xplane(1.0 / TEX_SCALE, 0.0, 0.0, 0.0);
     static ppogl::Vec4f zplane(0.0, 0.0, 1.0 / TEX_SCALE, 0.0);
@@ -300,207 +259,126 @@ setup_course_tex_gen()
 }
 
 void
-render_course()
+CourseRenderer::init()
 {
-    int nx, ny;
-
-    Course::getDivisions(&nx, &ny);
-    set_gl_options( COURSE );
-
-    setup_course_tex_gen();
-
-    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
-    
-    update_course_quadtree(eye_pt);
-
-    render_course_quadtree();
-}
-
-void
-draw_sky(const ppogl::Vec3d& pos)
-{
-  ppogl::TextureRef texture[6];
-
-  set_gl_options( SKY );
-
-	texture[0] =
+	// calculate the normals for the course	
+	calcNormals();
+		
+	// get textures for drawing the sky	
+	m_skyTexture[0] =
 		ppogl::TextureMgr::getInstance().get("sky_front");
-	texture[1] =
+	m_skyTexture[1] =
 		ppogl::TextureMgr::getInstance().get("sky_top");
-	texture[2] =
+	m_skyTexture[2] =
 		ppogl::TextureMgr::getInstance().get("sky_bottom");
-	texture[3] =
+	m_skyTexture[3] =
 		ppogl::TextureMgr::getInstance().get("sky_left");
-	texture[4] =
+	m_skyTexture[4] =
 		ppogl::TextureMgr::getInstance().get("sky_right");
-	texture[5] =
+	m_skyTexture[5] =
 		ppogl::TextureMgr::getInstance().get("sky_back");
-	
-  gl::Color(ppogl::Color::white);
-
-  gl::PushMatrix();
-
-  gl::Translate(pos);
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[0] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex( -1, -1, -1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex(  1, -1, -1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex(  1,  1, -1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex( -1,  1, -1);
-  gl::End();
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[1] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex( -1,  1, -1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex(  1,  1, -1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex(  1,  1,  1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex( -1,  1,  1);
-  gl::End();
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[2] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex( -1, -1,  1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex(  1, -1,  1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex(  1, -1, -1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex( -1, -1, -1);
-  gl::End();
-
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[3] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex( -1, -1,  1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex( -1, -1, -1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex( -1,  1, -1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex( -1,  1,  1);
-  gl::End();
-
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[4] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex(  1, -1, -1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex(  1, -1,  1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex(  1,  1,  1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex(  1,  1, -1);
-  gl::End();
-
-  gl::BindTexture( GL_TEXTURE_2D, texture[5] );
-  gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-
-  gl::Begin(GL_QUADS);
-  gl::TexCoord( 0.0, 0.0 );
-  gl::Vertex(  1, -1,  1);
-  gl::TexCoord( 1.0, 0.0 );
-  gl::Vertex( -1, -1,  1);
-  gl::TexCoord( 1.0, 1.0 );
-  gl::Vertex( -1,  1,  1);
-  gl::TexCoord( 0.0, 1.0 );
-  gl::Vertex(  1,  1,  1);
-  gl::End();
-
-  gl::PopMatrix();
-
 }
 
 void
-draw_elements() 
+CourseRenderer::drawSky(const ppogl::Vec3d& pos)
 {
-    ppogl::Vec3d  normal;
-    double  fwd_clip_limit, bwd_clip_limit;
-
-    fwd_clip_limit = GameConfig::forwardClipDistance;
-    bwd_clip_limit = GameConfig::backwardClipDistance;
-
-    set_gl_options( TREES );
-
-    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
-    
-	{
-	std::list<Model>::iterator it;
-	for(it=modelLocs.begin();it!=modelLocs.end();it++){
-		if(clip_course){
-	   		if ( eye_pt.z() - (*it).getPosition().z() > fwd_clip_limit ) 
-			continue;
-	    
-	    	if ( (*it).getPosition().z() - eye_pt.z() > bwd_clip_limit )
-			continue;
-		}
-		normal = eye_pt - (*it).getPosition();
-		normal.normalize();
-		(*it).draw(normal);
-    }
-	}
-    
-	{
-
-	std::list<Item>::iterator it;
-    for(it=itemLocs.begin();it!=itemLocs.end();it++){
-		if(!(*it).isDrawable()){
-			continue;
-		}
+	set_gl_options( SKY );
 	
-		if(clip_course){
-	    	if( eye_pt.z() - (*it).getPosition().z() > fwd_clip_limit ) 
-				continue;
-	    	if( (*it).getPosition().z() - eye_pt.z() > bwd_clip_limit )
-				continue;
-		}
+	gl::Color(ppogl::Color::white);
 
-		normal = eye_pt - (*it).getPosition();
-		normal.normalize();
-	   	if (normal.y() == 1.0) {
-			continue;
-	   	}
-		normal.y() = 0.0;
-	    normal.normalize();
-		(*it).draw(normal);	
-	} 
-	}
+	gl::PushMatrix();
+
+	gl::Translate(pos);
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[0] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex( -1, -1, -1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex(  1, -1, -1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex(  1,  1, -1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex( -1,  1, -1);
+	gl::End();
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[1] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex( -1,  1, -1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex(  1,  1, -1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex(  1,  1,  1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex( -1,  1,  1);
+	gl::End();
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[2] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex( -1, -1,  1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex(  1, -1,  1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex(  1, -1, -1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex( -1, -1, -1);
+	gl::End();
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[3] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex( -1, -1,  1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex( -1, -1, -1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex( -1,  1, -1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex( -1,  1,  1);
+	gl::End();
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[4] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex(  1, -1, -1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex(  1, -1,  1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex(  1,  1,  1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex(  1,  1, -1);
+	gl::End();
+
+	gl::BindTexture( GL_TEXTURE_2D, m_skyTexture[5] );
+	gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+
+	gl::Begin(GL_QUADS);
+	gl::TexCoord( 0.0, 0.0 );
+	gl::Vertex(  1, -1,  1);
+	gl::TexCoord( 1.0, 0.0 );
+	gl::Vertex( -1, -1,  1);
+	gl::TexCoord( 1.0, 1.0 );
+	gl::Vertex( -1,  1,  1);
+	gl::TexCoord( 0.0, 1.0 );
+	gl::Vertex(  1,  1,  1);
+	gl::End();
+
+	gl::PopMatrix();
 }
 
-/*! 
-  Draws a fog plane at the far clipping plane to mask out clipping of terrain.
-
-  \return  none
-  \author  jfpatry
-  \date    Created:  2000-08-31
-  \date    Modified: 2000-08-31
-*/
-
 void
-draw_fog_plane()
+CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
 {
     if(fogPlane.isEnabled()==false){
 		return;
@@ -619,4 +497,201 @@ draw_fog_plane()
     gl::Vertex( pt.x(), pt.y(), pt.z() );
 
     gl::End();
+}
+
+void
+CourseRenderer::drawElements(const ppogl::Vec3d& pos) 
+{
+    ppogl::Vec3d normal;
+    double  fwd_clip_limit, bwd_clip_limit;
+
+    fwd_clip_limit = GameConfig::forwardClipDistance;
+    bwd_clip_limit = GameConfig::backwardClipDistance;
+
+    set_gl_options(TREES);
+
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
+    
+	{
+	std::list<Model>::iterator it;
+	for(it=modelLocs.begin();it!=modelLocs.end();it++){
+		if(m_clip){
+	   		if ( pos.z() - (*it).getPosition().z() > fwd_clip_limit ) 
+			continue;
+	    
+	    	if ( (*it).getPosition().z() - pos.z() > bwd_clip_limit )
+			continue;
+		}
+		normal = pos - (*it).getPosition();
+		normal.normalize();
+		(*it).draw(normal);
+    }
+	}
+    
+	{
+	std::list<Item>::iterator it;
+    for(it=itemLocs.begin();it!=itemLocs.end();it++){
+		if(!(*it).isDrawable()){
+			continue;
+		}
+	
+		if(m_clip){
+	    	if( pos.z() - (*it).getPosition().z() > fwd_clip_limit ) 
+				continue;
+	    	if( (*it).getPosition().z() - pos.z() > bwd_clip_limit )
+				continue;
+		}
+
+		normal = pos - (*it).getPosition();
+		normal.normalize();
+	   	if (normal.y() == 1.0) {
+			continue;
+	   	}
+		normal.y() = 0.0;
+	    normal.normalize();
+		(*it).draw(normal);	
+	} 
+	}
+}
+
+void
+CourseRenderer::render(const ppogl::Vec3d& pos)
+{
+	//draw the sky	
+	drawSky(pos);
+    
+	//draw fog
+	drawFogPlane(pos);
+
+    int nx, ny;
+	Course::getDivisions(&nx, &ny);
+    set_gl_options( COURSE );
+
+    setupTexGen();
+
+    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
+    
+    updateQuadtree(pos);
+
+    renderQuadtree();
+	
+	//draw elements
+	drawElements(pos);
+}
+
+ppogl::Vec3d*
+CourseRenderer::getNormals()
+{
+	PP_REQUIRE(mp_nmls!=NULL,"Array for course normals is not valid");
+	return mp_nmls;
+} 
+
+
+
+void
+CourseRenderer::resetQuadtree()
+{
+    PP_REQUIRE(mp_root!=NULL,"root of quadtree is NULL pointer");
+	delete mp_root;
+    mp_root = NULL;
+}
+
+void
+CourseRenderer::initQuadtree(const float *elevation, int nx, int nz, 
+			   double scalex, double scalez,
+			   const ppogl::Vec3d& view_pos)
+{
+	HeightMapInfo hm;
+
+	hm.data = elevation;
+	hm.xOrigin = 0;
+	hm.zOrigin = 0;
+	hm.xSize = nx;
+	hm.zSize = nz;
+	hm.rowWidth = hm.xSize;
+	hm.scale = 0;
+
+    m_rootCornerData.square = NULL;
+    m_rootCornerData.childIndex = 0;
+    m_rootCornerData.level = getRootLevel( nx, nz );
+    m_rootCornerData.xorg = 0;
+    m_rootCornerData.zorg = 0;
+
+    for(int i=0; i<4; i++){
+		m_rootCornerData.verts[i] = 0;
+		m_rootCornerData.verts[i] = 0;
+    }
+
+	mp_root = new quadsquare( &m_rootCornerData );
+
+    mp_root->addHeightMap( m_rootCornerData, hm );
+    mp_root->setScale( scalex, scalez );
+    mp_root->setTerrain(Course::getTerrainData() );
+
+	//update static configuration
+	GameConfig::update();	
+	
+    // Debug info.
+    //print_debug( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
+    PP_LOG( DEBUG_QUADTREE, "max error = " <<
+		 mp_root->recomputeError(m_rootCornerData));
+
+    // Get rid of unnecessary nodes in flat-ish areas.
+    PP_LOG( DEBUG_QUADTREE, 
+		 "Culling unnecessary nodes (detail factor = " << CULL_DETAIL_FACTOR << ")...");
+    mp_root->staticCullData(m_rootCornerData, CULL_DETAIL_FACTOR);
+
+    // Post-cull debug info.
+    PP_LOG( DEBUG_QUADTREE, "nodes = " << mp_root->countNodes());
+    PP_LOG( DEBUG_QUADTREE, "max error = " << mp_root->recomputeError(m_rootCornerData));
+
+    // Run the update function a few times before we start rendering
+    // to disable unnecessary quadsquares, so the first frame won't
+    // be overloaded with tons of triangles.
+    for(int i=0; i<5; i++){
+    	mp_root->update(m_rootCornerData, view_pos);
+	}
+}
+
+void
+CourseRenderer::updateQuadtree(const ppogl::Vec3d& view_pos)
+{
+	mp_root->update(m_rootCornerData, view_pos);
+}
+
+void
+CourseRenderer::renderQuadtree()
+{
+    GLubyte *vnc_array;
+    Course::getGLArrays(&vnc_array);
+    mp_root->render(m_rootCornerData, vnc_array);
+}
+
+int
+CourseRenderer::getRootLevel(int nx, int nz)
+{
+    PP_REQUIRE( nx > 0, "heightmap has x dimension of 0 size" );
+    PP_REQUIRE( nz > 0, "heightmap has z dimension of 0 size" );
+	
+	int xlev, zlev;
+
+    xlev = int( log(double(nx) ) / log (double(2.0) ) );
+    zlev = int( log(double(nz) ) / log (double(2.0) ) );
+
+    // check to see if nx, nz are powers of 2
+    if ( ( nx >> xlev ) << xlev == nx ) {
+		// do nothing
+    } else {
+		nx += 1;
+    }
+
+    if ( ( nz >> zlev ) << zlev == nz ) {
+		// do nothing 
+    } else {
+		nz += 1;
+    }
+
+    return MAX( xlev, zlev );
 }

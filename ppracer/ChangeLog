@@ -1,4 +1,11 @@
 
+2005-10-07
+	* src/course_quad.*
+	removed files
+	
+	* src/*
+	several code cleanups and fixes
+
 2005-10-05
 	* src/graphicsconfig.*
 	added graphics configuration

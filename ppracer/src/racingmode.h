@@ -27,7 +27,7 @@ class RacingMode : public GameMode
 protected:
 	bool m_paused;
 
-	RacingMode::RacingMode();
+	RacingMode();
 	void renderCourse(int player, float timestep);	
 
 public:

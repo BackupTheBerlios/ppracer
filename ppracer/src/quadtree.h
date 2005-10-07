@@ -50,9 +50,11 @@ class quadsquare;
 
 // A structure used during recursive traversal of the tree to hold
 // relevant but transitory data.
-struct quadcornerdata
+class quadcornerdata
 {
-    const quadcornerdata* parent;
+public:
+	quadcornerdata():parent(NULL),square(NULL){}
+	const quadcornerdata* parent;
     quadsquare*	square;
     int	childIndex;
     int	level;
@@ -103,7 +105,7 @@ public:
     float recomputeError(const quadcornerdata& cd);
     int	countNodes();
 	
-    void update(const quadcornerdata& cd, const float ViewerLocation[3]);
+    void update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation);
     void render(const quadcornerdata& cd, GLubyte *vnc_array);
 
     float getHeight(const quadcornerdata& cd, const float x, const float z);

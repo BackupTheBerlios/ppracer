@@ -22,17 +22,57 @@
 #ifndef _COURSE_RENDER_H_
 #define _COURSE_RENDER_H_
 
-ppogl::Vec3d* get_course_normals();
-void reset_course_list();
-void calc_normals();
-void setup_course_tex_gen();
-void render_course();
-void draw_background(double fov, double aspect);
-void draw_sky(const ppogl::Vec3d& pos);
-void draw_elements() ;
-void set_course_clipping(bool state);
-void set_course_eye_point(const ppogl::Vec3d& pt);
-void set_course_fog(bool state);
-void draw_fog_plane();
+#include "ppogl/base/vec3d.h"
+#include "ppogl/textures.h"
+#include "quadtree.h"
+
+class CourseRenderer
+{
+protected:
+	/// array of teytures for the sky box
+	ppogl::TextureRef m_skyTexture[6];
+
+	/// the course normal vectors
+	ppogl::Vec3d* mp_nmls;
+
+	/// is clipping activiated
+	bool m_clip;
+
+	quadsquare* mp_root;
+	quadcornerdata m_rootCornerData;
+
+	void calcNormals();
+	void setupTexGen();
+
+	void drawSky(const ppogl::Vec3d& pos);
+	void drawFogPlane(const ppogl::Vec3d& pos);
+	void drawElements(const ppogl::Vec3d& pos);
+
+	void updateQuadtree(const ppogl::Vec3d& view_pos);
+	void renderQuadtree();
+	int getRootLevel(int nx, int nz);
+
+public:
+	CourseRenderer();
+
+	void init();
+
+	void render(const ppogl::Vec3d& pos);
+
+	void setClipping(bool state){m_clip = state;}
+	void setFog(bool state);
+	
+	ppogl::Vec3d* getNormals();
+	
+	void initQuadtree(const float *elevation, int nx, int nz, 
+			   double scalex, double scalez,
+			   const ppogl::Vec3d& view_pos);
+	void resetQuadtree();
+};
+
+/// global instance for the course renderer
+// note: this is only be a temporal sollution that will
+//       be replaced with the sg
+extern CourseRenderer courseRenderer;
 
 #endif // _COURSE_RENDER_H_

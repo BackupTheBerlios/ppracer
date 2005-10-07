@@ -120,17 +120,18 @@ public:
 	void setMusicVolume(int volume){return;}
 	void setSoundVolume(int volume){return;}
 	
-	bool isInitialized(){return false;};
-	bool loadMusic(const std::string &binding, const std::string &filename){return true;};
-	bool bindMusic(const std::string &binding, const std::string &name){return true;};
-	bool unbindMusic(const std::string &binding){return true;};
+	bool isInitialized(){return false;}
+	bool loadMusic(const std::string &binding, const std::string &filename){return true;}
+	bool bindMusic(const std::string &binding, const std::string &name){return true;}
+	bool unbindMusic(const std::string &binding){return true;}
 	
-	bool playMusic(const std::string &binding){return true;};
-	bool stopMusic(const std::string &binding){return true;};
-	
-	bool loadSound(const std::string &binding, const std::string &filename){return true;};
-	bool bindSound(const std::string &binding, const std::string &name){return true;};
-	bool unbindSound(const std::string &binding){return true;};
+	bool playMusic(const std::string &binding){return true;}
+	bool stopMusic(const std::string &binding){return true;}
+	void stopAllMusic(){return;}
+
+	bool loadSound(const std::string &binding, const std::string &filename){return true;}
+	bool bindSound(const std::string &binding, const std::string &name){return true;}
+	bool unbindSound(const std::string &binding){return true;}
 	
 	bool playSound(const std::string &binding, int loops=-1){return true;};
 	bool stopSound(const std::string &binding){return true;};

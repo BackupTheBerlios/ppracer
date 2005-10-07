@@ -86,7 +86,6 @@ std::string cfile;
 std::string data_dir;
 
 static unsigned char verbose=0;
-static bool diagnostics=false;
 
 static void
 getopts( int argc, char *argv[] )
@@ -140,7 +139,6 @@ getopts( int argc, char *argv[] )
 		}else if( !strcmp( argv[i],"-l") ){
 			i++;
 			if(argv[i] != NULL){
-				diagnostics=true;
 				ppogl::Log::Instance()->setFilename(argv[i]);
 			}
 		}else if( !strcmp( argv[i],"-v") ){
@@ -253,7 +251,7 @@ main(int argc, char *argv[])
 
 	if(create_cfile){
 		write_config_file();
-	}
+	}	
 	
     /* 
      * Initialize rendering context, create window

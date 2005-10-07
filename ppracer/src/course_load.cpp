@@ -223,7 +223,7 @@ reset_course()
 
 	if ( course_loaded == false ) return;
 
-    reset_course_quadtree();
+	courseRenderer.resetQuadtree();
 
     delete[] elevation;
 	elevation=NULL;
@@ -250,7 +250,7 @@ void
 Course::fillGLArrays()
 {
     int x,y;
-    ppogl::Vec3d *normals = get_course_normals();
+    ppogl::Vec3d *normals = courseRenderer.getNormals();
     ppogl::Vec3d nml;
     int idx;
 
@@ -259,7 +259,8 @@ Course::fillGLArrays()
     gl::DisableClientState(GL_COLOR_ARRAY);
 
     // Align vertices and normals on 16-byte intervals (Q3A does this)
-    vnc_array = new GLubyte[STRIDE_GL_ARRAY * nx * ny];
+    int arraySize = STRIDE_GL_ARRAY * nx * ny;
+	vnc_array = new GLubyte[arraySize];
 	PP_CHECK_ALLOC(vnc_array);
 	
     for (x=0; x<nx; x++) {
@@ -292,15 +293,15 @@ Course::fillGLArrays()
 	}
     }
 
-    gl::EnableClientState(GL_VERTEX_ARRAY);
-    gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, vnc_array );
+		gl::EnableClientState(GL_VERTEX_ARRAY);
+    	gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, vnc_array );
 
-    gl::EnableClientState(GL_NORMAL_ARRAY);
-    gl::NormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
+    	gl::EnableClientState(GL_NORMAL_ARRAY);
+    	gl::NormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
 		     vnc_array + 4*sizeof(GLfloat) );
 
-    gl::EnableClientState(GL_COLOR_ARRAY);
-    gl::ColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
+    	gl::EnableClientState(GL_COLOR_ARRAY);
+    	gl::ColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
 		    vnc_array + 8*sizeof(GLfloat) );
 }
 
@@ -324,24 +325,24 @@ Course::load(const std::string& course)
     if(ppogl::os::chdir(cwd)==false){
 		PP_ERROR("Unable to change into directory: " << cwd );
     } 
+	
+	courseRenderer.init();
+	
+	fillGLArrays();
 
-    calc_normals();
-
-    fillGLArrays();
-
-    init_course_quadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
+    courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
 			  -courseDim.y()/(ny-1),
 			  players[0].view.pos);
 
 	// init trackmarks for all players
 	// todo: check whether we need to keep the old ones
     TrackMarks::init();
-	
+		
     course_loaded = true;
-} 
+}
 
-static inline
-int intensity_to_terrain(const int intensity)
+static inline int
+intensity_to_terrain(const int intensity)
 {
 	for(unsigned int i=0; i<num_terrains; i++) {
 		if (terrain_texture[i].value == intensity){

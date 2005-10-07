@@ -448,7 +448,7 @@ find_course_normal(const float x, const float z)
     elevation = Course::getElevData();
     Course::getDimensions( &course_width, &course_length );
     Course::getDivisions( &nx, &ny );
-    course_nmls = get_course_normals();
+    course_nmls = courseRenderer.getNormals();
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     

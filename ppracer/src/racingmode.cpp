@@ -101,20 +101,15 @@ RacingMode::renderCourse(int player, float timestep)
     	update_view(players[player], timestep);
 	}
 	
-	//draw the sky	
-    draw_sky(players[player].view.pos);
-    draw_fog_plane();
-
-    set_course_clipping(true);
-    set_course_eye_point(players[player].view.pos );
+    courseRenderer.setClipping(true);
     setup_course_lighting();
-    render_course();
 	
+	//draw course
+	courseRenderer.render(players[player].view.pos);
+
 	// draw trackmarks for all players
 	TrackMarks::drawAllPlayers();
-	
-    draw_elements();
-	
+		
     if(GameConfig::drawParticles){
 		if(m_paused==false){
 			//update particles if game is not paused

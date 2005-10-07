@@ -46,11 +46,11 @@ FogPlane::setup()
 {
     if(!m_isOn || PPConfig.getBool("disable_fog") ) {
 		gl::Disable(GL_FOG);
-		return;	
-    }
+    }else{
+		gl::Enable(GL_FOG);
+	}
 
-    gl::Enable(GL_FOG);
-
+	// not sure why this is still necessary if fog is disabled :?
     gl::Fog(GL_FOG_MODE, m_mode);
     gl::Fog(GL_FOG_DENSITY, m_density);
     gl::Fog(GL_FOG_START, m_start);
@@ -58,7 +58,6 @@ FogPlane::setup()
     gl::Fog(GL_FOG_COLOR, m_color);
 
 	gl::Hint(GL_FOG_HINT, GL_NICEST);
-
 }
 
 static int

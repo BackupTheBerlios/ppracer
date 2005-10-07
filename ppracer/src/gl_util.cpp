@@ -413,7 +413,7 @@ void init_opengl_extensions()
 				 "NOT supported" );
 			glLockArraysEXT_p = NULL;
 			glUnlockArraysEXT_p = NULL;
-		}
+		}		
     } else {
 		PP_LOG( DEBUG_GL_EXT, 
 		     "No function available for obtaining GL proc addresses" );

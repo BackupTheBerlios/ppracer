@@ -52,7 +52,7 @@ mirror_course()
     Course::getDivisions( &nx, &ny );
     elevation = Course::getElevData();
     terrain = Course::getTerrainData();
-    nmls = get_course_normals();
+    nmls = courseRenderer.getNormals();
 
     for ( y=0; y<ny; y++ ) {
 	for ( x=0; x<nx/2; x++ ) {
@@ -106,10 +106,11 @@ mirror_course()
 	
     Course::fillGLArrays();
 
-    reset_course_quadtree();
+	courseRenderer.resetQuadtree();
+	
     if ( nx > 0 && ny > 0 ) {
-	PP_LOG( DEBUG_QUADTREE, "mirroring quadtree" );
-	init_course_quadtree( elevation, nx, ny, course_width/(nx-1), 
+		PP_LOG( DEBUG_QUADTREE, "mirroring quadtree" );
+		courseRenderer.initQuadtree( elevation, nx, ny, course_width/(nx-1), 
 			      -course_length/(ny-1),
 			      players[0].view.pos);
     }

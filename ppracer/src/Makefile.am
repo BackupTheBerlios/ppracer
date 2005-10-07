@@ -17,8 +17,6 @@ ppracer_SOURCES =				\
 	course_load.h				\
 	course_mgr.cpp				\
 	course_mgr.h				\
-	course_quad.cpp				\
-	course_quad.h				\
 	course_render.cpp			\
 	course_render.h				\
 	credits.cpp				\

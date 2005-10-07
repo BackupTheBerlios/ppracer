@@ -27,18 +27,15 @@
 
 #define DOT_PRODUCT( v1, v2 ) (double(v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()))
 
-
 static pp::Plane frustum_planes[6];
 
 /* This will be used as a bitfield to select the "n" and "p" vertices
 of the bounding boxes wrt to each plane.  
 */
 
-//static char p_vertex_code[6];
 static bool p_vertex_code_x[6];
 static bool p_vertex_code_y[6];
 static bool p_vertex_code_z[6];
-
 
 void
 setup_view_frustum(const Player& plyr,
@@ -48,8 +45,7 @@ setup_view_frustum(const Player& plyr,
     double aspect = double(GameMode::resolutionX) /
 					double(GameMode::resolutionY);
 
-    int i;
-    ppogl::Vec3d pt;
+	ppogl::Vec3d pt;
     ppogl::Vec3d origin(0., 0., 0.);
     double half_fov = ANGLES_TO_RADIANS( GameConfig::fov * 0.5 );
     double half_fov_horiz = atan(tan(half_fov) * aspect); 
@@ -85,7 +81,7 @@ setup_view_frustum(const Player& plyr,
 
 
     // We now transform frustum to world coordinates
-    for (i=0; i<6; i++) {
+    for (int i=0; i<6; i++) {
 	pt = plyr.view.inv_view_mat.transformPoint(
 	    origin + (-frustum_planes[i].d*frustum_planes[i].nml) );
 
@@ -96,7 +92,7 @@ setup_view_frustum(const Player& plyr,
 	    (pt-origin));
     }
 
-    for (i=0; i<6; i++) {
+    for(int i=0; i<6; i++) {
 		p_vertex_code_x[i] = false;
 		p_vertex_code_y[i] = false;
 		p_vertex_code_z[i] = false;
@@ -119,12 +115,13 @@ setup_view_frustum(const Player& plyr,
 /** View frustum clipping for AABB (axis-aligned bounding box). See
    Assarsson, Ulf and Tomas M\"oller, "Optimized View Frustum Culling
    Algorithms", unpublished, http://www.ce.chalmers.se/staff/uffe/ .  */
-ClipResult clip_aabb_to_view_frustum( const ppogl::Vec3d& min, const ppogl::Vec3d& max )
+ClipResult
+clip_aabb_to_view_frustum(const ppogl::Vec3d& min, const ppogl::Vec3d& max)
 {
     ppogl::Vec3d n, p;
     ClipResult intersect = NoClip;
 
-    for (int i=5; i>=0; i--) {
+    for(int i=5; i>=0; i--){
 		p = min;
 		n = max;
 		

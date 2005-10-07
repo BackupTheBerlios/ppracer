@@ -25,26 +25,26 @@
 #include "quadtree.h"
 #include "gameconfig.h"
 
-/* Amount to scale terrain errors by in order to be comparable to
+/** Amount to scale terrain errors by in order to be comparable to
    height errors */
 #define TERRAIN_ERROR_SCALE 0.15
 
-/* Distance at which we force the activation of vertices that lie on
+/** Distance at which we force the activation of vertices that lie on
    texture edges */
 #define VERTEX_FORCE_THRESHOLD 110
 
-/* Maximum Distance at which we magnify the error term (to minimize
+/** Maximum Distance at which we magnify the error term (to minimize
    popping near the camera */
 #define ERROR_MAGNIFICATION_THRESHOLD 25
 
-/* Amount to magnify errors by within ERROR_MAGNIFICATION_THRESHOLD */
+/** Amount to magnify errors by within ERROR_MAGNIFICATION_THRESHOLD */
 #define ERROR_MAGNIFICATION_AMOUNT 3
 
 
-/* Environment map alpha value, integer from 0-255 */ 
+/** Environment map alpha value, integer from 0-255 */ 
 #define ENV_MAP_ALPHA 50
 
-/* Useful macro for setting colors in the color array */
+/** Useful macro for setting colors in the color array */
 #define colorval(j,ch) \
 VNCArray[j*STRIDE_GL_ARRAY+STRIDE_GL_ARRAY-4+(ch)]
 
@@ -64,30 +64,21 @@ GLuint quadsquare::VertexArrayMaxIdx[NUM_TERRAIN_TYPES];
 
 quadsquare::quadsquare(quadcornerdata* pcd)
 /// Constructor.
- : Dirty(false),
+ : EnabledFlags(0),
+   Static(false),
+   Dirty(false),
    ForceEastVert(false),
    ForceSouthVert(false)
 {
     pcd->square = this;
-	
-    // Set static to true if/when this node contains real data, and
-    // not just interpolated values.  When static == false, a node
-    // can be deleted by the Update() function if none of its
-    // vertices or children are enabled.
-    Static = false;
-
-    unsigned int	i;
 
 	Child[0] = NULL;
 	Child[1] = NULL;
 	Child[2] = NULL;	
 	Child[3] = NULL;
 
-    EnabledFlags = 0;
-	
 	SubEnabledCount[0] = 0;
 	SubEnabledCount[1] = 0;
-
 	
     // Set default vertex positions by interpolating from given corners.
     // Just bilinear interpolation.
@@ -97,37 +88,36 @@ quadsquare::quadsquare(quadcornerdata* pcd)
     Vertex[3] = 0.5 * (pcd->verts[1] + pcd->verts[2]);
     Vertex[4] = 0.5 * (pcd->verts[2] + pcd->verts[3]);
 
-    for (i = 0; i < 2; i++) {
+    for(int i=0; i<2; i++){
 		Error[i] = 0;
     }
-    for (i = 0; i < 4; i++) {
+    for(int i=0; i<4; i++){
 		Error[i+2] = fabs((Vertex[0] + pcd->verts[i]) - (Vertex[i+1] + Vertex[((i+1)&3) + 1])) * 0.25;
     }
 
     // Compute MinY/MaxY based on corner verts.
     MinY = MaxY = pcd->verts[0];
-    for (i = 1; i < 4; i++) {
-	float	y = pcd->verts[i];
-	if (y < MinY) MinY = y;
-	if (y > MaxY) MaxY = y;
+    for(int i=1; i<4; i++){
+		float y = pcd->verts[i];
+		if(y<MinY) MinY=y;
+		if(y>MaxY)MaxY=y;
     }
 
-    if ( pcd->parent == NULL ) {
+    if(pcd->parent==NULL){
 		PP_LOG( DEBUG_QUADTREE, "initializing root node" );
-		for (int i=0; i< NUM_TERRAIN_TYPES; i++){
+		for(int i=0; i< NUM_TERRAIN_TYPES; i++){
 			VertexArrayIndices[0] = NULL;		
 		}
 		Terrain = Course::getTerrainData();
     }
 }
 
-
 quadsquare::~quadsquare()
 /// Destructor.
 {
     // Recursively delete sub-trees.
-    for (int i = 0; i < 4; i++) {
-		if (Child[i]) delete Child[i];
+    for(int i=0; i<4; i++){
+		if(Child[i]) delete Child[i];
 		Child[i] = NULL;
     }
 }
@@ -139,11 +129,11 @@ quadsquare::setStatic(const quadcornerdata& cd)
 /// node or its children is considered to contain significant height data
 /// and shouldn't be deleted.
 {
-    if (Static == false) {
-	Static = true;
+    if(Static==false){
+		Static = true;
 		
 		// Propagate static status to ancestor nodes.
-		if (cd.parent && cd.parent->square) {
+		if(cd.parent && cd.parent->square){
 		    cd.parent->square->setStatic(*cd.parent);
 		}
     }
@@ -153,11 +143,11 @@ int
 quadsquare::countNodes()
 /// Debugging function.  Counts the number of nodes in this subtree.
 {
-    int	count = 1;	// Count ourself.
+    int	count=1; // Count ourself.
 
-    // Count descendants.
-    for (int i = 0; i < 4; i++) {
-		if (Child[i]) count += Child[i]->countNodes();
+    //Count descendants.
+    for(int i=0; i<4; i++){
+		if(Child[i]) count += Child[i]->countNodes();
     }
 
     return count;
@@ -167,10 +157,10 @@ float
 quadsquare::getHeight(const quadcornerdata& cd, const float x, const float z)
 /// Returns the height of the heightfield at the specified x,z coordinates.
 {
-    int	half = 1 << cd.level;
+    int	half = 1<<cd.level;
 
-    float	lx = (x - cd.xorg) / float(half);
-    float	lz = (z - cd.zorg) / float(half);
+    float lx = (x-cd.xorg)/float(half);
+    float lz = (z- cd.zorg)/float(half);
 
     int	ix = int(floor(lx));
     int	iz = int(floor(lz));
@@ -182,11 +172,11 @@ quadsquare::getHeight(const quadcornerdata& cd, const float x, const float z)
     if (iz > 1) iz = 1;
 
     int	index = ix ^ (iz ^ 1) + (iz << 1);
-    if (Child[index] && Child[index]->Static) {
-	// Pass the query down to the child which contains it.
-	quadcornerdata	q;
-	setupCornerData(&q, cd, index);
-	return Child[index]->getHeight(q, x, z);
+    	if(Child[index] && Child[index]->Static){
+		// Pass the query down to the child which contains it.
+		quadcornerdata q;
+		setupCornerData(&q, cd, index);
+		return Child[index]->getHeight(q, x, z);
     }
 
     // Bilinear interpolation.
@@ -198,33 +188,33 @@ quadsquare::getHeight(const quadcornerdata& cd, const float x, const float z)
     if (lx < 0) lz = 0;
     if (lz > 1) lz = 1;
 
-    float	s00, s01, s10, s11;
-    switch (index) {
-    default:
-    case 0:
-	s00 = Vertex[2];
-	s01 = cd.verts[0];
-	s10 = Vertex[0];
-	s11 = Vertex[1];
-	break;
-    case 1:
-	s00 = cd.verts[1];
-	s01 = Vertex[2];
-	s10 = Vertex[3];
-	s11 = Vertex[0];
-	break;
-    case 2:
-	s00 = Vertex[3];
-	s01 = Vertex[0];
-	s10 = cd.verts[2];
-	s11 = Vertex[4];
-	break;
-    case 3:
-	s00 = Vertex[0];
-	s01 = Vertex[1];
-	s10 = Vertex[4];
-	s11 = cd.verts[3];
-	break;
+    float s00, s01, s10, s11;
+    switch(index){
+    	default:
+    	case 0:
+			s00 = Vertex[2];
+			s01 = cd.verts[0];
+			s10 = Vertex[0];
+			s11 = Vertex[1];
+			break;
+    	case 1:
+			s00 = cd.verts[1];
+			s01 = Vertex[2];
+			s10 = Vertex[3];
+			s11 = Vertex[0];
+			break;
+    	case 2:
+			s00 = Vertex[3];
+			s01 = Vertex[0];
+			s10 = cd.verts[2];
+			s11 = Vertex[4];
+			break;
+    	case 3:
+			s00 = Vertex[0];
+			s01 = Vertex[1];
+			s10 = Vertex[4];
+			s11 = cd.verts[3];
+			break;
     }
 
     return (s00 * (1-lx) + s01 * lx) * (1 - lz) + (s10 * (1-lx) + s11 * lx) * lz;
@@ -248,11 +238,11 @@ quadsquare::getNeighbor(const int dir, const quadcornerdata& cd) const
     bool	SameParent = ((dir - cd.childIndex) & 2) ? true : false;
 	
     if (SameParent) {
-	p = cd.parent->square;
+		p = cd.parent->square;
     } else {
-	p = cd.parent->square->getNeighbor(dir, *cd.parent);
+		p = cd.parent->square->getNeighbor(dir, *cd.parent);
 		
-	if (p == 0) return 0;
+		if (p == 0) return 0;
     }
 	
     quadsquare*	n = p->Child[index];
@@ -266,22 +256,20 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 /// max error.
 /// Also updates MinY & MaxY.
 {
-    int	i;
-    int j;
     unsigned int t;
     int	half = 1 << cd.level;
     int	whole = half << 1;
     float terrain_error;
 	
     // Measure error of center and edge vertices.
-    float	maxerror = 0;
+    float maxerror = 0;
 
     // Compute error of center vert.
     float	e;
     if (cd.childIndex & 1) {
-	e = fabs(Vertex[0] - (cd.verts[1] + cd.verts[3]) * 0.5);
+		e = fabs(Vertex[0] - (cd.verts[1] + cd.verts[3]) * 0.5);
     } else {
-	e = fabs(Vertex[0] - (cd.verts[0] + cd.verts[2]) * 0.5);
+		e = fabs(Vertex[0] - (cd.verts[0] + cd.verts[2]) * 0.5);
     }
     if (e > maxerror) maxerror = e;
 
@@ -290,10 +278,10 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     MinY = Vertex[0];
 
     // Check min/max of corners.
-    for (i = 0; i < 4; i++) {
-	float	y = cd.verts[i];
-	if (y < MinY) MinY = y;
-	if (y > MaxY) MaxY = y;
+    for(int i=0; i<4; i++){
+		float y = cd.verts[i];
+		if (y < MinY) MinY = y;
+		if (y > MaxY) MaxY = y;
     }
 	
     // Edge verts.
@@ -308,104 +296,100 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     // Terrain edge checks
     if ( cd.level == 0 && cd.xorg <= RowSize-1 && cd.zorg <= NumRows-1 ) {
 
-	// Check South vertex
-	int x = cd.xorg + half;
-	int z = cd.zorg + whole;
-	int idx = x  + z * RowSize;
-	bool different_terrains = false;
+		// Check South vertex
+		int x = cd.xorg + half;
+		int z = cd.zorg + whole;
+		int idx = x  + z * RowSize;
+		bool different_terrains = false;
+	
+		terrain_error = 0.f;
 
-	terrain_error = 0.f;
+		PP_ASSERT( x >= 0, "x coordinate is negative" );
+		PP_ASSERT( z >= 0, "z coordinate is negative" );
 
-	PP_ASSERT( x >= 0, "x coordinate is negative" );
-	PP_ASSERT( z >= 0, "z coordinate is negative" );
+		if ( x < RowSize && z < NumRows ) {
+			if ( x < RowSize - 1 ) {
+				if ( Terrain[idx] != Terrain[idx+1] ) {
+					different_terrains = true;
+				}
+			}
+			if ( z >= 1 ) {
+				idx -= RowSize;
+				if ( Terrain[idx] != Terrain[idx+1] ) {
+					different_terrains = true;
+				}
+			}
 
-        if ( x < RowSize && z < NumRows ) {
+			if ( different_terrains ) {
+				ForceSouthVert = true;
+				terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
+			} else {
+				ForceSouthVert = false;
+			}
 
-	    if ( x < RowSize - 1 ) {
-		if ( Terrain[idx] != Terrain[idx+1] ) {
-		    different_terrains = true;
+			if ( terrain_error > Error[0] ) {
+				Error[0] = terrain_error;
+			}
+			if ( Error[0] > maxerror ) {
+				maxerror = Error[0];
+			}
 		}
-	    }
-	    if ( z >= 1 ) {
-		idx -= RowSize;
-		if ( Terrain[idx] != Terrain[idx+1] ) {
-		    different_terrains = true;
+	
+		// Check East vertex
+		x = cd.xorg + whole;
+		z = cd.zorg + half;
+		idx = x  + z * RowSize;
+		terrain_error = 0;
+		different_terrains = false;
+
+		if ( x < RowSize && z < NumRows ) {	
+			if ( Terrain[idx] != Terrain[idx-RowSize] ) {
+			    different_terrains = true;
+			}
 		}
-	    }
+		if ( z >= 1 && x < RowSize - 1 ) {
+			idx += 1;
+			if ( Terrain[idx] != Terrain[idx-RowSize] ) {
+					different_terrains = true;
+			}
+		}
 
-	    if ( different_terrains ) {
-		ForceSouthVert = true;
-		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
-	    } else {
-		ForceSouthVert = false;
-	    }
+		if ( different_terrains ) {	
+			ForceEastVert = true;
+			terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
+		} else {
+			ForceEastVert = false;
+		}
 
-	    if ( terrain_error > Error[0] ) {
-		Error[0] = terrain_error;
-	    }
-	    if ( Error[0] > maxerror ) {
-		maxerror = Error[0];
-	    }
+		if ( terrain_error > Error[1] ) {
+			Error[1] = terrain_error;
+		}
+		if ( Error[1] > maxerror ) {
+			maxerror = Error[1];
+		}
 	}
-
-	// Check East vertex
-	x = cd.xorg + whole;
-	z = cd.zorg + half;
-	idx = x  + z * RowSize;
-	terrain_error = 0;
-	different_terrains = false;
-
-        if ( x < RowSize && z < NumRows ) {
-
-	    if ( z >= 1 ) {
-		if ( Terrain[idx] != Terrain[idx-RowSize] ) {
-		    different_terrains = true;
-		}
-	    }
-	    if ( z >= 1 && x < RowSize - 1 ) {
-		idx += 1;
-		if ( Terrain[idx] != Terrain[idx-RowSize] ) {
-		    different_terrains = true;
-		}
-	    }
-
-	    if ( different_terrains ) {
-		ForceEastVert = true;
-		terrain_error = TERRAIN_ERROR_SCALE * whole * whole;
-	    } else {
-		ForceEastVert = false;
-	    }
-
-	    if ( terrain_error > Error[1] ) {
-		Error[1] = terrain_error;
-	    }
-	    if ( Error[1] > maxerror ) {
-		maxerror = Error[1];
-	    }
-        }
-    }
-
+    
     // Min/max of edge verts.
-    for (i = 0; i < 4; i++) {
-	float	y = Vertex[1 + i];
-	if (y < MinY) MinY = y;
-	if (y > MaxY) MaxY = y;
+    for(int i=0; i<4; i++){
+		float y = Vertex[1 + i];
+		if (y < MinY) MinY = y;
+		if (y > MaxY) MaxY = y;
     }
 	
     // Check child squares.
-    for (i = 0; i < 4; i++) {
-	quadcornerdata	q;
-	if (Child[i]) {
-	    setupCornerData(&q, cd, i);
-	    Error[i+2] = Child[i]->recomputeError(q);
+    for (int i=0; i<4; i++){
+		quadcornerdata	q;
+		if (Child[i]) {
+		    setupCornerData(&q, cd, i);
+	 	   Error[i+2] = Child[i]->recomputeError(q);
 
-	    if (Child[i]->MinY < MinY) MinY = Child[i]->MinY;
-	    if (Child[i]->MaxY > MaxY) MaxY = Child[i]->MaxY;
-	} else {
-	    // Compute difference between bilinear average at child center, and diagonal edge approximation.
-	    Error[i+2] = fabs((Vertex[0] + cd.verts[i]) - (Vertex[i+1] + Vertex[((i+1)&3) + 1])) * 0.25;
-	}
-	if (Error[i+2] > maxerror) maxerror = Error[i+2];
+	 	   if (Child[i]->MinY < MinY) MinY = Child[i]->MinY;
+	 	   if (Child[i]->MaxY > MaxY) MaxY = Child[i]->MaxY;
+		} else {
+		    // Compute difference between bilinear average at child center, and diagonal edge approximation.
+		    Error[i+2] = fabs((Vertex[0] + cd.verts[i]) - (Vertex[i+1] + Vertex[((i+1)&3) + 1])) * 0.25;
+		}
+		if (Error[i+2] > maxerror) maxerror = Error[i+2];
     }
 
     //
@@ -413,7 +397,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     //
     int terrain;
 
-    for (t=0; t<num_terrains; t++) {
+    for(t=0; t<num_terrains; t++){
 		terrain_count[t] = 0;
     }
 	
@@ -426,8 +410,8 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 	
 	int j_max = ( (cd.zorg+whole) >= NumRows) ? (NumRows-1) : cd.zorg+whole;
 
-	for (i=i_min; i<=i_max; i++) {
-	for (j=j_min; j<=j_max; j++) {
+	for(int i=i_min; i<=i_max; i++){
+	for(int j=j_min; j<=j_max; j++){
 
 	    terrain = int(Terrain[ i + RowSize*j ]);
 	    PP_ASSERT( terrain >= 0 && 
@@ -448,9 +432,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 	total += terrain_count[t];
     }
 
-    //delete [] terrain_count;
-
-    /* Calculate a terrain error that varies between 0 and 1 */
+    // Calculate a terrain error that varies between 0 and 1
     if ( total > 0 ) {
 	terrain_error = (1.0 - max_count / total);  
 	if ( num_terrains > 1 ) {
@@ -488,10 +470,10 @@ void
 quadsquare::resetTree()
 /// Clear all enabled flags, and delete all non-static child nodes.
 {
-	for (int i = 0; i < 4; i++) {
-		if (Child[i]) {
+	for(int i=0; i<4; i++){
+		if(Child[i]) {
 			Child[i]->resetTree();
-			if (Child[i]->Static == false) {
+			if(Child[i]->Static == false){
 				delete Child[i];
 				Child[i] = 0;
 	    	}
@@ -514,17 +496,16 @@ quadsquare::staticCullData(const quadcornerdata& cd, const float ThresholdDetail
     resetTree();
 
     // Make sure error values are up-to-date.
-    if (Dirty) recomputeError(cd);
+    if(Dirty) recomputeError(cd);
 	
     // Recursively check all the nodes and do necessary removal.
     // We must start at the bottom of the tree, and do one level of
     // the tree at a time, to ensure the dependencies are accounted
     // for properly.
-    for (int level = 0; level <= cd.level; level++) {
+    for(int level=0; level<=cd.level; level++){
 		staticCullAux(cd, ThresholdDetail, level);
     }
 }
-
 
 void
 quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail, const int TargetLevel)
@@ -534,9 +515,9 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
     int	i;
     quadcornerdata	q;
 
-    if (cd.level > TargetLevel) {
+    if(cd.level>TargetLevel){
 		// Just recurse to child nodes.
-		for (int j = 0; j < 4; j++) {
+		for(int j= 0; j<4; j++){
 			if (j < 2) i = 1 - j;
 			else i = j;
 
@@ -670,26 +651,7 @@ quadsquare::enableEdgeVertex(int index, const bool IncrementCount, const quadcor
     // the quadtree from our shared ancestor.
     p = p->enableDescendant(ct, stack, *pcd);
 	
-/*
-  // Travel down the tree towards our neighbor, enabling and creating nodes as necessary.  We'll
-  // follow the complement of the path we used on the way up the tree.
-  quadcornerdata	d[16];
-  int	i;
-  for (i = 0; i < ct; i++) {
-  int	ci = stack[ct-i-1];
-
-  if (p->Child[ci] == NULL && CreateDepth == 0) CreateDepth = ct-i;	//xxxxxxx
-		
-  if ((p->EnabledFlags & (16 << ci)) == 0) {
-  p->EnableChild(ci, *pcd);
-  }
-  p->SetupCornerData(&d[i], *pcd, ci);
-  p = p->Child[ci];
-  pcd = &d[i];
-  }
-*/
-
-    // Finally: enable the vertex on the opposite edge of our neighbor, the alias of the original vertex.
+	// Finally: enable the vertex on the opposite edge of our neighbor, the alias of the original vertex.
     index ^= 2;
     p->EnabledFlags |= (1 << index);
     if (IncrementCount == true && (index == 0 || index == 3)) {
@@ -843,7 +805,7 @@ quadsquare::boxTest(int x, int z, float size, float miny, float maxy, float erro
 }
 
 void
-quadsquare::update(const quadcornerdata& cd, const float ViewerLocation[3])
+quadsquare::update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation)
 /// Refresh the vertex enabled states in the tree, according to the
 /// location of the viewer.  May force creation or deletion of qsquares
 /// in areas which need to be interpolated.
@@ -851,9 +813,9 @@ quadsquare::update(const quadcornerdata& cd, const float ViewerLocation[3])
 
     float Viewer[3];
 
-    Viewer[0] = ViewerLocation[0] / ScaleX;
-    Viewer[1] = ViewerLocation[1];
-    Viewer[2] = ViewerLocation[2] / ScaleZ;
+    Viewer[0] = viewerLocation[0] / ScaleX;
+    Viewer[1] = viewerLocation[1];
+    Viewer[2] = viewerLocation[2] / ScaleZ;
 	
     updateAux(cd, Viewer, 0, SomeClip);
 }
@@ -986,15 +948,15 @@ static GLubyte *VNCArray;
 void
 quadsquare::drawTris(int terrain)
 {
-    int tmp_min_idx = VertexArrayMinIdx[terrain];
-    if(glLockArraysEXT_p && GameConfig::useCVA){
+	if(glLockArraysEXT_p && GameConfig::useCVA){
+		const int tmp_min_idx = VertexArrayMinIdx[terrain];
 		glLockArraysEXT_p(tmp_min_idx, 
 			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1); 
     }
 
     gl::DrawElements(GL_TRIANGLES, VertexArrayCounter[terrain],
 		    GL_UNSIGNED_INT, VertexArrayIndices[terrain]);
-
+	
     if(glUnlockArraysEXT_p && GameConfig::useCVA){
 		glUnlockArraysEXT_p();
     }
