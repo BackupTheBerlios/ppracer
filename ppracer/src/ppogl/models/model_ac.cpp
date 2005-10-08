@@ -62,8 +62,9 @@ Surface::Surface()
 }
 	
 Surface::~Surface()
-{
-	//todo: check if we need to free something
+{		
+	delete [] vertices;
+	delete [] uvs;
 }
 
 ModelObject::ModelObject()
@@ -91,20 +92,15 @@ ModelObject::ModelObject()
 	
 ModelObject::~ModelObject()
 {
-	for (int i = 0; i < num_kids; i++){
-		delete kids[i];
+	if(kids){
+		delete [] kids;
 	}
-
-	if(vertices)
-		delete[] vertices;
-
-	for (int i = 0; i < num_surf; i++){
-		delete(surfaces[i].vertices);
-		delete(surfaces[i].uvs);
+	if(vertices){
+		delete [] vertices;
 	}
-
-	if (surfaces)
-		delete(surfaces);
+	if(surfaces){
+		delete [] surfaces;
+	}
 }
 
 ModelAC::ModelAC(const std::string& fileName)
