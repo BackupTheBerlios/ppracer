@@ -228,6 +228,18 @@ AudioMgr::stopAllMusic()
 	}
 }
 
+void
+AudioMgr::pauseMusic(bool status)
+{
+	if(!m_initialized && !m_musicEnabled) return;
+	
+	if(status){
+		Mix_PauseMusic();
+	}else{
+		Mix_ResumeMusic();
+	}
+}
+
 bool
 AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 {

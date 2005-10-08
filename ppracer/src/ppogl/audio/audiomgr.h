@@ -76,6 +76,7 @@ public:
 	bool playMusic(const std::string &binding);
 	bool stopMusic(const std::string &binding);
 	void stopAllMusic();
+	void pauseMusic(bool status=true);
 	
 	bool loadSound(const std::string &binding, const std::string &filename);
 	bool bindSound(const std::string &binding, const std::string &name);
@@ -84,7 +85,7 @@ public:
 	bool playSound(const std::string &binding, int loops=-1);
 	bool stopSound(const std::string &binding);
 	void stopAllSounds();
-		
+			
 	// callbacks for squirrel
 	static int sqLoadMusic(ppogl::Script *vm);
 	static int sqBindMusic(ppogl::Script *vm);
@@ -128,6 +129,7 @@ public:
 	bool playMusic(const std::string &binding){return true;}
 	bool stopMusic(const std::string &binding){return true;}
 	void stopAllMusic(){return;}
+	void pauseMusic(bool status=true){};
 
 	bool loadSound(const std::string &binding, const std::string &filename){return true;}
 	bool bindSound(const std::string &binding, const std::string &name){return true;}
@@ -136,7 +138,7 @@ public:
 	bool playSound(const std::string &binding, int loops=-1){return true;};
 	bool stopSound(const std::string &binding){return true;};
 	void stopAllSounds(){};
-		
+
 	// callbacks for squirrel
 	static int sqLoadMusic(ppogl::Script *vm){return 0;};
 	static int sqBindMusic(ppogl::Script *vm){return 0;};

@@ -70,7 +70,7 @@ Paused::Paused()
 	m_paused=true;
 	
 	//ppogl::AudioMgr::getInstance().playMusic("paused");
-	ppogl::AudioMgr::getInstance().stopAllMusic();
+	ppogl::AudioMgr::getInstance().pauseMusic();
 }
 
 void
@@ -105,9 +105,9 @@ Paused::keyPressEvent(SDLKey key)
 	// continue race if pause key is pressed	
 	if(key==PPConfig.getInt("pause_key")){
 		if(Benchmark::getMode() == Benchmark::PAUSED){
-			setMode( GAME_OVER );
+			quit();
 		}else{
-			setMode( RACING );
+			resume();
 		}
 		return true;
 	}else{
@@ -118,18 +118,21 @@ Paused::keyPressEvent(SDLKey key)
 void
 Paused::resume()
 {
+	ppogl::AudioMgr::getInstance().pauseMusic(false);
 	setMode( RACING );
 }
 
 void
 Paused::quit()
 {
+	ppogl::AudioMgr::getInstance().pauseMusic(false);
 	GameMgr::getInstance().abortRace();
     setMode( GAME_OVER );
 }
 
 void
 Paused::configuration()
-{
+{	
+	ppogl::AudioMgr::getInstance().pauseMusic(false);
 	setMode( CONFIGURATION );
 }

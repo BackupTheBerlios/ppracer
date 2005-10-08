@@ -1,4 +1,9 @@
 
+2005-10-08
+	* src/ppogl/audio/audiomgr.* src/paused.cpp
+	added AudioMgr::pauseMusic()
+	pause music in PAUSED mode
+
 2005-10-07
 	* src/course_quad.*
 	removed files
