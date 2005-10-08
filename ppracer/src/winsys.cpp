@@ -33,6 +33,8 @@ setup_sdl_video_mode()
     int bpp = 0;
     int width, height;
 
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	
     if (ppogl::Config::getInstance().getBool("fullscreen")) {
 		video_flags |= SDL_FULLSCREEN;
     } else {
@@ -75,16 +77,51 @@ setup_sdl_video_mode()
 	
     height = PPConfig.getInt("y_resolution");
 
-	PP_MESSAGE("Init video: " << width << "x" << height << " bpp:" << bpp);  
-	
-    if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
-		PP_ERROR("Couldn't initialize video: " << SDL_GetError());
-    }
-		
 	GameMode::resolutionX = width;
 	GameMode::resolutionY = height;
 	
-	gl::Viewport(0,0,width,height);
+	PP_MESSAGE("Init video: " << width << "x" << height << " bpp:" << bpp);  
+	
+    if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
+		PP_WARNING("Couldn't initialize video: " << SDL_GetError());
+		
+		if(ppogl::Config::getInstance().getBool("enable_fsaa")){
+			PP_WARNING("Trying without FSAA");
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 0);
+			if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
+				PP_WARNING("Couldn't initialize video: " << SDL_GetError());
+			}else{
+				return;
+			}
+		}
+					
+		if(ppogl::Config::getInstance().getBool("stencil_buffer")){
+			PP_WARNING("Trying without stencil buffer");
+			SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,0);
+		    if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
+				PP_WARNING("Couldn't initialize video: " << SDL_GetError());
+			}else{
+				return;
+			}
+		}
+		
+		PP_WARNING("Trying 640x480 at 16bpp");
+		width=640;
+		height=480;
+		bpp=16;	
+
+		if(SDL_SetVideoMode( width, height, bpp, video_flags) == NULL){
+			PP_WARNING("Couldn't initialize video: " << SDL_GetError());
+			PP_ERROR("Unable to find any useable video mode :(\n" <<
+				     "Please check your driver settings.");
+		}else{
+			GameMode::resolutionX = width;
+			GameMode::resolutionY = height;
+			PP_WARNING("Please check your video configuration");
+			return;
+		}		
+    }
 }
 
 void
@@ -97,8 +134,6 @@ winsys_init(char *window_title, char *icon_title)
 	}
 
 	// init video 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
 	setup_sdl_video_mode();
 
 	SDL_WM_SetCaption(window_title, icon_title);

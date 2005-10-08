@@ -6,6 +6,9 @@
 	
 	* src/ppogl/audio/audiomgr.cpp
 	added fallback if Mix_OpenAudio fails
+	
+	* src/winsys.cpp
+	added fallbacks if SDL_SetVideoMode fails
 
 2005-10-07
 	* src/course_quad.*
