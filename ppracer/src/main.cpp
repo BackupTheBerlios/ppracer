@@ -308,6 +308,7 @@ main(int argc, char *argv[])
 			default:
 				freq = ppogl::AudioMgr::FQ_11;
 		}
+			
 		ppogl::AudioMgr::getInstance().init(freq,format,stereo);
 			
 		if(PPConfig.getBool("sound_enabled")==false){

@@ -65,7 +65,7 @@ AudioMgr::init(	int freq, Format format,
 			sdl_format=AUDIO_U8;
 			break;
 	}
-	
+		
 	// set number of channels for stereo or mono
 	int channels = stereo ? 2 : 1;
 	
@@ -74,7 +74,32 @@ AudioMgr::init(	int freq, Format format,
 			"FQ: " << freq << "Hz\n" << format <<
 			"bit " << (stereo?"Stereo":"Mono") << 
 			"\n" << SDL_GetError());
-		return false;
+		
+		PP_WARNING("Lets give it another try");
+		
+		// try to open the device with save default settings
+		freq=11025;
+		sdl_format=AUDIO_U8;
+		format = FORMAT_8;
+		channels=1;
+		stereo=false;
+			
+		if(Mix_OpenAudio(freq, sdl_format, channels, buffers)<0){
+			PP_WARNING("Unable to open audio device:\n"
+			"FQ: " << freq << "Hz\n" << format <<
+			"bit " << (stereo?"Stereo":"Mono") << 
+			"\n Disabling Audio:" <<
+			"\n" << SDL_GetError());
+			return false;
+		}else{
+			PP_WARNING("Audio deviced opened:"
+			"FQ: " << freq << "Hz " << format <<
+			"bit " << (stereo?"Stereo":"Mono") << "\n" <<
+			"Please change the audio configuration");
+		
+			m_initialized=true;
+			return true;
+		}
 	}else{
 	    PP_LOG(ppogl::LogAudio,
 			"Audio deviced opened:"

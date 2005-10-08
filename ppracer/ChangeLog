@@ -3,6 +3,9 @@
 	* src/ppogl/audio/audiomgr.* src/paused.cpp
 	added AudioMgr::pauseMusic()
 	pause music in PAUSED mode
+	
+	* src/ppogl/audio/audiomgr.cpp
+	added fallback if Mix_OpenAudio fails
 
 2005-10-07
 	* src/course_quad.*
