@@ -278,12 +278,13 @@ HUD::bar(const int i, double percentage)
 	double temp_sin=sin(double(m_element[i].angle)/180.0*M_PI);
 	double temp_cos=cos(double(m_element[i].angle)/180.0*M_PI);
 	
-    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
-
 	fix_xy(m_element[i].x,m_element[i].y,int(m_element[i].height));
 	
     gl::PushMatrix();
-    {
+	{
+	gl::Enable(GL_TEXTURE_2D);
+    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
+    
 	gl::Translate(m_element[i].x, m_element[i].y,0);
 
 	gl::Begin(GL_QUADS);
