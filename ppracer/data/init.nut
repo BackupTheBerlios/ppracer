@@ -171,6 +171,9 @@ Textures.load("hudtl",
 
 Textures.load("hudtr",
 			  "textures/hudtr.png");
+			  
+Textures.load("fpsbg",
+			  "textures/fpsbg.png");			  
 
 // ui elements
 Textures.load("listbox_arrows",

@@ -55,8 +55,18 @@ pptheme.hud({
 
 pptheme.hud({
 	hud = 1,
+	element_type = "fpsimage",
+	position = [0, 0],
+	texture = "fpsbg",
+	width = 128,
+	height = 128,
+	size = 128
+});
+
+pptheme.hud({
+	hud = 1,
 	element_type = "fsb",
-	position = [12, 12],
+	position = [6, 8],
 	font = "fps",
 	string = "H|FPS: %.1f"
 });
@@ -88,10 +98,20 @@ pptheme.hud({
 
 pptheme.hud({
 	hud = 1,
+	element_type = "percentageimage",
+	position = [-12, 150],
+	texture = "mask_outline2",
+	width = 32,
+	height = 128,
+	size = 128
+});
+
+pptheme.hud({
+	hud = 1,
 	element_type = "percentagebar",
 	position = [-14, 152],
 	texture = "energy_mask",
-	width = 29,
+	width = 28,
 	height = 124,
 	angle = 180
 });

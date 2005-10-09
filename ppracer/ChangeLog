@@ -1,4 +1,10 @@
 
+2005-10-09
+	* (*)
+	added background image for fps counter
+	improved hud to support backgrounds for fps and course percentage
+	fixed bug in percentagebar	
+
 2005-10-08
 	* src/ppogl/audio/audiomgr.* src/paused.cpp
 	added AudioMgr::pauseMusic()

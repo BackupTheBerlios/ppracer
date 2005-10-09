@@ -1033,6 +1033,10 @@ hud_cb(ppogl::Script *vm)
 		element.type=9;	
 	}else if(type=="percentagebar"){
 		element.type=10;	
+	}else if(type=="percentageimage"){
+		element.type=11;
+	}else if(type=="fpsimage"){
+		element.type=12;
 	}else{
 		PP_WARNING("pptheme.hud: Unknown type: " << type);
 		return 0;

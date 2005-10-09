@@ -94,7 +94,6 @@ HUD::draw(Player& plyr, int width, int height)
     gl::MatrixMode(GL_MODELVIEW);
     gl::LoadIdentity();
     gl::Translate(0.0, 0.0, -1.0);
-    gl::Color(ppogl::Color::white);
 	
 	set_gl_options( TEXFONT );
 		
@@ -148,6 +147,16 @@ HUD::draw(Player& plyr, int width, int height)
 					bar(i,plyr.getCoursePercentage()/100);
 				}
 				break;
+			case 11:
+				if(GameConfig::displayCoursePercentage){		
+					image(i);
+				}
+				break;				
+			case 12:
+				if(GameConfig::displayFPS){
+					image(i);
+    			}	
+				break;
 		}
 	}
 	
@@ -172,7 +181,7 @@ HUD::fps(const int i)
 {
     if(m_element[i].font){
 		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), fpsCounter.get() );
+		sprintf( string, m_element[i].string.c_str(), fpsCounter.get());
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -202,14 +211,14 @@ HUD::image(const int i)
 {
 	if(!m_element[i].texture) return;
 
-    gl::Color(ppogl::Color::white);
-
-    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
-
 	fix_xy( m_element[i].x, m_element[i].y, m_element[i].height, m_element[i].width);
 	
     gl::PushMatrix();
     {
+    gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
+	gl::Enable(GL_TEXTURE_2D);
+	gl::Color(ppogl::Color::white);
+		
 	gl::Translate(m_element[i].x, m_element[i].y);
 
 	gl::Begin( GL_QUADS );
@@ -284,7 +293,8 @@ HUD::bar(const int i, double percentage)
 	{
 	gl::Enable(GL_TEXTURE_2D);
     gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
-    
+    gl::Color(ppogl::Color::white);
+		
 	gl::Translate(m_element[i].x, m_element[i].y,0);
 
 	gl::Begin(GL_QUADS);
@@ -340,7 +350,6 @@ HUD::initGauge()
 	m_outlineTex =
 		ppogl::TextureMgr::getInstance().get("gauge_outline");
 }
-
 
 void
 HUD::gauge(const int i, const double speed, const double energy)
