@@ -15,6 +15,7 @@
 
 //configuration
 //Translation.set("General","");
+//Translation.set("Graphics","");
 //Translation.set("Video","");
 //Translation.set("Audio","");
 //Translation.set("Keyboard","");
@@ -30,9 +31,6 @@
 //Translation.set("Show UI Snow:","");
 //Translation.set("Display FPS:","");
 //Translation.set("Display Progress Bar:","");
-//Translation.set("Draw Fog:","");
-//Translation.set("Reflections:","");
-//Translation.set("Shadows:","");
 
 //video configuration
 //Translation.set("Video Configuration","");
@@ -42,10 +40,20 @@
 //Translation.set("Experimental (needs restart)","");
 //Translation.set("Enable FSAA:","");
 
+//graphics configuration
+//Translation.set("Graphics Configuration","");
+//Translation.set("Draw Fog:","");
+//Translation.set("Reflections:","");
+//Translation.set("Shadows:","");
+//Translation.set("Detail Settings","");
+//Translation.set("Terrain:","");
+//Translation.set("Textures:","");
+//Translation.set("Player model:","");
+
 //audio configuration
 //Translation.set("Audio Configuration","");
-//Translation.set("Sound Effects:","");
-//Translation.set("Music:","");
+//Translation.set("Sound volume:","");
+//Translation.set("Music Volume:","");
 //Translation.set("(needs restart)","");
 //Translation.set("Disable Audio:","");
 //Translation.set("Stereo:","");
