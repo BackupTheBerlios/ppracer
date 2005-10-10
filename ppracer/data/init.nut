@@ -331,9 +331,19 @@ foreach(val in dir){
 	}
 }
 
+local userCourses = ppogl.getUserDir() + "courses/";
+
+if(ppogl.isDirectory(userCourses)){
+	local dir = ppogl.dir(userCourses);
+	foreach(val in dir){
+		temp_data = userCourses+val;
+		if(ppogl.isFile(userCourses+val+"/description.nut")){
+			dofile(userCourses+val+"/description.nut");
+		}
+	}
+}
+
 dofile("events/events.nut");
-
-
 
 function ppcourse::init(info)
 {

@@ -317,10 +317,14 @@ Course::load(const std::string& course)
 	if(cwd.empty()){
 		PP_ERROR("Unable to get curent working directory");
     }
-		
-	std::string data_dir = PPConfig.getString("data_dir");
-	script.doFile(data_dir+"/"+course+"/course.nut");			
 	
+	if(course[0]!='/'){		
+		std::string data_dir = PPConfig.getString("data_dir");
+		script.doFile(data_dir+"/"+course+"/course.nut");	
+	}else{
+		script.doFile(course+"/course.nut");	
+	}	
+		
     if(ppogl::os::chdir(cwd)==false){
 		PP_ERROR("Unable to change into directory: " << cwd );
     } 

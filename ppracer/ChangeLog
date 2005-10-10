@@ -2,6 +2,9 @@
 2005-10-10
 	* src/ppogl/base/os.* src/main.cpp src/stuff.cpp
 	implemented handling of home and user directory in ppogl
+	
+	* src/course_load.cpp data/init.nut
+	added support courses in the users home dir
 
 2005-10-09
 	* (*)
