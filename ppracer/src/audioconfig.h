@@ -45,10 +45,15 @@ class AudioConfig : public ConfigMode
 	ppogl::Label m_musicVolumeLbl;
 	ppogl::HScale m_musicVolumeHScl;
 	
+	int m_oldMusicVolume;
+	
 public:
 	AudioConfig();
 
+	void cancel();
 	void apply();
+
+	void musicVolumeChanged();
 };
 
 #endif // _AUDIO_CONFIG_H_

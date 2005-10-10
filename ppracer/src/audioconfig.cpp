@@ -61,12 +61,14 @@ AudioConfig::AudioConfig()
 	position.y()-=40;
 	position2.y()-=40;
 	
+	m_oldMusicVolume = PPConfig.getInt("music_volume");
+	
 	m_musicVolumeLbl.setPosition(position);
 	m_musicVolumeHScl.setPosition(position2);
 	m_musicVolumeHScl.alignment.right();
-	m_musicVolumeHScl.setValue(
-			PPConfig.getInt("music_volume")/100.0f);
-	
+	m_musicVolumeHScl.setValue(m_oldMusicVolume/100.0f);
+	m_musicVolumeHScl.signalClicked.Connect(ppogl::CreateSlot(this,&AudioConfig::musicVolumeChanged));
+		
 	position.y()-=60;
 	position2.y()-=60;
 	
@@ -99,17 +101,31 @@ AudioConfig::AudioConfig()
 }
 
 void
+AudioConfig::musicVolumeChanged()
+{
+	const int musicVolume = int(m_musicVolumeHScl.getValue()*100.0f);
+	
+	if(musicVolume>0){
+		ppogl::AudioMgr::getInstance().enableMusic(true);
+		ppogl::AudioMgr::getInstance().playMusic("start_screen");	
+	}else{	
+		ppogl::AudioMgr::getInstance().enableMusic(false);
+	}
+	ppogl::AudioMgr::getInstance().setMusicVolume(musicVolume);	
+}
+
+void
 AudioConfig::apply()
 {
 	PPConfig.setBool("disable_audio",m_audioBox.isSelected());
 	PPConfig.setBool("audio_stereo",m_stereoBox.isSelected());
 	
-	int soundVolume = int(m_soundVolumeHScl.getValue()*100.0f);
+	const int soundVolume = int(m_soundVolumeHScl.getValue()*100.0f);
 	if(soundVolume<=0) PPConfig.setBool("sound_enabled",false);	
 	else PPConfig.setBool("sound_enabled",true);
 	PPConfig.setInt("sound_volume",soundVolume);
 
-	int musicVolume = int(m_musicVolumeHScl.getValue()*100.0f);
+	const int musicVolume = int(m_musicVolumeHScl.getValue()*100.0f);
 	if(musicVolume<=0) PPConfig.setBool("music_enabled",false);	
 	else PPConfig.setBool("music_enabled",true);
 	PPConfig.setInt("music_volume",musicVolume);
@@ -138,4 +154,14 @@ AudioConfig::apply()
 	}	
 		
 	setMode(GameMode::prevmode);
+}
+
+void
+AudioConfig::cancel()
+{
+	// reset old music volume
+	ppogl::AudioMgr::getInstance().enableMusic(m_oldMusicVolume>0);
+	ppogl::AudioMgr::getInstance().setMusicVolume(m_oldMusicVolume);	
+	
+	ConfigMode::cancel();
 }

@@ -156,7 +156,7 @@ AudioMgr::setSoundVolume(int volume)
 bool
 AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
 {
-	if(!m_initialized || !m_musicEnabled) return true;
+	if(!m_initialized) return true;
 	
 	PP_LOG(LogAudio,"Loading music: " << binding << " -> " << filename);
 	
@@ -170,7 +170,7 @@ AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
 bool
 AudioMgr::bindMusic(const std::string &binding, const std::string &name)
 {
-	if(!m_initialized || !m_musicEnabled) return true;
+	if(!m_initialized) return true;
 	
 	PP_LOG(LogAudio,"Binding music: " << binding << " -> " << name);
 
@@ -188,7 +188,7 @@ AudioMgr::bindMusic(const std::string &binding, const std::string &name)
 bool
 AudioMgr::unbindMusic(const std::string &binding)
 {
-	if(!m_initialized || !m_musicEnabled) return true;
+	if(!m_initialized) return true;
 
 	PP_LOG(LogAudio,"Unbinding music: " << binding );
 	
@@ -268,7 +268,7 @@ AudioMgr::pauseMusic(bool status)
 bool
 AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 {
-	if(!m_initialized || !m_soundEnabled) return true;
+	if(!m_initialized) return true;
 
 	PP_LOG(LogAudio,"Loading sound: " << binding << " -> " << filename);
 	
@@ -283,7 +283,7 @@ AudioMgr::loadSound(const std::string &binding, const std::string &filename)
 bool
 AudioMgr::bindSound(const std::string &binding, const std::string &name)
 {
-	if(!m_initialized || !m_soundEnabled) return true;
+	if(!m_initialized) return true;
 	
 	PP_LOG(LogAudio,"Binding sound: " << binding << " -> " << name);
 	
@@ -301,7 +301,7 @@ AudioMgr::bindSound(const std::string &binding, const std::string &name)
 bool
 AudioMgr::unbindSound(const std::string &binding)
 {
-	if(!m_initialized || !m_soundEnabled) return true;
+	if(!m_initialized) return true;
 	
 	PP_LOG(LogAudio,"Unbinding sound: " << binding);
 	

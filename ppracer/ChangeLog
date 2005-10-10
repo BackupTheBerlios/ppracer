@@ -11,6 +11,9 @@
 	
 	* src/ppogl/ui/scale.*
 	added changed signal
+	
+	* src/audioconfig.* src/ppogl/audio/audiomgr.cpp
+	added realtime change of music volume in audio configuration
 
 2005-10-09
 	* (*)

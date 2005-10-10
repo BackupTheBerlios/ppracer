@@ -1,4 +1,5 @@
 /* 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -21,38 +22,32 @@
 
 #include "loop.h"
 
-#include "ppgltk/button.h"
-#include "ppgltk/label.h"
-#include "ppgltk/audio/audio.h"
+#include "ppogl/ui.h"
 
 #include <string>
-
 
 class ConfigMode : public GameMode
 {
 protected:
-	pp::Button *mp_cancelBtn;
-	pp::Button *mp_applyBtn;
-	pp::Label *mp_titleLbl;
+	ppogl::Label m_titleLbl;
+	ppogl::Button m_cancelBtn;
+	ppogl::Button m_applyBtn;
 
 	std::string m_title;
 
-	void setTitle(const char* title);
+	void setTitle(const std::string& title);
 		
 public:
 	ConfigMode();
-	~ConfigMode();
 
 	void loop(float timeStep);
 
-	void drawTextandWidgets();
 	bool keyPressEvent(SDLKey key);
 
-	void cancel();
+	virtual void cancel();
 
 	virtual void customLoop(float timeStep){};
-	virtual void setWidgetPositions() = 0;
 	virtual void apply() = 0;
 };
 
-#endif // GRAPHICS_H
+#endif // _CONFIGMODE_H
