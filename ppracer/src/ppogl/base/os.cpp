@@ -29,6 +29,7 @@
 #include <stdarg.h> 
 #include <stdio.h> 
 #include <dirent.h>
+#include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <iostream>
@@ -168,6 +169,47 @@ getBaseDir()
 /// return base directory
 {
 	return baseDir;
+}
+
+
+std::string
+getHomeDir()
+/// get user's home directory
+{
+	// get curent userid
+	const int userid = getuid();
+	
+	struct passwd* pw;
+		
+	if( (pw=getpwuid(userid)) == NULL){
+		PP_WARNING("Unable to get home directory -> userid: " << userid);
+		return "";
+	}
+	
+	if(pw->pw_dir==NULL){
+		PP_WARNING("Unable to get home directory -> userid: " << userid);
+		return "";
+	}else{
+		std::string dir = pw->pw_dir;
+		return dir + "/";
+	}
+}
+
+/// user directory
+static std::string userDir;
+
+void
+setUserDir(const std::string& dir)
+/// set directory for storing user data
+{
+	userDir=dir;
+}
+
+const std::string&
+getUserDir()
+/// returns the directory for storing user data
+{
+	return userDir;
 }
 
 } // namespace os

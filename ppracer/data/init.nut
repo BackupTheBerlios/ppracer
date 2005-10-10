@@ -1,7 +1,4 @@
 
-// it's a good idea to load the configuration
-// at the beginning of the script :)
-
 data_dir <- ppogl.cwd();
 
 dofile("hazel.nut");

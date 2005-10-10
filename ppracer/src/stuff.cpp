@@ -55,23 +55,7 @@ get_config_dir_name()
 #if defined(WIN32) 
 	return CONFIG_DIR;
 #else
-    struct passwd *pwent;
-    pwent = getpwuid( getuid() );
-    if(pwent == NULL){
-		PP_ERROR("Unable to get config directory: getpwuid failed");
-		return "";
-    }
-	std::string dir = pwent->pw_dir;
-	dir += "/";
-	dir += CONFIG_DIR;
-	
-	if(!ppogl::os::isDirectory(dir)){
-		if(!ppogl::os::mkdir(dir)){
-			PP_WARNING("Unable to create config directory: " << dir);
-		}
-	}
-	
-	return dir;
+	return ppogl::os::getUserDir();
 #endif // defined(WIN32)
 }
 
@@ -79,13 +63,7 @@ std::string
 get_config_file_name()
 {
     std::string dir = get_config_dir_name();
-	
-#if defined(WIN32)
-	dir += "\\";	
-#else
-    dir += "/";
-#endif // defined(WIN32)
-    dir += CONFIG_FILE;
+	dir += CONFIG_FILE;
     return dir;
 }
 

@@ -40,8 +40,8 @@ bool chdir(const std::string& dir);
 	
 std::string cwd();
 
-bool mkdir(const std::string& dir);	
-		
+bool mkdir(const std::string& dir);
+			
 /// A class for handling directory content
 class dir : public std::list<std::string>
 {
@@ -54,6 +54,11 @@ bool isDirectory(const std::string& name, const bool follow_link=false);
 
 void setBaseDir();
 const std::string& getBaseDir();
+
+std::string getHomeDir();
+
+void setUserDir(const std::string& dir);
+const std::string& getUserDir();
 
 } // namespace os
 } // namespace ppogl

@@ -185,7 +185,10 @@ main(int argc, char *argv[])
 
 		// set current directory to be used as base
 		ppogl::os::setBaseDir();
-						
+				
+		// set user directory to "~/.ppracer/"
+		ppogl::os::setUserDir(ppogl::os::getHomeDir()+".ppracer/");
+		
 		// parse comandline options
 		getopts(argc,argv);
 			

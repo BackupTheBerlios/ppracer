@@ -1,4 +1,8 @@
 
+2005-10-10
+	* src/ppogl/base/os.* src/main.cpp src/stuff.cpp
+	implemented handling of home and user directory in ppogl
+
 2005-10-09
 	* (*)
 	added background image for fps counter

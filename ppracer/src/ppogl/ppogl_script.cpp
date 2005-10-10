@@ -104,6 +104,30 @@ my_isDirectory(ppogl::Script *vm)
 	return 1;
 }
 
+static int
+my_getHomeDir(ppogl::Script *vm)
+{
+	std::string dir = ppogl::os::getHomeDir();
+	vm->pushString(dir);
+	return 1;
+}
+
+static int
+my_getBaseDir(ppogl::Script *vm)
+{
+	std::string dir = ppogl::os::getBaseDir();
+	vm->pushString(dir);
+	return 1;
+}
+
+static int
+my_getUserDir(ppogl::Script *vm)
+{
+	std::string dir = ppogl::os::getUserDir();
+	vm->pushString(dir);
+	return 1;
+}
+
 static void
 my_printfunc(HSQUIRRELVM vm, const SQChar *s, ...) 
 { 
@@ -122,6 +146,9 @@ static const struct ppogl::Script::Lib ppogllib[]={
 	{"dir",my_dir},
 	{"isFile",my_isFile},
 	{"isDirectory",my_isDirectory},
+	{"getHomeDir",my_getHomeDir},
+	{"getBaseDir",my_getBaseDir},
+	{"getUserDir",my_getUserDir},
 	{NULL, NULL}
 };
 	
