@@ -163,8 +163,7 @@ namespace gl{
 ///OpenGL utility functions
 namespace glu{
 	inline GLint Build2DMipmaps(GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *data){return gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);}
-	
+	inline void Perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar){gluPerspective(fovy, aspect, zNear, zFar);}	
 } // namespace glu
-
 
 #endif // _PPOGL_GL_WRAPPERS_H

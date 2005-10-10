@@ -13,7 +13,9 @@ pptheme.course_light(
 	true,
 	[1, 1, 2, 0],
 	[0, 0, 0, 0],
-	[0.8, 0.8, 0.8, 1]); 
+	[0.8, 0.8, 0.8, 1],
+	[0.6, 0.5, 0.5,1]
+	); 
 
 pptheme.fog(
 	true, 				//activated

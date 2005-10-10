@@ -45,7 +45,7 @@ reshape(int w, int h, int multiscreen)
     	gl::MatrixMode( GL_PROJECTION );
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	gluPerspective( GameConfig::fov, double(w)/h, NEAR_CLIP_DIST, far_clip_dist );
+    	glu::Perspective( GameConfig::fov, double(w)/h, NEAR_CLIP_DIST, far_clip_dist );
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==0){
 		// multiscreen 0 (top)
@@ -53,7 +53,7 @@ reshape(int w, int h, int multiscreen)
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	gluPerspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	glu::Perspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==1){
 		// multiscreen 1 (bottom)
@@ -61,7 +61,7 @@ reshape(int w, int h, int multiscreen)
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	gluPerspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	glu::Perspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
 	}else{
 		PP_ERROR("Screen " << multiscreen << " is not supported in multiscreen mode");
