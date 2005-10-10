@@ -26,6 +26,8 @@ libppogl_a_SOURCES = 		\
 	base/errors.h		\
 	base/glwrappers.cpp	\
 	base/glwrappers.h	\
+	base/glextensions.cpp	\
+	base/glextensions.h	\
 	base/glstuff.cpp	\
 	base/glstuff.h		\
 	base/os.cpp		\

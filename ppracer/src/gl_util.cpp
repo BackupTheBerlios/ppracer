@@ -350,12 +350,14 @@ void set_gl_options( const RenderMode mode )
 
 /* Checking for GL errors is really just another type of assertion, so we
    turn off the check if TUXRACER_NO_ASSERT is defined */
-#if defined( PPGLTK_NO_ASSERT )
-void check_gl_error()
+#if defined( PPOGL_NO_ASSERT )
+void
+check_gl_error()
 {
 }
 #else 
-void check_gl_error()
+void
+check_gl_error()
 {
     GLenum error;
     error = glGetError();
@@ -363,16 +365,18 @@ void check_gl_error()
 		PP_WARNING( "OpenGL Error: " << gluErrorString(error) );
     }
 }
-#endif // defined( PPGLTK_NO_ASSERT )
+#endif // defined PPOGL_NO_ASSERT
 
-void copy_to_glfloat_array( GLfloat dest[], double src[], int n )
+void
+copy_to_glfloat_array(GLfloat dest[], double src[], int n)
 {
-    for (int i=0; i<n; i++) {
+    for(int i=0; i<n; i++) {
 		dest[i] = src[i];
     }
 }
 
-void init_glfloat_array( int num, GLfloat arr[], ... )
+void
+init_glfloat_array( int num, GLfloat arr[], ... )
 {
     va_list args;
     va_start( args, arr );
@@ -384,44 +388,6 @@ void init_glfloat_array( int num, GLfloat arr[], ... )
     va_end( args );
 }
 
-/* Extension func ptrs *must* be initialized to NULL */
-PFNGLLOCKARRAYSEXTPROC glLockArraysEXT_p = NULL;
-PFNGLUNLOCKARRAYSEXTPROC glUnlockArraysEXT_p = NULL;
-
-typedef void (*(*get_gl_proc_fptr_t)(const GLubyte *))(); 
-
-void init_opengl_extensions()
-{
-    get_gl_proc_fptr_t get_gl_proc;
-
-    get_gl_proc = reinterpret_cast<get_gl_proc_fptr_t>(SDL_GL_GetProcAddress);
-
-    if ( get_gl_proc ) {
-		glLockArraysEXT_p = reinterpret_cast<PFNGLLOCKARRAYSEXTPROC> 
-		((*get_gl_proc)( reinterpret_cast<const GLubyte*>("glLockArraysEXT") ));
-	
-		glUnlockArraysEXT_p = reinterpret_cast<PFNGLUNLOCKARRAYSEXTPROC> 
-		((*get_gl_proc)( reinterpret_cast<const GLubyte*>("glUnlockArraysEXT") ));
-	
-		if ( glLockArraysEXT_p != NULL && glUnlockArraysEXT_p != NULL ) {
-			PP_LOG( DEBUG_GL_EXT, 
-				 "GL_EXT_compiled_vertex_array extension "
-				 "supported" );
-		} else {
-			PP_LOG( DEBUG_GL_EXT, 
-				 "GL_EXT_compiled_vertex_array extension "
-				 "NOT supported" );
-			glLockArraysEXT_p = NULL;
-			glUnlockArraysEXT_p = NULL;
-		}		
-    } else {
-		PP_LOG( DEBUG_GL_EXT, 
-		     "No function available for obtaining GL proc addresses" );
-    }
-}
-
-
-
 /*---------------------------------------------------------------------------*/
 /*! 
   Prints information about the current OpenGL implemenation.
@@ -429,11 +395,12 @@ void init_opengl_extensions()
   \date    Created:  2000-10-20
   \date    Modified: 2000-10-20
 */
-typedef struct {
+typedef struct
+{
     char *name;
     GLenum value;
     GLenum type;
-} gl_value_t;
+}gl_value_t;
 
 /* Add more things here as needed */
 gl_value_t gl_values[] = {

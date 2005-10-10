@@ -5,6 +5,9 @@
 	
 	* src/course_load.cpp data/init.nut
 	added support courses in the users home dir
+	
+	* src/ppogl/base/glextensions.*
+	added glextension system
 
 2005-10-09
 	* (*)

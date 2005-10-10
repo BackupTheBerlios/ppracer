@@ -17,13 +17,16 @@
 #include "course_load.h"
 #include "fog.h"
 #include "gl_util.h"
+
 #include "course_render.h"
 
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
+#include "ppogl/base/glextensions.h"
 
 #include "quadtree.h"
 #include "gameconfig.h"
+
 
 /** Amount to scale terrain errors by in order to be comparable to
    height errors */
@@ -948,17 +951,17 @@ static GLubyte *VNCArray;
 void
 quadsquare::drawTris(int terrain)
 {
-	if(glLockArraysEXT_p && GameConfig::useCVA){
+	if(gl::EXTcompiledVertexArray() && GameConfig::useCVA){
 		const int tmp_min_idx = VertexArrayMinIdx[terrain];
-		glLockArraysEXT_p(tmp_min_idx, 
+		gl::LockArraysEXT(tmp_min_idx, 
 			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1); 
     }
 
     gl::DrawElements(GL_TRIANGLES, VertexArrayCounter[terrain],
 		    GL_UNSIGNED_INT, VertexArrayIndices[terrain]);
 	
-    if(glUnlockArraysEXT_p && GameConfig::useCVA){
-		glUnlockArraysEXT_p();
+    if(gl::EXTcompiledVertexArray() && GameConfig::useCVA){
+		gl::UnlockArraysEXT();
     }
 }
 

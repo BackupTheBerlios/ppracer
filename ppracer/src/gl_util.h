@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -23,39 +23,9 @@
 #define _GL_UTIL_H_
 
 #include "ppracer.h"
+#include "ppogl/base/glwrappers.h"
 
-/* Hack to fix compiling problem with old gl.h's, reported by Steve
-   Baker <sjbaker1@airmail.net>.  Some old gl.h's don't include glext.h, but
-   do this:
-
-   #define GL_EXT_compiled_vertex_array    1
-
-   since they do define the glLockArraysEXT/glUnlockArraysEXT
-   functions.  However, this prevents PFNGLLOCKARRAYSEXTPROC /
-   PFNGLUNLOCKARRAYSEXTPROC from being defined in glext.h.  So, we do
-   the following, which at worst results in a warning (and is awfully
-   ugly):
-
-   #undef GL_EXT_compiled_vertex_array
-
-   The *correct* thing to do would be for gl.h to #include glext.h, as
-   recent gl.h's do.  However, versions of Mesa as recent as 3.2.1
-   don't do this, so we have to work around it.
-*/
-#undef GL_EXT_compiled_vertex_array
-
-/* Shouldn't need to include glext.h if gl.h is recent, but alas we can't
- * count on that...  */
-#include <GL/glext.h>
-
-#if !defined(GL_GLEXT_VERSION) || GL_GLEXT_VERSION < 6
-#   error "*** You need a more recent copy of glext.h.  You can get one at http://oss.sgi.com/projects/ogl-sample/ABI/glext.h ; it goes in /usr/include/GL. ***"
-#endif
-
-extern PFNGLLOCKARRAYSEXTPROC glLockArraysEXT_p;
-extern PFNGLUNLOCKARRAYSEXTPROC glUnlockArraysEXT_p;
-
-typedef enum {
+enum RenderMode{
     GUI,
     GAUGE_BARS,
     TEXFONT,
@@ -72,7 +42,7 @@ typedef enum {
     TRACK_MARKS,
     OVERLAYS, 
     SPLASH_SCREEN
-} RenderMode;
+};
 
 void set_gl_options( const RenderMode mode );
 
@@ -80,8 +50,6 @@ void copy_to_glfloat_array( GLfloat dest[], double src[], int n );
 
 void init_glfloat_array( int num, GLfloat arr[], ... );
 
-void init_opengl_extensions();
-
 void print_gl_info();
 
-#endif
+#endif // _GL_UTIL_H_

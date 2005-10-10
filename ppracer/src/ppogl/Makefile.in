@@ -58,16 +58,17 @@ libppogl_a_LIBADD =
 am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	ppogl_script.$(OBJEXT) textures.$(OBJEXT) \
 	translation.$(OBJEXT) assert.$(OBJEXT) color.$(OBJEXT) \
-	errors.$(OBJEXT) glwrappers.$(OBJEXT) glstuff.$(OBJEXT) \
-	os.$(OBJEXT) refptr.$(OBJEXT) vec2d.$(OBJEXT) vec3d.$(OBJEXT) \
-	vec3f.$(OBJEXT) vec4f.$(OBJEXT) image.$(OBJEXT) \
-	readPNG.$(OBJEXT) writePPM.$(OBJEXT) widget.$(OBJEXT) \
-	button.$(OBJEXT) label.$(OBJEXT) uimgr.$(OBJEXT) \
-	uitheme.$(OBJEXT) alignment.$(OBJEXT) checkbox.$(OBJEXT) \
-	listbox.$(OBJEXT) imagebutton.$(OBJEXT) entry.$(OBJEXT) \
-	textarea.$(OBJEXT) frame.$(OBJEXT) scale.$(OBJEXT) \
-	sound.$(OBJEXT) music.$(OBJEXT) audiomgr.$(OBJEXT) \
-	geoms.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT)
+	errors.$(OBJEXT) glwrappers.$(OBJEXT) glextensions.$(OBJEXT) \
+	glstuff.$(OBJEXT) os.$(OBJEXT) refptr.$(OBJEXT) \
+	vec2d.$(OBJEXT) vec3d.$(OBJEXT) vec3f.$(OBJEXT) \
+	vec4f.$(OBJEXT) image.$(OBJEXT) readPNG.$(OBJEXT) \
+	writePPM.$(OBJEXT) widget.$(OBJEXT) button.$(OBJEXT) \
+	label.$(OBJEXT) uimgr.$(OBJEXT) uitheme.$(OBJEXT) \
+	alignment.$(OBJEXT) checkbox.$(OBJEXT) listbox.$(OBJEXT) \
+	imagebutton.$(OBJEXT) entry.$(OBJEXT) textarea.$(OBJEXT) \
+	frame.$(OBJEXT) scale.$(OBJEXT) sound.$(OBJEXT) \
+	music.$(OBJEXT) audiomgr.$(OBJEXT) geoms.$(OBJEXT) \
+	model.$(OBJEXT) model_ac.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -220,6 +221,8 @@ libppogl_a_SOURCES = \
 	base/errors.h		\
 	base/glwrappers.cpp	\
 	base/glwrappers.h	\
+	base/glextensions.cpp	\
+	base/glextensions.h	\
 	base/glstuff.cpp	\
 	base/glstuff.h		\
 	base/os.cpp		\
@@ -353,6 +356,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/frame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geoms.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glextensions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glstuff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glwrappers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image.Po@am__quote@
@@ -449,6 +453,20 @@ glwrappers.obj: base/glwrappers.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/glwrappers.cpp' object='glwrappers.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o glwrappers.obj `if test -f 'base/glwrappers.cpp'; then $(CYGPATH_W) 'base/glwrappers.cpp'; else $(CYGPATH_W) '$(srcdir)/base/glwrappers.cpp'; fi`
+
+glextensions.o: base/glextensions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT glextensions.o -MD -MP -MF "$(DEPDIR)/glextensions.Tpo" -c -o glextensions.o `test -f 'base/glextensions.cpp' || echo '$(srcdir)/'`base/glextensions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/glextensions.Tpo" "$(DEPDIR)/glextensions.Po"; else rm -f "$(DEPDIR)/glextensions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/glextensions.cpp' object='glextensions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o glextensions.o `test -f 'base/glextensions.cpp' || echo '$(srcdir)/'`base/glextensions.cpp
+
+glextensions.obj: base/glextensions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT glextensions.obj -MD -MP -MF "$(DEPDIR)/glextensions.Tpo" -c -o glextensions.obj `if test -f 'base/glextensions.cpp'; then $(CYGPATH_W) 'base/glextensions.cpp'; else $(CYGPATH_W) '$(srcdir)/base/glextensions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/glextensions.Tpo" "$(DEPDIR)/glextensions.Po"; else rm -f "$(DEPDIR)/glextensions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/glextensions.cpp' object='glextensions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o glextensions.obj `if test -f 'base/glextensions.cpp'; then $(CYGPATH_W) 'base/glextensions.cpp'; else $(CYGPATH_W) '$(srcdir)/base/glextensions.cpp'; fi`
 
 glstuff.o: base/glstuff.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT glstuff.o -MD -MP -MF "$(DEPDIR)/glstuff.Tpo" -c -o glstuff.o `test -f 'base/glstuff.cpp' || echo '$(srcdir)/'`base/glstuff.cpp; \

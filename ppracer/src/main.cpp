@@ -49,6 +49,7 @@
 #include "ppogl/audio.h"
 #include "ppogl/config.h"
 #include "ppogl/base/os.h"
+#include "ppogl/base/glextensions.h"
 
 #include <iostream>
 
@@ -259,8 +260,10 @@ main(int argc, char *argv[])
      */
     gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    init_opengl_extensions();
+	// init compiled_vertex extension
+	gl::EXTcompiledVertexArrayInit();
 
+	
     // print OpenGL debugging information
     if(verbose)	print_gl_info();
 
