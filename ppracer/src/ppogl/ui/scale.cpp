@@ -67,6 +67,9 @@ Scale::setValue(float value)
 		m_value = value;
 	}
 	updateButtonStates();
+	
+	//emit changed signal
+	signalChanged.Emit();
 }
 
 float
@@ -113,6 +116,9 @@ Scale::upButtonCallback()
 		m_value=1.0f;
 	}
 	updateButtonStates();
+	
+	//emit changed signal
+	signalChanged.Emit();
 }	
 
 void
@@ -125,6 +131,9 @@ Scale::downButtonCallback()
 		m_value=0.0f;
 	}
 	updateButtonStates();
+	
+	//emit changed signal
+	signalChanged.Emit();
 }
 		
 

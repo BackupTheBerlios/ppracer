@@ -50,6 +50,9 @@ public:
 
 	void upButtonCallback();
 	void downButtonCallback();
+
+	//signals
+	ppogl::Signal0 signalChanged;
 };	
 
 /// A horizontal slider widget

@@ -8,6 +8,9 @@
 	
 	* src/ppogl/base/glextensions.*
 	added glextension system
+	
+	* src/ppogl/ui/scale.*
+	added changed signal
 
 2005-10-09
 	* (*)
