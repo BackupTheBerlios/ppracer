@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>PlanetPenguin Racer course development</title>
+</head>
+<body>
+<h2>Course development</h2>
+<p>
+This document describes how to make courses for PlanetPenguin Racer 0.5
+</p>
+<h3>Data files</h3>
+<p>A common course directory contains the following files:</p>
+<ul>
+<li><strong>description.nut</strong><br />
+Parsed on startup.<br />
+Name, description, author, preview filename and translations of name and description. 
+<br />&nbsp;
+</li>
+
+<li><strong>course.nut</strong><br />
+Parsed each time a course is started.<br />
+Specifications of the course and filenames for terrain, elevation and elements images.
+<br />&nbsp;
+</li>
+
+<li><strong>terrain.png</strong><br />
+An image containing the terrain types.
+<br />&nbsp;
+</li>
+
+<li><strong>elev.png</strong><br />
+An image containing the elevation of the terrain.
+<br />&nbsp;
+</li>
+
+<li><strong>elements.png</strong><br />
+An image containing the position of models and items.
+<br />&nbsp;
+</li>
+</ul>
+
+<h3>description.nut</h3>
+<pre>
+ppcourse.register({
+  name = "My course",                 // the name of the course
+  description = "My description",     // the descriptions of the course
+  preview = "preview.png",            // the name of the preview image
+  author = "Hans Wurst &lt;foo@bar.de&gt", // the author and his email (optional)
+	
+  names = {
+    de_DE = "Meine Abfahrt"           // a translation of the name
+  },
+  descriptions = {
+    de_DE = "Meine Beschreibung"      // a translation of the description	
+  }
+});
+</pre>
+<p>
+The names and descriptions fields that are used for translations 
+are optional.<br />
+Leave them empty if you don't want to add translations.
+</p>
+<h3>course.nut</h3>
+<pre>
+ppcourse.init({
+  dimension = [100, 800, 60, 785], // the dimension of the course
+  start_point = [38, 3.5],         // position for tux at startup
+  angle = 25,                      // the angle of the course	
+  elevation_scale = 22,	           // the value for scaling the elevation
+  elevation_data = "elev.png",     // the image used for the elevation
+  elements_data = "elements.png",  // the image used for the elements (items/models)
+  terrain_data = "terrain.png",    // the image used for the terrain types
+  theme = "ppracer"                // the theme used for this course
+});
+</pre>
+<p>
+The first to values of the dimension field are the overall size of the course. 
+In most cases this is the width and height of the terrain, 
+elevation and elements image.<br />
+The last two values set the valid position of the player within the course.
+</p>
+
+<h3>terrain.png</h3>
+<p>
+The image contains the terrain types (ice, rock, snow, ...)
+of the course.<br />
+An image containing the colors is a available in the 
+source package (data/terrains.png) and  
+<a href="images/terrains.png">online</a>.
+</p>
+<h3>elev.png</h3>
+<p>
+The elevation of the terrain is stored as a heightmap.<br />
+Brighter colors means higher terrain.<br />
+</p>
+
+<h3>elements.png</h3>
+<p>
+The image contains the positions of items/models 
+(herrings, trees,reset points, ...) in the course.<br />
+</p>
+
+<h3>Installation</h3>
+<ul>
+<li><strong>Global installation:</strong><br />
+Copy the directory in the <em>courses/</em> subdirectory within the data directory.
+<br />&nbsp;
+</li>
+
+<li><strong>User installation (Linux/Unix)</strong><br />
+Create a directory <em>~/.ppracer/courses/</em> and copy your courses in there.<br />
+<span style="color:red">This doesn't work in version 0.5alpha</span>
+<br />&nbsp;
+</li>
+</ul>
+
+
+<h3>Gimp scripts and color palettes</h3>
+<p>
+The source package ships several 
+script for the Gimp and color palettes for terrain and elements colors.<br />
+<br />
+This files are located in the <em>contrib</em> directory.<br />
+To install them, copy both directories into your local gimp directory (~/.gimp or similar).<br />
+<br />
+Note: The scripts are outdated but should work.
+</p>
+</body>
+</html>

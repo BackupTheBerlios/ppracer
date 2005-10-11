@@ -955,14 +955,14 @@ quadsquare::drawTris(int terrain)
 		const int tmp_min_idx = VertexArrayMinIdx[terrain];
 		gl::LockArraysEXT(tmp_min_idx, 
 			 VertexArrayMaxIdx[terrain] - tmp_min_idx + 1); 
-    }
+   	}
 
-    gl::DrawElements(GL_TRIANGLES, VertexArrayCounter[terrain],
-		    GL_UNSIGNED_INT, VertexArrayIndices[terrain]);
-	
-    if(gl::EXTcompiledVertexArray() && GameConfig::useCVA){
+   	gl::DrawElements(GL_TRIANGLES, VertexArrayCounter[terrain],
+	    	GL_UNSIGNED_INT, VertexArrayIndices[terrain]);
+
+   	if(gl::EXTcompiledVertexArray() && GameConfig::useCVA){
 		gl::UnlockArraysEXT();
-    }
+   	}
 }
 
 void

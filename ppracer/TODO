@@ -1,0 +1,78 @@
+                TODOs and known bugs
+
+add full multiplayer support:
+    collision detection between players
+    support for multiplayer in the ui
+    optimize hud for multiple players
+    add new playing modes
+    rewrite reset mode
+
+add better courses and rework cups/events
+
+full support for difficulty levels
+
+highscore list
+
+enabling audio only works if it was enabled on startup
+    move audio stuff out of init.nut into audio.nut
+    reload audio.nut if necessary
+
+changing player model details needs restart:
+    needs reload of model.nut files
+
+restore old settings if new mode is not supported in videoconfig
+
+improve uitheme:
+    add scripting support
+    move drawing code out of the widgets
+
+ppogl::HScale widget:
+    add full mouse support
+    new design
+
+add full keyboard/joystick support into the ui
+
+add snow
+
+implement different fish pickup sounds (sound files already exist)
+
+add sound for flying
+
+implement environment and "hit model" sounds
+
+change handling of terrain sounds
+
+use SDL_opengl.h if available
+
+add icons for cups and events
+
+reduce loading time for courses and reduce mem usage
+    reload theme_pack data only if necessary
+    unload unneeded theme_packs
+
+Remaining possible memleaks (valgrind):
+    definitly lost:
+     - ppogl::LoadPNG:
+        seems to leak mem in libpng (png_info_struct)
+        needs further investigation
+    possibly lost:
+     - ppogl::ModelAC:
+        needs a rewrite anyways
+     - some std::strings:
+        might be related to the usage of const std::string&
+        check whether this is a common problem and ignore it
+
+
+The distant future:
+ - rewrite model system
+ - rewrite physsim
+ - computer player(ai)
+ - network support
+ - move some complexity into the scripting part
+ - more models
+ - scripting support to benchmark/test system
+ - course map display
+ - shadow map
+ - player reflections on ice
+ - rewrite player model shadow
+
