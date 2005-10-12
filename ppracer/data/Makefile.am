@@ -42,6 +42,7 @@ nobase_dist_ppdata_DATA = \
 		textures/mouse_cursor.png	\
 		textures/tuxlife.png	\
 		textures/menu_title.png	\
+		textures/fpsbg.png \
 		hazel.nut	\
 		events/herring_run/deadman/terrain.png	\
 		events/herring_run/deadman/elev.png	\
