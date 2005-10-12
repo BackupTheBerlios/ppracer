@@ -1,4 +1,8 @@
 
+2005-10-12
+	* src/ppogl/base/glextensions.cpp
+	fixed compilation on g++-2.95
+
 2005-10-10
 	* src/ppogl/base/os.* src/main.cpp src/stuff.cpp
 	implemented handling of home and user directory in ppogl

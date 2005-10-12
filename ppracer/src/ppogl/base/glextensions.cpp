@@ -30,10 +30,13 @@ PFNGLUNLOCKARRAYSEXTPROC p_UnlockArraysEXT = NULL;
 bool
 EXTcompiledVertexArrayInit()
 {
-	p_LockArraysEXT= reinterpret_cast<PFNGLLOCKARRAYSEXTPROC>(
-			SDL_GL_GetProcAddress("glLockArraysEXT"));
-	p_UnlockArraysEXT= reinterpret_cast<PFNGLUNLOCKARRAYSEXTPROC>(
-			SDL_GL_GetProcAddress("glUnlockArraysEXT"));	
+	//using c-style cast to fix problems with some compilers
+	
+	p_LockArraysEXT= (PFNGLLOCKARRAYSEXTPROC)
+			SDL_GL_GetProcAddress("glLockArraysEXT");
+	
+	p_UnlockArraysEXT=(PFNGLUNLOCKARRAYSEXTPROC)
+			SDL_GL_GetProcAddress("glUnlockArraysEXT");	
 	return true;
 }
 
