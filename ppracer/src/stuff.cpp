@@ -55,7 +55,13 @@ get_config_dir_name()
 #if defined(WIN32) 
 	return CONFIG_DIR;
 #else
-	return ppogl::os::getUserDir();
+	const std::string& dir = ppogl::os::getUserDir();	
+	if(!ppogl::os::isDirectory(dir)){
+		if(!ppogl::os::mkdir(dir)){
+			PP_WARNING("Unable to create config directory: " << dir);
+		}
+	}
+	return dir;	
 #endif // defined(WIN32)
 }
 
