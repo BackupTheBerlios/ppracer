@@ -1,18 +1,18 @@
 
 === ppracer 0.5 alpha2 ===
 
-2005-10-13
+2005-10-13  Volker Stroebel <volker@planetpenguin.de>
 	* src/lights.cpp
 	fixed registration of light colors
 
 	* data/themes/conditions/common/*.nut
 	fixed lighting
 
-2005-10-12
+2005-10-12  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/base/glextensions.cpp
 	fixed compilation on g++-2.95
 
-2005-10-10
+2005-10-10  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/base/os.* src/main.cpp src/stuff.cpp
 	implemented handling of home and user directory in ppogl
 	
@@ -28,7 +28,7 @@
 	* src/audioconfig.* src/ppogl/audio/audiomgr.cpp
 	added realtime change of music volume in audio configuration
 
-2005-10-09
+2005-10-09  Volker Stroebel <volker@planetpenguin.de>
 	* (*)
 	added background image for fps counter
 	improved hud to support backgrounds for fps and course percentage
@@ -37,7 +37,7 @@
 	* src/squirrel/* src/sqstdlib/*
 	updated squirrel to 2.0.5
 
-2005-10-08
+2005-10-08  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/audio/audiomgr.* src/paused.cpp
 	added AudioMgr::pauseMusic()
 	pause music in PAUSED mode
@@ -48,28 +48,28 @@
 	* src/winsys.cpp
 	added fallbacks if SDL_SetVideoMode fails
 
-2005-10-07
+2005-10-07  Volker Stroebel <volker@planetpenguin.de>
 	* src/course_quad.*
 	removed files
 	
 	* src/*
 	several code cleanups and fixes
 
-2005-10-05
+2005-10-05  Volker Stroebel <volker@planetpenguin.de>
 	* src/graphicsconfig.*
 	added graphics configuration
 	terrain detail level
 	texture detail level
 	player detail level
 
-2005-10-04
+2005-10-04  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/ui/scale.*
 	added hscale widget (horizontal slider)
 	
 	* src/audioconfig.*
 	replaced enable sound/music checkboxes with volume controls
 
-2005-10-03
+2005-10-03  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	fixed several memleaks
 	code cleanups
@@ -84,7 +84,7 @@
 	* src/ppogl/audio/audiomgr.* src/main.cpp data/config.nut.in
 	added music and sound volume control
 
-2005-09-27
+2005-09-27  Volker Stroebel <volker@planetpenguin.de>
 	* data/config.nut.in
 	fixed several default settings
 	
@@ -105,13 +105,13 @@
 	* src/ppogl//audio/sound.cpp
 	partially fixed handling of non endless playback
 
-2005-09-26
+2005-09-26  Volker Stroebel <volker@planetpenguin.de>
 	* data/translations/de_DE.nut
 	fixed translations
 	
 === ppracer 0.5 alpha ===
 
-2005-09-25
+2005-09-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/videoconfig.cpp
 	fixed fullscreen checkbox
 	check resolution for min width/height
