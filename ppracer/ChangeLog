@@ -1,4 +1,6 @@
 
+=== ppracer 0.5 alpha2 ===
+
 2005-10-13
 	* src/lights.cpp
 	fixed registration of light colors
