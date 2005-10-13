@@ -110,7 +110,7 @@ course_light_cb(ppogl::Script *vm)
 		for(int i=0; i<4; i++){
 			vm->next(3);
 			course_lights[light_num].position.values[i]=vm->getFloat();
-			vm->pop();
+			vm->pop(2);
 		}	
 	}
 
@@ -120,7 +120,7 @@ course_light_cb(ppogl::Script *vm)
 		for(int i=0; i<4; i++){
 			vm->next(4);
 			course_lights[light_num].diffuse.values[i]=vm->getFloat();
-			vm->pop();
+			vm->pop(2);
 		}
 	}
 	
@@ -130,7 +130,7 @@ course_light_cb(ppogl::Script *vm)
 		for(int i=0; i<4; i++){
 			vm->next(5);
 			course_lights[light_num].specular.values[i]=vm->getFloat();
-			vm->pop();
+			vm->pop(2);
 		}	
 	}
 	
@@ -140,7 +140,7 @@ course_light_cb(ppogl::Script *vm)
 		for(int i=0; i<4; i++){
 			vm->next(6);
 			course_lights[light_num].ambient.values[i]=vm->getFloat();
-			vm->pop();
+			vm->pop(2);
 		}
 	}
 	return 0;

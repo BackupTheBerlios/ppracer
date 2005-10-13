@@ -13,7 +13,8 @@ pptheme.course_light(
 	true,	 					//activated
 	[1, 1, 1, 0],				//position
 	[0,0,0,0],					//diffuse
-    [0.8, 0.8, 0.8, 1]			//specular
+    [0.8, 0.8, 0.8, 1],			//specular
+	[0.1, 0.1, 0.1, 1.0]	 	//ambient
 );
 
 pptheme.fog(

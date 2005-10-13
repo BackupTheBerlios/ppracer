@@ -5,14 +5,16 @@ pptheme.course_light(
 	[1, 1, 1, 0],				//position
 	[0.45, 0.43, 0.47, 1.0],	//diffuse
     [0.3, 0.3, 0.3, 1],			//specular
-	[0.39, 0.4, 0.44, 1.0]); 	//ambient
+	[0.39, 0.4, 0.44, 1.0]      //ambient
+);
 
 pptheme.course_light(
 	1,							//light number
 	true,	 					//activated
 	[1, 1, 2, 0],				//position
 	[0.0, 0.0, 0.0, 0.0],		//diffuse
-    [0.5, 0.5, 0.5, 1.0]		//specular
+    [0.7, 0.7, 0.7, 1.0],		//specular
+    [0.3, 0.3, 0.3, 1.0]       	//ambient
 );
 
 local fog_dist = 40;

@@ -1,4 +1,11 @@
 
+2005-10-13
+	* src/lights.cpp
+	fixed registration of light colors
+
+	* data/themes/conditions/common/*.nut
+	fixed lighting
+
 2005-10-12
 	* src/ppogl/base/glextensions.cpp
 	fixed compilation on g++-2.95

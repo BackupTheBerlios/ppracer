@@ -1,20 +1,20 @@
-	
+
 pptheme.course_light(
 	0,							//light number
 	true,	 					//activated
 	[1, 1, 0, 0],				//position
 	[0.7, 0.6, 0.5, 1.0],		//diffuse
-    [1,1,1,1],					//specular
+    [0.0,0.0,0.0,0.0],			//specular
 	[0.4, 0.3, 0.3, 1.0]	 	//ambient
 );
 
 pptheme.course_light(
-	0,						//light number
+	1,						//light number
 	true,	 				//activated
 	[1, 1, 2, 0],			//position
-	[1,1,1,1],				//diffuse
+	[0.0,0.0,0.0,0],		//diffuse
     [0.9, 0.6, 0.3, 1],		//specular
-	[1,1,1,1]			 	//ambient
+	[0,0,0,0]			 	//ambient
 );
 
 pptheme.fog(

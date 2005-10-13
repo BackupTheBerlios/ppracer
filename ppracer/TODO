@@ -50,6 +50,8 @@ reduce loading time for courses and reduce mem usage
     reload theme_pack data only if necessary
     unload unneeded theme_packs
 
+add better lighting system
+
 Remaining possible memleaks (valgrind):
     definitly lost:
      - ppogl::LoadPNG:
@@ -75,4 +77,3 @@ The distant future:
  - shadow map
  - player reflections on ice
  - rewrite player model shadow
-
