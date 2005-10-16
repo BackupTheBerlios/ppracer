@@ -72,7 +72,8 @@
 #define NO_INTERPOLATION_SPEED 2.0
 
 static ppogl::Vec3d tux_eye_pts[2];
-static ppogl::Vec3d tux_view_pt;
+//static ppogl::Vec3d tux_view_pt;
+static ppogl::Vec3d tux_view_pt[2];
 
 void
 set_view_mode(Player& plyr, ViewMode mode)
@@ -88,7 +89,7 @@ get_view_mode(const Player& plyr)
 } 
 
 void
-traverse_dag_for_view_point(SceneNode *node, const pp::Matrix& trans)
+traverse_dag_for_view_point(const Player& plyr, SceneNode *node, const pp::Matrix& trans)
 {
     pp::Matrix new_trans;
     SceneNode *child;
@@ -98,13 +99,13 @@ traverse_dag_for_view_point(SceneNode *node, const pp::Matrix& trans)
     new_trans=trans*node->trans;
 
     if ( node->eye == true ) {
-	set_tux_eye( node->which_eye,
+	set_tux_eye(plyr, node->which_eye,
 		     new_trans.transformPoint( ppogl::Vec3d( 0., 0., 0. ) ) );
     }
 
     child = node->child;
     while (child != NULL) {
-        traverse_dag_for_view_point( child, new_trans );
+        traverse_dag_for_view_point(plyr, child, new_trans );
         child = child->next;
     } 
 }
@@ -123,21 +124,21 @@ get_tux_view_pt(const Player& plyr)
 		PP_ERROR( "couldn't load tux's root node" );
     } 
 
-    traverse_dag_for_view_point( tux_root_node, trans );
+    traverse_dag_for_view_point(plyr, tux_root_node, trans );
 
-    tux_view_pt = tux_view_pt+ (0.2*plyr.plane_nml);
+    tux_view_pt[plyr.num] = tux_view_pt[plyr.num]+ (0.2*plyr.plane_nml);
 
-    return tux_view_pt; 
+    return tux_view_pt[plyr.num]; 
 }
 
 void
-set_tux_eye(TuxEye which_eye, const ppogl::Vec3d& pt) 
+set_tux_eye(const Player& plyr,TuxEye which_eye, const ppogl::Vec3d& pt) 
 {
     tux_eye_pts[ which_eye ] = pt;
 
-    tux_view_pt.x() = ( tux_eye_pts[0].x() + tux_eye_pts[1].x() ) / 2.0; 
-    tux_view_pt.y() = ( tux_eye_pts[0].y() + tux_eye_pts[1].y() ) / 2.0; 
-    tux_view_pt.z() = ( tux_eye_pts[0].z() + tux_eye_pts[1].z() ) / 2.0; 
+    tux_view_pt[plyr.num].x() = ( tux_eye_pts[0].x() + tux_eye_pts[1].x() ) / 2.0; 
+    tux_view_pt[plyr.num].y() = ( tux_eye_pts[0].y() + tux_eye_pts[1].y() ) / 2.0; 
+    tux_view_pt[plyr.num].z() = ( tux_eye_pts[0].z() + tux_eye_pts[1].z() ) / 2.0; 
 }
 
 /*! 
@@ -597,6 +598,4 @@ update_view(Player& plyr, double dt)
     plyr.view.up = up_dir;
     plyr.view.plyr_pos = plyr.pos;
     plyr.view.initialized = true;
-
-    setup_view_matrix( plyr );
 }

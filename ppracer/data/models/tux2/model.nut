@@ -9,23 +9,23 @@ tux.root_node(2,root);
 
 // Material Properties
 
-tux.material("white_penguin",
+tux.material("white_penguin2",
             [0.58,0.58,0.58],
 			[0.2,0.2,0.2],
 			50.0);
-tux.material("blue_penguin",
+tux.material("black_penguin2",
 			[0.1,0.1,0.9],
 			[0.5,0.5,0.5],
 			20.0);
-tux.material("beak_color",
+tux.material("beak_color2",
 			[0.64,0.54,0.06],
 			[0.4,0.4,0.4],
 			5);
-tux.material("nostril_color",
+tux.material("nostril_color2",
 			[0.48039,0.318627,0.033725],
 			[0.0,0.0,0.0],
 			1);
-tux.material("iris_color",
+tux.material("iris_color2",
 			[0.01,0.01,0.01],
 			[0.4,0.4,0.4],
 			90.0);
@@ -38,12 +38,12 @@ function makeBody(l_parent)
 {
     local torso_bl = l_parent + ":b";
     tux.sphere(l_parent, "b", 1.0);
-    tux.surfaceproperty(torso_bl,"blue_penguin");
+    tux.surfaceproperty(torso_bl,"black_penguin2");
     tux.scale(torso_bl,[0,0,0],[0.95,1.0,0.8]);
 
     local torso_wh1 = l_parent + ":w1";
     tux.sphere(l_parent, "w1", 1.0);
-    tux.surfaceproperty(torso_wh1,"white_penguin");
+    tux.surfaceproperty(torso_wh1,"white_penguin2");
     tux.translate(torso_wh1,[0.0,0.0,0.17]);
     tux.scale(torso_wh1,[0,0,0],[0.8,0.9,0.7]);
     tux.shadow(torso_wh1,"off");
@@ -102,11 +102,11 @@ tux.scale(neck_scale,[0,0,0],[0.45,0.5,0.45]);
 
 tux.sphere(neck_scale,"neck", 0.8);
 local neck = neck_scale + ":neck";
-tux.surfaceproperty(neck,"blue_penguin");
+tux.surfaceproperty(neck,"black_penguin2");
 
 tux.sphere(neck_scale,"neckw",0.66);
 local neckw = neck_scale + ":neckw";
-tux.surfaceproperty(neckw,"white_penguin");
+tux.surfaceproperty(neckw,"white_penguin2");
 tux.translate(neckw,[0,-0.08,0.35]);
 tux.scale(neckw,[0,0,0], [0.8,0.9,0.7]);
 tux.shadow(neckw, "off");
@@ -132,21 +132,21 @@ tux.translate(head_org,[0,0.20,0]);
 
 tux.sphere(head_org, "hd", 1.0);
 local head = head_org + ":hd";
-tux.surfaceproperty(head, "blue_penguin");
+tux.surfaceproperty(head, "black_penguin2");
 tux.scale(head,[0,0,0], [0.42,0.5,0.42]);
 
 // create beak
 
 tux.sphere(head_org,"bk1", 0.8);
 local beak1 = head_org + ":bk1";
-tux.surfaceproperty(beak1, "beak_color");
+tux.surfaceproperty(beak1, "beak_color2");
 tux.translate(beak1, [0, -0.205, 0.3]);
 tux.rotate(beak1, "x", 10);
 tux.scale(beak1, [0,0,0], [0.23, 0.12, 0.4]);
 
 tux.sphere(head_org, "bk3", 0.66);
 local beak3 = head_org + ":bk3";
-tux.surfaceproperty(beak3, "beak_color");
+tux.surfaceproperty(beak3, "beak_color2");
 tux.translate(beak3, [0, -0.23, 0.3]);
 tux.rotate(beak3, "x", 10);
 tux.scale(beak3, [0,0,0], [0.21, 0.17, 0.38]);
@@ -156,7 +156,7 @@ tux.shadow(beak3, "off");
 
 tux.sphere(head_org, "le", 0.66);
 local left_eye = head_org+ ":le";
-tux.surfaceproperty(left_eye,"white_penguin");
+tux.surfaceproperty(left_eye,"white_penguin2");
 tux.translate(left_eye, [0.13, -0.03, 0.38]);
 tux.rotate(left_eye,"y" ,18);
 tux.rotate(left_eye,"z", 5);
@@ -166,7 +166,7 @@ tux.shadow(left_eye,"off");
 
 tux.sphere(head_org, "re", 0.66);
 local right_eye = head_org + ":re";
-tux.surfaceproperty(right_eye, "white_penguin");
+tux.surfaceproperty(right_eye, "white_penguin2");
 tux.translate(right_eye, [-0.13, -0.03, 0.38]);
 tux.rotate(right_eye, "y", -18);
 tux.rotate(right_eye, "z", -5);
@@ -177,7 +177,7 @@ tux.shadow(right_eye, "off");
 
 tux.sphere(head_org, "li", 0.66);
 local left_iris = head_org + ":li";
-tux.surfaceproperty(left_iris,"iris_color");
+tux.surfaceproperty(left_iris,"iris_color2");
 tux.translate(left_iris,[0.12, -0.045, 0.40]);
 tux.rotate(left_iris, "y", 18);
 tux.rotate(left_iris, "z", 5);
@@ -188,7 +188,7 @@ tux.eye(left_iris,"left");
 
 tux.sphere(head_org, "ri", 0.66);
 local right_iris = head_org + ":ri";
-tux.surfaceproperty(right_iris, "iris_color");
+tux.surfaceproperty(right_iris, "iris_color2");
 tux.translate(right_iris, [-0.12, -0.045, 0.40]);
 tux.rotate(right_iris, "y", -18);
 tux.rotate(right_iris, "z", -5);
@@ -218,7 +218,7 @@ tux.translate(luparm_org, [-0.22, 0, 0]);
 
 tux.sphere(luparm_org, "uparm", 0.66);
 local luparm= luparm_org +":uparm";
-tux.surfaceproperty(luparm, "blue_penguin");
+tux.surfaceproperty(luparm, "black_penguin2");
 tux.scale(luparm, [0, 0, 0], [0.34, 0.1, 0.2]);
 
 //right
@@ -239,7 +239,7 @@ tux.translate(ruparm_org, [-0.22, 0, 0]);
 
 tux.sphere(ruparm_org, "uparm", 0.66);
 local ruparm = ruparm_org +":uparm";
-tux.surfaceproperty(ruparm,"blue_penguin");
+tux.surfaceproperty(ruparm,"black_penguin2");
 tux.scale(ruparm, [0, 0, 0], [0.34, 0.1, 0.2]);
 
 //
@@ -263,7 +263,7 @@ tux.translate(llowarm_org, [-0.19, 0, 0]);
 
 tux.sphere(llowarm_org, "llowarm", 0.66);
 local llowarm= llowarm_org + ":llowarm";
-tux.surfaceproperty(llowarm, "blue_penguin");
+tux.surfaceproperty(llowarm, "black_penguin2");
 tux.scale(llowarm, [0, 0, 0], [0.30, 0.07, 0.15]);
 
 // right
@@ -283,7 +283,7 @@ tux.translate(rlowarm_org, [-0.19, 0, 0]);
 
 tux.sphere(rlowarm_org, "rlowarm", 0.66);
 local rlowarm= rlowarm_org +":rlowarm";
-tux.surfaceproperty(rlowarm, "blue_penguin");
+tux.surfaceproperty(rlowarm, "black_penguin2");
 tux.scale(rlowarm, [0, 0, 0], [0.30, 0.07, 0.15]);
 
 //
@@ -307,7 +307,7 @@ tux.translate(lhand_org, [-0.10, 0, 0]);
 
 tux.sphere(lhand_org, "lhand", 0.5);
 local lhand= lhand_org +":lhand";
-tux.surfaceproperty(lhand, "blue_penguin");
+tux.surfaceproperty(lhand, "black_penguin2");
 tux.scale(lhand, [0, 0, 0], [0.12, 0.05, 0.12]);
 
 // right
@@ -327,7 +327,7 @@ tux.translate(rhand_org, [-0.10, 0, 0]);
 
 tux.sphere(rhand_org, "rhand", 0.5);
 local rhand= rhand_org +":rhand";
-tux.surfaceproperty(rhand, "blue_penguin");
+tux.surfaceproperty(rhand, "black_penguin2");
 tux.scale(rhand, [0, 0, 0], [0.12, 0.05, 0.12]);
 
 //
@@ -352,12 +352,12 @@ tux.translate(lthigh_org, [ 0, -0.1, 0 ]);
 
 tux.sphere(lthigh_org ,"lthigh", 0.5);
 local lthigh= lthigh_org +":lthigh";
-tux.surfaceproperty(lthigh, "beak_color");
+tux.surfaceproperty(lthigh, "beak_color2");
 tux.scale(lthigh, [0, 0, 0], [0.07, 0.30, 0.07]);
 
 tux.sphere(lthigh_org, "lhipball", 0.5);
 local lhipball= lthigh_org +":lhipball";
-tux.surfaceproperty(lhipball, "blue_penguin");
+tux.surfaceproperty(lhipball, "black_penguin2");
 tux.translate(lhipball, [0.0, 0.05, 0.0]);
 tux.scale(lhipball, [0, 0, 0], [0.09, 0.18, 0.09]);
 tux.shadow(lhipball,"off");
@@ -379,12 +379,12 @@ tux.translate(rthigh_org, [ 0, -0.1, 0 ]);
 
 tux.sphere(rthigh_org, "rthigh", 0.5);
 local rthigh= rthigh_org +":rthigh";
-tux.surfaceproperty(rthigh, "beak_color");
+tux.surfaceproperty(rthigh, "beak_color2");
 tux.scale(rthigh, [0, 0, 0], [0.07, 0.30, 0.07]);
 
 tux.sphere(rthigh_org, "rhipball", 0.5);
 local rhipball= rthigh_org +":rhipball";
-tux.surfaceproperty(rhipball, "blue_penguin");
+tux.surfaceproperty(rhipball, "black_penguin2");
 tux.translate(rhipball, [0.0, 0.05, 0.0]);
 tux.scale(rhipball, [0, 0, 0], [0.09, 0.18, 0.09]);
 tux.shadow(rhipball,"off");
@@ -410,7 +410,7 @@ tux.translate(lcalf_org, [ 0, -0.13, 0 ]);
 
 tux.sphere(lcalf_org, "lcalf", 0.5);
 local lcalf= lcalf_org +":lcalf";
-tux.surfaceproperty(lcalf, "beak_color");
+tux.surfaceproperty(lcalf, "beak_color2");
 tux.scale(lcalf, [0, 0, 0], [0.06, 0.18, 0.06]);
 
 //right
@@ -430,7 +430,7 @@ tux.translate(rcalf_org, [ 0, -0.13, 0 ]);
 
 tux.sphere(rcalf_org, "rcalf", 0.5);
 local rcalf= rcalf_org +":rcalf";
-tux.surfaceproperty(rcalf, "beak_color");
+tux.surfaceproperty(rcalf, "beak_color2");
 tux.scale(rcalf, [0, 0, 0], [0.06, 0.18, 0.06]);
 
 //
@@ -444,7 +444,7 @@ function makeFoot(l_parent)
 
     local foot_org= l_parent +":footorg";
     tux.translate(foot_org, [ -0.13, 0, 0 ]);
-    tux.surfaceproperty(foot_org, "beak_color");
+    tux.surfaceproperty(foot_org, "beak_color2");
     tux.scale(foot_org, [ 0, 0, 0 ], [ 1.1, 1.0, 1.3 ]);
 
     tux.sphere(foot_org, "base", 0.66);
@@ -453,21 +453,21 @@ function makeFoot(l_parent)
 
     tux.sphere(foot_org, "toe1", 0.66);
     local toe1= foot_org +":toe1";
-    tux.surfaceproperty(toe1,"beak_color");
+    tux.surfaceproperty(toe1,"beak_color2");
     tux.translate(toe1, [-0.07, 0, 0.1]);
     tux.rotate(toe1, "y", 30);
     tux.scale(toe1, [0, 0, 0], [0.27, 0.07, 0.11]);
 
     tux.sphere(foot_org, "toe2", 0.66);
     local toe2= foot_org +":toe2";
-    tux.surfaceproperty(toe2, "beak_color");
+    tux.surfaceproperty(toe2, "beak_color2");
     tux.translate(toe2, [-0.07, 0, -0.1]);
     tux.rotate(toe2, "y", -30);
     tux.scale(toe2, [0, 0, 0], [0.27, 0.07, 0.11]);
 
     tux.sphere(foot_org, "toe3", 0.66);
     local toe3= foot_org +":toe3";
-    tux.surfaceproperty(toe3, "beak_color");
+    tux.surfaceproperty(toe3, "beak_color2");
     tux.translate(toe3, [-0.08, 0, 0]);
     tux.scale(toe3, [0, 0, 0], [0.27, 0.07, 0.10]);
 }
@@ -514,5 +514,5 @@ tux.translate(tail_orig, [0, 0.15, 0]);
 
 tux.sphere(tail_orig, "tail", 0.5);
 local tail= tail_orig +":tail";
-tux.surfaceproperty(tail, "blue_penguin");
+tux.surfaceproperty(tail, "black_penguin2");
 tux.scale(tail, [0, 0, 0], [0.2, 0.3, 0.1]);

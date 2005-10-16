@@ -1,6 +1,20 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-16  Volker Stroebel <volker@planetpenguin.de>
+	* src/racing.cpp
+	fixed braking in multiplayer mode
+	fixed updating time in multiplayer mode
+
+	* data/models/tux2/model.nut
+	changed material names
+	
+	* src/gameover.cpp
+	removed unnedded drawing of hud
+	
+	* src/view.cpp src/racingmode.cpp
+	fixed paused and gameover views in multiplayer mode
+
 2005-10-13  Volker Stroebel <volker@planetpenguin.de>
 	* src/lights.cpp
 	fixed registration of light colors

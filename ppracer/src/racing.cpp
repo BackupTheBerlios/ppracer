@@ -147,7 +147,7 @@ Racing::prePlayer(int plyr, float timestep)
 	if (speed > player.max_speed) player.max_speed=int(speed);
 
 	
-    airborne = ( player.pos.y() > ( find_y_coord(players[0].pos.x(), 
+    airborne = ( player.pos.y() > ( find_y_coord(player.pos.x(), 
 						       player.pos.z()) + 
 					  JUMP_MAX_START_HEIGHT ) );
 
@@ -198,7 +198,7 @@ Racing::prePlayer(int plyr, float timestep)
     }
 
     // Update braking 
-    players[0].control.is_braking = ( m_state[plyr].braking || joy_braking );
+    player.control.is_braking = ( m_state[plyr].braking || joy_braking );
 
     if ( airborne ) {
 	new_terrain = (1<<4);
@@ -343,7 +343,6 @@ Racing::prePlayer(int plyr, float timestep)
 	}
     }
 
-	GameMgr::getInstance().time += timestep;
 	if(airborne) player.airbornetime += timestep;
 }
 
@@ -356,8 +355,10 @@ Racing::preDisplay(float timestep)
 
 
 void
-Racing::postDisplay(float timeStep)
+Racing::postDisplay(float timestep)
 {
+	GameMgr::getInstance().time += timestep;
+	
 	if(Benchmark::getMode() == Benchmark::PAUSED){
 		setMode(PAUSED);
 	}

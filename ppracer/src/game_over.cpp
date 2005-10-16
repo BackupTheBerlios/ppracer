@@ -171,7 +171,7 @@ GameOver::GameOver()
 void
 GameOver::preDisplay(float timestep)
 {
-    if(is_joystick_active()){
+	if(is_joystick_active()){
 		update_joystick();
 
 		if(is_joystick_continue_button_down()){
@@ -191,7 +191,6 @@ GameOver::postDisplay(float timestep)
     reshape(resolutionX, resolutionY);
 
 	set_gl_options(GUI);
-    HUD1.draw(players[0], resolutionX, resolutionY);
 
 	gl::PushMatrix();
 	{

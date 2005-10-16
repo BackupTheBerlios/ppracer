@@ -101,6 +101,8 @@ RacingMode::renderCourse(int player, float timestep)
     	update_view(players[player], timestep);
 	}
 	
+	setup_view_matrix(players[player]);
+	
     courseRenderer.setClipping(true);
     setup_course_lighting();
 	

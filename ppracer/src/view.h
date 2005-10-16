@@ -28,8 +28,8 @@
 
 void set_view_mode(Player& plyr, ViewMode mode);
 ViewMode get_view_mode(const Player& plyr);
-void traverse_dag_for_view_point(SceneNode *node, const pp::Matrix& trans);
-void set_tux_eye(TuxEye which_eye, const ppogl::Vec3d& pt);
+void traverse_dag_for_view_point(const Player& plyr, SceneNode *node, const pp::Matrix& trans);
+void set_tux_eye(const Player& plyr, TuxEye which_eye, const ppogl::Vec3d& pt);
 void update_view(Player& plyr, double dt);
 void setup_view_matrix(Player& plyr);
 
