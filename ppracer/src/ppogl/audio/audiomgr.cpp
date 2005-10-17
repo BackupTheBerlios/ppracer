@@ -39,7 +39,7 @@ AudioMgr::AudioMgr()
 AudioMgr::~AudioMgr()
 {
 	if(m_initialized){
-		Mix_CloseAudio();
+		Mix_CloseAudio();		
 	}
 }
 

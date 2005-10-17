@@ -37,6 +37,7 @@ Font::Font(const std::string& filename, unsigned int size, const ppogl::Color &c
 	if (mp_font->Error()){
 		PP_ERROR("Unable to load font: " << filename);		
 	}else{
+		mp_font->reference();
 		mp_font->FaceSize(size);
 		mp_font->CharMap(ft_encoding_unicode);
 	}
@@ -47,12 +48,14 @@ Font::Font(FTFont *font, const ppogl::Color &color)
    mp_font(font),
    m_color(color)
 {
+	mp_font->reference();	
 }
 
 Font::~Font()
 {
 	if(mp_font!=NULL){
-		delete mp_font;
+		mp_font->unreference();
+		//delete mp_font;
 	}
 }
 	

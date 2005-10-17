@@ -43,7 +43,7 @@ Sound::~Sound()
 	if(m_sound){
 		if(m_counter>0){
 			Mix_HaltChannel(m_channel);
-		}		
+		}	
 		Mix_FreeChunk(m_sound);
 	}
 }

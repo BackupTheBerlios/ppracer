@@ -36,7 +36,7 @@ Config::Config()
 	
 void
 Config::init(ppogl::Script *vm, const std::string& table)
-/// initialize the Config dingleton with the Script vm and the table name
+/// initialize the Config singleton with the Script vm and the table name
 {
 	m_vm = vm;
 	m_table = table;

@@ -32,7 +32,13 @@ class FTGlyph;
 class FTGL_EXPORT FTFont
 {
     public:
-        /**
+		// increment reference counter   
+		void reference();
+	
+		// decrement reference counter   
+		void unreference();
+	
+		/**
          * Open and read a font file. Sets Error flag.
          *
          * @param fontFilePath  font file path.
@@ -251,7 +257,11 @@ class FTGL_EXPORT FTFont
         FT_Error err;
         
     private:        
-        /**
+    	
+		// reference counter;
+		int m_references;
+	
+		/**
          * Check that the glyph at <code>chr</code> exist. If not load it.
          *
          * @param chr  character index
@@ -273,4 +283,3 @@ class FTGL_EXPORT FTFont
 
 
 #endif  //  __FTFont__
-

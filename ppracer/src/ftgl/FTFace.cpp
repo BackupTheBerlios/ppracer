@@ -38,7 +38,7 @@ FTFace::FTFace( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
     if( err)
     {
         delete ftFace;
-        ftFace = 0;
+        ftFace = NULL;
     }
     else
     {
@@ -46,12 +46,10 @@ FTFace::FTFace( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
     }
 }
 
-
 FTFace::~FTFace()
 {
-    if( ftFace)
-    {
-        FT_Done_Face( *ftFace);
+    if(ftFace!=NULL){
+        FT_Done_Face(*ftFace);
         delete ftFace;
         ftFace = 0;
     }

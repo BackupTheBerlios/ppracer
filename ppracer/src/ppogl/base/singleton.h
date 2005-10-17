@@ -22,6 +22,8 @@
 
 #include "assert.h"
 
+#include <memory>
+
 namespace ppogl{
 
 /// Template class for creating singletons
@@ -30,25 +32,17 @@ class Singleton
 {
 public:
 	static T&
-	getInstance()
+	getInstance() throw(std::bad_exception)
 	/// create the instance if necessary and returns a reference of the instance
 	{
-		if(sm_instance==0){
-			sm_instance = new T;
-			PP_ENSURE(sm_instance!=NULL,"Unable to create singleton instance")
+		
+		T* temp(sm_instance.get());
+    	if(temp==0){
+			temp=new T;
+			PP_ENSURE(temp!=NULL,"Unable to create singleton instance")
+        	sm_instance.reset(temp);
 		}
-		return *sm_instance;
-	}
-	
-	static T*
-	getInstancePtr()
-	/// create the instance if necessary and returns a pointer to the instance
-	{
-		if(sm_instance==0){
-			sm_instance = new T;
-			PP_ENSURE(sm_instance!=NULL,"Unable to create singleton instance")
-		}
-		return sm_instance;
+		return *temp;
 	}
 	
 protected:
@@ -56,13 +50,13 @@ protected:
 	virtual ~Singleton(){};
 		
 private:
-	static T* sm_instance;
-
+//	static T* sm_instance;
+	static std::auto_ptr<T> sm_instance;
 };
 
 } //namespace ppogl
 
-/// creates the static pointer for the instance and is necessary for each singleton
-#define PPOGL_SINGLETON(T) template <> T* ppogl::Singleton<T>::sm_instance = NULL
+/// creates the static auto pointer for the instance that is necessary for each singleton
+#define PPOGL_SINGLETON(T) template <> std::auto_ptr<T> ppogl::Singleton<T>::sm_instance(0)
 
 #endif // _PPOGL_SINGLETON_H_

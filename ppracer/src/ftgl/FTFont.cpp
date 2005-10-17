@@ -3,11 +3,26 @@
 #include    "FTGlyphContainer.h"
 #include    "FTBBox.h"
 
+void 
+FTFont::reference()
+{
+	m_references++;	
+}
 
-FTFont::FTFont( const char* fontFilePath)
-:   face( fontFilePath),
-    useDisplayLists(true),
-    glyphList(0)
+void 
+FTFont::unreference()
+{
+	m_references--;
+	if(m_references<=0){
+		delete this;	
+	}	
+}
+
+FTFont::FTFont(const char* fontFilePath)
+ : face( fontFilePath),
+   useDisplayLists(true),
+   m_references(0), 
+   glyphList(0)
 {
     err = face.Error();
     if( err == 0)
@@ -31,7 +46,7 @@ FTFont::FTFont( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
 
 FTFont::~FTFont()
 {
-    delete glyphList;
+	delete glyphList;
 }
 
 

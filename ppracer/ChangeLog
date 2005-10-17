@@ -4,6 +4,12 @@
 2005-10-17  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/images/readPNG.cpp
 	fixed memleak
+	
+	* src/ppogl/base/singleton.h
+	use std::auto_ptr
+	
+	* src/ppogl/font.cpp src/ftgl/FTFont.*
+	added reference counter to FTFont
 
 2005-10-16  Volker Stroebel <volker@planetpenguin.de>
 	* src/racing.cpp

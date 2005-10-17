@@ -38,6 +38,7 @@ Music::Music(const std::string &filename)
 Music::~Music()
 {
 	if(m_music){
+		Mix_HaltMusic();
 		Mix_FreeMusic(m_music);
 	}
 }
