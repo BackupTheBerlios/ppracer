@@ -44,25 +44,15 @@ ReadPNG::ReadPNG(const std::string& filename)
 	
     png_structp png_ptr = png_create_read_struct
        (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-		
     if (!png_ptr){
 		fclose(fp);
         return;
 	}
-
 	
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
         png_destroy_read_struct(&png_ptr, NULL, NULL);
-		fclose(fp);
-        return;
-    }
-
-    png_infop end_info = png_create_info_struct(png_ptr);
-    if (!end_info)
-    {
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
         return;
     }
