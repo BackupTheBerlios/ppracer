@@ -52,19 +52,6 @@ reduce loading time for courses and reduce mem usage
 
 add better lighting system
 
-Remaining possible memleaks (valgrind):
-    definitly lost:
-     - ppogl::LoadPNG:
-        seems to leak mem in libpng (png_info_struct)
-        needs further investigation
-    possibly lost:
-     - ppogl::ModelAC:
-        needs a rewrite anyways
-     - some std::strings:
-        might be related to the usage of const std::string&
-        check whether this is a common problem and ignore it
-
-
 The distant future:
  - rewrite model system
  - rewrite physsim
