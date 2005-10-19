@@ -7,7 +7,7 @@ ppcourse.init({
 	elevation_scale = 12,
 	elevation_data = "elev.png",
 	terrain_data = "terrain.png",
-	elments_data = "element.png",
+	elements_data = "element.png",
 	theme = "common"
 });
 
