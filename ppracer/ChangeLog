@@ -4,6 +4,10 @@
 2005-10-19  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp
 	removed unneeded checks
+	
+	* src/ppogl/models/model_ac.cpp
+	fixed uninitialized values
+	fixed deletion of not allocated pointers
 
 2005-10-18  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/sg/geoms.*

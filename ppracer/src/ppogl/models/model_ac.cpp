@@ -46,7 +46,8 @@ namespace ppogl{
 #define SURFACE_TYPE_LINE (2)
 
 Surface::Surface()
- : uvs(NULL),
+ : ppogl::Polygon(),
+   uvs(NULL),
    flags(0),
    mat(0)
 {
@@ -54,8 +55,8 @@ Surface::Surface()
 	
 Surface::~Surface()
 {		
-	delete [] vertices;
-	delete [] uvs;
+	if(vertices) delete [] vertices;
+	if(uvs) delete [] uvs;
 }
 
 ModelObject::ModelObject()
@@ -65,7 +66,8 @@ ModelObject::ModelObject()
    num_surf(0),
    texture_repeat(1.0,1.0),
    num_kids(0),
-   kids(NULL)
+   kids(NULL),
+   texture(-1)
 {
     matrix[0] = 1;
     matrix[1] = 0;
@@ -187,7 +189,7 @@ ModelAC::render(ModelObject *ob)
 
     gl::Translate(ob->loc.x(), ob->loc.y(), ob->loc.z());
 
-    if (ob->texture != -1){
+    if(ob->texture != -1){
 		static int lasttextureset = -1;
  
 		gl::Enable(GL_TEXTURE_2D);
