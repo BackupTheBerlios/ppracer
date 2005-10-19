@@ -108,8 +108,6 @@ public:
     void update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation);
     void render(const quadcornerdata& cd, GLubyte *vnc_array);
 
-    float getHeight(const quadcornerdata& cd, const float x, const float z);
-
 	inline void setScale(const float x, const float z)
 	{
     	ScaleX = x;

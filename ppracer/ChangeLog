@@ -1,6 +1,21 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-18  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/sg/geoms.*
+	improoved Polyhedron and Polygon class
+	
+	* src/hier_utils.cpp src/phys_sim.cpp src/elements.cpp
+	fixed memleaks
+	
+	* src/ppogl/models/model_ac.*
+	fixed memleak
+	use PP_WARNING instead of printf
+	
+	* src/render_utils.* src/gl_utils.* src/loop.*
+	  src/nmrcl.* src/quadtree.* src/view.*
+	removed unused functions
+
 2005-10-17  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/images/readPNG.cpp
 	fixed memleak
@@ -20,7 +35,7 @@
 	changed material names
 	
 	* src/gameover.cpp
-	removed unnedded drawing of hud
+	removed unneeded drawing of hud
 	
 	* src/view.cpp src/racingmode.cpp
 	fixed paused and gameover views in multiplayer mode

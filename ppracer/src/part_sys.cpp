@@ -195,7 +195,7 @@ void draw_particles( Player& plyr )
 	gl::Color(particleColor, particleColor.a() * p->alpha );
 
 	draw_billboard( plyr, p->pt, p->cur_size, p->cur_size,
-			false, min_tex_coord, max_tex_coord );
+			min_tex_coord, max_tex_coord );
     } 
 
 } 

@@ -361,24 +361,6 @@ create_material(const std::string& mat, const ppogl::Color& diffuse,
 }
 
 void
-initialize_scene_graph() 
-{
-    /* Initialize state */
-
-    g_hier_default_material.diffuse.r() = 0.0;
-    g_hier_default_material.diffuse.g() = 0.0;
-    g_hier_default_material.diffuse.b() = 1.0;
-    g_hier_default_material.diffuse.a() = 1.0;
-
-    g_hier_default_material.specular.r() = 0.0;
-    g_hier_default_material.specular.g() = 0.0;
-    g_hier_default_material.specular.b() = 0.0;
-    g_hier_default_material.specular.a() = 1.0;
-
-    g_hier_default_material.specular_exp = 0.0;
-}
-
-void
 draw_scene_graph(const std::string& node)
 {
     SceneNode *nodePtr;

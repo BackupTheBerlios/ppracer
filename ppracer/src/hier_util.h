@@ -31,16 +31,6 @@ void draw_sphere(int num_divisions);
 
 void traverse_dag(SceneNode *node, Material *mat);
 
-ppogl::Vec3d make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v);
-
-bool intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v);
-
-bool intersect_polyhedron(const ppogl::Polyhedron& p);
-
-ppogl::Polyhedron copy_polyhedron(const ppogl::Polyhedron& ph);
-
-void free_polyhedron(const ppogl::Polyhedron& ph);
-
 void trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph);
 
 bool check_polyhedron_collision_with_dag(

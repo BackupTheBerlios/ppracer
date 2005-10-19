@@ -1,12 +1,10 @@
 /* 
- * PlanetPenguin Racer 
- * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
- *
- * Copyright (C) 1999-2001 Jasmin F. Patry
+ * PPOGL - PlanetPenguin Open Game Library
+ * Copyright (C) 2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
@@ -18,15 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+ 
+#include "materials.h"
 
-#ifndef _VIEWMODE_H_
-#define _VIEWMODE_H_
-
-#include "pp_types.h"
-#include "player.h"
-
-void set_view_mode(Player& plyr, ViewMode mode);
-void update_view(Player& plyr, double dt);
-void setup_view_matrix(Player& plyr);
-
-#endif // _VIEWMODE_H_
+// fill me with code

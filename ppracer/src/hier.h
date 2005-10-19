@@ -50,8 +50,6 @@ std::string set_scene_node_eye(const std::string& node, const std::string& which
 std::string create_tranform_node(const std::string& parent, const std::string& name);
 std::string create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution );
 
-void initialize_scene_graph();
-
 void draw_scene_graph(const std::string& node );
 bool collide(const std::string& node, const ppogl::Polyhedron& ph );
 

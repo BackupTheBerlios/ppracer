@@ -250,7 +250,7 @@ ppogl::Vec3d
 make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v)
 {
     PP_REQUIRE( p.numVertices > 2, "number of vertices must be > 2" );
-
+	
 	ppogl::Vec3d normal, v1, v2;
     double old_len;
 
@@ -261,7 +261,7 @@ make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v)
     old_len = normal.normalize();
     
 	PP_ENSURE( old_len > 0, "normal vector has length 0" );
-
+	
     return normal;
 } 
 
@@ -355,51 +355,22 @@ bool
 intersect_polyhedron(const ppogl::Polyhedron& p)
 {
     bool hit = false;
-    int i;
-	
-    for (i=0; i<p.num_polygons; i++) {
 		
+    for(int i=0; i<p.num_polygons; i++){
 		hit = intersect_polygon( p.polygons[i], p.vertices );
-        if ( hit == true ) 
+		if ( hit == true ) 
             break;
     } 
     return hit;
 } 
-
-/*--------------------------------------------------------------------------*/
-
-ppogl::Polyhedron
-copy_polyhedron(const ppogl::Polyhedron& ph)
-{
-    ppogl::Polyhedron newph = ph;
-    newph.vertices = new ppogl::Vec3d[ph.num_vertices];
-    PP_CHECK_ALLOC(newph.vertices);
-	
-	for (int i=0; i<ph.num_vertices; i++) {
-        newph.vertices[i] = ph.vertices[i];
-    } 
-    return newph;
-} 
-
-/*--------------------------------------------------------------------------*/
-
-void
-free_polyhedron(const ppogl::Polyhedron& ph) 
-{
-    delete[] ph.vertices;
-} 
-
-/*--------------------------------------------------------------------------*/
 
 void
 trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph)
 {
 	for(int i=0; i<ph.num_vertices; i++) {
 		ph.vertices[i] = mat.transformPoint(ph.vertices[i]);
-		}
+	}
 }
-
-/*--------------------------------------------------------------------------*/
 
 bool
 check_polyhedron_collision_with_dag(SceneNode *node,
@@ -408,7 +379,6 @@ check_polyhedron_collision_with_dag(SceneNode *node,
 {
     pp::Matrix newModelMatrix, newInvModelMatrix;
     SceneNode *child;
-    ppogl::Polyhedron newph;
     bool hit = false;
 
     PP_CHECK_POINTER( node );
@@ -416,13 +386,12 @@ check_polyhedron_collision_with_dag(SceneNode *node,
     newModelMatrix=modelMatrix*node->trans;
     newInvModelMatrix=node->invtrans*invModelMatrix;
 
-    if ( node->geom == Sphere ) {
-        newph = copy_polyhedron( ph );
-        trans_polyhedron( newInvModelMatrix, newph );
-
-        hit = intersect_polyhedron( newph );
-        free_polyhedron( newph );
-    } 
+    if(node->geom == Sphere){
+        //ppogl::Polyhedron newph = copy_polyhedron( ph );
+        ppogl::Polyhedron newph(ph);
+		trans_polyhedron( newInvModelMatrix, newph );
+		hit = intersect_polyhedron( newph );
+	}
 
     if (hit == true) return hit;
 

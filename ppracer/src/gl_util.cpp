@@ -19,19 +19,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
-#include "SDL.h"
-
-
-#if defined( HAVE_GL_GLX_H )
-#   include <GL/glx.h>
-#endif // defined( HAVE_GL_GLX_H ) 
-
 #include "gl_util.h"
 
+#include "gameconfig.h"
 #include "ppogl/base/glwrappers.h"
 
-void set_gl_options( const RenderMode mode ) 
+void
+set_gl_options(const RenderMode mode) 
 {
     /* Must set the following options:
          Enable/Disable:
@@ -114,40 +108,6 @@ void set_gl_options( const RenderMode mode )
 		gl::DepthFunc(GL_LESS);
         break;
 
-    case TEXT:
-        gl::Disable(GL_TEXTURE_2D);
-        gl::Disable(GL_DEPTH_TEST);
-        gl::Disable(GL_CULL_FACE);
-		gl::Disable(GL_LIGHTING);
-		gl::Disable(GL_NORMALIZE);
-		gl::Disable(GL_ALPHA_TEST);
-        gl::Enable(GL_BLEND);
-		gl::Disable(GL_STENCIL_TEST);
-		gl::Disable(GL_TEXTURE_GEN_S);
-		gl::Disable(GL_TEXTURE_GEN_T);
-		gl::Disable(GL_COLOR_MATERIAL);
-		gl::DepthMask(GL_TRUE);
-		gl::ShadeModel(GL_SMOOTH);
-		gl::DepthFunc(GL_LESS);
-        break;
-
-    case SPLASH_SCREEN:
-        gl::Disable( GL_TEXTURE_2D );
-        gl::Disable( GL_DEPTH_TEST );
-        gl::Disable( GL_CULL_FACE );
-		gl::Disable( GL_LIGHTING );
-		gl::Disable( GL_NORMALIZE );
-		gl::Disable( GL_ALPHA_TEST );
-        gl::Enable( GL_BLEND );
-		gl::Disable( GL_STENCIL_TEST );
-		gl::Disable( GL_TEXTURE_GEN_S );
-		gl::Disable( GL_TEXTURE_GEN_T );
-		gl::Disable( GL_COLOR_MATERIAL );
-		gl::DepthMask( GL_TRUE );
-		gl::ShadeModel( GL_SMOOTH );
-		gl::DepthFunc( GL_LESS );
-        break;
-
     case COURSE:
 		gl::Enable( GL_TEXTURE_2D );
 		gl::Enable( GL_DEPTH_TEST );
@@ -204,23 +164,6 @@ void set_gl_options( const RenderMode mode )
 		gl::DepthFunc( GL_LESS );
 
         gl::AlphaFunc( GL_GEQUAL, 0.5 );
-        break;    
-        
-    case PARTICLE_SHADOWS:
-        gl::Disable( GL_TEXTURE_2D );
-		gl::Enable( GL_DEPTH_TEST );
-        gl::Disable( GL_CULL_FACE );
-		gl::Disable( GL_LIGHTING );
-		gl::Disable( GL_NORMALIZE );
-		gl::Disable( GL_ALPHA_TEST );
-        gl::Enable( GL_BLEND );
-		gl::Disable( GL_STENCIL_TEST );
-		gl::Disable( GL_TEXTURE_GEN_S );
-		gl::Disable( GL_TEXTURE_GEN_T );
-		gl::Disable( GL_COLOR_MATERIAL );
-		gl::DepthMask( GL_TRUE );
-		gl::ShadeModel( GL_SMOOTH );
-		gl::DepthFunc( GL_LESS );
         break;
 
     case SKY:
@@ -276,7 +219,7 @@ void set_gl_options( const RenderMode mode )
         break;
 
     case TUX_SHADOW:
-		if(ppogl::Config::getInstance().getBool("stencil_buffer")){
+		if(GameConfig::enableStencilBuffer){
 			gl::Disable( GL_TEXTURE_2D );
 			gl::Enable( GL_DEPTH_TEST );
 			gl::Disable( GL_CULL_FACE );
@@ -324,86 +267,20 @@ void set_gl_options( const RenderMode mode )
 		gl::DepthFunc( GL_LEQUAL );
 		break;
 
-    case OVERLAYS:
-        gl::Enable( GL_TEXTURE_2D );
-        gl::Disable( GL_DEPTH_TEST );
-        gl::Disable( GL_CULL_FACE );
-		gl::Disable( GL_LIGHTING );
-		gl::Disable( GL_NORMALIZE );
-		gl::Enable( GL_ALPHA_TEST );
-        gl::Enable( GL_BLEND );
-		gl::Disable( GL_STENCIL_TEST );
-		gl::Disable( GL_TEXTURE_GEN_S );
-		gl::Disable( GL_TEXTURE_GEN_T );
-		gl::Disable( GL_COLOR_MATERIAL );
-		gl::DepthMask( GL_TRUE );
-		gl::ShadeModel( GL_SMOOTH );
-		gl::DepthFunc( GL_LESS );
-
-        gl::AlphaFunc( GL_GEQUAL, 0.5 );
-        break;
-
     default:
 		PP_NOT_REACHED();
     } 
 } 
 
-/* Checking for GL errors is really just another type of assertion, so we
-   turn off the check if TUXRACER_NO_ASSERT is defined */
-#if defined( PPOGL_NO_ASSERT )
-void
-check_gl_error()
-{
-}
-#else 
-void
-check_gl_error()
-{
-    GLenum error;
-    error = glGetError();
-    if ( error != GL_NO_ERROR ) {
-		PP_WARNING( "OpenGL Error: " << gluErrorString(error) );
-    }
-}
-#endif // defined PPOGL_NO_ASSERT
-
-void
-copy_to_glfloat_array(GLfloat dest[], double src[], int n)
-{
-    for(int i=0; i<n; i++) {
-		dest[i] = src[i];
-    }
-}
-
-void
-init_glfloat_array( int num, GLfloat arr[], ... )
-{
-    va_list args;
-    va_start( args, arr );
-
-    for (int i=0; i<num; i++) {
-		arr[i] = va_arg(args, double);
-    }
-
-    va_end( args );
-}
-
-/*---------------------------------------------------------------------------*/
-/*! 
-  Prints information about the current OpenGL implemenation.
-  \author  jfpatry
-  \date    Created:  2000-10-20
-  \date    Modified: 2000-10-20
-*/
-typedef struct
+struct GLValue
 {
     char *name;
     GLenum value;
     GLenum type;
-}gl_value_t;
+};
 
-/* Add more things here as needed */
-gl_value_t gl_values[] = {
+// Add more things here as needed
+GLValue glValues[] = {
     { "maximum lights", GL_MAX_LIGHTS, GL_INT },
     { "modelview stack depth", GL_MAX_MODELVIEW_STACK_DEPTH, GL_INT },
     { "projection stack depth", GL_MAX_PROJECTION_STACK_DEPTH, GL_INT },
@@ -414,18 +291,12 @@ gl_value_t gl_values[] = {
     { "blue bits", GL_BLUE_BITS, GL_INT },
     { "alpha bits", GL_ALPHA_BITS, GL_INT },
     { "depth bits", GL_DEPTH_BITS, GL_INT },
-    { "stencil bits", GL_STENCIL_BITS, GL_INT } };
+    { "stencil bits", GL_STENCIL_BITS, GL_INT }
+};
 
 void
 print_gl_info()
 {
-    const char *extensions;
-    char *p, *oldp;
-    unsigned int i;
-    GLint int_val;
-    GLfloat float_val;
-    GLboolean boolean_val;
-	
 	std::ostream& stream =
 			ppogl::Log::Instance()->getStream();
 	stream << "OpenGL information:" << std::endl;
@@ -433,15 +304,16 @@ print_gl_info()
 	stream << "  renderer: " << gl::GetString(GL_RENDERER) << std::endl;
 	stream << "  version: " << gl::GetString(GL_VERSION) << std::endl;
 
-	extensions = gl::GetString(GL_EXTENSIONS);
+	const char* extensions = gl::GetString(GL_EXTENSIONS);
 	
-	oldp = new char[strlen(extensions)+1];
+	char* oldp = new char[strlen(extensions)+1];
 	strcpy(oldp, extensions);
 	extensions = oldp;
 	
     stream << "  extensions:" << std::endl;
 	
-    while ( (p=strchr(oldp,' ')) ) {
+	char *p;
+    while((p=strchr(oldp,' '))){
 		*p='\0';
 		stream << "    " << oldp << std::endl;
 		oldp = p+1;
@@ -453,34 +325,37 @@ print_gl_info()
 	
 	delete extensions;
 	
-    for(i=0; i<sizeof(gl_values)/sizeof(gl_values[0]); i++){
-	stream << "  " << gl_values[i].name << ": ";
+    for(unsigned int i=0; i<sizeof(glValues)/sizeof(glValues[0]); i++){
+		stream << "  " << glValues[i].name << ": ";
 
-	switch( gl_values[i].type ) {
-	case GL_INT:
-	    gl::GetValue(gl_values[i].value, &int_val);
-	    stream << int(int_val);
-	    break;
+		switch(glValues[i].type){
+		case GL_INT:
+	    	GLint int_val;
+			gl::GetValue(glValues[i].value, &int_val);
+	    	stream << int(int_val);
+	    	break;
 
-	case GL_FLOAT:
-	    gl::GetValue(gl_values[i].value, &float_val);
-	    stream << float(float_val);
-	    break;
+		case GL_FLOAT:
+			GLfloat float_val;
+	    	gl::GetValue(glValues[i].value, &float_val);
+			stream << float(float_val);
+			break;
 
-	case GL_UNSIGNED_BYTE:
-	    gl::GetValue(gl_values[i].value, &boolean_val);
-	    if(boolean_val){
-			stream << "true";
-		}else{	
-			stream << "false";
-	    }
-		break;
+		case GL_UNSIGNED_BYTE:
+		    GLboolean boolean_val;
+			gl::GetValue(glValues[i].value, &boolean_val);
+	    	if(boolean_val){
+				stream << "true";
+			}else{	
+				stream << "false";
+	    	}
+			break;
 
-	default:
-	    PP_NOT_REACHED();
-	}
+		default:
+	    	PP_NOT_REACHED();
+		}
 
-	stream << std::endl;
+		stream << std::endl;
     }
 	stream << std::endl;
 }

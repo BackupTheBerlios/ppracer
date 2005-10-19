@@ -17,39 +17,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PPOGL_SG_GEOMS_H_
-#define _PPOGL_SG_GEOMS_H_
+#ifndef _PPOGL_SG_MATERIALS_H_
+#define _PPOGL_SG_MATERIALS_H_
 
-#include "../base/vec3d.h"
+#include "../base/vec2d.h"
+#include "../base/color.h"
 
 namespace ppogl{
-	
-class Polygon
+
+class UV : public ppogl::Vec2d
 {
 public:
-	Polygon():numVertices(0),vertices(NULL){};
-	Polygon(const Polygon& poly);
-	~Polygon();
-		
-    int numVertices;
-    int *vertices;
-		
-	Polygon& operator=(const Polygon& poly);
+	double& u(){return values[0];};
+	double& v(){return values[1];};
+	
+	double u() const {return values[0];};
+	double v() const {return values[1];};
 };
-	
-class Polyhedron
+
+class Material
 {
 public:
-	Polyhedron():num_vertices(0),num_polygons(0),vertices(NULL),polygons(NULL){}
-    Polyhedron(const Polyhedron& ph);
-	~Polyhedron();
-		
-	int num_vertices;
-    int num_polygons;
-    ppogl::Vec3d *vertices;
-    ppogl::Polygon *polygons;
+	ppogl::Color diffuse; 
+	ppogl::Color ambient;
+	ppogl::Color specular;
+	ppogl::Color emissive;
+    
+	float shininess;
+    float transparency;
 };
 
 } //namepsace ppogl
 
-#endif // _PPOGL_SG_GEOMS_H_
+#endif // _PPOGL_SG_MATERIALS_H_

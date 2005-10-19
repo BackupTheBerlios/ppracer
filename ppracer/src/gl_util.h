@@ -29,26 +29,18 @@ enum RenderMode{
     GUI,
     GAUGE_BARS,
     TEXFONT,
-    TEXT,
     COURSE,
     TREES,
     PARTICLES,
-    PARTICLE_SHADOWS,
     BACKGROUND,
     TUX,
     TUX_SHADOW,
     SKY,
     FOG_PLANE,
-    TRACK_MARKS,
-    OVERLAYS, 
-    SPLASH_SCREEN
+    TRACK_MARKS
 };
 
 void set_gl_options( const RenderMode mode );
-
-void copy_to_glfloat_array( GLfloat dest[], double src[], int n );
-
-void init_glfloat_array( int num, GLfloat arr[], ... );
 
 void print_gl_info();
 

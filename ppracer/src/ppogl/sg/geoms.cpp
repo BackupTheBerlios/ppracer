@@ -18,3 +18,67 @@
  */
  
 #include "geoms.h"
+
+namespace ppogl{
+
+Polygon::Polygon(const Polygon& poly)
+{
+	numVertices=poly.numVertices;
+	if(numVertices>0 && poly.vertices){
+		vertices = new int[numVertices];
+		for(int i=0; i<numVertices; i++) {
+        	vertices[i] = poly.vertices[i];
+    	}
+	}		
+}
+	
+Polygon::~Polygon()
+{
+	if(vertices) delete [] vertices;		
+}
+
+Polygon&
+Polygon::operator=(const Polygon& poly)
+{
+	if(this != &poly){
+		if(vertices) delete [] vertices;
+		
+		numVertices=poly.numVertices;
+		
+		if(numVertices>0 && poly.vertices){
+			vertices = new int[numVertices];
+			for(int i=0; i<numVertices; i++) {
+        		vertices[i] = poly.vertices[i];
+    		}
+		}	
+	}
+	return *this;
+}
+	
+Polyhedron::Polyhedron(const Polyhedron& ph)
+{
+	num_vertices=ph.num_vertices;
+	num_polygons=ph.num_polygons;
+	
+	if(num_vertices>0 && ph.vertices!=NULL){
+		vertices = new ppogl::Vec3d[num_vertices];
+		for(int i=0; i<num_vertices; i++) {
+        	vertices[i] = ph.vertices[i];
+    	}
+	}
+	
+	if(num_polygons>0 && ph.polygons!=NULL){
+		polygons = new ppogl::Polygon[num_polygons];
+		for(int i=0; i<num_polygons; i++){
+        	polygons[i] = ph.polygons[i];
+    	}
+	}
+}	
+	
+Polyhedron::~Polyhedron()
+{
+	if(vertices) delete [] vertices;
+	if(polygons) delete [] polygons;	
+}
+
+} //namepsace ppogl

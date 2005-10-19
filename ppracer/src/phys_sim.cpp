@@ -624,7 +624,6 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
 		return false;
 	}
 		
-	ppogl::Polyhedron *ph, ph2;
     pp::Matrix mat;
     bool hit = false;
     ppogl::Vec3d distvec;
@@ -656,14 +655,14 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
     }
 
 	ppogl::RefPtr<ModelType> model_type = (*modelLocs.begin()).getType();
-    ph = model_type->ph;
+    ppogl::Polyhedron *ph = model_type->ph;
 
 	float diam=0.0;
     float height;
 	ppogl::Vec3d loc;
 
 	std::list<Model>::iterator it;
-
+	
     for(it=modelLocs.begin();it!=modelLocs.end();it++) {
 		diam = (*it).getDiameter(); 
     	height = (*it).getHeight();
@@ -684,9 +683,8 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
 	    model_type = (*it).getType();
 	    ph = model_type->ph;
 	}
-        ph2 = copy_polyhedron( *ph );
-	
-        //mat.makeScaling( diam, height, diam );
+		ppogl::Polyhedron ph2(*ph);
+
 		mat.makeScaling( diam, diam, diam );
 	
         trans_polyhedron( mat, ph2 );
@@ -699,7 +697,6 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
 			      ppogl::Vec3d( pos.x(), pos.y(), pos.z() ) );
         hit = collide( tux_root, ph2 );
 		
-        free_polyhedron( ph2 );
 
         if ( hit == true ) {
 	    if ( tree_loc != NULL ) {

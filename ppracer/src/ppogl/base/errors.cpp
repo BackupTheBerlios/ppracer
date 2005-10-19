@@ -57,7 +57,8 @@ Log::Instance()
 }
 
 Log::Log()
- : m_level(LogWarning)
+ : m_level(LogWarning),
+   m_verbose(false)
 {
 	m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
 }

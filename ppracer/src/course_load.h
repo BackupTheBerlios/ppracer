@@ -58,14 +58,10 @@ public:
 	static void setStartPt(const ppogl::Vec2d& p);
 	static const ppogl::Vec2d& getStartPt();
 
-	static const std::string& getAuthor();
-	static const std::string& getName(); 
-
 	static void getGLArrays(GLubyte **vertex_normal_arr);
 
 	static void registerCallbacks();
 	static void fillGLArrays();
-
 };
 
 class TerrainTex

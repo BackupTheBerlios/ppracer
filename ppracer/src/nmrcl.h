@@ -31,7 +31,6 @@ public:
 	ODESolver();
 
 	void initODEData(double init_val, double h);
-	double nextTime(int step);
 	double nextVal(int step);
 	void updateEstimate(int step, double val);
 	double finalEstimate();

@@ -94,6 +94,8 @@ libppogl_a_SOURCES = 		\
 	sg/sg.h			\
 	sg/geoms.cpp		\
 	sg/geoms.h		\
+	sg/materials.cpp	\
+	sg/materials.h		\
 	\
 	\
 	models/model.cpp	\

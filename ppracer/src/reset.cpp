@@ -65,8 +65,6 @@ Reset::loop(float timeStep)
 
     fpsCounter.update();
 
-    clear_rendering_context();
-
     fogPlane.setup();
 
     update_player_pos(EPS);

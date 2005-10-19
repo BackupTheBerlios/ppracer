@@ -99,6 +99,9 @@ Model::draw(const ppogl::Vec3d& normal)
 
 ModelType::~ModelType()
 {
+	if(ph){
+		delete ph;
+	}		
 }
 
 void
@@ -108,7 +111,7 @@ ModelType::setModel(ppogl::ModelRef model)
 	
 	if(model){	
 		m_model = model;
-		ph = model->getPolyhedron();	
+		ph = model->getPolyhedron();
 	}
 }
 

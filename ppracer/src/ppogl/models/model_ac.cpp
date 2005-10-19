@@ -21,24 +21,15 @@
  * This code is based on the example loader from www.ac3d.org
  */
 
-
 #include "model_ac.h"
 
-#include "ppogl/base/glwrappers.h"
+#include "../base/glwrappers.h"
+#include "../textures.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
-#ifdef _WIN32
-	#include <WTypes.h>
-#endif
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-#include "../ppogl/textures.h"
 
 namespace ppogl{
 	
@@ -68,17 +59,14 @@ Surface::~Surface()
 }
 
 ModelObject::ModelObject()
+ : vertices(NULL),
+   num_vert(0),
+   surfaces(NULL),
+   num_surf(0),
+   texture_repeat(1.0,1.0),
+   num_kids(0),
+   kids(NULL)
 {
-    loc.x() = loc.y() = loc.z() = 0.0;
-    vertices = NULL;
-    num_vert = 0;
-    surfaces = NULL;
-    num_surf = 0;
-    texture = -1;
-    texture_repeat_x = texture_repeat_y = 1.0;
-    texture_offset_x = texture_offset_y = 0.0;
-    kids = NULL;
-    num_kids = 0;
     matrix[0] = 1;
     matrix[1] = 0;
     matrix[2] = 0;
@@ -103,34 +91,41 @@ ModelObject::~ModelObject()
 	}
 }
 
-ModelAC::ModelAC(const std::string& fileName)
+ModelAC::ModelAC(const std::string& filename)
  : mp_model(NULL),
    m_tokc(0),
    m_line(0),
    m_numPalette(0),
    m_startMatIndex(0)
 {
-    PP_LOG(LogModels,"Loading model" << fileName);
-	FILE *f = fopen(fileName.c_str(), "r");
+    PP_LOG(LogModels,"Loading model" << filename);
+	FILE *f = fopen(filename.c_str(), "r");
    
     if (f == NULL){
-		PP_WARNING("Can't open ac3d model file: "<< fileName);
+		PP_WARNING("Can't open ac3d model file: "<< filename);
 		return;
     }
 
     readLine(f);
 
     if (strncmp(ma_buff, "AC3D", 4)){
-		PP_WARNING("ac_load_ac '" << fileName << "' is not a valid AC3D file");
+		PP_WARNING("ac_load_ac '" << filename << "' is not a valid AC3D file");
 		fclose(f);
 		return;
     }
     m_startMatIndex = m_numPalette;
-    mp_model = loadObject(f, NULL);
+    mp_model = loadObject(f, NULL, filename);
     fclose(f);
     calculateVertexNormals(mp_model);	
 }
 	
+ModelAC::~ModelAC()
+{
+	if(mp_model){
+		delete mp_model;
+	}
+}
+
 int
 ModelAC::getDisplayList()
 {
@@ -241,12 +236,12 @@ ModelAC::render(ModelObject *ob)
 			ppogl::Vertex *v = &ob->vertices[surf->vertices[sr]];
 
 			if (ob->texture > -1){
-				double tu = surf->uvs[sr].u;
-				double tv = surf->uvs[sr].v;
+				double tu = surf->uvs[sr].u();
+				double tv = surf->uvs[sr].v();
 
-				double tx = ob->texture_offset_x + tu * ob->texture_repeat_x;
-				double ty = ob->texture_offset_y + tv * ob->texture_repeat_y;
-
+				double tx = ob->texture_offset.x() + tu * ob->texture_repeat.x();
+				double ty = ob->texture_offset.y() + tv * ob->texture_repeat.y();
+				
 				gl::TexCoord(tx, ty);
 			}
 
@@ -318,7 +313,7 @@ ModelAC::stringToObjectType(const std::string& string)
 }
 
 ModelObject*
-ModelAC::loadObject(FILE *f, ModelObject *parent)
+ModelAC::loadObject(FILE *f, ModelObject *parent, const std::string& filename)
 {
     char t[20];
 	std::string type;
@@ -336,9 +331,8 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
         Material m;
 	    
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 22){
-            printf("expected 21 params after \"MATERIAL\" - line %d\n", m_line);
+			PP_WARNING("Expected 21 params after \"MATERIAL\" - line " << m_line << " : " << filename);
 	    } else {
-			m.name = ma_tokv[1];
 			m.diffuse.r() = atof(ma_tokv[3]);
 			m.diffuse.g() = atof(ma_tokv[4]);
 			m.diffuse.b() = atof(ma_tokv[5]);
@@ -375,7 +369,7 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 		ob->type = stringToObjectType(t);
 	} else if (type=="data"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 2){
-			printf("expected 'data <number>' at line %d\n", m_line);
+			PP_WARNING("Expected 'data <number>' at line " << m_line << " : " << filename);
 		} else {
 			char *str;
 			int len;
@@ -396,29 +390,29 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 	} else if (type=="name"){
 		int numtok = getTokens(ma_buff, &m_tokc, ma_tokv);
 		if (numtok != 2){
-			printf("expected quoted name at line %d (got %d tokens)\n", m_line, numtok);
+			PP_WARNING("Expected quoted name at line " << m_line << "(got " << numtok << " tokens) : " << filename);
 		} else {
 			ob->name = ma_tokv[1];
 		}
 	} else if (type=="texture"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 2){
-			printf("expected quoted texture name at line %d\n", m_line);
+			PP_WARNING("Expected quoted texture name at line " << m_line << " : " << filename);
 		} else {
 			ob->texture = loadTexture(ma_tokv[1]);
 		}
 	} else if (type=="texrep"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 3){
-			printf("expected 'texrep <float> <float>' at line %d\n", m_line);
+			PP_WARNING("Expected 'texrep <float> <float>' at line " << m_line << " : " << filename);
 		} else {
-		    ob->texture_repeat_x = atof(ma_tokv[1]);
-		    ob->texture_repeat_y = atof(ma_tokv[2]);
+		    ob->texture_repeat.x() = atof(ma_tokv[1]);
+		    ob->texture_repeat.y() = atof(ma_tokv[2]);
 		}
 	} else if (type=="texoff"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 3){
-			printf("expected 'texoff <float> <float>' at line %d\n", m_line);
+			PP_WARNING("Expected 'texoff <float> <float>' at line " << m_line << " : " << filename);
 		} else {
-			ob->texture_offset_x = atof(ma_tokv[1]);
-			ob->texture_offset_y = atof(ma_tokv[2]);
+			ob->texture_offset.x() = atof(ma_tokv[1]);
+			ob->texture_offset.y() = atof(ma_tokv[2]);
 		}
 	} else if (type=="rot"){
 		double r[9];
@@ -437,7 +431,7 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 			   &ob->loc.x(), &ob->loc.y(), &ob->loc.z());			
 	} else if (type=="url"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 2){
-		    printf("expected one arg to url at line %d (got %s)\n", m_line, ma_tokv[0]);
+		    PP_WARNING("Expected one arg to url at line " <<  m_line << "(got " << ma_tokv[0] << ") : " << filename);
 		} else {
 			ob->url = ma_tokv[1];
 		}
@@ -467,9 +461,9 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 			ob->surfaces = new Surface[num];
 
 			for (n = 0; n < num; n++){
-				Surface *news = readSurface(f, &ob->surfaces[n], ob);
+				Surface *news = readSurface(f, &ob->surfaces[n], ob, filename);
 				if (news == NULL){
-					printf("error whilst reading surface at line: %d\n", m_line);
+					PP_WARNING("Error whilst reading surface at line: " << m_line);
 					return(NULL);
 				}
 			}
@@ -484,10 +478,10 @@ ModelAC::loadObject(FILE *f, ModelObject *parent)
 			ob->num_kids = num;
 
 			for (n = 0; n < num; n++){
-				ModelObject *k = loadObject(f, ob);
+				ModelObject *k = loadObject(f, ob, filename);
 
 				if (k == NULL){
-					printf("error reading expected child object %d of %d at line: %d\n", n+1, num, m_line);
+					PP_WARNING("Error reading expected child object " << n+1 << " of " << num << " at line: " << m_line << " : " << filename);
 					return(ob);
 				} else {
 					ob->kids[n] = k;
@@ -607,7 +601,7 @@ ModelAC::readLine(FILE *f)
 }
 
 Surface*
-ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob)
+ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob, const std::string& filename )
 {
     char t[20];
 	std::string type;
@@ -622,7 +616,7 @@ ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob)
 	    int flgs;
 
 	    if (getTokens(ma_buff, &m_tokc, ma_tokv) != 2){
-			printf("SURF should be followed by one flags argument\n");
+			PP_WARNING("SURF should be followed by one flags argument: " << filename);
         } else {
 			flgs = strtol(ma_tokv[1], NULL, 0);
 			s->flags = flgs;
@@ -646,8 +640,8 @@ ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob)
 		for (n = 0; n < num; n++){
 			fscanf(f, "%d %lf %lf\n", &ind, &tx, &ty); m_line++;
 			s->vertices[n] = ind;
-			s->uvs[n].u = tx;
-			s->uvs[n].v = ty;
+			s->uvs[n].u() = tx;
+			s->uvs[n].v() = ty;
 		}
 
 		// calc surface normal
@@ -659,7 +653,7 @@ ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob)
 
 		return(s);
 	} else {
-		printf("ignoring %s\n", t);
+		PP_WARNING("Ignoring " << t << " : " << filename);
 	}
 	
     }

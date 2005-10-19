@@ -93,7 +93,6 @@ public:
 	
 	static void setMode(GameMode::Mode mode);
 	static void mainLoop();
-	static bool isModeChangePending();
 	
 	// multiscreen is an experimental feature
 	enum MultiscreenMode{

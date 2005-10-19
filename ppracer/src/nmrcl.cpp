@@ -50,13 +50,6 @@ ODESolver::initODEData(double init_val, double h)
 }
 
 double
-ODESolver::nextTime(int step)
-{
-    PP_REQUIRE( 0 <= step && step < 7, "invalid step for ode45 solver" );
-    return ode45_time_step_mat[step] * h;
-}
-
-double
 ODESolver::nextVal(int step)
 {
     double val = init_val;

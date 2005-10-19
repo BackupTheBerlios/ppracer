@@ -201,18 +201,6 @@ GameMode::mainLoop()
 	updateDisplay();	
 }
 
-/*---------------------------------------------------------------------------*/
-/*! 
-  Returns true if a mode change will occur the next time main_loop() runs.
-
-  \author  jfpatry
-*/
-bool
-GameMode::isModeChangePending()
-{
-    return bool(GameMode::mode != new_mode);
-}
-
 GameMode::GameMode()
 {
 }

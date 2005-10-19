@@ -69,25 +69,6 @@ reshape(int w, int h, int multiscreen)
 } 
 
 void
-flat_mode()
-{
-    set_gl_options( TEXT );
-
-    gl::MatrixMode( GL_PROJECTION );
-    gl::LoadIdentity();
-    gl::Ortho( -0.5, 639.5, -0.5, 479.5, -1.0, 1.0 );
-    gl::MatrixMode( GL_MODELVIEW );
-    gl::LoadIdentity();
-}
-
-void
-draw_overlay()
-{
-    gl::Color(0.0, 0.0, 1.0, 0.1);
-    gl::Rect(0, 0, 640, 480);
-} 
-
-void
 clear_rendering_context()
 {
     gl::DepthMask( GL_TRUE );
@@ -111,11 +92,9 @@ set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
   gl::Color(diffuse);
 } 
 
-
 void
 draw_billboard(const Player& plyr, 
 		     const ppogl::Vec3d& center_pt, double width, double height, 
-		     bool use_world_y_axis, 
 		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord )
 {
     ppogl::Vec3d pt;
@@ -127,19 +106,12 @@ draw_billboard(const Player& plyr,
     x_vec.y() = plyr.view.inv_view_mat.data[0][1];
     x_vec.z() = plyr.view.inv_view_mat.data[0][2];
 
-    if ( use_world_y_axis ) {
-		y_vec = ppogl::Vec3d( 0, 1, 0 );
-		x_vec = projectIntoPlane( y_vec, x_vec );
-		x_vec.normalize();
-		z_vec = x_vec^y_vec;
-    } else {
-		y_vec.x() = plyr.view.inv_view_mat.data[1][0];
-		y_vec.y() = plyr.view.inv_view_mat.data[1][1];
-		y_vec.z() = plyr.view.inv_view_mat.data[1][2];
-		z_vec.x() = plyr.view.inv_view_mat.data[2][0];
-		z_vec.y() = plyr.view.inv_view_mat.data[2][1];
-		z_vec.z() = plyr.view.inv_view_mat.data[2][2];
-    }
+	y_vec.x() = plyr.view.inv_view_mat.data[1][0];
+	y_vec.y() = plyr.view.inv_view_mat.data[1][1];
+	y_vec.z() = plyr.view.inv_view_mat.data[1][2];
+	z_vec.x() = plyr.view.inv_view_mat.data[2][0];
+	z_vec.y() = plyr.view.inv_view_mat.data[2][1];
+	z_vec.z() = plyr.view.inv_view_mat.data[2][2];
 
     gl::Begin(GL_QUADS);
     {

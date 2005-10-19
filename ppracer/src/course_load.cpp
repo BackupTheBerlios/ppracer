@@ -117,18 +117,6 @@ Course::setStartPt(const ppogl::Vec2d& p)
 	start_pt = p;
 }
 
-const std::string&
-Course::getAuthor()
-{
-	return courseAuthor; 
-}
-
-const std::string&
-Course::getName()
-{
-	return courseName;
-}
-
 void
 Course::getGLArrays( GLubyte **vnc_arr )
 {

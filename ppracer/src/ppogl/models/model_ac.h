@@ -22,7 +22,7 @@
 
 
 #include "../sg/geoms.h"
-#include "../base/color.h"
+#include "../sg/materials.h"
 
 #include <string>
 #include <stdio.h>
@@ -34,12 +34,6 @@ class Vertex
 public:
     ppogl::Vec3d vec;
     ppogl::Vec3d normal;
-};
-
-class UV
-{
-public:
-	double u,v;
 };
 	
 class Surface : public ppogl::Polygon
@@ -53,20 +47,6 @@ public:
     int flags;
     int mat;
 };
-
-class Material
-{
- public:
-	ppogl::Color diffuse; 
-    ppogl::Color ambient;
-    ppogl::Color specular;
-    ppogl::Color emissive;
-    double shininess;
-    double transparency;
-    std::string name;
-};
-
-
 
 class ModelObject
 {
@@ -83,8 +63,8 @@ public:
 
     ppogl::Surface *surfaces;
     int num_surf;
-    double texture_repeat_x, texture_repeat_y;
-    double texture_offset_x, texture_offset_y;
+    ppogl::Vec2d texture_repeat;
+    ppogl::Vec2d texture_offset;
 
     int num_kids;
     ppogl::ModelObject **kids;
@@ -113,24 +93,23 @@ class ModelAC
 	void setColor(long matno);
 	void setSimpleColor(long matno);
 	int stringToObjectType(const std::string& string);
-	ModelObject* loadObject(FILE *f, ModelObject *parent);
+	ModelObject* loadObject(FILE *f, ModelObject *parent, const std::string& filename);
 	void objectCalculateVertexNormals(ModelObject *ob);
 	void calculateVertexNormals(ModelObject *ob);
 	int getTokens(char *s, int *argc, char *argv[]);
 	ppogl::Material* getMaterialFromPalette(int id);
 	bool readLine(FILE *f);
-	Surface* readSurface(FILE *f, Surface *s, ModelObject *ob);	
+	Surface* readSurface(FILE *f, Surface *s, ModelObject *ob, const std::string& filename);	
 	void CalculateTriNormal(ppogl::Vec3d *v1, ppogl::Vec3d *v2, ppogl::Vec3d *v3, ppogl::Vec3d *n);
 		
 public:
 	ModelAC(const std::string& filename);
+	~ModelAC();
 
 	ppogl::ModelObject* getModel(){return mp_model;}
 	int getDisplayList();
 
 };
-//pp::ModelObject *ac_load_ac3d(const char *filename);
-//int ac_display_list_render_object(pp::ModelObject *ob);
 
 } //namepsace pp
 
