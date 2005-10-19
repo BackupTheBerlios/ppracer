@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-19  Volker Stroebel <volker@planetpenguin.de>
+	* src/quadtree.cpp
+	removed unneeded checks
+
 2005-10-18  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/sg/geoms.*
 	improoved Polyhedron and Polygon class

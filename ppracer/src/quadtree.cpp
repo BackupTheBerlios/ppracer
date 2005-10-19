@@ -1066,10 +1066,11 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 	
     const int whole = 2 << cd.level;
 	
+	/*
 	ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, cd.zorg*ScaleZ);
     ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,(cd.zorg + whole) * ScaleZ);
 
-    /* If the scales are negative we'll need to swap */
+    // If the scales are negative we'll need to swap
     if ( Min.x() > Max.x() ) {
 		float tmp = Min.x();
 		Min.x() = Max.x();
@@ -1081,6 +1082,10 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 		Min.z() = Max.z();
 		Max.z() = tmp;
     }
+	*/
+
+	const ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, (cd.zorg + whole) * ScaleZ);
+    const ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,cd.zorg*ScaleZ);
 
     const ClipResult clip_result = clip_aabb_to_view_frustum(Min, Max);
 
@@ -1531,21 +1536,21 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
     // Modify the vertex heights if necessary, and set the dirty
     // flag if any modifications occur, so that we know we need to
     // recompute error data later.
-    for (i = 0; i < 5; i++) {
+    for(i = 0; i < 5; i++){
 		if (s[i] != 0) {
 		    Dirty = true;
 		    Vertex[i] += s[i];
 		}
     }
 
-    if (!Dirty) {
-	// Check to see if any child nodes are dirty, and set the dirty flag if so.
-	for (i = 0; i < 4; i++) {
-	    if (Child[i] && Child[i]->Dirty) {
-		Dirty = true;
-		break;
-	    }
-	}
+    if(!Dirty){
+		// Check to see if any child nodes are dirty, and set the dirty flag if so.
+		for(i = 0; i < 4; i++){
+	    	if(Child[i] && Child[i]->Dirty){
+				Dirty = true;
+				break;
+	    	}
+		}
     }
 
     if (Dirty) setStatic(cd);
