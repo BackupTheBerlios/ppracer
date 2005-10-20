@@ -223,8 +223,8 @@ Script::doFile(const std::string& filename)
 	if(SQ_SUCCEEDED(sqstd_dofile(m_vm, _SC(filename.c_str()), SQFalse, SQTrue)))
 	{
 	}else{
-		//todo: implement error handling
 		PP_WARNING("Error parsing script: " << filename.c_str());
+		return false;
 	}
 	sq_pop(m_vm,1); 
 	
