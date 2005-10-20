@@ -19,6 +19,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "course_mgr.h"
+
 #include "ppogl/models/model.h"
 #include "ppogl/textures.h"
 
@@ -39,6 +41,10 @@
 
 class Course
 {
+private:
+	static std::string sm_loadedCourse;
+	static CourseData::Condition sm_loadedCondition;
+	
 public:
 	static bool load(const std::string& course);
 	static float* getElevData();

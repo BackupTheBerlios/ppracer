@@ -29,8 +29,6 @@
 
 class Loading : public GameMode
 {
-	std::string m_loadedCourse;
-	CourseData::Condition m_loadedCondition;
 	ppogl::Label m_loadingLbl;
 	
 public:

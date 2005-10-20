@@ -80,12 +80,18 @@ static int base_height_value;
 static std::map< std::string,ppogl::RefPtr<ModelType> > modelTypes;
 static std::map<std::string,ppogl::RefPtr<ItemType> > itemTypes;
 
-///All terrains that are used in the current course.
-///The list is sorted with respect to the terrain wheights
+///all terrains that are used in the current course.
+///the list is sorted with respect to the terrain wheights
 std::list<int> usedTerrains;
 
-// Interleaved vertex, normal, and color data
+///interleaved vertex, normal, and color data
 static GLubyte *vnc_array = NULL;
+
+///last loaded course
+std::string Course::sm_loadedCourse;
+
+///last loaded condition of the course
+CourseData::Condition Course::sm_loadedCondition=static_cast<CourseData::Condition>(-1);
 
 float*
 Course::getElevData()
@@ -299,45 +305,53 @@ Course::load(const std::string& course)
 {
     PP_MESSAGE("Load course");
 	
-	reset_course();
-	HUD1.reset();
-	HUD2.reset();
+	if( sm_loadedCourse.empty() ||
+		sm_loadedCourse != course ||
+		sm_loadedCondition != GameMgr::getInstance().getCurrentRace().condition ) 
+    {
+		reset_course();
+		HUD1.reset();
+		HUD2.reset();
 	
-	std::string cwd = ppogl::os::cwd();
-	if(cwd.empty()){
-		PP_ERROR("Unable to get curent working directory");
-    }
+		std::string cwd = ppogl::os::cwd();
+		if(cwd.empty()){
+			PP_ERROR("Unable to get curent working directory");
+    	}
 	
-	if(course[0]!='/'){		
-		std::string data_dir = PPConfig.getString("data_dir");
-		if(!script.doFile(data_dir+"/"+course+"/course.nut")){
-			// error parsing course script
-			return false;
+		if(course[0]!='/'){		
+			std::string data_dir = PPConfig.getString("data_dir");
+			if(!script.doFile(data_dir+"/"+course+"/course.nut")){
+				// error parsing course script
+				return false;
+			}
+		}else{
+			if(!script.doFile(course+"/course.nut")){
+				// error parsing course script
+				return false;
+			}		
 		}
-	}else{
-		if(!script.doFile(course+"/course.nut")){
-			// error parsing course script
-			return false;
-		}		
-	}
 		
-    if(ppogl::os::chdir(cwd)==false){
-		PP_ERROR("Unable to change into directory: " << cwd );
-    } 
+    	if(ppogl::os::chdir(cwd)==false){
+			PP_ERROR("Unable to change into directory: " << cwd );
+    	} 
 	
-	courseRenderer.init();
+		courseRenderer.init();
 	
-	fillGLArrays();
+		fillGLArrays();
 
-    courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
+    	courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
 			  -courseDim.y()/(ny-1),
 			  players[0].view.pos);
 
-	// init trackmarks for all players
-	// todo: check whether we need to keep the old ones
-    TrackMarks::init();
+		// init trackmarks for all players
+    	TrackMarks::init();
 		
-    course_loaded = true;
+    	course_loaded = true;
+		
+		sm_loadedCourse = course;
+		sm_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;		
+	}
+		
 	return true;
 }
 

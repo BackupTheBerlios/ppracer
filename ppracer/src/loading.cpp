@@ -45,8 +45,7 @@ Loading::Loading()
 
 	m_loadingLbl.setPosition(ppogl::Vec2d(320,240));
 	m_loadingLbl.alignment.set(0.5,0.5);
-	
-	m_loadedCondition = static_cast<CourseData::Condition>(-1);
+
 	ppogl::AudioMgr::getInstance().playMusic("loading");
 }
 
@@ -66,18 +65,8 @@ Loading::loop(float timeStep)
 
 	updateDisplay();
 	
-	/*
-    if ( m_loadedCourse.empty() ||
-		m_loadedCourse != GameMgr::getInstance().getCurrentRace().course ||
-		m_loadedCondition != GameMgr::getInstance().getCurrentRace().condition ) 
-    {
-	*/
-	
 	// Load the course
 	if(Course::load(GameMgr::getInstance().getCurrentRace().course)){
-		m_loadedCourse = GameMgr::getInstance().getCurrentRace().course;
-		m_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;
-    
 		set_course_mirroring( GameMgr::getInstance().getCurrentRace().mirrored );
 
 		reshape(resolutionX, resolutionY);

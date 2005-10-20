@@ -23,6 +23,9 @@
 	
 	* src/ppogl/ppogl_script.*
 	added error handling
+	
+	* src/course_load.*
+	reload course only if necessary
 
 2005-10-19  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp
