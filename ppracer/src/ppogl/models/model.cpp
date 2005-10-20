@@ -36,7 +36,9 @@ Model::Model(const std::string& filename)
 
 Model::~Model()
 {
-	gl::DeleteLists(m_displayList,1);
+	if(m_displayList != -1){
+		gl::DeleteLists(m_displayList,1);
+	}
 	delete mp_model;
 }
 

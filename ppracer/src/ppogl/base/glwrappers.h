@@ -163,7 +163,26 @@ namespace gl{
 ///OpenGL utility functions
 namespace glu{
 	inline GLint Build2DMipmaps(GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *data){return gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);}
+	
 	inline void Perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar){gluPerspective(fovy, aspect, zNear, zFar);}	
+	
+	class Quadric
+	{
+	private:
+		GLUquadric* mp_obj;
+
+	public:
+		Quadric(){mp_obj=gluNewQuadric();}
+		~Quadric(){gluDeleteQuadric(mp_obj);}
+		
+		inline void DrawStyle(GLenum draw){gluQuadricDrawStyle(mp_obj, draw);}
+		inline void Normals(GLenum normal){gluQuadricNormals(mp_obj, normal);}
+		inline void Orientation(GLenum orientation){gluQuadricOrientation(mp_obj, orientation);}
+		
+		/// draw Sphere
+		inline void Sphere(GLdouble radius, GLint slices, GLint stacks){gluSphere(mp_obj, radius, slices, stacks);}		
+	
+	};	
 } // namespace glu
 
 #endif // _PPOGL_GL_WRAPPERS_H

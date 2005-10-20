@@ -8,6 +8,12 @@
 	* src/pp_types.h src/*
 	moved code to other locations
 	removed pp_types.h
+	
+	* src/ppogl/base/glwrappers.h src/hier_util.cpp
+	added glu::Quadric
+	
+	* src/hier_util.cpp
+	use glu::Quadric to draw sphere
 
 2005-10-19  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp

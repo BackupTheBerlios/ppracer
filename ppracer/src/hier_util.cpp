@@ -35,136 +35,16 @@ struct Ray
     ppogl::Vec3d vec;
 };
 
-#define USE_GLUSPHERE 0
-
-#if USE_GLUSPHERE
-
-/// Draws a sphere using gluSphere
+/// Draws a sphere using glu
 void
 draw_sphere(int num_divisions)
 {
-    GLUquadricObj *qobj;
-
-    qobj = gluNewQuadric();
-    gluQuadricDrawStyle( qobj, GLU_FILL );
-    gluQuadricOrientation( qobj, GLU_OUTSIDE );
-    gluQuadricNormals( qobj, GLU_SMOOTH );
-
-    gluSphere( qobj, 1.0, 2.0 * num_divisions, num_divisions );
-
-    gluDeleteQuadric( qobj );
-    
+    glu::Quadric quad;
+	quad.DrawStyle(GLU_FILL);
+    quad.Orientation(GLU_OUTSIDE);
+    quad.Normals(GLU_SMOOTH);
+	quad.Sphere(1.0, 2*num_divisions, num_divisions);
 }
-
-#else 
-
-void
-draw_sphere(int num_divisions)
-{
-    double theta, phi, d_theta, d_phi, eps, twopi;
-    double x, y, z;
-    int div = num_divisions;
-
-    eps = 1e-15;
-    twopi = M_PI * 2.0;
-
-    d_theta = d_phi = M_PI / div;
-
-    for ( phi = 0.0; phi + eps < M_PI; phi += d_phi ) {
-	double cos_theta, sin_theta;
-	double sin_phi, cos_phi;
-	double sin_phi_d_phi, cos_phi_d_phi;
-
-	sin_phi = sin( phi );
-	cos_phi = cos( phi );
-	sin_phi_d_phi = sin( phi + d_phi );
-	cos_phi_d_phi = cos( phi + d_phi );
-      
-	if ( phi <= eps ) {
-		gl::Begin( GL_TRIANGLE_FAN );
-		gl::Normal(0.0f, 0.0f, 1.0f);
-		gl::Vertex(0.0f, 0.0f, 1.0f);
-
-		for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
-			sin_theta = sin( theta );
-			cos_theta = cos( theta );
-
-			x = cos_theta * sin_phi_d_phi;
-			y = sin_theta * sin_phi_d_phi;
-			z = cos_phi_d_phi;
-			gl::Normal(x, y, z);
-			gl::Vertex(x, y, z);
-		} 
-
-		x = sin_phi_d_phi;
-		y = 0.0;
-		z = cos_phi_d_phi;
-		gl::Normal(x, y, z);
-		gl::Vertex(x, y, z);
-		gl::End();
-
-        } else if ( phi + d_phi + eps >= M_PI ) {
-            
-            gl::Begin( GL_TRIANGLE_FAN );
-                gl::Normal(0.0f, 0.0f, -1.0f);
-                gl::Vertex(0.0f, 0.0f, -1.0f);
-
-                for ( theta = twopi; theta - eps > 0; theta -= d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
-
-                    x = cos_theta * sin_phi;
-                    y = sin_theta * sin_phi;
-                    z = cos_phi;
-                    gl::Normal(x, y, z);
-                    gl::Vertex(x, y, z);
-                } 
-                x = sin_phi;
-                y = 0.0;
-                z = cos_phi;
-                gl::Normal(x, y, z);
-                gl::Vertex(x, y, z);
-            gl::End();
-
-        } else {
-            
-            gl::Begin( GL_TRIANGLE_STRIP );
-                
-                for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
-
-                    x = cos_theta * sin_phi;
-                    y = sin_theta * sin_phi;
-                    z = cos_phi;
-                    gl::Normal(x, y, z);
-                    gl::Vertex(x, y, z);
-
-                    x = cos_theta * sin_phi_d_phi;
-                    y = sin_theta * sin_phi_d_phi;
-                    z = cos_phi_d_phi;
-                    gl::Normal(x, y, z);
-                    gl::Vertex(x, y, z);
-                } 
-                x = sin_phi;
-                y = 0.0;
-                z = cos_phi;
-                gl::Normal(x, y, z);
-                gl::Vertex(x, y, z);
-
-                x = sin_phi_d_phi;
-                y = 0.0;
-                z = cos_phi_d_phi;
-                gl::Normal(x, y, z);
-                gl::Vertex(x, y, z);
-
-            gl::End();
-
-        } 
-    } 
-} 
-
-#endif // USE_GLUSPHERE 
 
 static GLuint
 get_sphere_display_list(int divisions)
@@ -230,12 +110,8 @@ traverse_dag(SceneNode *node, ppogl::Material *mat)
     if ( node->geom == Sphere ) {
         set_material( mat->diffuse, mat->specular, mat->getSpecularExponent() );
 
-	//if ( getparam_use_sphere_display_list() ) {
 	    gl::CallList( get_sphere_display_list( 
 		node->param.sphere.divisions ) );
-	//} else {
-	//    draw_sphere( node->param.sphere.divisions );
-	//}
     } 
 
     child = node->child;

@@ -23,8 +23,6 @@
 #include "assert.h"
 
 namespace ppogl{
-
-template <class T> class RefPtr;
 	
 /// An object that provides a simple reference counter
 class RefObject
@@ -140,7 +138,7 @@ public:
 		if(m_pointer!=NULL){
 			return m_pointer->getReferences();
 		}else{
-			//not realy necessary but may be usefull for debung broken RefObjects	
+			//not realy necessary but may be usefull for debug broken RefObjects	
 			return -65536;
 		}
 	}
