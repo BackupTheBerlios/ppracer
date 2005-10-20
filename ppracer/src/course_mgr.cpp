@@ -206,13 +206,13 @@ register_courses(ppogl::Script *vm)
 			if(vm->isKeyInTable("condition")){
 				std::string condition = vm->getStringFromTable("condition");
 				if(condition=="cloudy"){
-					course.condition=RACE_CONDITIONS_CLOUDY;
+					course.condition=CourseData::CONDITION_CLOUDY;
 				}else if(condition=="night"){
-					course.condition=RACE_CONDITIONS_NIGHT;
+					course.condition=CourseData::CONDITION_NIGHT;
 				}else if(condition=="evening"){
-					course.condition=RACE_CONDITIONS_EVENING;
+					course.condition=CourseData::CONDITION_EVENING;
 				}else{
-					course.condition=RACE_CONDITIONS_SUNNY;
+					course.condition=CourseData::CONDITION_SUNNY;
 				}			
 			}
 			

@@ -45,7 +45,7 @@ Loading::Loading()
 	m_loadingLbl.setPosition(ppogl::Vec2d(320,240));
 	m_loadingLbl.alignment.set(0.5,0.5);
 	
-	m_loadedCondition = static_cast<RaceConditions>(-1);
+	m_loadedCondition = static_cast<CourseData::Condition>(-1);
 	ppogl::AudioMgr::getInstance().playMusic("loading");
 }
 

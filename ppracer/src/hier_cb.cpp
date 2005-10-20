@@ -21,6 +21,8 @@
 
 #include "hier.h"
 
+#include "ppracer.h"
+
 static int
 tux_rotate(ppogl::Script *vm) 
 {
@@ -183,23 +185,21 @@ tux_sphere(ppogl::Script *vm)
 static int
 tux_material(ppogl::Script *vm) 
 {
-    std::string mat_name;
-    ppogl::Color diffuse;
-    ppogl::Color specular;
-    double spec_exp;
+    std::string name;
+    ppogl::Material material;
 
 	if(vm->getTop() != 4){
         PP_WARNING("tux.material: Invalid number of arguments");
 		return 0; 
     }
     // obtain material name
-    mat_name = vm->getString(1);
+    name = vm->getString(1);
 
     // obtain diffuse color
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(2);
-		diffuse.values[i]=vm->getFloat();
+		material.diffuse.values[i]=vm->getFloat();
 		vm->pop(2);		
 	}
 
@@ -207,14 +207,14 @@ tux_material(ppogl::Script *vm)
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(3);
-		specular.values[i]=vm->getFloat();
+		material.specular.values[i]=vm->getFloat();
 		vm->pop(2);		
 	}
 
     // obtain specular exponent
-	spec_exp = vm->getFloat(4);
+	material.setSpecularExponent(vm->getFloat(4));
 
-	create_material(mat_name, diffuse, specular, spec_exp);
+	add_material(name, material);
 
     return 0;
 }

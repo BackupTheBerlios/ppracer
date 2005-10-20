@@ -24,12 +24,88 @@
 #define _PLAYER_H_
 
 #include "course_mgr.h"
+#include "algstuff.h"
+
+#include "ppogl/base/vec3d.h"
 
 #include <list>
 #include <map>
 #include <string>
 #include <fstream>
 
+/// View mode
+enum ViewMode
+{
+    BEHIND,
+    FOLLOW,
+    ABOVE,
+    NUM_VIEW_MODES
+};
+
+/// View point
+struct View
+{
+    /// View mode
+	ViewMode mode;       		
+    
+	/// position of camera
+	ppogl::Vec3d pos;           		
+    
+	/// position of player
+	ppogl::Vec3d plyr_pos;           	
+    
+	/// viewing direction
+	ppogl::Vec3d dir;            		
+    
+	/// up direction
+	ppogl::Vec3d up;               	
+    
+	/// inverse view matrix
+	pp::Matrix inv_view_mat;    	
+    
+	/// has view been initialized?
+	bool initialized;          		
+};
+
+/// Control mode
+enum ControlMode
+{
+    KEYBOARD = 0,
+    MOUSE = 1,
+    JOYSTICK = 2
+};
+
+/// Control data
+struct Control
+{
+    /// control mode
+	ControlMode mode; 
+	
+    /// turning [-1,1]
+	float turn_fact;
+	
+    /// animation step [-1,1]
+	float turn_animation;
+	
+    /// is player braking?
+	bool is_braking;
+	
+    /// is player paddling?
+	bool is_paddling;
+	
+    float paddle_time;
+    bool begin_jump;
+    bool jumping;
+    bool jump_charging;
+    float jump_amt;
+    float jump_start_time;
+    bool barrel_roll_left;
+    bool barrel_roll_right;
+    float barrel_roll_factor;
+    bool front_flip;
+    bool back_flip;
+    float flip_factor;
+};
 
 class PlayerCourseData
 {

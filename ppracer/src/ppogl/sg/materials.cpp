@@ -19,4 +19,13 @@
  
 #include "materials.h"
 
-// fill me with code
+namespace ppogl{
+
+Material::Material()
+ : m_shininess(0.0),
+   m_transparency(0.0),
+   m_specularExponent(0.0)
+{
+}
+	
+} //namepsace ppogl

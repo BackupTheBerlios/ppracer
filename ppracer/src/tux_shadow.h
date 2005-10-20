@@ -22,7 +22,7 @@
 #ifndef _TUX_SHADOW_H_
 #define _TUX_SHADOW_H_
 
-#include "pp_types.h"
+#include "hier_util.h"
 
 void draw_tux_shadow(int player);
 void traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix);

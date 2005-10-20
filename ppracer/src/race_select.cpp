@@ -58,7 +58,7 @@ RaceSelect::RaceSelect()
 		GameMgr::getInstance().setCurrentRace(curElem);
 		
 	    GameMgr::getInstance().getCurrentRace().mirrored = false;
-	    GameMgr::getInstance().getCurrentRace().condition = RACE_CONDITIONS_SUNNY;
+	    GameMgr::getInstance().getCurrentRace().condition = CourseData::CONDITION_SUNNY;
 	    GameMgr::getInstance().getCurrentRace().windy = false;
 	    GameMgr::getInstance().getCurrentRace().snowing = false;
     }
@@ -189,7 +189,7 @@ RaceSelect::updateRaceData()
 	GameMgr::getInstance().getCurrentRace().setName((*curElem).getName());
 	GameMgr::getInstance().getCurrentRace().setDescription((*curElem).getDescription());
 	GameMgr::getInstance().getCurrentRace().mirrored = bool(m_mirrorIBtn.getState());
-	GameMgr::getInstance().getCurrentRace().condition = static_cast<RaceConditions>(m_conditionsIBtn.getState());
+	GameMgr::getInstance().getCurrentRace().condition = static_cast<CourseData::Condition>(m_conditionsIBtn.getState());
 	GameMgr::getInstance().getCurrentRace().windy = bool(m_windIBtn.getState());
 	GameMgr::getInstance().getCurrentRace().snowing = bool(m_snowIBtn.getState());
 }

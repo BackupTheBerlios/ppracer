@@ -48,7 +48,7 @@ public:
 	std::list<CupData>::iterator currentCup;
 
 
-	DifficultyLevel difficulty;
+	CourseData::Difficulty difficulty;
 	double time;
 	double timeStep;
 	int numPlayers;

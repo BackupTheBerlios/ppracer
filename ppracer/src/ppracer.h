@@ -173,6 +173,9 @@ enum DebugMode{
 /// multiplier for scaling the textures to match the terrains
 #define TEX_SCALE 6
 
+/// Max number of terrains types
+#define NUM_TERRAIN_TYPES 64
+
 #include "ppogl/ppogl_script.h"
 
 /// global instance of the lua interpreter

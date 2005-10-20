@@ -22,8 +22,6 @@
 #ifndef _VIEWFRUSTUM_H_
 #define _VIEWFRUSTUM_H_
 
-#include "pp_types.h"
-
 #include "player.h"
 
 enum ClipResult{

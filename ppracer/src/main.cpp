@@ -362,7 +362,7 @@ main(int argc, char *argv[])
 		GameMode::setMode(GameMode::BENCHMARK);
 	}
 	
-    GameMgr::getInstance().difficulty = DIFFICULTY_LEVEL_NORMAL;
+    GameMgr::getInstance().difficulty = CourseData::DIFFICULTY_NORMAL;
 	
 	SDL_ShowCursor(false);
 	

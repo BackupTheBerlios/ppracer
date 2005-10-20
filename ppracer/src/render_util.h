@@ -37,7 +37,7 @@ void reshape( int w, int h, int multiscreen=-1);
 void clear_rendering_context();
 
 void set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
-		   const double specular_exp );
+		   const double specular_exp);
 
 void draw_billboard(const Player& plyr,
 		     const ppogl::Vec3d& center_pt, double width, double height, 

@@ -21,7 +21,6 @@
 #define _COURSE_MGR_H
 
 #include "ppracer.h"
-#include "pp_types.h"
 
 #include <list>
 #include <map>
@@ -30,9 +29,27 @@
 class CourseData
 {
 public:
+	///conditions
+	enum Condition{
+    	CONDITION_SUNNY,
+    	CONDITION_CLOUDY,
+    	CONDITION_NIGHT,
+		CONDITION_EVENING,
+    	NUM_CONDITIONS
+	};
+	
+	///difficulty
+	enum Difficulty{
+    	DIFFICULTY_EASY,
+    	DIFFICULTY_NORMAL,
+    	DIFFICULTY_HARD,
+    	DIFFICULTY_UNPLAYABLE,
+    	NUM_DIFFICULTYS
+	};
+
 	CourseData()
 	 : par_time(0),
-	   condition(RACE_CONDITIONS_SUNNY),
+	   condition(CONDITION_SUNNY),
 	   mirrored(false),
 	   windy(false),
 	   snowing(false)
@@ -51,11 +68,11 @@ public:
 	void setDescription(const std::string& description, const std::string& lang="default");
 		
 	double par_time;
-    int herring_req[DIFFICULTY_NUM_LEVELS];
-	int score_req[DIFFICULTY_NUM_LEVELS];
-	double time_req[DIFFICULTY_NUM_LEVELS];
+    int herring_req[NUM_DIFFICULTYS];
+	int score_req[NUM_DIFFICULTYS];
+	double time_req[NUM_DIFFICULTYS];
 
-	RaceConditions condition;
+	Condition condition;
 	bool mirrored;
 	bool windy;
 	bool snowing;

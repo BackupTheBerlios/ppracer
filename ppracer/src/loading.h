@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,21 +21,20 @@
 #define _LOADING_H_
 
 #include "loop.h"
-#include "pp_types.h"
 
-#include "ppgltk/label.h"
+#include "course_mgr.h"
+#include "ppogl/ui.h"
 
 #include <string>
 
 class Loading : public GameMode
 {
 	std::string m_loadedCourse;
-	race_conditions_t m_loadedCondition;
-	pp::Label *mp_loadingLbl;
+	CourseData::Condition m_loadedCondition;
+	ppogl::Label m_loadingLbl;
 	
 public:
 	Loading();
-	~Loading();
 
 	void loop(float timeStep);	
 };

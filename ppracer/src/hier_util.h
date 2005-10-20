@@ -22,14 +22,68 @@
 #ifndef _HIER_UTIL_H
 #define _HIER_UTIL_H
 
-#include "pp_types.h"
-
 #include "ppogl/sg/geoms.h"
+#include "ppogl/sg/materials.h"
+
+#include "algstuff.h"
+
+
+enum Geometry
+{ 
+    Empty, Sphere
+};
+
+/// Data for Sphere node type.
+struct SphereNode
+{
+    float radius;
+	
+	/// How many divisions do we use to draw a sphere?
+    int divisions;		
+};
+
+/// Tux's eyes
+enum TuxEye
+{
+    TuxLeftEye = 0, 
+    TuxRightEye = 1
+};
+
+struct SceneNode
+{
+    SceneNode* parent;
+    SceneNode* next;
+    SceneNode* child;
+
+	/// type of node
+    Geometry geom;
+
+    union{
+        SphereNode sphere;   
+    }param;
+      
+	ppogl::Material* mat;
+
+    /// Do we draw the shadow of this node?
+    bool render_shadow;
+
+    /// Is this node one of tux's eyes?
+    bool eye;
+
+    /// If so, which one?
+    TuxEye which_eye;
+
+    /// The forward and inverse transforms
+    pp::Matrix trans;
+    pp::Matrix invtrans;   
+
+};
+
 
 
 void draw_sphere(int num_divisions);
 
-void traverse_dag(SceneNode *node, Material *mat);
+void traverse_dag(SceneNode *node, ppogl::Material *mat);
 
 void trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph);
 

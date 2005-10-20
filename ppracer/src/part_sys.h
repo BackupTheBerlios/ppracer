@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,15 +22,13 @@
 #ifndef _PART_SYS_H_
 #define _PART_SYS_H_
 
-#include "pp_types.h"
-
 #include "player.h"
 
-void create_new_particles( pp::Vec3d loc, pp::Vec3d vel, int num, GLuint particle_binding);
+void create_new_particles( ppogl::Vec3d loc, ppogl::Vec3d vel, int num, GLuint particle_binding);
 void update_particles( double time_step );
 void clear_particles();
 void reset_particles();
 void draw_particles( Player& plyr );
-void register_particle_callbacks( Tcl_Interp *ip );
+void register_particle_callbacks();
 
 #endif /* _PART_SYS_H_ */

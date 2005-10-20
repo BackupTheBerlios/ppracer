@@ -22,8 +22,6 @@
 #ifndef _KEYFRAME_H_
 #define _KEYFRAME_H_
 
-#include "pp_types.h"
-
 #include "player.h"
 
 #define MAX_NUM_KEY_FRAMES 128

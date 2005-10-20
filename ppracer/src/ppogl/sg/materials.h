@@ -37,14 +37,26 @@ public:
 
 class Material
 {
+private:
+	float m_shininess;
+	float m_transparency;
+	float m_specularExponent;
+
 public:
+	Material();
+
 	ppogl::Color diffuse; 
 	ppogl::Color ambient;
 	ppogl::Color specular;
 	ppogl::Color emissive;
-    
-	float shininess;
-    float transparency;
+
+	void setShininess(const float& shininess){m_shininess=shininess;}
+	void setTransparency(const float& transparency){m_transparency=transparency;}
+	void setSpecularExponent(const float& specularExponent ){m_specularExponent=specularExponent;}
+
+	const float& getShininess(){return m_shininess;}
+	const float& getTransparency(){return m_transparency;}
+	const float& getSpecularExponent(){return m_specularExponent;}
 };
 
 } //namepsace ppogl

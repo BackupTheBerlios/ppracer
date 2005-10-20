@@ -33,7 +33,7 @@ int Benchmark::sm_maxFrames=0;
 int Benchmark::sm_fc=0;
 ppogl::Vec2d Benchmark::sm_pos;
 double Benchmark::sm_timeStep=-1;
-RaceConditions Benchmark::sm_condition=RACE_CONDITIONS_SUNNY;
+CourseData::Condition Benchmark::sm_condition=CourseData::CONDITION_SUNNY;
 	
 Benchmark::Benchmark()
 {	
@@ -126,9 +126,9 @@ void
 Benchmark::setRaceCondition(int condition)
 {
 	if (condition > 0 && 
-		condition < RACE_CONDITIONS_NUM_CONDITIONS)
+		condition < CourseData::NUM_CONDITIONS)
 	{
-		sm_condition = static_cast<RaceConditions>(condition);
+		sm_condition = static_cast<CourseData::Condition>(condition);
 	}
 }
 

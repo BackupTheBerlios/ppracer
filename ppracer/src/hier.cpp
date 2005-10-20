@@ -20,6 +20,8 @@
  */
 
 #include "hier.h"
+
+#include "ppracer.h"
 #include "hier_util.h"
 
 #include "ppogl/base/defs.h"
@@ -28,20 +30,11 @@
 #include <string>
 
 std::map<std::string, SceneNode *> nodes;
-std::map<std::string, Material> materials;
+std::map<std::string, ppogl::Material> materials;
 
+// Default Material
+ppogl::Material g_hier_default_material;
 
-/*
- * State variables
- */
-
-
-/* Default Material */
-Material g_hier_default_material ={ 
-				ppogl::Color(0., 0., 1.),  /* diffuse color  = blue */
-				ppogl::Color(0., 0., 0.),  /* specular color = black */
-				0.0              /* specular exp. = 0.0 */
-			};
 /*
  * Functions used to access and update the name-to-pointer hash tables
  */
@@ -86,9 +79,9 @@ get_scene_node(const std::string& node_name, SceneNode **node )
 
 /* Get material pointer from material name */
 bool 
-get_material(const std::string& mat_name, Material **mat ) 
+get_material(const std::string& mat_name, ppogl::Material **mat ) 
 {
-    std::map<std::string, Material>::iterator it;
+    std::map<std::string, ppogl::Material>::iterator it;
 
 	if((it=materials.find(mat_name))!=materials.end()){
 		*mat = &(*it).second;
@@ -246,7 +239,7 @@ transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::M
 std::string 
 set_scene_node_material(const std::string& node, const std::string& mat) 
 {
-    Material *matPtr;
+    ppogl::Material *matPtr;
     SceneNode *nodePtr;
 
     if(get_scene_node(node, &nodePtr) != true){
@@ -340,24 +333,9 @@ create_sphere_node(const std::string& parent_name, const std::string& child_name
 }
 
 void
-create_material(const std::string& mat, const ppogl::Color& diffuse, 
-		 const ppogl::Color& specular, double specular_exp ) 
+add_material(const std::string& name, const ppogl::Material& material)
 {
-    Material material;
-
-    material.diffuse.r() = diffuse.r();
-    material.diffuse.g() = diffuse.g();
-    material.diffuse.b() = diffuse.b();
-    material.diffuse.a() = 1.0;
-
-    material.specular.r() = specular.r();
-    material.specular.g() = specular.g();
-    material.specular.b() = specular.b();
-    material.specular.a() = 1.0;
-
-    material.specular_exp = specular_exp;
-	
-	materials[mat]=material;
+	materials[name]=material;
 }
 
 void
@@ -370,7 +348,6 @@ draw_scene_graph(const std::string& node)
     } 
 
     traverse_dag( nodePtr, &g_hier_default_material );
-    
 } 
 
 bool

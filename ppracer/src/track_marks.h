@@ -22,9 +22,9 @@
 #ifndef _TRACK_MARKS_H_
 #define _TRACK_MARKS_H_
 
-#include "pp_types.h"
-
 #include "player.h"
+#include "ppogl/base/vec2d.h"
+#include "ppogl/base/vec3d.h"
 
 #define MAX_TRACK_MARKS 1000
 

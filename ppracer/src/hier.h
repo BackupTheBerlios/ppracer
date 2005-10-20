@@ -22,8 +22,7 @@
 #ifndef _HIER_H_
 #define _HIER_H_
 
-#include "pp_types.h"
-
+#include "hier_util.h"
 #include "ppogl/sg/geoms.h"
 
 #define MIN_SPHERE_DIVISIONS 3
@@ -40,7 +39,7 @@ std::string transform_scene_node(const std::string& node, const pp::Matrix& mat,
 
 std::string set_scene_node_material(const std::string& node, const std::string& mat);
 
-void create_material(const std::string& mat, const ppogl::Color& d, const ppogl::Color& s, double s_exp);
+void add_material(const std::string& name, const ppogl::Material& material);
 
 std::string set_scene_resolution(const std::string& resolution);
 

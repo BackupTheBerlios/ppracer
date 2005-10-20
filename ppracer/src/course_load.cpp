@@ -1128,13 +1128,13 @@ get_condition_cb(ppogl::Script *vm)
 {
 	switch(GameMgr::getInstance().getCurrentRace().condition)
 	{
-		case RACE_CONDITIONS_CLOUDY:
+		case CourseData::CONDITION_CLOUDY:
 			vm->pushString("cloudy");
 			break;
-		case RACE_CONDITIONS_NIGHT:
+		case CourseData::CONDITION_NIGHT:
 			vm->pushString("night");
 			break;
-		case RACE_CONDITIONS_EVENING:
+		case CourseData::CONDITION_EVENING:
 			vm->pushString("evening");
 			break;		
 		default:

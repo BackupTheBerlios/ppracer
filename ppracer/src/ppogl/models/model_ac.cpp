@@ -280,11 +280,11 @@ ModelAC::setColor(long matno)
     rgba[0] = m->diffuse.r();
 	rgba[1] = m->diffuse.g();
 	rgba[2] = m->diffuse.b();
-    rgba[3] = 1.0-m->transparency;
+    rgba[3] = 1.0-m->getTransparency();
     
 	gl::Material(GL_FRONT_AND_BACK, GL_DIFFUSE, rgba);
 	
-    if ( (1.0-m->transparency) < 1.0)
+    if ( (1.0-m->getTransparency()) < 1.0)
 	    {
         gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         gl::Enable(GL_BLEND);
@@ -351,8 +351,8 @@ ModelAC::loadObject(FILE *f, ModelObject *parent, const std::string& filename)
 			m.specular.g() = atof(ma_tokv[16]);
 			m.specular.b() = atof(ma_tokv[17]);
 
-			m.shininess = atof(ma_tokv[19]);
-			m.transparency = atof(ma_tokv[21]);
+			m.setShininess(atof(ma_tokv[19]));
+			m.setTransparency(atof(ma_tokv[21]));
 	
 			shi = atof(ma_tokv[6]);
 			tran = atof(ma_tokv[7]);

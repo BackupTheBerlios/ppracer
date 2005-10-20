@@ -228,7 +228,7 @@ EventRaceSelect::updateStates()
 			m_startBtn.setInsensitive(true);	
 		}else{
 			
-			DifficultyLevel d = GameMgr::getInstance().difficulty;
+			CourseData::Difficulty d = GameMgr::getInstance().difficulty;
 			m_data.time = (*curElem).time_req[d];
 			m_data.herring = (*curElem).herring_req[d];
 			m_data.score = int((*curElem).score_req[d]);

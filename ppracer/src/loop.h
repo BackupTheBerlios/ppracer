@@ -28,7 +28,6 @@
 
 // including this here because this headers
 // are used in nearly all modes
-#include "pp_types.h"
 #include "gl_util.h"
 #include "render_util.h"
 #include "winsys.h"

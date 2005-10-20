@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -22,16 +22,37 @@
 #ifndef _LIGHTS_H_
 #define _LIGHTS_H_
 
-#include "pp_types.h"
+#include "ppogl/base/color.h"
+#include "ppogl/base/vec3f.h"
+#include "ppogl/base/vec4f.h"
+#include "ppogl/base/glwrappers.h"
 
 #define NUM_COURSE_LIGHTS 8
 
-light_t* get_course_lights();
+/// Light
+struct Light
+{
+    bool is_on;
+
+	ppogl::Color ambient;
+    ppogl::Color diffuse;
+    ppogl::Color specular;
+    ppogl::Vec4f position;
+	ppogl::Vec3f spot_direction;
+	
+    GLfloat spot_exponent;
+    GLfloat spot_cutoff;
+    GLfloat constant_attenuation;
+    GLfloat linear_attenuation;
+    GLfloat quadratic_attenuation;
+};
+
+Light* get_course_lights();
 
 void reset_lights();
 
 void setup_course_lighting();
 
-void register_course_light_callbacks( Tcl_Interp *ip );
+void register_course_light_callbacks();
 
-#endif /* _LIGHTS_H_ */
+#endif // _LIGHTS_H_

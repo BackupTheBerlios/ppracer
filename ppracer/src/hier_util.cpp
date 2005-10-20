@@ -19,12 +19,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "hier_util.h"
+
 #include "render_util.h"
 #include "hier.h"
+#include "ppracer.h"
 
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
 
+/// Ray (half-line)
+struct Ray
+{ 
+    ppogl::Vec3d pt;
+    ppogl::Vec3d vec;
+};
 
 #define USE_GLUSPHERE 0
 
@@ -205,7 +214,7 @@ get_sphere_display_list(int divisions)
 /* Traverses the DAG structure and draws the nodes
  */
 void
-traverse_dag(SceneNode *node, Material *mat)
+traverse_dag(SceneNode *node, ppogl::Material *mat)
 {
     SceneNode *child;
 
@@ -219,8 +228,7 @@ traverse_dag(SceneNode *node, Material *mat)
     } 
 
     if ( node->geom == Sphere ) {
-        set_material( mat->diffuse, mat->specular, 
-                     mat->specular_exp );
+        set_material( mat->diffuse, mat->specular, mat->getSpecularExponent() );
 
 	//if ( getparam_use_sphere_display_list() ) {
 	    gl::CallList( get_sphere_display_list( 

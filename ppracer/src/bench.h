@@ -23,7 +23,7 @@
 
 #include "loop.h"
 
-#include "ppogl/base/vec2d.h"
+#include "course_mgr.h"
 
 #include <string>
 
@@ -38,7 +38,7 @@ class Benchmark : public GameMode
 	static int sm_fc;
 	static ppogl::Vec2d sm_pos;
 	static double sm_timeStep;
-	static RaceConditions sm_condition;
+	static CourseData::Condition sm_condition;
 	
 public:
 	Benchmark();

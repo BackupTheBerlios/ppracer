@@ -22,7 +22,6 @@
 #ifndef _VIEWMODE_H_
 #define _VIEWMODE_H_
 
-#include "pp_types.h"
 #include "player.h"
 
 void set_view_mode(Player& plyr, ViewMode mode);
