@@ -177,7 +177,7 @@ This controls how accurately the course terrain is
 rendered. A high value results in greater accuracy at the cost of 
 performance, and vice versa.
 ",
-course_detail_level = 100,
+course_detail_level = 70,
 
 disable_fog_description = @"
 If true, then fog will be turned off.
