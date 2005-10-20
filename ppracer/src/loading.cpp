@@ -34,6 +34,7 @@
 #include "mirror_course.h"
 #include "joystick.h"
 #include "part_sys.h"
+#include "bench.h"
 
 #include "game_mgr.h"
 
@@ -65,21 +66,30 @@ Loading::loop(float timeStep)
 
 	updateDisplay();
 	
+	/*
     if ( m_loadedCourse.empty() ||
 		m_loadedCourse != GameMgr::getInstance().getCurrentRace().course ||
 		m_loadedCondition != GameMgr::getInstance().getCurrentRace().condition ) 
     {
+	*/
+	
 	// Load the course
-	Course::load( GameMgr::getInstance().getCurrentRace().course );
+	if(Course::load(GameMgr::getInstance().getCurrentRace().course)){
+		m_loadedCourse = GameMgr::getInstance().getCurrentRace().course;
+		m_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;
+    
+		set_course_mirroring( GameMgr::getInstance().getCurrentRace().mirrored );
 
-	m_loadedCourse = GameMgr::getInstance().getCurrentRace().course;
-	m_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;
-    }
+		reshape(resolutionX, resolutionY);
 
-	set_course_mirroring( GameMgr::getInstance().getCurrentRace().mirrored );
-
-	reshape(resolutionX, resolutionY);
-
-    // We're done here, enter INTRO mode
-    setMode( INTRO );	
+    	// We're done here, enter INTRO mode
+    	setMode( INTRO );
+	}else{
+		PP_WARNING("Error loading course");
+		if(Benchmark::getMode() != Benchmark::NONE){
+			winsys_exit( 0 );
+		}else{		
+			setMode(GameMode::prevmode);
+		}
+	}
 }

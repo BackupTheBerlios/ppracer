@@ -512,5 +512,16 @@ Script::call(int arguments, bool retValue)
 	return SQ_SUCCEEDED(sq_call(m_vm,arguments,retValue));
 }
 
+SQRESULT
+Script::throwError(const std::string& message)
+{
+	return sq_throwerror(m_vm,message.c_str());	
+}
+	
+SQRESULT
+Script::defaultError()
+{
+	return sq_throwerror(m_vm,"Function call contains errors. Please check your script");	
+}
 
 } // namespace ppogl

@@ -14,6 +14,15 @@
 	
 	* src/hier_util.cpp
 	use glu::Quadric to draw sphere
+	
+	* src/course_load.cpp
+	clear location for reset points
+	
+	* src/loading.cpp src/course_load.*
+	return to course selection if loading fails
+	
+	* src/ppogl/ppogl_script.*
+	added error handling
 
 2005-10-19  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp

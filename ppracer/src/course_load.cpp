@@ -227,6 +227,8 @@ reset_course()
 	itemLocs.clear();
 	itemTypes.clear();
 	
+	resetLocs.clear();
+
     course_loaded = false;
 
     keyFrames[0].reset();
@@ -292,7 +294,7 @@ Course::fillGLArrays()
 		    vnc_array + 8*sizeof(GLfloat) );
 }
 
-void
+bool
 Course::load(const std::string& course)
 {
     PP_MESSAGE("Load course");
@@ -308,10 +310,16 @@ Course::load(const std::string& course)
 	
 	if(course[0]!='/'){		
 		std::string data_dir = PPConfig.getString("data_dir");
-		script.doFile(data_dir+"/"+course+"/course.nut");	
+		if(!script.doFile(data_dir+"/"+course+"/course.nut")){
+			// error parsing course script
+			return false;
+		}
 	}else{
-		script.doFile(course+"/course.nut");	
-	}	
+		if(!script.doFile(course+"/course.nut")){
+			// error parsing course script
+			return false;
+		}		
+	}
 		
     if(ppogl::os::chdir(cwd)==false){
 		PP_ERROR("Unable to change into directory: " << cwd );
@@ -330,6 +338,7 @@ Course::load(const std::string& course)
     TrackMarks::init();
 		
     course_loaded = true;
+	return true;
 }
 
 static inline int
@@ -351,7 +360,7 @@ course_dim_cb(ppogl::Script *vm)
 {
     if(vm->getTop() != 1){
         PP_WARNING("ppcourse.course_dim: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
     }
 
 	if(vm->isArray()){
@@ -376,6 +385,7 @@ course_dim_cb(ppogl::Script *vm)
 		vm->pop();
 	}else{
 		PP_WARNING("ppcourse.course_dim: Value is no array");
+		return vm->defaultError();
 	}		
 	return 0;
 } 
@@ -387,7 +397,8 @@ angle_cb(ppogl::Script *vm)
 
     if(vm->getTop()!=1){
         PP_WARNING("ppcourse.angle_cb: invalid number of arguments");
-		return 0;
+		return vm->defaultError();
+
     } 
 
     angle = vm->getFloat(1);
@@ -420,19 +431,19 @@ elev_cb(ppogl::Script *vm)
 
 	if(vm->getTop() != 1){
         PP_WARNING("ppcourse.elev: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
     } 
 
     if(course_loaded){
 		PP_WARNING("Ignoring ppcourse.elev: course already loaded");
-		return 0;
+		return vm->defaultError();
     }
 
 	std::string filename = vm->getString(1);
     elev_img = ppogl::Image::readFile(filename);
     if ( elev_img == NULL ) {
 		PP_WARNING( "ppcourse.elev: couldn't load " << filename);
-		return 0;
+		return vm->defaultError();
     }
 	
     nx = elev_img->width;
@@ -483,7 +494,7 @@ terrain_cb(ppogl::Script *vm)
 
     if(vm->getTop()!=1){
         PP_WARNING("ppcourse.load_terrain: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
     } 
 
 	std::string filename = vm->getString(1);
@@ -492,13 +503,13 @@ terrain_cb(ppogl::Script *vm)
 
     if(terrain_img == NULL){
 		PP_WARNING("ppcourse.load_terrain: couldn't load " << filename);
-		return 0;
+		return vm->defaultError();
     }
 
     if ( nx != terrain_img->width || ny != terrain_img->height ) {
         PP_WARNING("ppcourse.load_terrain: terrain bitmap must have same " 
 			 "dimensions as elevation bitmap");
-		return 0;
+		return vm->defaultError();
     }
 
     terrain = new int[nx*ny];
@@ -539,7 +550,7 @@ terrain_tex_cb(ppogl::Script *vm)
 {
 	if(num_terrains>=NUM_TERRAIN_TYPES){
 		PP_WARNING("pptheme.terrain_tex: Max number of terrains reached");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	// fill in values not specified with defaults
@@ -556,7 +567,7 @@ terrain_tex_cb(ppogl::Script *vm)
 	
 	if(name.empty() || filename.empty()){
 		PP_WARNING("pptheme.terrain_tex: Please specify name and texture");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	ppogl::TextureRef texture =
@@ -564,7 +575,7 @@ terrain_tex_cb(ppogl::Script *vm)
 			terrain_texture[num_terrains].texture = texture;
 	if(!terrain_texture[num_terrains].texture){
 		PP_WARNING("pptheme.terrain_tex: Unable to load texture " << filename << " for terrain " << name);
-		return 0;
+		return vm->defaultError();
 	}	
 
 	if(vm->isKeyInTable("color")){
@@ -646,7 +657,7 @@ start_pt_cb(ppogl::Script *vm)
 
     if(vm->getTop() != 1){
         PP_WARNING("ppcourse.start_pt: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
     }
 		
 	if(vm->isArray()){
@@ -688,14 +699,14 @@ elev_scale_cb(ppogl::Script *vm)
     
 	if(vm->getTop() != 1){
         PP_WARNING("ppcourse.elev_scale: invalid number of arguments");
-		return 0;
+		return vm->defaultError();
     } 
 	
 	scale = vm->getFloat(1);
 	
     if(scale <= 0){
 		PP_WARNING("ppcourse.elev_scale: scale must be positive");
-		return 0;
+		return vm->defaultError();
     }
 
     elev_scale = scale;
@@ -710,7 +721,7 @@ elements_cb(ppogl::Script *vm)
 	
 	if(vm->getTop()!=1){
 		PP_WARNING("ppcourse.elements: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	ppogl::Image *elementsImg;
@@ -725,7 +736,7 @@ elements_cb(ppogl::Script *vm)
 	elementsImg = ppogl::Image::readFile(filename);
     if(elementsImg==NULL || elementsImg->data == NULL){
 		PP_WARNING( "ppcourse.load_elements: couldn't load image: " << filename);
-		return 0;
+		return vm->defaultError();
     }
 	
 	ppogl::Image::iterator it;
@@ -792,7 +803,7 @@ model_spec_cb(ppogl::Script *vm)
 		!vm->isKeyInTable("file"))
 	{
 		PP_WARNING("pptheme.model: Please specify name and file");
-		return 0;	
+		return vm->defaultError();
 	}
 
 	ppogl::RefPtr<ModelType> model = new ModelType;
@@ -842,7 +853,7 @@ reset_point_cb(ppogl::Script *vm)
 {
 	if(!vm->isArray(1)){
 		PP_WARNING("pptheme.reset_point: Invalid color table");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	ppogl::RefPtr<ItemType> item = new ItemType;	
@@ -871,7 +882,7 @@ item_spec_cb(ppogl::Script *vm)
 		!vm->isKeyInTable("texture"))
 	{
 		PP_WARNING("pptheme.item: Please specify name, element_type and texture");
-		return 0;	
+		return vm->defaultError();
 	}
 	
 	std::string name = vm->getStringFromTable("name");
@@ -885,7 +896,7 @@ item_spec_cb(ppogl::Script *vm)
 	
 	if(!item->texture){
 		PP_WARNING("pptheme.item: Unable to get texture for item " << name << ": " << texture);
-		return 0;
+		return vm->defaultError();
 	}
 				
 	if(type=="herring"){
@@ -954,7 +965,7 @@ wind_velocity_cb(ppogl::Script *vm)
 {
 	if(vm->getTop()>2){
 		PP_WARNING("pptheme.wind_velocity: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
 	}
 		
 	ppogl::Vec3d velocity;
@@ -969,7 +980,7 @@ wind_velocity_cb(ppogl::Script *vm)
 		}
 	}else{
 		PP_WARNING("pptheme.wind_velocity: Invalid direction");
-		return 0;
+		return vm->defaultError();
 	}
 	vm->pop();
 	
@@ -988,7 +999,7 @@ hud_cb(ppogl::Script *vm)
 {
 	if(vm->getTop() != 1){
 		PP_WARNING("pptheme.hud: Invalid number of arguments");
-		return 0;
+		return vm->defaultError();
 	}
 		
 	int element_num=-1;
@@ -998,7 +1009,7 @@ hud_cb(ppogl::Script *vm)
 		
 	if(!vm->isKeyInTable("element_type")){
 		PP_WARNING("pptheme.hud: No element type specified");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	std::string type = vm->getStringFromTable("element_type");
@@ -1031,7 +1042,7 @@ hud_cb(ppogl::Script *vm)
 		element.type=12;
 	}else{
 		PP_WARNING("pptheme.hud: Unknown type: " << type);
-		return 0;
+		return vm->defaultError();
 	}
 
 	if(vm->isKeyInTable("position")){
@@ -1148,6 +1159,7 @@ base_height_value_cb(ppogl::Script *vm)
 {
 	if(vm->getTop()!=1){
 		PP_WARNING("ppcourse.base_height_value: Invalid number of arguments");
+		return vm->defaultError();
 	}
 	
 	int value = vm->getInt(1);
@@ -1164,7 +1176,7 @@ add_model_cb(ppogl::Script *vm)
 {	
 	if(!vm->isTable()){
 		PP_WARNING("ppcourse.add_model: Arguments needs to be a table");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	std::string name = vm->getStringFromTable("name");
@@ -1189,7 +1201,7 @@ add_model_cb(ppogl::Script *vm)
 			vm->pop(2);
 		}else{
 			PP_WARNING("ppcourse.add_model: Invalid position");
-			return 0;
+			return vm->defaultError();
 		}
 	}
 	
@@ -1197,7 +1209,7 @@ add_model_cb(ppogl::Script *vm)
 
 	if((it=modelTypes.find(name))==modelTypes.end()){
 		PP_WARNING("ppcourse.add_item: Unable to find item: " << name);
-		return 0;
+		return vm->defaultError();
 	}
 	
 	double aboveGround = (*it).second->height;
@@ -1220,7 +1232,7 @@ add_item_cb(ppogl::Script *vm)
 {
 	if(!vm->isTable()){
 		PP_WARNING("ppcourse.add_item: Arguments needs to be a table");
-		return 0;
+		return vm->defaultError();
 	}
 	
 	std::string name = vm->getStringFromTable("name");
@@ -1245,7 +1257,7 @@ add_item_cb(ppogl::Script *vm)
 			vm->pop(2);
 		}else{
 			PP_WARNING("ppcourse.add_item: Invalid position");
-			return 0;
+			return vm->defaultError();
 		}
 	}
 	
@@ -1253,7 +1265,7 @@ add_item_cb(ppogl::Script *vm)
 
 	if((it=itemTypes.find(name))==itemTypes.end()){
 		PP_WARNING("ppcourse.add_item: Unable to find item: " << name);
-		return 0;
+		return vm->defaultError();
 	}
 	
 	double aboveGround = (*it).second->above_ground;
@@ -1310,7 +1322,7 @@ add_reset_point_cb(ppogl::Script *vm)
 			vm->pop(2);
 	}else{
 		PP_WARNING("ppcourse.add_reset_point: Invalid position");
-		return 0;
+		return vm->defaultError();
 	}
 		
 	resetLocs.push_back(position);

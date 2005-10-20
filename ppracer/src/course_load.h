@@ -40,7 +40,7 @@
 class Course
 {
 public:
-	static void load(const std::string& course);
+	static bool load(const std::string& course);
 	static float* getElevData();
 	static int* getTerrainData();
 	static float getAngle();

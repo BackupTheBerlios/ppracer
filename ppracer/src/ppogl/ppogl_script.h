@@ -25,6 +25,8 @@
 extern "C"{
 // this is copied from squirrel.h so we don't need to include it here
 typedef struct SQVM* HSQUIRRELVM;
+typedef int SQInteger;
+typedef SQInteger SQRESULT;
 }
 
 namespace ppogl{
@@ -105,6 +107,8 @@ public:
 	
 	bool call(int arguments, bool retValue=false);
 	
+	SQRESULT throwError(const std::string& message);
+	SQRESULT defaultError();
 };
 
 } //namespace ppogl
