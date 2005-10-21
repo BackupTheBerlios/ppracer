@@ -6,7 +6,7 @@
 	reset item states if course is not reloaded
 
 	* data/config.nut.in * src/trackmarks.*
-	added max_track_marks	
+	added max_track_marks
 	
 2005-10-20  Volker Stroebel <volker@planetpenguin.de>
 	* src/hier*
