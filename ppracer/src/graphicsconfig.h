@@ -41,6 +41,9 @@ class GraphicsConfig : public ConfigMode
 	
 	ppogl::HScale   m_textureDetailHScl;
 	ppogl::Label    m_textureDetailLbl;
+		
+	//ppogl::HScale   m_trackmarksDetailHScl;
+	//ppogl::Label    m_trackmarksDetailLbl;
 	
 	ppogl::Label    m_warningLbl;
 	

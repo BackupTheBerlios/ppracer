@@ -266,6 +266,11 @@ If true, then the players will leave track marks in the snow.
 ",
 track_marks = true,
 
+max_track_marks_description = @"
+The maximum number of track mark quads.
+",
+max_track_marks = 2000,
+
 turn_left_key_description = @"
 Key binding for turning left
 ",

@@ -26,8 +26,6 @@
 #include "ppogl/base/vec2d.h"
 #include "ppogl/base/vec3d.h"
 
-#define MAX_TRACK_MARKS 1000
-
 enum TrackTypes
 {
     TRACK_HEAD,
@@ -55,7 +53,7 @@ public:
 	void update();
 	void discontinue();
 
-	TrackQuad quads[MAX_TRACK_MARKS];
+	TrackQuad* quads;
     int current_mark;
     int next_mark;
     double last_mark_time;
@@ -72,7 +70,10 @@ public:
 
 	static void init();
 	static void discontinueAllPlayers();
-	static void drawAllPlayers();	
+	static void drawAllPlayers();
+	
+private:
+	static int maxNumQuads;	
 };
 
 extern TrackMarks trackMarks[2];

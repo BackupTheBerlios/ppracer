@@ -41,6 +41,7 @@ GraphicsConfig::GraphicsConfig()
    m_detailsLbl(_("Detail settings")),
    m_terrainDetailLbl(_("Terrain:")),
    m_textureDetailLbl(_("Textures:")),
+   //m_trackmarksDetailLbl(_("Track marks:")),
    m_warningLbl(_("(needs restart)")),
    m_playerDetailLbl(_("Player Model:"))
 {
@@ -91,6 +92,16 @@ GraphicsConfig::GraphicsConfig()
 	m_textureDetailHScl.alignment.right();
 	m_textureDetailHScl.setStep(0.2f);
 	m_textureDetailHScl.setValue(getTextureDetailLevel());
+	
+	/*
+	position.y()-=40;
+	position2.y()-=40;
+	
+	m_trackmarksDetailLbl.setPosition(position);
+	m_trackmarksDetailHScl.setPosition(position2);
+	m_trackmarksDetailHScl.alignment.right();
+	m_trackmarksDetailHScl.setValue((PPConfig.getInt("max_track_marks")-1000.f)/10000.0f);
+	*/
 	
 	position.y()-=50;
 	position2.y()-=50;
@@ -167,7 +178,9 @@ GraphicsConfig::apply()
 	setTerrainDetailLevel(m_terrainDetailHScl.getValue());
 	setTextureDetailLevel(m_textureDetailHScl.getValue());
 	setPlayerDetailLevel(m_playerDetailHScl.getValue());
- 		
+ 	
+	//PPConfig.setInt("max_track_marks", int(m_trackmarksDetailHScl.getValue()*10000+1000));
+	
 	write_config_file();
 
 	setMode( GameMode::prevmode );

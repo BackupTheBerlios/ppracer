@@ -350,6 +350,12 @@ Course::load(const std::string& course)
 		
 		sm_loadedCourse = course;
 		sm_loadedCondition = GameMgr::getInstance().getCurrentRace().condition;		
+	}else{
+		std::list<Item>::iterator it;
+		for(it=itemLocs.begin(); it!=itemLocs.end(); it++){
+			(*it).setCollected(false);
+			(*it).setDrawable();
+		}	
 	}
 		
 	return true;

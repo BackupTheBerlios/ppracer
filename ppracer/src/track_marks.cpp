@@ -49,6 +49,8 @@
 extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
 
+int TrackMarks::maxNumQuads=-1;
+
 void
 TrackMarks::draw()
 {
@@ -65,7 +67,7 @@ TrackMarks::draw()
     set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
     setup_course_lighting();
 
-    num_quads = MIN( current_mark, MAX_TRACK_MARKS -
+    num_quads = MIN( current_mark, maxNumQuads -
 		     next_mark + current_mark );
     first_quad = current_mark - num_quads;
 
@@ -73,7 +75,7 @@ TrackMarks::draw()
 	  current_quad < num_quads;
 	  current_quad++ ) 
     {
-	q = &quads[(first_quad + current_quad)%MAX_TRACK_MARKS];
+	q = &quads[(first_quad + current_quad)%maxNumQuads];
 
 	trackColor.a() = q->alpha;
 	set_material( trackColor, ppogl::Color::black, 1.0 );
@@ -136,7 +138,7 @@ TrackMarks::draw()
 		gl::End();
 		gl::Begin(GL_QUADS);
 		
-	    qnext = &quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
+	    qnext = &quads[(first_quad+current_quad+1)%maxNumQuads];
 	    while (( qnext->track_type == TRACK_MARK ) && (current_quad+1 < num_quads)) {
 		current_quad++;
 		
@@ -146,7 +148,7 @@ TrackMarks::draw()
 			gl::Begin(GL_QUADS);		
 		}
 				
-		q = &quads[(first_quad+current_quad)%MAX_TRACK_MARKS];
+		q = &quads[(first_quad+current_quad)%maxNumQuads];
 		trackColor.a() = qnext->alpha;
 		set_material( trackColor, ppogl::Color::black, 1.0 );
 		
@@ -167,7 +169,7 @@ TrackMarks::draw()
 		gl::TexCoord( q->t3.x(), q->t3.y() );
 		gl::Vertex( q->v3.x(), q->v3.y(), q->v3.z() );
 		
-		qnext = &quads[(first_quad+current_quad+1)%MAX_TRACK_MARKS];
+		qnext = &quads[(first_quad+current_quad+1)%maxNumQuads];
 	    }
 	    gl::End();
 	}
@@ -179,8 +181,8 @@ void
 TrackMarks::discontinue()
 {
     TrackQuad *qprev, *qprevprev;
-    qprev = &quads[(current_mark-1)%MAX_TRACK_MARKS];
-    qprevprev = &quads[(current_mark-2)%MAX_TRACK_MARKS];
+    qprev = &quads[(current_mark-1)%maxNumQuads];
+    qprevprev = &quads[(current_mark-2)%maxNumQuads];
 
     if (current_mark > 0) {
 	qprev->track_type = TRACK_TAIL;
@@ -225,9 +227,9 @@ TrackMarks::update()
 	float old_terrain_weight=0;
 	unsigned int i;
 
-    q = &quads[current_mark%MAX_TRACK_MARKS];
-    qprev = &quads[(current_mark-1)%MAX_TRACK_MARKS];
-    qprevprev = &quads[(current_mark-2)%MAX_TRACK_MARKS];
+    q = &quads[current_mark%maxNumQuads];
+    qprev = &quads[(current_mark-1)%maxNumQuads];
+    qprevprev = &quads[(current_mark-2)%maxNumQuads];
 
     vector_from_last_mark = player->pos - last_mark_pos;
     dist_from_last_mark = vector_from_last_mark.normalize();
@@ -347,16 +349,22 @@ TrackMarks::init()
 		//new stuff
 		trackMarks[i].player = &(players[i]);		
 	}
+	
+	int maxMarks = PPConfig.getInt("max_track_marks");
+	if(maxNumQuads!=maxMarks){
+		for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+	    	trackMarks[i].quads = new TrackQuad[maxMarks];
+		}	
+		maxNumQuads=maxMarks;
+	}	
 }
-
-
 
 // begin new stuff
 
-
 TrackMarks::TrackMarks()
- : player(NULL)
-{	
+ : player(NULL),
+   quads(NULL)
+{
 }
 
 void
