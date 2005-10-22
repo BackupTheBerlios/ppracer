@@ -419,10 +419,9 @@ Player::getCoursePercentage() const
 ///the player position in the heightmap
 {
 	if(pos.y()<0){
-		float x,y;	
-		Course::getDimensions( &x,&y );
+		const ppogl::Vec2d& courseDim = Course::getDimensions();
 		float correction = 100/tan((Course::getAngle())*M_PI/180.0);
-		return (((-1)*pos.y())/y)*correction;
+		return (((-1)*pos.y())/courseDim.y())*correction;
 	}else{
 		return 0;
 	}

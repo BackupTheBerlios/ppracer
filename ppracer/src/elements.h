@@ -54,21 +54,20 @@ public:
     ppogl::Color4c color;
 	ItemType::Type type;
 	int score;
+	ppogl::Vec3d normal;
     bool reset_point;
     bool use_normal;
-    ppogl::Vec3d normal;
 };
 
 class Item
 {
 	ppogl::RefPtr<ItemType> m_type;
 	ppogl::Vec3d m_position;
-	bool m_drawable;
-	bool m_collected;
-
-    bool m_useNormal;
 	ppogl::Vec3d m_normal;
 	double m_diameter, m_height;
+	bool m_drawable;
+	bool m_collected;
+    bool m_useNormal;
 
 public:
 	Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d& position);

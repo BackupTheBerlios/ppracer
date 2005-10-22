@@ -133,14 +133,14 @@ class FTGL_EXPORT FTFace
         FT_Encoding* fontEncodingList;
 
         /**
-         * This face has kerning tables
-         */
-         bool hasKerningTable;
-
-        /**
          * Current error code. Zero means no error.
          */
         FT_Error err;
+		
+		/**
+         * This face has kerning tables
+         */
+        bool hasKerningTable;
 };
 
 

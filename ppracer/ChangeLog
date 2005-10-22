@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-22  Volker Stroebel <volker@planetpenguin.de>
+	* (*)
+	some cleanups
+
 2005-10-21  Volker Stroebel <volker@planetpenguin.de>
 	* src/course_load.cpp
 	reset item states if course is not reloaded
@@ -8,6 +12,15 @@
 	* data/config.nut.in * src/trackmarks.*
 	added max_track_marks
 	
+	* src/track_marks.* src/course_mirror.cpp
+	mirror track marks
+	
+	* src/track_marks.cpp src/racing.cpp
+	use chached config values
+	
+	* src/nmrcl.cpp
+	remove unused code
+
 2005-10-20  Volker Stroebel <volker@planetpenguin.de>
 	* src/hier*
 	replaced Material with ppogl::Material

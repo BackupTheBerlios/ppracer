@@ -665,19 +665,11 @@ ModelAC::readSurface(FILE *f, Surface *s, ModelObject *ob, const std::string& fi
 void
 ModelAC::CalculateTriNormal(ppogl::Vec3d *v1, ppogl::Vec3d *v2, ppogl::Vec3d *v3, ppogl::Vec3d *n)
 {
-    double len;
-
     n->x() = (v2->y()-v1->y())*(v3->z()-v1->z())-(v3->y()-v1->y())*(v2->z()-v1->z());
     n->y() = (v2->z()-v1->z())*(v3->x()-v1->x())-(v3->z()-v1->z())*(v2->x()-v1->x());
     n->z() = (v2->x()-v1->x())*(v3->y()-v1->y())-(v3->x()-v1->x())*(v2->y()-v1->y());
-    len = sqrt(n->x()*n->x() + n->y()*n->y() + n->z()*n->z());
-
-    if (len > 0)
-    {
-		n->x() /= len;
-		n->y() /= len;
-		n->z() /= len;  
-    }
+    
+	n->normalize();
 }
 
 } //namespace pp

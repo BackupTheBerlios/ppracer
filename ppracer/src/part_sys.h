@@ -24,11 +24,11 @@
 
 #include "player.h"
 
-void create_new_particles( ppogl::Vec3d loc, ppogl::Vec3d vel, int num, GLuint particle_binding);
-void update_particles( double time_step );
+void create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint particle_binding);
+void update_particles(double time_step );
 void clear_particles();
 void reset_particles();
-void draw_particles( Player& plyr );
+void draw_particles(const Player& plyr);
 void register_particle_callbacks();
 
-#endif /* _PART_SYS_H_ */
+#endif // _PART_SYS_H_

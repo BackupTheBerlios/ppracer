@@ -47,11 +47,14 @@ struct TrackQuad
 class TrackMarks
 {
 public:
+	///reference for the player
+	Player* player;
 
 // begin old stuff
 	void draw();
 	void update();
 	void discontinue();
+	void mirror(float width);
 
 	TrackQuad* quads;
     int current_mark;
@@ -62,15 +65,13 @@ public:
 // end old stuff
 
 	TrackMarks();
-	
-	///reference for the player
-	Player* player;
-		
+			
 // static stuff
 
 	static void init();
 	static void discontinueAllPlayers();
 	static void drawAllPlayers();
+	static void mirrorAllPlayers(float width);
 	
 private:
 	static int maxNumQuads;	

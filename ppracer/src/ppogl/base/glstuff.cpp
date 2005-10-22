@@ -43,7 +43,7 @@ drawRectangle(const ppogl::Vec2d& position,
 void
 drawRectangle(const ppogl::Vec2d& position,
 			  const ppogl::Vec2d& size,
-			  ppogl::TextureRef texture,
+			  const ppogl::TextureRef& texture,
 			  const ppogl::Color& color)
 {
 	gl::PushMatrix();
@@ -78,7 +78,7 @@ drawRectangle(const ppogl::Vec2d& position,
 void
 drawRectangle(	const ppogl::Vec2d& position,
 				const ppogl::Vec2d& size,
-				ppogl::TextureRef texture,
+				const ppogl::TextureRef& texture,
 				const ppogl::Vec4f& texcoords,
 				const ppogl::Color& color)
 {

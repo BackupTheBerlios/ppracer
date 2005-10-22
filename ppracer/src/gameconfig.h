@@ -41,6 +41,13 @@ extern int forwardClipDistance;
 extern int backwardClipDistance;		
 extern int fov;
 	
+extern bool drawTrackMarks;
+	
+extern int joystickBrakeButton;
+extern int joystickPaddleButton;
+extern int joystickJumpButton;
+extern int joystickTrickButton;
+	
 void update();
 
 } // namespace GameConfig

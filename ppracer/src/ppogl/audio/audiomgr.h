@@ -38,12 +38,12 @@ class AudioMgr
  : public Singleton<AudioMgr>
 {
 private:
+	std::map<std::string, MusicRef> m_musicBindings;
+	std::map<std::string, SoundRef> m_soundBindings;
+
 	bool m_initialized;	
 	bool m_soundEnabled;
 	bool m_musicEnabled;
-	
-	std::map<std::string, MusicRef> m_musicBindings;
-	std::map<std::string, SoundRef> m_soundBindings;
 
 public:
 	enum{
@@ -67,7 +67,7 @@ public:
 	void setMusicVolume(int volume);
 	void setSoundVolume(int volume);
 	
-	bool isInitialized(){return m_initialized;};
+	bool isInitialized() const {return m_initialized;};
 		
 	bool loadMusic(const std::string &binding, const std::string &filename);
 	bool bindMusic(const std::string &binding, const std::string &name);

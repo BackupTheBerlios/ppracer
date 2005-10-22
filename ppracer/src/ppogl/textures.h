@@ -70,7 +70,7 @@ public:
 } //namepsace ppogl
 
 namespace gl{
-	inline void BindTexture(GLenum target, ppogl::TextureRef texture)
+	inline void BindTexture(GLenum target, const ppogl::TextureRef& texture)
 	{
 		if(texture){
 			glBindTexture(target, texture->getID());

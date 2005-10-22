@@ -50,7 +50,6 @@ protected:
 	virtual ~Singleton(){};
 		
 private:
-//	static T* sm_instance;
 	static std::auto_ptr<T> sm_instance;
 };
 

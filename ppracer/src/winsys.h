@@ -23,7 +23,7 @@
 #define _WINSYS_H_
 
 void setup_sdl_video_mode();
-void winsys_init(char *window_title, char *icon_title);
+void winsys_init(const char *window_title, const char *icon_title);
 void winsys_process_events(); // never returns
 
 void winsys_exit(int code);

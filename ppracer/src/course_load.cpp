@@ -58,19 +58,19 @@ TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 
 unsigned int num_terrains=0;
 
-static bool        course_loaded = false;
+static bool course_loaded = false;
 
-static float     *elevation;
-static float      elev_scale;
+float Course::angle;
 
-static ppogl::Vec2d courseDim;
-static ppogl::Vec2d playDim;
+float* Course::elevation;
+int* Course::terrain;
 
-static float      course_angle;
-static int           nx, ny;
-static int    *terrain;
-static ppogl::Vec2d     start_pt;
+ppogl::Vec2d Course::dimension;
+ppogl::Vec2d Course::playDimension;
 
+static float elev_scale;
+static int nx, ny;
+static ppogl::Vec2d start_pt;
 
 static std::string courseAuthor;
 static std::string courseName;
@@ -85,31 +85,13 @@ static std::map<std::string,ppogl::RefPtr<ItemType> > itemTypes;
 std::list<int> usedTerrains;
 
 ///interleaved vertex, normal, and color data
-static GLubyte *vnc_array = NULL;
+GLubyte* Course::vncArray = NULL;
 
 ///last loaded course
 std::string Course::sm_loadedCourse;
 
 ///last loaded condition of the course
 CourseData::Condition Course::sm_loadedCondition=static_cast<CourseData::Condition>(-1);
-
-float*
-Course::getElevData()
-{
-	return elevation;
-}
-
-int*
-Course::getTerrainData()
-{
-	return terrain;
-}
-
-float
-Course::getAngle()
-{
-	return course_angle;
-} 
 
 const ppogl::Vec2d&
 Course::getStartPt()
@@ -122,26 +104,6 @@ Course::setStartPt(const ppogl::Vec2d& p)
 {
 	start_pt = p;
 }
-
-void
-Course::getGLArrays( GLubyte **vnc_arr )
-{
-    *vnc_arr = vnc_array;
-}
-
-void
-Course::getDimensions( float *width, float *length )
-{
-    *width = courseDim.x();
-    *length = courseDim.y();
-} 
-
-void
-Course::getPlayDimensions( float *width, float *length )
-{
-    *width = playDim.x();
-    *length = playDim.y();
-} 
 
 /*! 
   Returns the base (minimum) height of the terrain at \c distance
@@ -158,7 +120,7 @@ Course::getTerrainBaseHeight( float distance )
 {
     PP_REQUIRE( distance > -EPS, "distance should be positive" );
 	
-	float slope = tan( ANGLES_TO_RADIANS( course_angle ) );
+	float slope = tan(ANGLES_TO_RADIANS(angle));
     float base_height;
     
 
@@ -195,10 +157,9 @@ static void
 reset_course()
 {
 	num_terrains = 0;
-    course_angle  = 20;
-	
-    courseDim = ppogl::Vec2d(50,130);
-	playDim = ppogl::Vec2d(50,130);
+	Course::angle  = 20;
+	Course::dimension = ppogl::Vec2d(50,130);
+	Course::playDimension = ppogl::Vec2d(50,130);
 
     nx = ny = -1;
     start_pt.x() = 0;
@@ -218,14 +179,14 @@ reset_course()
 
 	courseRenderer.resetQuadtree();
 
-    delete[] elevation;
-	elevation=NULL;
+    delete[] Course::elevation;
+	Course::elevation=NULL;
 	
-    delete[] terrain;
-	terrain=NULL;
+    delete[] Course::terrain;
+	Course::terrain=NULL;
 
-    delete[] vnc_array;
-	vnc_array=NULL;
+    delete[] Course::vncArray;
+	Course::vncArray=NULL;
 
 	modelLocs.clear();
 	modelTypes.clear();
@@ -255,18 +216,18 @@ Course::fillGLArrays()
 
     // Align vertices and normals on 16-byte intervals (Q3A does this)
     int arraySize = STRIDE_GL_ARRAY * nx * ny;
-	vnc_array = new GLubyte[arraySize];
+	Course::vncArray = new GLubyte[arraySize];
 	PP_CHECK_ALLOC(vnc_array);
 	
     for (x=0; x<nx; x++) {
 	for (y=0; y<ny; y++) {
 	    idx = STRIDE_GL_ARRAY*(y*nx+x);
 	   
-#define floatval(i) (*reinterpret_cast<GLfloat*>(vnc_array+idx+(i)*sizeof(GLfloat)))
+#define floatval(i) (*reinterpret_cast<GLfloat*>(Course::vncArray+idx+(i)*sizeof(GLfloat)))
 
-	    floatval(0) = GLfloat(x) / (nx-1.) * courseDim.x();
+	    floatval(0) = GLfloat(x) / (nx-1.) * dimension.x();
 	    floatval(1) = ELEV(x,y);
-	    floatval(2) = -GLfloat(y)/ (ny-1.) * courseDim.y();
+	    floatval(2) = -GLfloat(y)/ (ny-1.) * dimension.y();
 
 	    nml = normals[ x + y * nx ];
 	    floatval(4) = nml.x();
@@ -275,7 +236,7 @@ Course::fillGLArrays()
 	    floatval(7) = 1.0f;
 	   
 #undef floatval
-#define byteval(i) (*reinterpret_cast<GLubyte*>(vnc_array+idx+8*sizeof(GLfloat) +\
+#define byteval(i) (*reinterpret_cast<GLubyte*>(Course::vncArray+idx+8*sizeof(GLfloat) +\
     i*sizeof(GLubyte)))
 
 	    byteval(0) = 255;
@@ -289,15 +250,15 @@ Course::fillGLArrays()
     }
 
 		gl::EnableClientState(GL_VERTEX_ARRAY);
-    	gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, vnc_array );
+    	gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, Course::vncArray );
 
     	gl::EnableClientState(GL_NORMAL_ARRAY);
     	gl::NormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
-		     vnc_array + 4*sizeof(GLfloat) );
+		     Course::vncArray + 4*sizeof(GLfloat) );
 
     	gl::EnableClientState(GL_COLOR_ARRAY);
     	gl::ColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
-		    vnc_array + 8*sizeof(GLfloat) );
+		    Course::vncArray + 8*sizeof(GLfloat) );
 }
 
 bool
@@ -339,8 +300,8 @@ Course::load(const std::string& course)
 	
 		fillGLArrays();
 
-    	courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1.), 
-			  -courseDim.y()/(ny-1),
+    	courseRenderer.initQuadtree( elevation, nx, ny,dimension.x()/(nx-1.), 
+			  -dimension.y()/(ny-1),
 			  players[0].view.pos);
 
 		// init trackmarks for all players
@@ -386,20 +347,20 @@ course_dim_cb(ppogl::Script *vm)
 	if(vm->isArray()){
 		vm->pushNull();
 		vm->next(-2);
-		courseDim.x() = vm->getFloat();
+		Course::dimension.x() = vm->getFloat();
 		vm->pop(2);
 		vm->next(-2);
-		courseDim.y() = vm->getFloat();
+		Course::dimension.y() = vm->getFloat();
 		vm->pop(2);
 		
 		if(vm->next(-2)){
-			playDim.x() = vm->getFloat();
+			Course::playDimension.x() = vm->getFloat();
 			vm->pop(2);
 			vm->next(-2);
-			playDim.y() = vm->getFloat();
+			Course::playDimension.y() = vm->getFloat();
 			vm->pop(2);
 		}else{
-			playDim = courseDim;
+			Course::playDimension = Course::dimension;
 		}
 
 		vm->pop();
@@ -433,7 +394,7 @@ angle_cb(ppogl::Script *vm)
 		angle = MAX_ANGLE;
     }
 
-    course_angle = angle;
+    Course::angle = angle;
 
     return 0;
 } 
@@ -469,10 +430,9 @@ elev_cb(ppogl::Script *vm)
     nx = elev_img->width;
     ny = elev_img->height;
 
-    elevation = new float[nx*ny];
-	PP_CHECK_ALLOC(elevation);
+    Course::elevation = new float[nx*ny];
 	
-    slope = tan( ANGLES_TO_RADIANS( course_angle ) );
+    slope = tan(ANGLES_TO_RADIANS(Course::angle));
 
 	pad = 0;    /* RGBA images rows are aligned on 4-byte boundaries */
     for (y=0; y<ny; y++) {
@@ -480,7 +440,7 @@ elev_cb(ppogl::Script *vm)
 	    ELEV(nx-1-x, ny-1-y) = 
 		( ( elev_img->data[ (x + nx * y) * elev_img->depth + pad ] 
 		    - base_height_value ) / 255.0 ) * elev_scale
-		- double(ny-1.-y)/ny * courseDim.y() * slope;
+		- double(ny-1.-y)/ny * Course::dimension.y() * slope;
         } 
         //pad += (nx*elev_img->depth) % 4;
     } 
@@ -532,7 +492,7 @@ terrain_cb(ppogl::Script *vm)
 		return vm->defaultError();
     }
 
-    terrain = new int[nx*ny];
+    Course::terrain = new int[nx*ny];
 	PP_CHECK_ALLOC(terrain);
 		
     for(int y=0; y<ny; y++){
@@ -544,7 +504,7 @@ terrain_cb(ppogl::Script *vm)
 						(terrain_img->data[image_pointer+1] << 8)+ 
 						(terrain_img->data[image_pointer+2] << 16);
 			
-	    terrain[idx] = intensity_to_terrain(terrain_value);
+	    Course::terrain[idx] = intensity_to_terrain(terrain_value);
 		
         } 
     } 
@@ -694,13 +654,13 @@ start_pt_cb(ppogl::Script *vm)
 		PP_WARNING("ppcourse.start_pt: Value is no array");		
 	}
 
-    if(!( xcd > 0 && xcd < courseDim.x() )){
+    if(!( xcd > 0 && xcd < Course::dimension.x() )){
 		PP_WARNING("ppcourse.start_pt: x coordinate out of bounds, "
 		       "using 0");
 		xcd = 0;
     }
 
-    if (!( ycd > 0 && ycd < courseDim.y() )){
+    if (!( ycd > 0 && ycd < Course::dimension.y() )){
 		PP_WARNING("ppcourse.start_pt: y coordinate out of bounds, "
 		       "using 0");
 		ycd = 0;
@@ -773,8 +733,8 @@ elements_cb(ppogl::Script *vm)
 				if( (*modelit).second->color.compareRGB(*it) ){
 					// yes, that's the right model
 				
-					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*courseDim.x();
-					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*courseDim.y();
+					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*Course::dimension.x();
+					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*Course::dimension.y();
 					double y = find_y_coord(x,z) + (*modelit).second->height;
 					
 					Model model((*modelit).second, ppogl::Vec3d(x,y,z));
@@ -790,8 +750,8 @@ elements_cb(ppogl::Script *vm)
 			for(itemit=itemTypes.begin();itemit!=itemTypes.end();itemit++){
 				if( (*itemit).second->color.compareRGB(*it) ){
 					// yes, that's the right item
-					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*courseDim.x();
-					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*courseDim.y();
+					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*Course::dimension.x();
+					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*Course::dimension.y();
 					double y = find_y_coord(x,z) + (*itemit).second->above_ground;
 					
 					if( (*itemit).second->reset_point ){

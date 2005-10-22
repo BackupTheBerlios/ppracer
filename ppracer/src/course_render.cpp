@@ -35,10 +35,10 @@
 #include "ppogl/base/glwrappers.h"
 
 /// Macros for converting indices in height map to world coordinates
-#define XCD(x) (  double(x) / (nx-1.) * courseWidth )
+#define XCD(val) (double(val) / (nx-1.) * courseDim.x())
 
 /// Macros for converting indices in height map to world coordinates
-#define ZCD(y) ( -double(y) / (ny-1.) * courseLength )
+#define ZCD(val) (-double(val) / (ny-1.) * courseDim.y())
 
 #define NORMAL(x, y) ( mp_nmls[ (x) + nx * (y) ] )
 
@@ -56,15 +56,14 @@ CourseRenderer::CourseRenderer()
 void
 CourseRenderer::calcNormals()
 {
-    float *elevation;
-    float courseWidth, courseLength;
+    //float courseWidth, courseLength;
     int nx, ny;
     int x,y;
     ppogl::Vec3d p0, p1, p2;
     ppogl::Vec3d n, nml, v1, v2;
 
-    elevation = Course::getElevData();
-    Course::getDimensions( &courseWidth, &courseLength );
+    const float *elevation = Course::getElevData();
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
 
     if(mp_nmls!=NULL) delete[] mp_nmls;
@@ -389,7 +388,6 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     pp::Plane bottom_clip_plane;
     pp::Plane bottom_plane, top_plane;
 
-    float course_width, course_length;
     double course_angle, slope;
 
     ppogl::Vec3d left_pt, right_pt, pt;
@@ -398,13 +396,13 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     ppogl::Vec3d left_vec, right_vec;
     double height;
 
-	Course::getDimensions( &course_width, &course_length );
+	const ppogl::Vec2d& courseDim = Course::getDimensions();
     course_angle = Course::getAngle();
     slope = tan( ANGLES_TO_RADIANS( course_angle ) );
 
     left_edge_plane = pp::Plane( 1.0, 0.0, 0.0, 0.0 );
 
-    right_edge_plane = pp::Plane( -1.0, 0.0, 0.0, course_width );
+    right_edge_plane = pp::Plane( -1.0, 0.0, 0.0, courseDim.x());
 
     far_clip_plane = get_far_clip_plane();
     left_clip_plane = get_left_clip_plane();
@@ -663,9 +661,7 @@ CourseRenderer::updateQuadtree(const ppogl::Vec3d& view_pos)
 void
 CourseRenderer::renderQuadtree()
 {
-    GLubyte *vnc_array;
-    Course::getGLArrays(&vnc_array);
-    mp_root->render(m_rootCornerData, vnc_array);
+    mp_root->render(m_rootCornerData, Course::getGLArrays());
 }
 
 int

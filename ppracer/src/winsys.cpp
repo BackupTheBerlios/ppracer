@@ -125,7 +125,7 @@ setup_sdl_video_mode()
 }
 
 void
-winsys_init(char *window_title, char *icon_title)
+winsys_init(const char *window_title, const char *icon_title)
 {
 	PP_MESSAGE("Init SDL");
 	Uint32 sdl_flags = SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE;

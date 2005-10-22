@@ -28,6 +28,7 @@
 #include "render_util.h"
 #include "course_mgr.h"
 #include "lights.h"
+#include "gameconfig.h"
 
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
@@ -202,7 +203,7 @@ void
 TrackMarks::update()
 {
 	
-    if(PPConfig.getBool("track_marks") == false) {
+    if(GameConfig::drawTrackMarks == false) {
 		return;
     }
 	
@@ -378,7 +379,7 @@ TrackMarks::discontinueAllPlayers()
 void
 TrackMarks::drawAllPlayers()
 {
-	if(PPConfig.getBool("track_marks") == false) {
+	if(GameConfig::drawTrackMarks == false) {
 		return;
     }
 	
@@ -387,5 +388,23 @@ TrackMarks::drawAllPlayers()
 	}	
 }
 
+void
+TrackMarks::mirror(float width)
+{
+	for(int i=0; i<maxNumQuads; i++){
+		quads[i].v1.x()= width-quads[i].v1.x();
+		quads[i].v2.x()= width-quads[i].v2.x();
+		quads[i].v3.x()= width-quads[i].v3.x();
+		quads[i].v4.x()= width-quads[i].v4.x();
+	}	
+}
+
+void
+TrackMarks::mirrorAllPlayers(float width)
+{
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+		trackMarks[i].mirror(width);
+	}	
+}
 
 TrackMarks trackMarks[2];

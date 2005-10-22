@@ -20,9 +20,9 @@ FTFont::unreference()
 
 FTFont::FTFont(const char* fontFilePath)
  : face( fontFilePath),
-   useDisplayLists(true),
    m_references(0), 
-   glyphList(0)
+   glyphList(0),
+   useDisplayLists(true)
 {
     err = face.Error();
     if( err == 0)

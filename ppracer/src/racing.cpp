@@ -47,18 +47,18 @@
 #include "bench.h"
 #include "game_mgr.h"
 
-/* Time constant for automatic steering centering (s) */
+/// Time constant for automatic steering centering (s)
 #define TURN_DECAY_TIME_CONSTANT 0.5
 
-/* Maximum time over which jump can be charged */
+/// Maximum time over which jump can be charged
 #define MAX_JUMP_AMT 1.0
 
-/* Time constant for automatic rolling centering (s) */
+/// Time constant for automatic rolling centering (s)
 #define ROLL_DECAY_TIME_CONSTANT 0.2
 
 #define JUMP_CHARGE_DECAY_TIME_CONSTANT 0.1
 
-/* If too high off the ground, tux flaps instead of jumping */
+/// If too high off the ground, tux flaps instead of jumping
 #define JUMP_MAX_START_HEIGHT 0.30
 
 extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
@@ -170,30 +170,30 @@ Racing::prePlayer(int plyr, float timestep)
 	    joy_turn_fact = joy_x;
 	}
 
-	if(PPConfig.getInt("joystick_brake_button") >= 0 ) {
+	if(GameConfig::joystickBrakeButton >= 0 ) {
 	    joy_braking = 
-		is_joystick_button_down(PPConfig.getInt("joystick_brake_button"));
+		is_joystick_button_down(GameConfig::joystickBrakeButton);
 	} 
 	if( !joy_braking ) {
 	    joy_braking = ( joy_y > 0.5 );
 	}
 
-	if(PPConfig.getInt("joystick_paddle_button") >= 0 ) {
+	if(GameConfig::joystickPaddleButton >= 0 ) {
 	    joy_paddling = 
-		is_joystick_button_down(PPConfig.getInt("joystick_paddle_button"));
+		is_joystick_button_down(GameConfig::joystickPaddleButton);
 	}
 	if ( !joy_paddling ) {
 	    joy_paddling = ( joy_y < -0.5 );
 	}
 
-	if (PPConfig.getInt("joystick_jump_button") >= 0 ) {
+	if (GameConfig::joystickJumpButton >= 0 ) {
 	    joy_charging = 
-		is_joystick_button_down(PPConfig.getInt("joystick_jump_button"));
+		is_joystick_button_down(GameConfig::joystickJumpButton);
 	}
 
-	if (PPConfig.getInt("joystick_trick_button") >= 0 ) {
+	if (GameConfig::joystickTrickButton >= 0 ) {
 	    joy_tricks = 
-		is_joystick_button_down(PPConfig.getInt("joystick_trick_button"));
+		is_joystick_button_down(GameConfig::joystickTrickButton);
 	}
     }
 
@@ -228,10 +228,10 @@ Racing::prePlayer(int plyr, float timestep)
 		
     } else {
 
-	get_surface_type(player.pos.x(), player.pos.z(), terrain_weights);
+		get_surface_type(player.pos.x(), player.pos.z(), terrain_weights);
 	
 
-    //Play sliding sound
+    	//Play sliding sound
 		
 		slide_volume = int(MIN( (((pow(player.control.turn_fact, 2)*128)) +
 			 (player.control.is_braking?128:0) +

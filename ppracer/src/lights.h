@@ -32,8 +32,6 @@
 /// Light
 struct Light
 {
-    bool is_on;
-
 	ppogl::Color ambient;
     ppogl::Color diffuse;
     ppogl::Color specular;
@@ -45,6 +43,8 @@ struct Light
     GLfloat constant_attenuation;
     GLfloat linear_attenuation;
     GLfloat quadratic_attenuation;
+	
+	bool is_on;
 };
 
 Light* get_course_lights();

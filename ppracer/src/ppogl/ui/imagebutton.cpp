@@ -23,7 +23,7 @@
 
 namespace ppogl{
 	
-ImageButton::ImageButton(ppogl::Vec2d size)
+ImageButton::ImageButton(const ppogl::Vec2d& size)
  : Widget(),
    m_mode(MODE_NONE),
    m_hilitState(-1),
@@ -33,7 +33,7 @@ ImageButton::ImageButton(ppogl::Vec2d size)
 }
 	
 void
-ImageButton::addState(int state, ppogl::Vec4f texcoords)
+ImageButton::addState(int state, const ppogl::Vec4f& texcoords)
 {
 	if(m_states.empty()){
 		m_states[state]=texcoords;
@@ -44,7 +44,7 @@ ImageButton::addState(int state, ppogl::Vec4f texcoords)
 }
 
 void
-ImageButton::setTexture(ppogl::TextureRef texture)
+ImageButton::setTexture(const ppogl::TextureRef& texture)
 {
 	m_texture=texture;
 }

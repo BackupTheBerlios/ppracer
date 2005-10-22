@@ -39,7 +39,7 @@
 /// Time over which constant jump force is applied
 #define JUMP_FORCE_DURATION 0.20
 
-void set_wind_velocity(ppogl::Vec3d velocity, float scale);
+void set_wind_velocity(const ppogl::Vec3d& velocity, float scale);
 
 void increment_turn_fact(Player& plyr, float amt);
 
@@ -51,7 +51,7 @@ float find_y_coord(float x, float z);
 
 void get_surface_type(float x, float z, float weights[]);
 
-pp::Plane get_local_course_plane(ppogl::Vec3d pt);
+pp::Plane get_local_course_plane(const ppogl::Vec3d& pt);
 
 float get_compression_depth(const int terrain); 
 

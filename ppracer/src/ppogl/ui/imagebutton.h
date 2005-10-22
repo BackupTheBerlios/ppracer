@@ -49,10 +49,10 @@ protected:
 	unsigned int m_border;
 	
 public:
-	ImageButton(ppogl::Vec2d size = ppogl::Vec2d(32,32));
+	ImageButton(const ppogl::Vec2d& size = ppogl::Vec2d(32,32));
 
-	void addState(int state, ppogl::Vec4f texcoords);
-	void setTexture(ppogl::TextureRef texture);
+	void addState(int state, const ppogl::Vec4f& texcoords);
+	void setTexture(const ppogl::TextureRef& texture);
 	void setTexture(const std::string& binding);
 
 	int getState();

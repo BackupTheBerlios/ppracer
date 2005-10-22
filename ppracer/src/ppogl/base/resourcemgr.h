@@ -34,7 +34,7 @@ class ResourceMgr
 {
 public:
 	/// returns a Data pointer
-	RefPtr<T> get(const std::string& binding, bool warning=true);
+	RefPtr<T> get(const std::string& binding, bool warning=true) const;
 	void unbind(const std::string& binding);
 
 protected:
@@ -44,7 +44,7 @@ protected:
 };
 
 template <class T> RefPtr<T> 
-ResourceMgr<T>::get(const std::string& binding, bool warning)
+ResourceMgr<T>::get(const std::string& binding, bool warning) const
 /// returns the datareferences for the binding or a NULL-RefPtr
 {
 	if(binding.empty()){
@@ -52,7 +52,7 @@ ResourceMgr<T>::get(const std::string& binding, bool warning)
 		return NULL;
 	}
 	
-	typename std::map<std::string, RefPtr<T> >::iterator it;
+	typename std::map<std::string, RefPtr<T> >::const_iterator it;
 	
 	it = m_bindings.find(binding);
 	if (it != m_bindings.end()){

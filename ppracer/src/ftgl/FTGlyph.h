@@ -79,18 +79,18 @@ class FTGL_EXPORT FTGlyph
          * The bounding box of this glyph.
          */
         FTBBox bBox;
-        
+                
         /**
+         * Current error code. Zero means no error.
+         */
+        FT_Error err;
+	    
+		/**
          * Flag to enable or disable the use of Display Lists inside FTGL
          * <code>true</code> turns ON display lists.
          * <code>false</code> turns OFF display lists.
          */
         bool useDisplayList;
-        
-        /**
-         * Current error code. Zero means no error.
-         */
-        FT_Error err;
         
     private:
 
@@ -98,4 +98,3 @@ class FTGL_EXPORT FTGlyph
 
 
 #endif  //  __FTGlyph__
-

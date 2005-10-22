@@ -36,7 +36,7 @@ public:
 	void unreference();
 
 	/// return the number of references
-	inline int getReferences(){return m_references;};
+	inline int getReferences() const {return m_references;};
 };
 	
 /// A template for managing references counted objects
@@ -132,7 +132,7 @@ public:
 		return (m_pointer != ref.m_pointer);
 	}
 	
-	inline int getRefCount()
+	inline int getRefCount() const
 	///return references for the object
 	{
 		if(m_pointer!=NULL){

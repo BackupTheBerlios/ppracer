@@ -28,8 +28,6 @@ class ODESolver
 	double init_val;
 	double h;
 public:
-	ODESolver();
-
 	void initODEData(double init_val, double h);
 	double nextVal(int step);
 	void updateEstimate(int step, double val);

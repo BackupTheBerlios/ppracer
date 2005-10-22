@@ -253,7 +253,7 @@ public:
 };	
 
 void
-set_wind_velocity(ppogl::Vec3d velocity, float scale)
+set_wind_velocity(const ppogl::Vec3d& velocity, float scale)
 {
 	wind_vel = velocity;
 	wind_scale = scale;							
@@ -275,11 +275,10 @@ get_min_tux_speed()
 float
 get_min_y_coord() 
 {
-    float courseWidth, courseLength;
-    Course::getDimensions( &courseWidth, &courseLength );
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
 	
     float angle = Course::getAngle();
-    float minY = -courseLength * tan( ANGLES_TO_RADIANS( angle ) );
+    float minY = -courseDim.y() * tan( ANGLES_TO_RADIANS( angle ) );
     
 	return minY;
 } 
@@ -288,15 +287,14 @@ void
 get_indices_for_point(double x, double z, 
 			    int *x0, int *y0, int *x1, int *y1)
 {
-    float courseWidth, courseLength;
     float xidx, yidx;
     int nx, ny;
 
-	Course::getDimensions( &courseWidth, &courseLength );
+	const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
     
-    xidx = x / courseWidth * ( float(nx) - 1. );
-    yidx = -z / courseLength * ( float(ny) - 1. );
+    xidx = x / courseDim.x() * ( float(nx) - 1. );
+    yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
     if (xidx < 0) {
         xidx = 0;
@@ -355,17 +353,16 @@ find_barycentric_coords(float x, float z,
     int nx, ny;
     int x0, x1, y0, y1;
     float dx, ex, dz, ez, qx, qz, invdet; // to calc. barycentric coords 
-    float courseWidth, courseLength;
     float *elevation;
 
     elevation = Course::getElevData();
-    Course::getDimensions( &courseWidth, &courseLength );
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / courseWidth * ( float(nx) - 1. );
-    yidx = -z / courseLength * ( float(ny) - 1. );
+    xidx = x / courseDim.x() * ( float(nx) - 1. );
+    yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
 
     /* The terrain is meshed as follows:
@@ -438,7 +435,6 @@ find_course_normal(const float x, const float z)
     ppogl::Vec3d p0, p1, p2;
     Index2d idx0, idx1, idx2;
     ppogl::Vec3d n0, n1, n2;
-    float course_width, course_length;
     float u, v;
     float min_bary, interp_factor;
     ppogl::Vec3d smooth_nml;
@@ -446,14 +442,14 @@ find_course_normal(const float x, const float z)
     float *elevation;
 
     elevation = Course::getElevData();
-    Course::getDimensions( &course_width, &course_length );
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
     course_nmls = courseRenderer.getNormals();
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / course_width * ( float(nx) - 1. );
-    yidx = -z / course_length * ( float(ny) - 1. );
+    xidx = x / courseDim.x() * ( float(nx) - 1. );
+    yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
@@ -489,7 +485,6 @@ find_y_coord(float x, float z)
     float u, v;
     int nx, ny;
     float *elevation;
-    float course_width, course_length;
 
     /* cache last request */
     static float last_x, last_z, last_y;
@@ -500,7 +495,7 @@ find_y_coord(float x, float z)
     }
 
 	Course::getDivisions( &nx, &ny );
-    Course::getDimensions( &course_width, &course_length );
+	const ppogl::Vec2d& courseDim = Course::getDimensions();
     elevation = Course::getElevData();
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
@@ -523,7 +518,6 @@ void
 get_surface_type(float x, float z, float weights[])
 {
     int *terrain;
-    float courseWidth, courseLength;
     int nx, ny;
     Index2d idx0, idx1, idx2;
     float u, v;
@@ -532,7 +526,7 @@ get_surface_type(float x, float z, float weights[])
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
     terrain = Course::getTerrainData();
-    Course::getDimensions( &courseWidth, &courseLength );
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
 
     for (i=0; i<num_terrains; i++) {
@@ -550,16 +544,14 @@ get_surface_type(float x, float z, float weights[])
 } 
 
 pp::Plane
-get_local_course_plane(ppogl::Vec3d pt)
+get_local_course_plane(const ppogl::Vec3d& pt)
 {
     pp::Plane plane;
 
-    pt.y() = find_y_coord( pt.x(), pt.z() );
-
     plane.nml = find_course_normal( pt.x(), pt.z() );
     plane.d = -( plane.nml.x() * pt.x() + 
-		 plane.nml.y() * pt.y() +
-		 plane.nml.z() * pt.z() );
+	plane.nml.y() * find_y_coord(pt.x(), pt.z()) +
+	plane.nml.z() * pt.z() );
 
     return plane;
 }
@@ -576,43 +568,41 @@ update_paddling(Player& plyr)
 }
 
 void
-set_tux_pos(Player& plyr, ppogl::Vec3d new_pos)
+set_tux_pos(Player& plyr, ppogl::Vec3d newPos)
 {
-    float playWidth, playLength;
-    float courseWidth, courseLength;
     float boundaryWidth;
     float disp_y;
 
-    Course::getPlayDimensions( &playWidth, &playLength );
-    Course::getDimensions( &courseWidth, &courseLength );
-    boundaryWidth = ( courseWidth - playWidth ) / 2; 
+	const ppogl::Vec2d &playDim = Course::getPlayDimensions();
+    const ppogl::Vec2d& courseDim = Course::getDimensions();
+    boundaryWidth = ( courseDim.x() - playDim.x() ) / 2; 
 
 
-    if ( new_pos.x() < boundaryWidth ) {
-        new_pos.x() = boundaryWidth;
-    } else if ( new_pos.x() > courseWidth - boundaryWidth ) {
-        new_pos.x() = courseWidth - boundaryWidth;
+    if(newPos.x() < boundaryWidth){
+        newPos.x() = boundaryWidth;
+    }else if(newPos.x() > courseDim.x() - boundaryWidth){
+        newPos.x() = courseDim.x() - boundaryWidth;
     } 
 
-    if ( new_pos.z() > 0 ) {
-        new_pos.z() = 0;
-    } else if ( -new_pos.z() >= playLength ) {
-        new_pos.z() = -playLength;
+    if(newPos.z()>0){
+        newPos.z() = 0;
+    }else if(-newPos.z() >= playDim.y()){
+        newPos.z() = -playDim.y();
         GameMode::setMode(GameMode::GAME_OVER);
     } 
 
-    plyr.pos = new_pos;
+    plyr.pos = newPos;
 
-    disp_y = new_pos.y() + TUX_Y_CORRECTION_ON_STOMACH; 
+    disp_y = newPos.y() + TUX_Y_CORRECTION_ON_STOMACH; 
 
     const std::string& tuxRoot = tux[plyr.num].getRootNode();
     reset_scene_node( tuxRoot );
     translate_scene_node( tuxRoot, 
-			  ppogl::Vec3d( new_pos.x(), disp_y, new_pos.z() ) );
+			  ppogl::Vec3d( newPos.x(), disp_y, newPos.z() ) );
 } 
 
 bool
-check_model_collisions(Player& plyr, ppogl::Vec3d pos, 
+check_model_collisions(Player& plyr, const ppogl::Vec3d& pos, 
 			      ppogl::Vec3d *tree_loc, float *tree_diam)
 {
     if(GameConfig::disableCollisionDetection){
@@ -715,29 +705,27 @@ check_model_collisions(Player& plyr, ppogl::Vec3d pos,
     last_collision_tree_diam = diam;
     last_collision_pos = pos;
 
-    if ( hit ) {
-	last_collision = true;
+    if(hit){
+		last_collision = true;
 
-	/* Record collision in player data so that health can be adjusted */
-	plyr.collision = true;
-    } else {
-	last_collision = false;
+		// Record collision in player data so that health can be adjusted
+		plyr.collision = true;
+    }else{
+		last_collision = false;
     }
-
     return hit;
 } 
 
 void
-check_item_collection(Player& plyr, ppogl::Vec3d pos)
+check_item_collection(Player& plyr, const ppogl::Vec3d& pos)
 {
     float diam = 0.0; 
     float height;
     ppogl::Vec3d loc;
     ppogl::Vec3d distvec;
     float squared_dist;
-    //int item_type;
 
-    /* These variables are used to cache collision detection results */
+    // These variables are used to cache collision detection results
     static ppogl::Vec3d last_collision_pos( -999, -999, -999 );
 
     /* If we haven't moved very much since the last call, we re-use
@@ -803,8 +791,8 @@ get_compression_depth(const int terrain)
  * Check for tree collisions and adjust position and velocity appropriately.
  */
 static void
-adjust_for_model_collision( Player& plyr, 
-				       ppogl::Vec3d pos, ppogl::Vec3d *vel )
+adjust_for_model_collision(Player& plyr, 
+				       const ppogl::Vec3d& pos, ppogl::Vec3d *vel)
 {
     ppogl::Vec3d modelNml;
     ppogl::Vec3d modelLoc;
@@ -851,12 +839,12 @@ adjust_for_model_collision( Player& plyr,
     } 
 }
 
-/*
+/**
  * Adjusts velocity so that his speed doesn't drop below the minimum 
  * speed
  */
 double
-adjust_velocity(ppogl::Vec3d *vel, pp::Plane surf_plane)
+adjust_velocity(ppogl::Vec3d *vel, const pp::Plane& surf_plane)
 {
     ppogl::Vec3d surf_nml;
     float speed;
@@ -883,7 +871,7 @@ adjust_velocity(ppogl::Vec3d *vel, pp::Plane surf_plane)
 }
 
 void
-adjust_position(ppogl::Vec3d *pos, pp::Plane surf_plane, 
+adjust_position(ppogl::Vec3d *pos, const pp::Plane& surf_plane, 
 		      float dist_from_surface)
 {
     if(dist_from_surface < -MAX_SURFACE_PENETRATION){
@@ -893,7 +881,7 @@ adjust_position(ppogl::Vec3d *pos, pp::Plane surf_plane,
 }
 
 static ppogl::Vec3d
-adjust_tux_zvec_for_roll(Player& plyr, 
+adjust_tux_zvec_for_roll(const Player& plyr, 
 					  ppogl::Vec3d vel, ppogl::Vec3d zvec)
 {
     pp::Matrix rot_mat; 
@@ -916,10 +904,10 @@ adjust_tux_zvec_for_roll(Player& plyr,
 }
 
 static ppogl::Vec3d
-adjust_surf_nml_for_roll(Player& plyr, 
+adjust_surf_nml_for_roll(const Player& plyr, 
 					  ppogl::Vec3d vel, 
 					  float fric_coeff,
-					  ppogl::Vec3d nml)
+					  const ppogl::Vec3d& nml)
 {
     pp::Matrix rot_mat; 
     float angle;
@@ -950,8 +938,8 @@ adjust_surf_nml_for_roll(Player& plyr,
 
 
 void
-adjust_orientation(Player& plyr, float dtime, ppogl::Vec3d vel,
-			 float dist_from_surface, ppogl::Vec3d surf_nml)
+adjust_orientation(Player& plyr, float dtime, const ppogl::Vec3d& vel,
+			 float dist_from_surface, const ppogl::Vec3d& surf_nml)
 {
     ppogl::Vec3d new_x, new_y, new_z; 
     pp::Matrix inv_cob_mat;
@@ -1000,7 +988,7 @@ adjust_orientation(Player& plyr, float dtime, ppogl::Vec3d vel,
     pp::Matrix cob_mat( plyr.orientation );
 
 
-    /* Trick rotations */
+    // Trick rotations
     new_y = ppogl::Vec3d( cob_mat.data[1][0], cob_mat.data[1][1], cob_mat.data[1][2] ); 
     rot_mat.makeRotationAboutVector( new_y, 
 				       ( plyr.control.barrel_roll_factor * 360 ) );
@@ -1033,8 +1021,8 @@ adjust_particle_count(float particles)
 }
 
 void
-generate_particles(Player& plyr, float dtime, 
-			 ppogl::Vec3d pos, float speed) 
+generate_particles(const Player& plyr, float dtime, 
+			 const ppogl::Vec3d& pos, float speed) 
 {
     ppogl::Vec3d left_part_pt, right_part_pt;
     float brake_particles;
@@ -1100,7 +1088,7 @@ generate_particles(Player& plyr, float dtime,
 	left_particles = adjust_particle_count( left_particles );
 	right_particles = adjust_particle_count( right_particles );
 
-	/* Create particle velocitites */
+	// Create particle velocitites
 	rot_mat.makeRotationAboutVector( plyr.direction,
 	    MAX( -MAX_PARTICLE_ANGLE, 
 		 -MAX_PARTICLE_ANGLE * speed / MAX_PARTICLE_ANGLE_SPEED ) );
@@ -1123,25 +1111,25 @@ generate_particles(Player& plyr, float dtime,
     } 
 }
 
-/*
+/**
  * Calculate the magnitude of force due to air resistance (wind)
  */
 ppogl::Vec3d
-calc_wind_force(ppogl::Vec3d player_vel)
+calc_wind_force(const ppogl::Vec3d& player_vel)
 {
     ppogl::Vec3d total_vel;
     float wind_speed;
-    float re;         /* Reynolds number */
-    float df_mag;     /* magnitude of drag force */
-    float drag_coeff; /* drag coefficient */
-    int table_size;      /* size of drag coeff table */
+    float re;         // Reynolds number
+    float df_mag;     // magnitude of drag force
+    float drag_coeff; // drag coefficient
+    int table_size;   // size of drag coeff table
 
     static float last_time_called = -1;
 
     total_vel = -1*player_vel;
     
     if ( GameMgr::getInstance().getCurrentRace().windy ) {
-	/* adjust wind_scale with a random walk */
+	// adjust wind_scale with a random walk
 	if ( last_time_called != GameMgr::getInstance().time ) {
 	    wind_scale = wind_scale + 
 		(rand()/double(RAND_MAX)-0.50) * 0.15;
@@ -1172,35 +1160,35 @@ calc_wind_force(ppogl::Vec3d player_vel)
 }
 
 static ppogl::Vec3d
-calc_spring_force(float compression, ppogl::Vec3d vel, 
-				  ppogl::Vec3d surf_nml, ppogl::Vec3d *unclamped_f)
+calc_spring_force(float compression, const ppogl::Vec3d& vel, 
+				  const ppogl::Vec3d& surf_nml, ppogl::Vec3d *unclamped_f)
 {
-    float spring_vel; /* velocity perp. to surface (for damping) */
-    float spring_f_mag; /* magnitude of force */
+    float spring_vel;   // velocity perp. to surface (for damping)
+    float spring_f_mag; // magnitude of force
 
     PP_REQUIRE( compression >= 0, 
 		    "spring can't have negative compression" );
     
     spring_vel =vel*surf_nml;
 
-    /* Stage 1 */
+    // Stage 1
     spring_f_mag = 
 	MIN( compression, TUX_GLUTE_STAGE_1_COMPRESSIBILITY ) 
 	* TUX_GLUTE_STAGE_1_SPRING_COEFF;
 
-    /* Stage 2 */
+    // Stage 2
     spring_f_mag += 
 	MAX( 0, MIN( compression - TUX_GLUTE_STAGE_1_COMPRESSIBILITY, 
 		     TUX_GLUTE_STAGE_2_COMPRESSIBILITY ) )
 	* TUX_GLUTE_STAGE_2_SPRING_COEFF;
 
-    /* Stage 3 */
+    // Stage 3
     spring_f_mag += 
 	MAX( 0., compression - TUX_GLUTE_STAGE_2_COMPRESSIBILITY - 
 	     TUX_GLUTE_STAGE_1_COMPRESSIBILITY ) 
 	* TUX_GLUTE_STAGE_3_SPRING_COEFF;
 
-    /* Damping */
+    // Damping
     spring_f_mag -= spring_vel * ( 
 	compression <= TUX_GLUTE_STAGE_1_COMPRESSIBILITY 
 	? TUX_GLUTE_STAGE_1_SPRING_COEFF : 
@@ -1208,23 +1196,23 @@ calc_spring_force(float compression, ppogl::Vec3d vel,
 	  ? TUX_GLUTE_STAGE_2_DAMPING_COEFF
 	  : TUX_GLUTE_STAGE_3_DAMPING_COEFF ) );
 
-    /* Clamp to >= 0.0 */
+    // Clamp to >= 0.0
     spring_f_mag = MAX( spring_f_mag, 0.0 );
 
     if ( unclamped_f != NULL ) {
 	*unclamped_f = spring_f_mag*surf_nml;
     }
 
-    /* Clamp to <= TUX_GLUTE_MAX_SPRING_FORCE */
+    // Clamp to <= TUX_GLUTE_MAX_SPRING_FORCE
     spring_f_mag = MIN( spring_f_mag, TUX_GLUTE_MAX_SPRING_FORCE );
 
     return spring_f_mag*surf_nml;
 }
 
 
-static
-ppogl::Vec3d calc_net_force(Player& plyr, ppogl::Vec3d pos, 
-				ppogl::Vec3d vel)
+static ppogl::Vec3d
+calc_net_force(Player& plyr, const ppogl::Vec3d& pos, 
+				const ppogl::Vec3d& vel)
 {
     ppogl::Vec3d nml_f;      /* normal force */
     ppogl::Vec3d unclamped_nml_f; /* unclamped normal force (for damage calc) */
@@ -1251,7 +1239,7 @@ ppogl::Vec3d calc_net_force(Player& plyr, ppogl::Vec3d pos,
     unsigned int i;
 
     get_surface_type( pos.x(), pos.z(), surf_weights );
-    surf_plane = get_local_course_plane( pos );
+    surf_plane = get_local_course_plane(pos);
     orig_surf_nml = surf_plane.nml;
 
     surf_fric_coeff = 0;
@@ -1416,13 +1404,11 @@ ppogl::Vec3d calc_net_force(Player& plyr, ppogl::Vec3d pos,
 }
 
 static float
-adjust_time_step_size(float h, ppogl::Vec3d vel)
+adjust_time_step_size(float h, const ppogl::Vec3d& vel)
 {
-    float speed;
-
-    speed = vel.normalize();
-
-    h = MAX( h, MIN_TIME_STEP );
+    const float speed = vel.length();
+    
+	h = MAX( h, MIN_TIME_STEP );
     h = MIN( h, MAX_STEP_DISTANCE / speed );
     h = MIN( h, MAX_TIME_STEP );
 

@@ -35,11 +35,11 @@ protected:
 	/// the course normal vectors
 	ppogl::Vec3d* mp_nmls;
 
-	/// is clipping activiated
-	bool m_clip;
-
 	quadsquare* mp_root;
 	quadcornerdata m_rootCornerData;
+
+	/// is clipping activiated
+	bool m_clip;
 
 	void calcNormals();
 	void setupTexGen();

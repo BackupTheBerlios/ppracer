@@ -43,7 +43,8 @@
 #define PARTICLE_SHADOW_HEIGHT 0.05
 #define PARTICLE_SHADOW_ALPHA 0.1
 
-typedef struct _Particle {
+struct Particle
+{
     ppogl::Vec3d pt;
     short type;
     double base_size;
@@ -54,20 +55,22 @@ typedef struct _Particle {
     double alpha;
     ppogl::Vec3d vel;
 	GLuint particle_binding;
-    struct _Particle *next;
-} Particle;
+    Particle *next;
+};
 
 static ppogl::Color particleColor;
 
 static Particle* head = NULL;
 static int num_particles = 0;
 
-double frand() 
+double
+frand() 
 {
     return double(rand())/RAND_MAX;
 } 
 
-void create_new_particles( ppogl::Vec3d loc, ppogl::Vec3d vel, int num, GLuint particle_binding) 
+void
+create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint particle_binding) 
 {
     Particle *newp;
     int i;
@@ -113,7 +116,8 @@ void create_new_particles( ppogl::Vec3d loc, ppogl::Vec3d vel, int num, GLuint p
     }
 } 
 
-void update_particles( double time_step )
+void
+update_particles(double time_step)
 {
     Particle **p, *q;
     double ycoord;
@@ -150,28 +154,15 @@ void update_particles( double time_step )
     } 
 } 
 
-void draw_particles( Player& plyr )
+void
+draw_particles(const Player& plyr)
 {
     Particle *p;
-    //GLuint   texture_id;
-    //char *binding;
     ppogl::Vec2d min_tex_coord, max_tex_coord;
 
     set_gl_options( PARTICLES );
 
- /*
-	binding = "snow_particle";
-    if (!get_texture_binding( "snow_particle", &texture_id ) ) {
-	print_warning( IMPORTANT_WARNING,
-		       "Couldn't get texture for binding %s", 
-		       binding );
-	texture_id = 0;
-  	} 
- */
-
     gl::TexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    //glBindTexture( GL_TEXTURE_2D, texture_id );
 	
     for (p=head; p!=NULL; p = p->next) {
         if ( p->age < 0 ) continue;
@@ -200,7 +191,8 @@ void draw_particles( Player& plyr )
 
 } 
 
-void clear_particles()
+void
+clear_particles()
 {
     Particle *p, *q;
 
@@ -237,74 +229,6 @@ particle_color_cb(ppogl::Script *vm)
 	}
 	
 	return 0;
-	
-	/*
-	double tmp_arr[4];
-    bool error = false;
-
-    if ( argc == 2 ) {
-	// New format
-	if ( get_tcl_tuple ( ip, argv[1], tmp_arr, 4 ) == TCL_ERROR ) {
-	    error = true;
-	} else {
-		particleColor.set(tmp_arr);
-	}
-    } else {
-	// Old format 
-	if (argc < 3) {
-	    error = true;
-	} else {
-
-	    NEXT_ARG;
-
-	    PP_WARNING( 
-			   "This format for tux_particle_color is deprecated."
-			   "  The new format is:\n"
-			   "\ttux_particle_color {r g b a}" );
-
-	    while ( !error && argc > 0 ) {
-		
-		if ( strcmp( "-ambient_and_diffuse", *argv ) == 0 ||
-		     strcmp( "-diffuse",  *argv ) == 0 ) 
-		{
-		    NEXT_ARG;
-		    if ( argc == 0 ) {
-			error = true;
-			break;
-		    }
-		    if ( get_tcl_tuple ( ip, *argv, tmp_arr, 4 ) == 
-			 TCL_ERROR ) 
-		    {
-			error = true;
-			break;
-		    }
-			particleColor.set(tmp_arr);
-		} else if ( strcmp( "-specular", *argv ) == 0 ) {
-		    // Ignore
-		    NEXT_ARG;
-		} else if ( strcmp( "-shininess", *argv ) == 0 ) {
-		    // Ignore
-		    NEXT_ARG;
-		} else {
-		    PP_WARNING( "tux_particle_color: unrecognized "
-				   "parameter `%s'", *argv );
-		}
-		
-		NEXT_ARG;
-	    }
-	}
-    }
-
-    if ( error ) {
-		PP_WARNING( "error in call to tux_particle_color" );
-		Tcl_AppendResult(
-	    	ip, 
-	    	"\nUsage: tux_particle_color {r g b a}", NULL );
-		return TCL_ERROR;
-    }
-
-    return TCL_OK;
-	*/
 }
 
 static const struct ppogl::Script::Lib ppthemelib[]={
@@ -312,7 +236,8 @@ static const struct ppogl::Script::Lib ppthemelib[]={
 	{NULL, NULL}
 };
 
-void register_particle_callbacks()
+void
+register_particle_callbacks()
 {
 	script.registerLib("pptheme", ppthemelib);
 }

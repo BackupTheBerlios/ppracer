@@ -45,9 +45,8 @@ mirror_course()
     int *terrain;
     ppogl::Vec2d start_pt;
     int nx, ny;
-    float course_width, course_length;
 
-    Course::getDimensions( &course_width, &course_length );
+	const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
     elevation = Course::getElevData();
     terrain = Course::getTerrainData();
@@ -79,7 +78,7 @@ mirror_course()
 	{
 	std::list<Model>::iterator it;
 	for(it=modelLocs.begin();it!=modelLocs.end();it++) {
-		(*it).getPosition().x() = course_width - (*it).getPosition().x(); 
+		(*it).getPosition().x() = courseDim.x() - (*it).getPosition().x(); 
 		(*it).getPosition().y() = 
 	    find_y_coord((*it).getPosition().x(),
 			  (*it).getPosition().z() ) + (*it).getType()->height;
@@ -89,7 +88,7 @@ mirror_course()
 	{
 	std::list<Item>::iterator it;
 	for(it=itemLocs.begin();it!=itemLocs.end();it++){
-		(*it).getPosition().x() = course_width - (*it).getPosition().x(); 
+		(*it).getPosition().x() = courseDim.x() - (*it).getPosition().x(); 
 		(*it).getPosition().y() = 
 	    find_y_coord((*it).getPosition().x(),
 			  (*it).getPosition().z() ) + (*it).getItemType()->above_ground;
@@ -99,41 +98,41 @@ mirror_course()
 	{
 	std::list<ppogl::Vec2d>::iterator it;
 	for(it=resetLocs.begin();it!=resetLocs.end();it++){
-	(*it).x() = course_width - (*it).x();
+	(*it).x() = courseDim.x() - (*it).x();
     }
 	}
 	
     Course::fillGLArrays();
 
+	TrackMarks::mirrorAllPlayers(courseDim.x());
+	
 	courseRenderer.resetQuadtree();
 	
     if ( nx > 0 && ny > 0 ) {
 		PP_LOG( DEBUG_QUADTREE, "mirroring quadtree" );
-		courseRenderer.initQuadtree( elevation, nx, ny, course_width/(nx-1), 
-			      -course_length/(ny-1),
+		courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1), 
+			      -courseDim.y()/(ny-1),
 			      players[0].view.pos);
     }
 
     start_pt = Course::getStartPt();
-    start_pt.x() = course_width - start_pt.x();
+    start_pt.x() = courseDim.x() - start_pt.x();
     Course::setStartPt( start_pt );
 }
 
 void
 mirror_key_frame()
 {
-    float course_width, course_length;
     int num_frames;
     KeyFrame *frames;
+	const ppogl::Vec2d& courseDim = Course::getDimensions();
 
 	for(int player=0; player<GameMgr::getInstance().numPlayers; player++){
 		keyFrames[player].getData(&frames, &num_frames);
 
-    	Course::getDimensions( &course_width, &course_length );
-
    		for(int i=0; i<num_frames; i++){	
 			frames[i].yaw = - frames[i].yaw;
-			frames[i].pos.x() = course_width - frames[i].pos.x();
+			frames[i].pos.x() = courseDim.x() - frames[i].pos.x();
     	}
 	}
 }
@@ -144,7 +143,7 @@ set_course_mirroring(bool state)
 	if(mirrored!=state){
 		mirror_key_frame();
 		mirror_course();
-		TrackMarks::init();		
+		//TrackMarks::init();		
 		mirrored = state;
     }
 }

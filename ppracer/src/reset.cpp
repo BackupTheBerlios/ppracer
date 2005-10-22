@@ -59,7 +59,6 @@ void
 Reset::loop(float timeStep)
 {
 	float elapsed_time = getClockTime() - m_resetStartTime;
-    float course_width, course_length;
     static bool tux_visible = true; 
     static int tux_visible_count = 0;
 
@@ -88,8 +87,8 @@ Reset::loop(float timeStep)
 		
 		if(resetLocs.empty()){
 			// no reset point
-			Course::getDimensions( &course_width, &course_length );
-	    	players[0].pos.x() = course_width/2.0;
+			const ppogl::Vec2d& courseDim = Course::getDimensions();
+	    	players[0].pos.x() = courseDim.x()/2.0;
 	    	players[0].pos.z() = MIN(players[0].pos.z() + 10, -1.0);
 		}else{
 			// iterate through list...
@@ -103,8 +102,8 @@ Reset::loop(float timeStep)
 			}
 			
 			if(bestit==resetLocs.end()){
-				Course::getDimensions( &course_width, &course_length );
-				players[0].pos.x() = course_width/2.0;
+				const ppogl::Vec2d& courseDim = Course::getDimensions();
+				players[0].pos.x() = courseDim.x()/2.0;
 				players[0].pos.z() = MIN(players[0].pos.z() + 10, -1.0);
 			}else{
 				players[0].pos.x() = (*bestit).x();

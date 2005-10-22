@@ -245,18 +245,11 @@ class FTGL_EXPORT FTFont
         FTSize charSize;
 
         /**
-         * Flag to enable or disable the use of Display Lists inside FTGL
-         * <code>true</code> turns ON display lists.
-         * <code>false</code> turns OFF display lists.
-         */
-        bool useDisplayLists;
-
-        /**
          * Current error code. Zero means no error.
          */
         FT_Error err;
-        
-    private:        
+		
+	private:        
     	
 		// reference counter;
 		int m_references;
@@ -278,6 +271,14 @@ class FTGL_EXPORT FTFont
          * Current pen or cursor position;
          */
         FTPoint pen;
+		
+	protected:
+		/**
+         * Flag to enable or disable the use of Display Lists inside FTGL
+         * <code>true</code> turns ON display lists.
+         * <code>false</code> turns OFF display lists.
+         */
+        bool useDisplayLists;
         
 };
 

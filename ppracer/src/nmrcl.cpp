@@ -38,10 +38,6 @@ const double ode45_coeff_mat[][7] = {
 const double ode45_error_mat[] = 
 { 71./57600., 0., -71./16695., 71./1920., -17253./339200., 22./525., -1./40.};
 
-ODESolver::ODESolver()
-{
-}
-
 void
 ODESolver::initODEData(double init_val, double h)
 {

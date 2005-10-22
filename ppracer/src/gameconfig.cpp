@@ -42,6 +42,13 @@ int backwardClipDistance = 10;
 
 int fov = 60;
 
+bool drawTrackMarks;
+
+int joystickBrakeButton;
+int joystickPaddleButton;
+int joystickJumpButton;
+int joystickTrickButton;
+
 /// update configuration data
 void
 update()
@@ -65,7 +72,13 @@ update()
 	backwardClipDistance = PPConfig.getInt("backward_clip_distance");
 	
 	fov = PPConfig.getInt("fov");
+	
+	drawTrackMarks = PPConfig.getBool("track_marks");
 
+	joystickBrakeButton = PPConfig.getInt("joystick_brake_button ");
+	joystickPaddleButton = PPConfig.getInt("joystick_paddle_button");
+	joystickJumpButton = PPConfig.getInt("joystick_jump_button");
+	joystickTrickButton = PPConfig.getInt("joystick_trick_button");
 }
 
 } // namespace GameConfig

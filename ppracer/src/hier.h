@@ -43,13 +43,13 @@ void add_material(const std::string& name, const ppogl::Material& material);
 
 std::string set_scene_resolution(const std::string& resolution);
 
-std::string set_scene_node_shadow_state(const std::string& node, const std::string& state );
-std::string set_scene_node_eye(const std::string& node, const std::string& which_eye );
+std::string set_scene_node_shadow_state(const std::string& node, const std::string& state);
+std::string set_scene_node_eye(const std::string& node, const std::string& which_eye);
 
 std::string create_tranform_node(const std::string& parent, const std::string& name);
-std::string create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution );
+std::string create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution);
 
-void draw_scene_graph(const std::string& node );
-bool collide(const std::string& node, const ppogl::Polyhedron& ph );
+void draw_scene_graph(const std::string& node);
+bool collide(const std::string& node, const ppogl::Polyhedron& ph);
 
 #endif // _HIER_H_

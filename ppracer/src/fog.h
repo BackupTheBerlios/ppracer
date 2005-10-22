@@ -44,7 +44,7 @@ public:
 	inline bool isEnabled() const {return m_isOn;}
 	inline void setEnabled(const bool state=true){m_isOn=state;}
 	inline const ppogl::Color& getColor() {return m_color;}
-	inline void setColor(ppogl::Color color){m_color=color;}
+	inline void setColor(const ppogl::Color& color){m_color=color;}
 	inline void setMode(const GLint mode){m_mode=mode;}
 	inline void setDensity(const GLfloat density){m_density=density;}
 	inline void setStart(const GLfloat start){m_start=start;}
@@ -56,4 +56,4 @@ public:
 
 extern FogPlane fogPlane;
 
-#endif
+#endif // _FOG_H_
