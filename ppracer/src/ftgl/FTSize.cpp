@@ -42,24 +42,15 @@ bool FTSize::CharSize( FT_Face* face, unsigned int pointSize, unsigned int xRes,
     return !err;
 }
 
-
-unsigned int FTSize::CharSize() const
-{
-    return size;
-}
-
-
 float FTSize::Ascender() const
 {
     return ftSize == 0 ? 0.0f : static_cast<float>( ftSize->metrics.ascender) / 64.0f;
 }
 
-
 float FTSize::Descender() const
 {
     return ftSize == 0 ? 0.0f : static_cast<float>( ftSize->metrics.descender) / 64.0f;
 }
-
 
 float FTSize::Height() const
 {
@@ -78,7 +69,6 @@ float FTSize::Height() const
     }
 }
 
-
 float FTSize::Width() const
 {
     if( 0 == ftSize)
@@ -94,10 +84,4 @@ float FTSize::Width() const
     {
         return static_cast<float>( ftSize->metrics.max_advance) / 64.0f;
     }
-}
-
-
-float FTSize::Underline() const
-{
-    return 0.0f;
 }

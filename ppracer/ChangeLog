@@ -4,6 +4,9 @@
 2005-10-22  Volker Stroebel <volker@planetpenguin.de>
 	* (*)
 	some cleanups
+	
+	* src/ftgl/*
+	removed unused code
 
 2005-10-21  Volker Stroebel <volker@planetpenguin.de>
 	* src/course_load.cpp

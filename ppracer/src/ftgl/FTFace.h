@@ -26,38 +26,11 @@ class FTGL_EXPORT FTFace
         FTFace( const char* fontFilePath);
 
         /**
-         * Read face data from an in-memory buffer. Error is set.
-         *
-         * @param pBufferBytes  the in-memory buffer
-         * @param bufferSizeInBytes  the length of the buffer in bytes
-         */
-        FTFace( const unsigned char *pBufferBytes, size_t bufferSizeInBytes );
-
-        /**
          * Destructor
          *
          * Disposes of the current Freetype Face.
          */
         virtual ~FTFace();
-
-        /**
-         * Attach auxilliary file to font (e.g., font metrics).
-         *
-         * @param fontFilePath  auxilliary font file path.
-         * @return          <code>true</code> if file has opened
-         *                  successfully.
-         */
-        bool Attach( const char* fontFilePath);
-
-        /**
-         * Attach auxilliary data to font (e.g., font metrics) from memory
-         *
-         * @param pBufferBytes  the in-memory buffer
-         * @param bufferSizeInBytes  the length of the buffer in bytes
-         * @return          <code>true</code> if file has opened
-         *                  successfully.
-         */
-        bool Attach( const unsigned char *pBufferBytes, size_t bufferSizeInBytes);
 
         /**
          * Get the freetype face object..
@@ -77,20 +50,6 @@ class FTGL_EXPORT FTFace
          * @return          <code>FTSize</code> object
          */
         const FTSize& Size( const unsigned int size, const unsigned int res);
-
-        /**
-         * Get the number of character maps in this face.
-         *
-         * @return character map count.
-         */
-        unsigned int CharMapCount();
-
-        /**
-         * Get a list of character maps in this face.
-         *
-         * @return pointer to the first encoding.
-         */
-        FT_Encoding* CharMapList();
         
         /**
          * Gets the kerning vector between two glyphs

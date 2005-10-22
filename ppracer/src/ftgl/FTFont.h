@@ -46,43 +46,10 @@ class FTGL_EXPORT FTFont
         FTFont( const char* fontFilePath);
         
         /**
-         * Open and read a font from a buffer in memory. Sets Error flag.
-         * The buffer is owned by the client and is NOT copied by FTGL. The
-         * pointer must be valid while using FTGL.
-         *
-         * @param pBufferBytes  the in-memory buffer
-         * @param bufferSizeInBytes  the length of the buffer in bytes
-         */
-        FTFont( const unsigned char *pBufferBytes, size_t bufferSizeInBytes);
-        
-        /**
          * Destructor
          */
         virtual ~FTFont();
         
-        /**
-         * Attach auxilliary file to font e.g font metrics.
-         *
-         * Note: not all font formats implement this function.
-         *
-         * @param fontFilePath  auxilliary font file path.
-         * @return          <code>true</code> if file has been attached
-         *                  successfully.
-         */
-        bool Attach( const char* fontFilePath);
-
-        /**
-         * Attach auxilliary data to font e.g font metrics, from memory
-         *
-         * Note: not all font formats implement this function.
-         *
-         * @param pBufferBytes  the in-memory buffer
-         * @param bufferSizeInBytes  the length of the buffer in bytes
-         * @return          <code>true</code> if file has been attached
-         *                  successfully.
-         */
-        bool Attach( const unsigned char *pBufferBytes, size_t bufferSizeInBytes);
-
         /**
          * Set the character map for the face.
          *
@@ -91,21 +58,7 @@ class FTGL_EXPORT FTFont
          *                      set correctly
          */
         bool CharMap( FT_Encoding encoding );
-
-        /**
-         * Get the number of character maps in this face.
-         *
-         * @return character map count.
-         */
-        unsigned int CharMapCount();
-
-        /**
-         * Get a list of character maps in this face.
-         *
-         * @return pointer to the first encoding.
-         */
-        FT_Encoding* CharMapList();
-        
+       
         /**
          * Set the char size for the current face.
          *
@@ -114,30 +67,7 @@ class FTGL_EXPORT FTFont
          * @return          <code>true</code> if size was set correctly
          */
         virtual bool FaceSize( const unsigned int size, const unsigned int res = 72);
-        
-        /**
-         * Get the current face size in points.
-         *
-         * @return face size
-         */
-        unsigned int FaceSize() const;
-        
-        /**
-         * Set the extrusion distance for the font. Only implemented by
-         * FTGLExtrdFont
-         *
-         * @param depth  The extrusion distance.
-         */
-        virtual void Depth( float depth){}
-
-        /**
-         * Enable or disable the use of Display Lists inside FTGL
-         *
-         * @param  useList <code>true</code> turns ON display lists.
-         *                 <code>false</code> turns OFF display lists.
-         */
-        void UseDisplayList( bool useList);
-        
+                
         /**
          * Get the global ascender height for the face.
          *
@@ -151,40 +81,7 @@ class FTGL_EXPORT FTFont
          * @return  Descender height
          */
         float Descender() const;
-        
-        /**
-         * Gets the line spacing for the font.
-         *
-         * @return  Line height
-         */
-        float LineHeight() const;
-        
-        /**
-         * Get the bounding box for a string.
-         *
-         * @param string    a char string
-         * @param llx       lower left near x coord
-         * @param lly       lower left near y coord
-         * @param llz       lower left near z coord
-         * @param urx       upper right far x coord
-         * @param ury       upper right far y coord
-         * @param urz       upper right far z coord
-         */
-        void BBox( const char* string, float& llx, float& lly, float& llz, float& urx, float& ury, float& urz);
-
-        /**
-         * Get the bounding box for a string.
-         *
-         * @param string    a wchar_t string
-         * @param llx       lower left near x coord
-         * @param lly       lower left near y coord
-         * @param llz       lower left near z coord
-         * @param urx       upper right far x coord
-         * @param ury       upper right far y coord
-         * @param urz       upper right far z coord
-         */
-        void BBox( const wchar_t* string, float& llx, float& lly, float& llz, float& urx, float& ury, float& urz);
-
+               
         /**
          * Get the advance width for a string.
          *
@@ -192,21 +89,6 @@ class FTGL_EXPORT FTFont
          * @return      advance width
          */
         float Advance( const wchar_t* string);
-
-        /**
-         * Get the advance width for a string.
-         *
-         * @param string    a char string
-         * @return      advance width
-         */
-        float Advance( const char* string);
-
-        /**
-         * Render a string of characters
-         * 
-         * @param string    'C' style string to be output.   
-         */
-        virtual void Render( const char* string );
 
         /**
          * Render a string of characters

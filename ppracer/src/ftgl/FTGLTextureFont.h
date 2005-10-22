@@ -25,14 +25,6 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
         FTGLTextureFont( const char* fontFilePath);
         
         /**
-         * Open and read a font from a buffer in memory. Sets Error flag.
-         *
-         * @param pBufferBytes  the in-memory buffer
-         * @param bufferSizeInBytes  the length of the buffer in bytes
-         */
-        FTGLTextureFont( const unsigned char *pBufferBytes, size_t bufferSizeInBytes);
-        
-        /**
          * Destructor
          */
         virtual ~FTGLTextureFont();
@@ -45,14 +37,7 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
          * @return          <code>true</code> if size was set correctly
          */
         virtual bool FaceSize( const unsigned int size, const unsigned int res = 72);
-
-        /**
-         * Renders a string of characters
-         * 
-         * @param string    'C' style string to be output.   
-         */
-        virtual void Render( const char* string);
-        
+       
         /**
          * Renders a string of characters
          * 
@@ -147,5 +132,3 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 
 
 #endif // __FTGLTextureFont__
-
-

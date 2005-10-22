@@ -69,12 +69,6 @@ class FTGL_EXPORT FTGlyphContainer
          * loaded.
          */
         const FTGlyph* const Glyph( const unsigned int characterCode) const;
-
-        /**
-         * Get the bounding box for a character.
-         * @param characterCode The char code of the glyph NOT the glyph index      
-         */
-        FTBBox BBox( const unsigned int characterCode) const;
         
         /**
         * Returns the kerned advance width for a glyph.

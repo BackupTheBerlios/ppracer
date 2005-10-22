@@ -54,12 +54,6 @@ const FTGlyph* const FTGlyphContainer::Glyph( const unsigned int characterCode) 
 }
 
 
-FTBBox FTGlyphContainer::BBox( const unsigned int characterCode) const
-{
-    return glyphs[charMap->GlyphListIndex( characterCode)]->BBox();
-}
-
-
 float FTGlyphContainer::Advance( const unsigned int characterCode, const unsigned int nextCharacterCode)
 {
     unsigned int left = charMap->FontIndex( characterCode);

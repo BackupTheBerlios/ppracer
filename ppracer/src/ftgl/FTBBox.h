@@ -71,36 +71,7 @@ class FTGL_EXPORT FTBBox
          */
         ~FTBBox()
         {}
-        
-
-        /**
-         * Move the Bounding Box by a vector.
-         *
-         * @param distance The distance to move the bbox in 3D space.
-         */
-        FTBBox& Move( FTPoint distance)
-        {
-            lowerX += distance.X();
-            lowerY += distance.Y();
-            lowerZ += distance.Z();
-            upperX += distance.X();
-            upperY += distance.Y();
-            upperZ += distance.Z();
-            return *this;
-        }
-
-        FTBBox& operator += ( const FTBBox& bbox) 
-        {
-            lowerX = bbox.lowerX < lowerX? bbox.lowerX: lowerX; 
-            lowerY = bbox.lowerY < lowerY? bbox.lowerY: lowerY;
-            lowerZ = bbox.lowerZ < lowerZ? bbox.lowerZ: lowerZ; 
-            upperX = bbox.upperX > upperX? bbox.upperX: upperX; 
-            upperY = bbox.upperY > upperY? bbox.upperY: upperY; 
-            upperZ = bbox.upperZ > upperZ? bbox.upperZ: upperZ; 
-            
-            return *this;
-        }
-        
+           
         void SetDepth( float depth)
         {
             upperZ = lowerZ + depth;
@@ -121,4 +92,3 @@ class FTGL_EXPORT FTBBox
 
 
 #endif  //  __FTBBox__
-

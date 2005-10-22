@@ -33,22 +33,6 @@ FTGLTextureFont::FTGLTextureFont( const char* fontFilePath)
     remGlyphs = numGlyphs = face.GlyphCount();
 }
 
-
-FTGLTextureFont::FTGLTextureFont( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
-:   FTFont( pBufferBytes, bufferSizeInBytes),
-    maximumGLTextureSize(0),
-    textureWidth(0),
-    textureHeight(0),
-    glyphHeight(0),
-    glyphWidth(0),
-    padding(3),
-    xOffset(0),
-    yOffset(0)
-{
-    remGlyphs = numGlyphs = face.GlyphCount();
-}
-
-
 FTGLTextureFont::~FTGLTextureFont()
 {
     glDeleteTextures( textureIDList.size(), static_cast<const GLuint*>(&textureIDList[0]));
@@ -149,22 +133,6 @@ bool FTGLTextureFont::FaceSize( const unsigned int size, const unsigned int res)
 
     return FTFont::FaceSize( size, res);
 }
-
-
-void FTGLTextureFont::Render( const char* string)
-{   
-    glPushAttrib( GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
-    
-    glEnable(GL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
-
-    FTTextureGlyph::ResetActiveTexture();
-    
-    FTFont::Render( string);
-
-    glPopAttrib();
-}
-
 
 void FTGLTextureFont::Render( const wchar_t* string)
 {   

@@ -25,27 +25,6 @@ FTFace::FTFace( const char* fontFilePath)
     }
 }
 
-
-FTFace::FTFace( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
-:   numGlyphs(0),
-    err(0)
-{
-    const FT_Long DEFAULT_FACE_INDEX = 0;
-    ftFace = new FT_Face;
-
-    err = FT_New_Memory_Face( *FTLibrary::Instance().GetLibrary(), const_cast<FT_Byte *>(pBufferBytes), bufferSizeInBytes, DEFAULT_FACE_INDEX, ftFace);
-
-    if( err)
-    {
-        delete ftFace;
-        ftFace = NULL;
-    }
-    else
-    {
-        numGlyphs = (*ftFace)->num_glyphs;
-    }
-}
-
 FTFace::~FTFace()
 {
     if(ftFace!=NULL){
@@ -55,27 +34,6 @@ FTFace::~FTFace()
     }
 }
 
-
-bool FTFace::Attach( const char* fontFilePath)
-{
-    err = FT_Attach_File( *ftFace, fontFilePath);
-    return !err;
-}
-
-
-bool FTFace::Attach( const unsigned char *pBufferBytes, size_t bufferSizeInBytes)
-{
-    FT_Open_Args open;
-
-    open.flags = FT_OPEN_MEMORY;
-    open.memory_base = const_cast<FT_Byte *>(pBufferBytes);
-    open.memory_size = bufferSizeInBytes;
-
-    err = FT_Attach_Stream( *ftFace, &open);
-    return !err;
-}
-
-
 const FTSize& FTFace::Size( const unsigned int size, const unsigned int res)
 {
     charSize.CharSize( ftFace, size, res, res);
@@ -83,28 +41,6 @@ const FTSize& FTFace::Size( const unsigned int size, const unsigned int res)
 
     return charSize;
 }
-
-
-unsigned int FTFace::CharMapCount()
-{
-    return (*ftFace)->num_charmaps;
-}
-
-
-FT_Encoding* FTFace::CharMapList()
-{
-    if( 0 == fontEncodingList)
-    {
-        fontEncodingList = new FT_Encoding[CharMapCount()];
-        for( size_t encodingIndex = 0; encodingIndex < CharMapCount(); ++encodingIndex)
-        {
-            fontEncodingList[encodingIndex] = (*ftFace)->charmaps[encodingIndex]->encoding;
-        }
-    }
-    
-    return fontEncodingList;
-}
-
 
 FTPoint FTFace::KernAdvance( unsigned int index1, unsigned int index2)
 {

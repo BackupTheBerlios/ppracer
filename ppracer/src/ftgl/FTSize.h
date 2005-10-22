@@ -41,14 +41,7 @@ class FTGL_EXPORT FTSize
          * @return          <code>true</code> if the size has been set. Clients should check Error() for more information if this function returns false()
          */
         bool CharSize( FT_Face* face, unsigned int point_size, unsigned int x_resolution, unsigned int y_resolution);
-        
-        /**
-         * get the char size for the current face.
-         *
-         * @return The char size in points
-         */
-        unsigned int CharSize() const;
-        
+            
         /**
          * Gets the global ascender height for the face in pixels.
          *
@@ -86,13 +79,6 @@ class FTGL_EXPORT FTSize
          * @return  width in pixels.
          */
         float Width() const;
-        
-        /**
-         * Gets the underline position for the face.
-         *
-         * @return  underline position in pixels
-         */
-        float Underline() const;
 
         /**
          * Queries for errors.
@@ -135,4 +121,3 @@ class FTGL_EXPORT FTSize
 };
 
 #endif  //  __FTSize__
-
