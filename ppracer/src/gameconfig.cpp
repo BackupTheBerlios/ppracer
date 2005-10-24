@@ -75,7 +75,7 @@ update()
 	
 	drawTrackMarks = PPConfig.getBool("track_marks");
 
-	joystickBrakeButton = PPConfig.getInt("joystick_brake_button ");
+	joystickBrakeButton = PPConfig.getInt("joystick_brake_button");
 	joystickPaddleButton = PPConfig.getInt("joystick_paddle_button");
 	joystickJumpButton = PPConfig.getInt("joystick_jump_button");
 	joystickTrickButton = PPConfig.getInt("joystick_trick_button");
