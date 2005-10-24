@@ -526,7 +526,6 @@ get_surface_type(float x, float z, float weights[])
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
     terrain = Course::getTerrainData();
-    const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
 
     for (i=0; i<num_terrains; i++) {

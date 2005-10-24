@@ -48,8 +48,8 @@ CourseRenderer courseRenderer;
 
 CourseRenderer::CourseRenderer()
  : mp_nmls(NULL),
-   m_clip(false),
-   mp_root(NULL)
+   mp_root(NULL),
+   m_clip(false)
 {
 }
 
@@ -62,7 +62,6 @@ CourseRenderer::calcNormals()
     ppogl::Vec3d p0, p1, p2;
     ppogl::Vec3d n, nml, v1, v2;
 
-    const float *elevation = Course::getElevData();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
 

@@ -2,8 +2,8 @@
 
 
 FTGlyph::FTGlyph( FT_GlyphSlot glyph, bool useList)
-:   useDisplayList(useList),
-    err(0)  
+ : err(0),
+   useDisplayList(useList)
 {
     if( glyph)
     {

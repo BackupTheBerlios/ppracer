@@ -217,7 +217,7 @@ Course::fillGLArrays()
     // Align vertices and normals on 16-byte intervals (Q3A does this)
     int arraySize = STRIDE_GL_ARRAY * nx * ny;
 	Course::vncArray = new GLubyte[arraySize];
-	PP_CHECK_ALLOC(vnc_array);
+	PP_CHECK_ALLOC(vncArray);
 	
     for (x=0; x<nx; x++) {
 	for (y=0; y<ny; y++) {
@@ -493,7 +493,7 @@ terrain_cb(ppogl::Script *vm)
     }
 
     Course::terrain = new int[nx*ny];
-	PP_CHECK_ALLOC(terrain);
+	PP_CHECK_ALLOC(Course::terrain);
 		
     for(int y=0; y<ny; y++){
         for(int x=0; x<nx; x++){
