@@ -112,8 +112,7 @@ create_scene_node(const std::string& parent_name, const std::string& child_name,
     child->next = NULL;
     child->child = NULL;
     child->mat = NULL;
-    child->render_shadow = true;
-    child->eye = false;
+    child->renderShadow = true;
     child->trans.makeIdentity();
     child->invtrans.makeIdentity();
 
@@ -265,33 +264,11 @@ set_scene_node_shadow_state(const std::string& node, const std::string& state)
     } 
 
     if(state=="off"){
-		nodePtr->render_shadow = false;
+		nodePtr->renderShadow = false;
     }else if(state=="on"){
-		nodePtr->render_shadow = true;
+		nodePtr->renderShadow = true;
     } else {
 		return "Shadow state must be 'on' or 'off'";
-    }
-
-    return "";
-}
-
-std::string 
-set_scene_node_eye(const std::string& node, const std::string& which_eye )
-{
-    SceneNode *nodePtr;
-
-    if(get_scene_node(node, &nodePtr) != true){
-        return "No such node";
-    } 
-
-    if (which_eye=="right" ){
-		nodePtr->eye = true;
-		nodePtr->which_eye = TuxRightEye;
-    }else if(which_eye == "left"){
-		nodePtr->eye = true;
-		nodePtr->which_eye = TuxLeftEye;
-    }else{
-		return "'eye' must be right or left";
     }
 
     return "";

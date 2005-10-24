@@ -184,7 +184,6 @@ tux.rotate(left_iris, "z", 5);
 tux.rotate(left_iris, "x", 5);
 tux.scale(left_iris, [0, 0, 0], [0.055, 0.07, 0.03]);
 tux.shadow(left_iris, "off");
-tux.eye(left_iris,"left");
 
 tux.sphere(head_org, "ri", 0.66);
 local right_iris = head_org + ":ri";
@@ -195,7 +194,6 @@ tux.rotate(right_iris, "z", -5);
 tux.rotate(right_iris, "x", 5);
 tux.scale(right_iris, [0,0,0], [0.055, 0.07, 0.03]);
 tux.shadow(right_iris, "off");
-tux.eye(right_iris, "right");
 
 // create Upper Arm
 

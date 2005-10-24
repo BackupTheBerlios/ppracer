@@ -272,31 +272,6 @@ tux_shadow(ppogl::Script *vm)
     return 0;
 }
 
-static int
-tux_eye(ppogl::Script *vm) 
-{
-    std::string errmsg;
-
-    std::string node_name;
-    std::string which_eye;
-
-    if(vm->getTop() !=2 ){
-        PP_WARNING("tux.eye: Invalid number of arguments");
-		return 0; 
-    }
-
-    node_name = vm->getString(1);
-    which_eye = vm->getString(2);
-
-    errmsg = set_scene_node_eye( node_name, which_eye );
-
-    // report error, if any
-    if(!errmsg.empty()){
-        PP_WARNING(errmsg);
-    }
-    return 0;
-}
-
 static const struct ppogl::Script::Lib tuxlib[]={
 	{"rotate",tux_rotate},
 	{"translate",tux_translate},
@@ -306,7 +281,6 @@ static const struct ppogl::Script::Lib tuxlib[]={
   	{"material",tux_material},
 	{"surfaceproperty",tux_surfaceproperty},
 	{"shadow",tux_shadow},
-	{"eye",tux_eye},
 	{NULL, NULL}
 };
 

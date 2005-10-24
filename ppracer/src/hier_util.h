@@ -30,7 +30,8 @@
 
 enum Geometry
 { 
-    Empty, Sphere
+    Empty,
+	Sphere
 };
 
 /// Data for Sphere node type.
@@ -40,13 +41,6 @@ struct SphereNode
 	
 	/// How many divisions do we use to draw a sphere?
     int divisions;		
-};
-
-/// Tux's eyes
-enum TuxEye
-{
-    TuxLeftEye = 0, 
-    TuxRightEye = 1
 };
 
 struct SceneNode
@@ -64,21 +58,13 @@ struct SceneNode
       
 	ppogl::Material* mat;
 
-    /// Do we draw the shadow of this node?
-    bool render_shadow;
-
-    /// Is this node one of tux's eyes?
-    bool eye;
-
-    /// If so, which one?
-    TuxEye which_eye;
-
     /// The forward and inverse transforms
     pp::Matrix trans;
-    pp::Matrix invtrans;   
-
+    pp::Matrix invtrans;
+	
+    /// Do we draw the shadow of this node?
+    bool renderShadow;
 };
-
 
 
 void draw_sphere(int num_divisions);
