@@ -27,17 +27,11 @@
 
 #include "algstuff.h"
 
-
-enum Geometry
-{ 
-    Empty,
-	Sphere
-};
-
 /// Data for Sphere node type.
 struct SphereNode
 {
-    float radius;
+    /// Radius of the sphere
+	float radius;
 	
 	/// How many divisions do we use to draw a sphere?
     int divisions;		
@@ -49,18 +43,16 @@ struct SceneNode
     SceneNode* next;
     SceneNode* child;
 
-	/// type of node
-    Geometry geom;
-
-    union{
-        SphereNode sphere;   
-    }param;
+    SphereNode sphere;   
       
 	ppogl::Material* mat;
 
     /// The forward and inverse transforms
     pp::Matrix trans;
     pp::Matrix invtrans;
+	
+	/// is node a sphere
+	bool isSphere;
 	
     /// Do we draw the shadow of this node?
     bool renderShadow;

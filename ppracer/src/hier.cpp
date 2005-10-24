@@ -283,7 +283,7 @@ create_tranform_node(const std::string& parent_name, const std::string& child_na
         return msg;
     } 
 
-    node->geom = Empty;
+    node->isSphere = false;
 
     return msg;
 }
@@ -298,9 +298,9 @@ create_sphere_node(const std::string& parent_name, const std::string& child_name
         return msg;
     } 
 
-    node->geom = Sphere;
-    node->param.sphere.radius = 1.0;
-    node->param.sphere.divisions = MIN( 
+    node->isSphere = true;
+    node->sphere.radius = 1.0;
+    node->sphere.divisions = MIN( 
 	MAX_SPHERE_DIVISIONS, MAX( 
 	    MIN_SPHERE_DIVISIONS, 
 	    ROUND_TO_NEAREST(PPConfig.getInt("tux_sphere_divisions") * resolution ) 

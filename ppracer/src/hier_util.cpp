@@ -107,11 +107,11 @@ traverse_dag(SceneNode *node, ppogl::Material *mat)
         mat = node->mat;
     } 
 
-    if ( node->geom == Sphere ) {
+    if ( node->isSphere == true ) {
         set_material( mat->diffuse, mat->specular, mat->getSpecularExponent() );
 
 	    gl::CallList( get_sphere_display_list( 
-		node->param.sphere.divisions ) );
+		node->sphere.divisions ) );
     } 
 
     child = node->child;
@@ -270,8 +270,7 @@ check_polyhedron_collision_with_dag(SceneNode *node,
     newModelMatrix=modelMatrix*node->trans;
     newInvModelMatrix=node->invtrans*invModelMatrix;
 
-    if(node->geom == Sphere){
-        //ppogl::Polyhedron newph = copy_polyhedron( ph );
+    if(node->isSphere == true){
         ppogl::Polyhedron newph(ph);
 		trans_polyhedron( newInvModelMatrix, newph );
 		hit = intersect_polyhedron( newph );

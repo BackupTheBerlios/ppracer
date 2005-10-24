@@ -73,7 +73,7 @@ traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 
     new_model_matrix=model_matrix*node->trans;
 
-    if(node->geom == Sphere && node->renderShadow){
+    if(node->isSphere == true && node->renderShadow){
 		draw_shadow_sphere( new_model_matrix );
     } 
 
