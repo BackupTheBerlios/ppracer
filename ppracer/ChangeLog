@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/credits.cpp
+	cleanups
+
 2005-10-24  Volker Stroebel <volker@planetpenguin.de>
 	* src/hier_utils.* src/hier.cpp data/models/*/model.nut
 	removed unused eye values from struct SceneNode

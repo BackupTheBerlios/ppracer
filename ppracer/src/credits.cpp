@@ -22,19 +22,20 @@
 
 #include "credits.h"
 
+#include "ppogl/base/defs.h"
 #include "ppogl/translation.h"
 #include "ppogl/ui.h"
 
 #define CREDITS_MAX_Y -140
 #define CREDITS_MIN_Y 64
 
-typedef struct {
+struct creditLine{
     bool translateable;
 	const char *binding;
     const char *text;
-} credit_line_t;
+};
 
-static credit_line_t credit_lines[] = 
+static creditLine creditLines[] = 
 {
 	{false, "credits_h1", "PlanetPenguin Racer" },
     {false, "credits_text", "http://racer.planetpenguin.de" },
@@ -94,20 +95,19 @@ static credit_line_t credit_lines[] =
 Credits::Credits()
  : m_yOffset(0.0)
 {
-	lines = new CLine[sizeof( credit_lines ) / sizeof( credit_lines[0])];
+	lines = new CLine[PP_NUM_ELEMENTS(creditLines)];
 	
-	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
-		lines[i].font=ppogl::FontMgr::getInstance().get(credit_lines[i].binding);
-		if(credit_lines[i].translateable){
-			lines[i].text=_(credit_lines[i].text);
+	for(unsigned int i=0; i<PP_NUM_ELEMENTS(creditLines); i++) {
+		lines[i].font=ppogl::FontMgr::getInstance().get(creditLines[i].binding);
+		if(creditLines[i].translateable){
+			lines[i].text=_(creditLines[i].text);
 		}else{
-			lines[i].text=credit_lines[i].text;
-		}		
+			lines[i].text=creditLines[i].text;
+		}
 	}
 	
     ppogl::AudioMgr::getInstance().playMusic("credits_screen");
 }
-
 
 Credits::~Credits()
 {	
@@ -117,8 +117,6 @@ Credits::~Credits()
 void
 Credits::loop(float timeStep)
 {
-    //update_audio();
-
     set_gl_options( GUI );
 
     drawText( timeStep );
@@ -154,7 +152,7 @@ Credits::drawText( float timeStep )
     y = CREDITS_MIN_Y + m_yOffset;
 
 	//loop through all credit lines
-	for (unsigned int i=0; i<sizeof( credit_lines ) / sizeof( credit_lines[0] ); i++) {
+	for(unsigned int i=0; i<PP_NUM_ELEMENTS(creditLines); i++){
 	    CLine line = lines[i];
 
 		//get the font and sizes for the binding
