@@ -60,15 +60,7 @@ public:
 	void set(const double *v);
 	
 	/// print formated values to an std::ostream
-	friend inline std::ostream& operator << (std::ostream& output, const Vec4f& vec)
-	{
-		output 	<< vec.values[0] << ":"
-				<< vec.values[1] << ":"
-				<< vec.values[2] << ":"
-				<< vec.values[3];	
-		return output;
-	}
-	
+	friend std::ostream& operator << (std::ostream& output, const Vec4f& vec);	
 };
 
 

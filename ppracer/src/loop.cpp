@@ -237,6 +237,7 @@ void loop_mouse_func (int button, int state, int x, int y)
 	}	
 }
 
+
 void loop_mouse_motion_func( int x, int y )
 {
 	if( cursorPos.x() != x || cursorPos.y() != y ) {

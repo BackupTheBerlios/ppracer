@@ -50,16 +50,16 @@
 #define max(x,y) ((x)>(y)?(x):(y))
 
 
-typedef struct _particle_t
+struct Particle
 {
     ppogl::Vec2d pt;
     double size;
     ppogl::Vec2d vel;
     ppogl::Vec2d tex_min;
     ppogl::Vec2d tex_max;
-} particle_t;
+};
 
-static particle_t particles[MAX_NUM_PARTICLES];
+static Particle particles[MAX_NUM_PARTICLES];
 static int num_particles = BASE_NUM_PARTICLES;
 static ppogl::Color particleColor(1, 1, 1, 0.4);
 static ppogl::Vec2d push_position(0,0);
@@ -181,7 +181,7 @@ update_ui_snow(double time_step, bool windy)
 
     /* Kill off & regenerate particles */
     for (i=0; i<num_particles; i++) {
-	particle_t *p = &particles[i];
+	Particle *p = &particles[i];
 
 	if (p->pt.y() < -0.05) {
 	    /* If we have an excess of particles, kill off with

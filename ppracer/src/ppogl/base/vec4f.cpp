@@ -65,4 +65,13 @@ Vec4f::set(const double *v)
 	values[3]=v[3];
 }
 
+std::ostream& operator << (std::ostream& output, const Vec4f& vec)
+{
+	output 	<< vec.values[0] << ":"
+			<< vec.values[1] << ":"
+			<< vec.values[2] << ":"
+			<< vec.values[3];	
+	return output;
+}
+
 } //namespace ppogl

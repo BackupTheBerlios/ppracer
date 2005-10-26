@@ -72,6 +72,15 @@ Color::set(const double *color)
 	values[3]=color[3];	
 }
 
+std::ostream& operator << (std::ostream& output, const Color& color)
+{
+	output 	<< color.values[0] << ":"
+			<< color.values[1] << ":"
+			<< color.values[2] << ":"
+			<< color.values[3];		
+	return output;
+}
+
 const Color Color::black(0.0f,0.0f,0.0f);
 const Color Color::white(1.0f,1.0f,1.0f);
 
@@ -106,6 +115,15 @@ Color4c::set(const unsigned char *color)
 	values[1]=color[1];
 	values[2]=color[2];
 	values[3]=color[3];
+}
+
+std::ostream& operator << (std::ostream& output, const Color4c& color)
+{
+	output 	<< int(color.values[0]) << ":"
+			<< int(color.values[1]) << ":"
+			<< int(color.values[2]) << ":"
+			<< int(color.values[3]);		
+	return output;
 }
 
 const Color4c Color4c::black(0,0,0);

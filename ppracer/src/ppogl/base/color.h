@@ -64,16 +64,8 @@ public:
 	static const ppogl::Color white;
 	
 	/// print formated values to an std::ostream
-	friend inline std::ostream& operator << (std::ostream& output, const Color& color)
-	{
-		output 	<< color.values[0] << ":"
-				<< color.values[1] << ":"
-				<< color.values[2] << ":"
-				<< color.values[3];		
-		return output;
-	}
+	friend std::ostream& operator << (std::ostream& output, const Color& color);
 };
-
 
 // unsigned char based RGBA color class
 class Color4c
@@ -125,15 +117,7 @@ public:
 	static const ppogl::Color4c white;
 		
 	/// print formated values to an std::ostream
-	friend inline std::ostream& operator << (std::ostream& output, const Color4c& color)
-	{
-		output 	<< int(color.values[0]) << ":"
-				<< int(color.values[1]) << ":"
-				<< int(color.values[2]) << ":"
-				<< int(color.values[3]);		
-		return output;
-	}
-	
+	friend std::ostream& operator << (std::ostream& output, const Color4c& color);
 };
 
 } // namespace ppogl

@@ -60,4 +60,12 @@ Vec3f::set(const double *v)
 	values[2]=v[2];
 }
 
+std::ostream& operator << (std::ostream& output, const Vec3f& vec)
+{
+	output 	<< vec.values[0] << ":"
+			<< vec.values[1] << ":"
+			<< vec.values[2];		
+	return output;
+}	
+
 } //namespace ppogl

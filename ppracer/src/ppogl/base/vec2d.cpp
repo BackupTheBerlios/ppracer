@@ -65,4 +65,11 @@ operator-(const Vec2d& vec,const double value)
 	return Vec2d(vec.x()-value, vec.y()-value);
 }
 
+std::ostream& operator << (std::ostream& output, const Vec2d& vec)
+{
+	output 	<< vec.values[0] << ":"
+			<< vec.values[1];		
+	return output;
+}
+
 } //namespace ppogl
