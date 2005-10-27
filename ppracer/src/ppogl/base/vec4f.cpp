@@ -39,32 +39,6 @@ Vec4f::Vec4f(const float x, const float y, const float z, const float w)
 	values[3]=w;	
 }
 
-Vec4f::Vec4f(const float *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];
-	values[3]=v[3];
-}
-
-void
-Vec4f::set(const float *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];
-	values[3]=v[3];
-}
-
-void
-Vec4f::set(const double *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];
-	values[3]=v[3];
-}
-
 std::ostream& operator << (std::ostream& output, const Vec4f& vec)
 {
 	output 	<< vec.values[0] << ":"

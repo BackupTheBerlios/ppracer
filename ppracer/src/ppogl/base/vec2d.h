@@ -31,6 +31,9 @@ class Vec2d
 public:
 	double values[2];
 	
+	Vec2d();
+	Vec2d(const double x, const double y);
+
 	double& x(){return values[0];};
 	double& y(){return values[1];};
 	
@@ -48,11 +51,7 @@ public:
 		PP_REQUIRE(position>=0 && position<=1,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	Vec2d();
-	Vec2d(const double x, const double y);
-	Vec2d(const double *v);	
-	
+		
 	friend Vec2d operator+(const Vec2d& vec1,const Vec2d& vec2);
 	friend Vec2d operator+(const Vec2d& vec1,const double value);
 	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2);

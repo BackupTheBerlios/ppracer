@@ -30,6 +30,9 @@ class Vec4f
 public:
 	float values[4];
 	
+	Vec4f();
+	Vec4f(const float x, const float y, const float z, const float w);
+
 	float& x(){return values[0];};
 	float& y(){return values[1];};
 	float& z(){return values[2];};
@@ -51,13 +54,6 @@ public:
 		PP_REQUIRE(position>=0 && position<=3,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	Vec4f();
-	Vec4f(const float x, const float y, const float z, const float w);
-	Vec4f(const float *v);	
-
-	void set(const float *v);
-	void set(const double *v);
 	
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec4f& vec);	

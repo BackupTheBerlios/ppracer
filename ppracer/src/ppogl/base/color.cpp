@@ -38,40 +38,6 @@ Color::Color(const float red, const float green, const float blue, const float a
 	values[3]=alpha;
 }
 
-Color::Color(const float *color)
-{
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=1.0;
-}
-
-Color::Color(const double *color)
-{
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=1.0;	
-}
-
-void
-Color::set(const float *color)
-{
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=color[3];	
-}
-
-void
-Color::set(const double *color)
-{
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=color[3];	
-}
-
 std::ostream& operator << (std::ostream& output, const Color& color)
 {
 	output 	<< color.values[0] << ":"
@@ -98,23 +64,6 @@ Color4c::Color4c(const unsigned char red, const unsigned char green, const unsig
 	values[1]=green;
 	values[2]=blue;
 	values[3]=alpha;
-}
-
-Color4c::Color4c(const unsigned char *color)
-{	
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=255;
-}
-
-void
-Color4c::set(const unsigned char *color)
-{
-	values[0]=color[0];
-	values[1]=color[1];
-	values[2]=color[2];
-	values[3]=color[3];
 }
 
 std::ostream& operator << (std::ostream& output, const Color4c& color)

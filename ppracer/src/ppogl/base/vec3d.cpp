@@ -37,13 +37,6 @@ Vec3d::Vec3d(const double x, const double y, const double z)
 	values[2]=z;	
 }
 
-Vec3d::Vec3d(const double *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];	
-}
-
 double 
 Vec3d::normalize()
 {

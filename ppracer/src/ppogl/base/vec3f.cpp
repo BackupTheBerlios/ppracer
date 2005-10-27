@@ -37,29 +37,6 @@ Vec3f::Vec3f(const float x, const float y, const float z)
 	values[2]=z;	
 }
 
-Vec3f::Vec3f(const float *v)
-{	
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];	
-}
-
-void
-Vec3f::set(const float *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];
-}
-
-void
-Vec3f::set(const double *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-	values[2]=v[2];
-}
-
 std::ostream& operator << (std::ostream& output, const Vec3f& vec)
 {
 	output 	<< vec.values[0] << ":"

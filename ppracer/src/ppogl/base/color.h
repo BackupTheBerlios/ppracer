@@ -30,6 +30,9 @@ class Color
 public: 
 	float values[4];
 		
+	Color();
+	Color(const float red, const float green, const float blue, const float alpha=1.0f);	
+
 	float& r(){return values[0];};
 	float& g(){return values[1];};
 	float& b(){return values[2];};
@@ -51,15 +54,7 @@ public:
 		PP_REQUIRE(position>=0 && position<=3,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	Color();
-	Color(const float red, const float green, const float blue, const float alpha=1.0f);	
-	Color(const float *color);
-	Color(const double *color);
-		
-	void set(const float *color);
-	void set(const double *color);
-	
+
 	static const ppogl::Color black;
 	static const ppogl::Color white;
 	
@@ -73,6 +68,9 @@ class Color4c
 public: 
 	unsigned char values[4];
 	
+	Color4c();
+	Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha = 255);	
+
 	unsigned char& r(){return values[0];};
 	unsigned char& g(){return values[1];};
 	unsigned char& b(){return values[2];};
@@ -94,12 +92,6 @@ public:
 		PP_REQUIRE(position>=0 && position<=3,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	Color4c();
-	Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha = 255);	
-	Color4c(const unsigned char *color);
-	
-	void set(const unsigned char *color);
 	
 	///returns integer for the RGB part of the color
 	inline unsigned int getRGB(){return r() + (g()<<8) + (b()<<16);};

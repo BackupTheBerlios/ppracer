@@ -29,7 +29,10 @@ class Vec3d
 {
 public:
 	double values[3];
-	
+		
+	Vec3d();
+	Vec3d(const double x, const double y, const double z);
+
 	double& x(){return values[0];};
 	double& y(){return values[1];};
 	double& z(){return values[2];};
@@ -49,12 +52,7 @@ public:
 		PP_REQUIRE(position>=0 && position<=2,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	
-	Vec3d();
-	Vec3d(const double x, const double y, const double z);
-	Vec3d(const double *v);	
-	
+		
 	double normalize();
 	double length() const;
 	double length2() const;

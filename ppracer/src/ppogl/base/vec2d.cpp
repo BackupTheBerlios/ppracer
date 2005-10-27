@@ -35,12 +35,6 @@ Vec2d::Vec2d(const double x, const double y)
 	values[1]=y;
 }
 
-Vec2d::Vec2d(const double *v)
-{
-	values[0]=v[0];
-	values[1]=v[1];
-}
-
 Vec2d
 operator+(const Vec2d& vec1,const Vec2d& vec2)
 {

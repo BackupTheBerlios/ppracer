@@ -5,6 +5,9 @@
 	* src/ppogl/sg/vnc.* src/course_load.* src/quadtree.*
 	added class VNCArray
 	changed code to use the new class
+	
+	* src/ppogl/base/vec* src/ppogl/base/color.*
+	removed unused code
 
 2005-10-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/credits.cpp

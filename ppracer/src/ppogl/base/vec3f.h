@@ -30,6 +30,9 @@ class Vec3f
 public:
 	float values[3];	
 
+	Vec3f();
+	Vec3f(const float x, const float y, const float z);
+
 	float& x(){return values[0];};
 	float& y(){return values[1];};
 	float& z(){return values[2];};
@@ -49,15 +52,7 @@ public:
 		PP_REQUIRE(position>=0 && position<=2,"Position exceeds size of array: " << position);
 		return values[position];
 	}
-	
-	Vec3f();
-	Vec3f(const float x, const float y, const float z);
-	Vec3f(const float *v);	
-	
-	void set(const float *v);
-	void set(const double *v);
-	
-	
+		
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec3f& vec);
 };
