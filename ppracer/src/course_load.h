@@ -25,16 +25,15 @@
 
 #include "ppogl/models/model.h"
 #include "ppogl/textures.h"
+#include "ppogl/sg/vnc.h"
 
 #include <list>
 #include <string>
 
-#define STRIDE_GL_ARRAY ( 8 * sizeof(GLfloat) + 4 * sizeof(GLubyte) )
-
 /// Convenience macro for accessing terrain elevations
 #define ELEV(varx,vary) ( Course::elevation[(varx) + nx*(vary)] )
 
-/// Convenience acro to create a course vertex
+/// Convenience macro to create a course vertex
 #define COURSE_VERTEX(varx,vary) ppogl::Vec3d( float(varx)/(nx-1.)*(courseDim.x()), \
                        ELEV((varx),(vary)), -float(vary)/(ny-1.)*(courseDim.y())) 
 
@@ -48,7 +47,9 @@ public:
 	
 	static ppogl::Vec2d dimension;
 	static ppogl::Vec2d playDimension;
-	static GLubyte* vncArray;
+	//static GLubyte* vncArray;
+	static ppogl::VNCArray *sm_vncArray;
+	
 	static float angle;
 	static float* elevation;
 	static int* terrain;
@@ -69,7 +70,7 @@ public:
 	static void setStartPt(const ppogl::Vec2d& p);
 	static const ppogl::Vec2d& getStartPt();
 
-	static GLubyte* getGLArrays(){return vncArray;}
+	static ppogl::VNCArray* getGLArrays(){return sm_vncArray;}
 
 	static void registerCallbacks();
 	static void fillGLArrays();

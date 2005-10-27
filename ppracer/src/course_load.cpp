@@ -49,6 +49,8 @@
 
 #include "elements.h"
 
+#include "ppogl/sg/vnc.h"
+
 #include <iostream>
 
 #define MIN_ANGLE 5
@@ -85,7 +87,7 @@ static std::map<std::string,ppogl::RefPtr<ItemType> > itemTypes;
 std::list<int> usedTerrains;
 
 ///interleaved vertex, normal, and color data
-GLubyte* Course::vncArray = NULL;
+ppogl::VNCArray* Course::sm_vncArray = NULL;
 
 ///last loaded course
 std::string Course::sm_loadedCourse;
@@ -185,8 +187,8 @@ reset_course()
     delete[] Course::terrain;
 	Course::terrain=NULL;
 
-    delete[] Course::vncArray;
-	Course::vncArray=NULL;
+    delete[] Course::sm_vncArray;
+	Course::sm_vncArray=NULL;
 
 	modelLocs.clear();
 	modelTypes.clear();
@@ -205,60 +207,26 @@ reset_course()
 void
 Course::fillGLArrays()
 {
-    int x,y;
-    ppogl::Vec3d *normals = courseRenderer.getNormals();
-    ppogl::Vec3d nml;
-    int idx;
-
-    gl::DisableClientState(GL_VERTEX_ARRAY);
-    gl::DisableClientState(GL_NORMAL_ARRAY);
-    gl::DisableClientState(GL_COLOR_ARRAY);
+    const ppogl::Vec3d *normals = courseRenderer.getNormals();
 
     // Align vertices and normals on 16-byte intervals (Q3A does this)
-    int arraySize = STRIDE_GL_ARRAY * nx * ny;
-	Course::vncArray = new GLubyte[arraySize];
-	PP_CHECK_ALLOC(vncArray);
+	Course::sm_vncArray = new ppogl::VNCArray(nx*ny);
 	
-    for (x=0; x<nx; x++) {
-	for (y=0; y<ny; y++) {
-	    idx = STRIDE_GL_ARRAY*(y*nx+x);
-	   
-#define floatval(i) (*reinterpret_cast<GLfloat*>(Course::vncArray+idx+(i)*sizeof(GLfloat)))
-
-	    floatval(0) = GLfloat(x) / (nx-1.) * dimension.x();
-	    floatval(1) = ELEV(x,y);
-	    floatval(2) = -GLfloat(y)/ (ny-1.) * dimension.y();
-
-	    nml = normals[ x + y * nx ];
-	    floatval(4) = nml.x();
-	    floatval(5) = nml.y();
-	    floatval(6) = nml.z();
-	    floatval(7) = 1.0f;
-	   
-#undef floatval
-#define byteval(i) (*reinterpret_cast<GLubyte*>(Course::vncArray+idx+8*sizeof(GLfloat) +\
-    i*sizeof(GLubyte)))
-
-	    byteval(0) = 255;
-	    byteval(1) = 255;
-	    byteval(2) = 255;
-	    byteval(3) = 255;
-
-#undef byteval
-
+	sm_vncArray->disable();	
+	
+    for(int x=0; x<nx; x++) {
+	for(int y=0; y<ny; y++) {
+	    const int idx = y*nx+x;
+	   	Course::sm_vncArray->setVertex(idx,
+			GLfloat(x) / (nx-1.) * dimension.x(),
+			ELEV(x,y),
+			-GLfloat(y)/ (ny-1.) * dimension.y());
+		Course::sm_vncArray->setNormal(idx,normals[ x + y * nx ]);
+		Course::sm_vncArray->setColor(idx,255, 255, 255, 255);
 	}
     }
 
-		gl::EnableClientState(GL_VERTEX_ARRAY);
-    	gl::VertexPointer( 3, GL_FLOAT, STRIDE_GL_ARRAY, Course::vncArray );
-
-    	gl::EnableClientState(GL_NORMAL_ARRAY);
-    	gl::NormalPointer( GL_FLOAT, STRIDE_GL_ARRAY, 
-		     Course::vncArray + 4*sizeof(GLfloat) );
-
-    	gl::EnableClientState(GL_COLOR_ARRAY);
-    	gl::ColorPointer( 4, GL_UNSIGNED_BYTE, STRIDE_GL_ARRAY, 
-		    Course::vncArray + 8*sizeof(GLfloat) );
+	sm_vncArray->enable();
 }
 
 bool

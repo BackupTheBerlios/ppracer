@@ -68,7 +68,8 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	imagebutton.$(OBJEXT) entry.$(OBJEXT) textarea.$(OBJEXT) \
 	frame.$(OBJEXT) scale.$(OBJEXT) sound.$(OBJEXT) \
 	music.$(OBJEXT) audiomgr.$(OBJEXT) geoms.$(OBJEXT) \
-	materials.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT)
+	materials.$(OBJEXT) vnc.$(OBJEXT) model.$(OBJEXT) \
+	model_ac.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -291,6 +292,8 @@ libppogl_a_SOURCES = \
 	sg/geoms.h		\
 	sg/materials.cpp	\
 	sg/materials.h		\
+	sg/vnc.cpp		\
+	sg/vnc.h		\
 	\
 	\
 	models/model.cpp	\
@@ -384,6 +387,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec3d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec3f.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec4f.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vnc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writePPM.Po@am__quote@
 
@@ -862,6 +866,20 @@ materials.obj: sg/materials.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sg/materials.cpp' object='materials.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o materials.obj `if test -f 'sg/materials.cpp'; then $(CYGPATH_W) 'sg/materials.cpp'; else $(CYGPATH_W) '$(srcdir)/sg/materials.cpp'; fi`
+
+vnc.o: sg/vnc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vnc.o -MD -MP -MF "$(DEPDIR)/vnc.Tpo" -c -o vnc.o `test -f 'sg/vnc.cpp' || echo '$(srcdir)/'`sg/vnc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vnc.Tpo" "$(DEPDIR)/vnc.Po"; else rm -f "$(DEPDIR)/vnc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sg/vnc.cpp' object='vnc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vnc.o `test -f 'sg/vnc.cpp' || echo '$(srcdir)/'`sg/vnc.cpp
+
+vnc.obj: sg/vnc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vnc.obj -MD -MP -MF "$(DEPDIR)/vnc.Tpo" -c -o vnc.obj `if test -f 'sg/vnc.cpp'; then $(CYGPATH_W) 'sg/vnc.cpp'; else $(CYGPATH_W) '$(srcdir)/sg/vnc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vnc.Tpo" "$(DEPDIR)/vnc.Po"; else rm -f "$(DEPDIR)/vnc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sg/vnc.cpp' object='vnc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vnc.obj `if test -f 'sg/vnc.cpp'; then $(CYGPATH_W) 'sg/vnc.cpp'; else $(CYGPATH_W) '$(srcdir)/sg/vnc.cpp'; fi`
 
 model.o: models/model.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT model.o -MD -MP -MF "$(DEPDIR)/model.Tpo" -c -o model.o `test -f 'models/model.cpp' || echo '$(srcdir)/'`models/model.cpp; \

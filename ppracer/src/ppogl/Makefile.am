@@ -96,6 +96,8 @@ libppogl_a_SOURCES = 		\
 	sg/geoms.h		\
 	sg/materials.cpp	\
 	sg/materials.h		\
+	sg/vnc.cpp		\
+	sg/vnc.h		\
 	\
 	\
 	models/model.cpp	\

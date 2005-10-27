@@ -18,6 +18,7 @@
 #define _QUADTREE_H_
 
 #include "viewfrustum.h"
+#include "ppogl/sg/vnc.h"
 
 enum VertexLoc
 {
@@ -106,7 +107,7 @@ public:
     int	countNodes();
 	
     void update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation);
-    void render(const quadcornerdata& cd, GLubyte *vnc_array);
+    void render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array);
 
 	inline void setScale(const float x, const float z)
 	{

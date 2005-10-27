@@ -24,9 +24,10 @@
 #include "ppogl/base/glwrappers.h"
 #include "ppogl/base/glextensions.h"
 
+#include "ppogl/sg/vnc.h"
+
 #include "quadtree.h"
 #include "gameconfig.h"
-
 
 /** Amount to scale terrain errors by in order to be comparable to
    height errors */
@@ -48,8 +49,8 @@
 #define ENV_MAP_ALPHA 50
 
 /** Useful macro for setting colors in the color array */
-#define colorval(j,ch) \
-VNCArray[j*STRIDE_GL_ARRAY+STRIDE_GL_ARRAY-4+(ch)]
+//#define colorval(j,ch) \
+//s_VNCArray->data[j*STRIDE_GL_ARRAY+STRIDE_GL_ARRAY-4+(ch)]
 
 extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
@@ -879,7 +880,7 @@ quadsquare::initVert(const int i, const int x,const int z)
 	return (VertexTerrains[i] = Terrain[idx]);
 }
 
-static GLubyte *VNCArray;
+static ppogl::VNCArray* s_VNCArray;
 
 void
 quadsquare::drawTris(int terrain)
@@ -925,10 +926,10 @@ quadsquare::initArrayCounters()
 }
 
 void
-quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
+quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 /// Draws the heightfield represented by this tree.
 {
-    VNCArray = vnc_array;
+    s_VNCArray = vnc_array;
     const bool fog_on=fogPlane.isEnabled();
     int i,idx;
     int nx, ny;
@@ -948,7 +949,7 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 		for (i=0; i<int(VertexArrayCounter[(*it)]);i++){
 			idx = VertexArrayIndices[(*it)][i];
-			colorval(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
+			s_VNCArray->colorValue(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
 
 		gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
@@ -983,10 +984,10 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 	    
 	    /* Set triangle vertices to black */
 	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
-			colorval( VertexArrayIndices[0][i], 0 ) = 0;
-			colorval( VertexArrayIndices[0][i], 1 ) = 0;
-			colorval( VertexArrayIndices[0][i], 2 ) = 0;
-			colorval( VertexArrayIndices[0][i], 3 ) = 255;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 0) = 0;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 1) = 0;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 2) = 0;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 255;
 	    }
 	    
 	    /* Draw the black triangles */
@@ -1003,9 +1004,9 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 	    /* First set triangle colors to white */
 	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
-			colorval( VertexArrayIndices[0][i], 0 ) = 255;
-			colorval( VertexArrayIndices[0][i], 1 ) = 255;
-			colorval( VertexArrayIndices[0][i], 2 ) = 255;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 0 )=255;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 1 )=255;
+			s_VNCArray->colorValue(VertexArrayIndices[0][i], 2 )=255;
 	    }
 
 		//for (int j=0; j<(int)num_terrains; j++) {
@@ -1015,7 +1016,7 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 
 			/* Set alpha values */
 			for (i=0; i<int(VertexArrayCounter[0]); i++) {
-				colorval( VertexArrayIndices[0][i], 3 ) = 
+				s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 
 				(Terrain[VertexArrayIndices[0][i]] == int(*it) ) ? 
 				255 : 0;
 			}
@@ -1040,7 +1041,7 @@ quadsquare::render(const quadcornerdata& cd, GLubyte *vnc_array)
 			
 		//the ice stuff should be rewritten...
 		for (i=0; i<int(VertexArrayCounter[0]); i++) {
-		    colorval( VertexArrayIndices[0][i], 3 ) = 
+		    s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 
 			(Terrain[VertexArrayIndices[0][i]] == 0) ? 
 			ENV_MAP_ALPHA : 0;
 		}			
@@ -1107,7 +1108,7 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 typedef void (*make_tri_func_t)( int a, int b, int c, int terrain );
 
 /* Local macro for setting alpha value based on terrain */
-#define setalphaval(i) colorval(VertexIndices[i], 3) = \
+#define setalphaval(i) s_VNCArray->colorValue(VertexIndices[i], 3) = \
     ( terrain <= VertexTerrains[i] ) ? 255 : 0 
 
 #define update_min_max( idx,terrain ) \
