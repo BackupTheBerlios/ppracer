@@ -260,41 +260,16 @@ set_wind_velocity(const ppogl::Vec3d& velocity, float scale)
 }
 
 void
-increment_turn_fact(Player& plyr, double amt)
-{
-    plyr.control.turn_fact += amt;
-    plyr.control.turn_fact = MIN( 1.0, MAX( plyr.control.turn_fact, -1.0 ) );
-}
-
-double
-get_min_tux_speed()
-{
-    return MIN_TUX_SPEED;   
-}
-
-float
-get_min_y_coord() 
-{
-    const ppogl::Vec2d& courseDim = Course::getDimensions();
-	
-    float angle = Course::getAngle();
-    float minY = -courseDim.y() * tan( ANGLES_TO_RADIANS( angle ) );
-    
-	return minY;
-} 
-
-void
 get_indices_for_point(double x, double z, 
 			    int *x0, int *y0, int *x1, int *y1)
 {
-    float xidx, yidx;
     int nx, ny;
 
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
     
-    xidx = x / courseDim.x() * ( float(nx) - 1. );
-    yidx = -z / courseDim.y() * ( float(ny) - 1. );
+    float xidx = x / courseDim.x() * ( float(nx) - 1. );
+    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
     if (xidx < 0) {
         xidx = 0;
@@ -349,7 +324,6 @@ find_barycentric_coords(float x, float z,
 			      Index2d *idx2,
 			      float *u, float *v)
 {
-    float xidx, yidx;
     int nx, ny;
     int x0, x1, y0, y1;
     float dx, ex, dz, ez, qx, qz, invdet; // to calc. barycentric coords 
@@ -361,8 +335,8 @@ find_barycentric_coords(float x, float z,
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / courseDim.x() * ( float(nx) - 1. );
-    yidx = -z / courseDim.y() * ( float(ny) - 1. );
+    float xidx = x / courseDim.x() * ( float(nx) - 1. );
+    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
 
     /* The terrain is meshed as follows:
@@ -427,29 +401,22 @@ find_barycentric_coords(float x, float z,
 ppogl::Vec3d
 find_course_normal(const float x, const float z)
 {
-    ppogl::Vec3d *course_nmls;
-    ppogl::Vec3d tri_nml;
-    float xidx, yidx;
     int nx, ny;
     int x0, x1, y0, y1;
     ppogl::Vec3d p0, p1, p2;
     Index2d idx0, idx1, idx2;
     ppogl::Vec3d n0, n1, n2;
     float u, v;
-    float min_bary, interp_factor;
-    ppogl::Vec3d smooth_nml;
-    ppogl::Vec3d interp_nml;
-    float *elevation;
 
-    elevation = Course::getElevData();
+    float* elevation = Course::getElevData();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
-    course_nmls = courseRenderer.getNormals();
+    ppogl::Vec3d* course_nmls = courseRenderer.getNormals();
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    xidx = x / courseDim.x() * ( float(nx) - 1. );
-    yidx = -z / courseDim.y() * ( float(ny) - 1. );
+    float xidx = x / courseDim.x() * ( float(nx) - 1. );
+    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
@@ -461,16 +428,16 @@ find_course_normal(const float x, const float z)
     p1 = COURSE_VERTEX( idx1.i, idx1.j );
     p2 = COURSE_VERTEX( idx2.i, idx2.j );
     
-    smooth_nml = (u*n0)+(v*n1+( 1.-u-v)*n2);
+	ppogl::Vec3d smooth_nml = (u*n0)+(v*n1+( 1.-u-v)*n2);
 
-    tri_nml = (p1-p0)^(p2-p0);
+	ppogl::Vec3d tri_nml = (p1-p0)^(p2-p0);
     tri_nml.normalize();
 
-    min_bary = MIN( u, MIN( v, 1. - u - v ) );
-    interp_factor = MIN( min_bary / NORMAL_INTERPOLATION_LIMIT, 1.0 );
+    float min_bary = MIN( u, MIN( v, 1. - u - v ) );
+	float interp_factor = MIN( min_bary / NORMAL_INTERPOLATION_LIMIT, 1.0 );
 
-    interp_nml = (interp_factor*tri_nml)+
-	((1.-interp_factor)*smooth_nml);
+	ppogl::Vec3d interp_nml = (interp_factor*tri_nml)+
+		((1.-interp_factor)*smooth_nml);
     interp_nml.normalize();
 
     return interp_nml;
@@ -484,19 +451,18 @@ find_y_coord(float x, float z)
     Index2d idx0, idx1, idx2;
     float u, v;
     int nx, ny;
-    float *elevation;
 
-    /* cache last request */
+    // cache last request
     static float last_x, last_z, last_y;
     static bool cache_full = false;
 
-    if ( cache_full && last_x == x && last_z == z ) {
-	return last_y;
+    if(cache_full && last_x == x && last_z == z){
+		return last_y;
     }
 
 	Course::getDivisions( &nx, &ny );
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    elevation = Course::getElevData();
+    float* elevation = Course::getElevData();
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
@@ -833,7 +799,7 @@ adjust_for_model_collision(Player& plyr,
 
         } 
 
-	speed = MAX( speed, get_min_tux_speed() );
+		speed = MAX(speed, MIN_TUX_SPEED);
         *vel = speed*(*vel);
     } 
 }
@@ -863,7 +829,7 @@ adjust_velocity(ppogl::Vec3d *vel, const pp::Plane& surf_plane)
 	}
     }
 
-    speed = MAX( get_min_tux_speed(), speed );
+    speed = MAX(MIN_TUX_SPEED, speed);
 
     *vel = speed*(*vel);
     return speed;
@@ -1356,7 +1322,7 @@ calc_net_force(Player& plyr, const ppogl::Vec3d& pos,
 	/*
 	 * Calculate braking force
 	 */
-	if ( speed > get_min_tux_speed() && plyr.control.is_braking ) {
+	if ( speed > MIN_TUX_SPEED && plyr.control.is_braking ) {
 	    brake_f = (surf_fric_coeff * BRAKE_FORCE)*fric_dir; 
 	} else {
 	    brake_f = ppogl::Vec3d( 0., 0., 0. );

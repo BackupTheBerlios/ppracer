@@ -41,10 +41,6 @@
 
 void set_wind_velocity(const ppogl::Vec3d& velocity, float scale);
 
-void increment_turn_fact(Player& plyr, float amt);
-
-float get_min_y_coord();
-
 ppogl::Vec3d find_course_normal(const float x, const float z);
 
 float find_y_coord(float x, float z);

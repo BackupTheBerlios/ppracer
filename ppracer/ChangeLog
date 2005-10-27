@@ -8,6 +8,16 @@
 	
 	* src/ppogl/base/vec* src/ppogl/base/color.*
 	removed unused code
+	
+	* src/tux_shadow.*
+	cleanups
+	
+	* src/ppogl/base/glwrappers.h
+	use vector/array ops where possible
+	
+	* src/phys_sim.cpp
+	removed unused code
+	cleanups
 
 2005-10-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/credits.cpp

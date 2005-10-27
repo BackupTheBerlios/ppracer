@@ -30,6 +30,12 @@
 
 #define SHADOW_HEIGHT 0.1
 
+static void traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix);
+static void draw_shadow_sphere(const pp::Matrix& model_matrix);
+static void draw_shadow_vertex(double x, double y, double z, 
+			 const pp::Matrix& model_matrix );
+
+
 void
 draw_tux_shadow(int player)
 {
@@ -42,9 +48,7 @@ draw_tux_shadow(int player)
 		
     set_gl_options( TUX_SHADOW ); 
 	
-	/* 
- 	* Make the shadow darker if the stencil buffer is active 
- 	*/
+	// Make the shadow darker if the stencil buffer is active
 	
 	if(GameConfig::enableStencilBuffer){
     	gl::Color(0.0f,0.0f,0.0f,0.3f);
@@ -63,7 +67,7 @@ draw_tux_shadow(int player)
     traverse_dag_for_shadow( tux_root_node, model_matrix );
 }
 
-void
+static void
 traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 {
     pp::Matrix new_model_matrix;
@@ -79,14 +83,12 @@ traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 
     child = node->child;
     while (child != NULL) {
-
         traverse_dag_for_shadow(child, new_model_matrix);
-
         child = child->next;
     } 
 }
 
-void
+static void
 draw_shadow_sphere(const pp::Matrix& model_matrix)
 {
     double theta, phi, d_theta, d_phi, eps, twopi;
@@ -179,30 +181,24 @@ draw_shadow_sphere(const pp::Matrix& model_matrix)
 
             gl::End();
 
-        } 
-    } 
-
+        }
+    }
 } 
 
-void
+static void
 draw_shadow_vertex(double x, double y, double z, 
 			 const pp::Matrix& model_matrix )
 {
-    ppogl::Vec3d pt;
-    double old_y;
-    ppogl::Vec3d nml;
-
-    pt = ppogl::Vec3d( x, y, z );
-    pt = model_matrix.transformPoint( pt );
-
-    old_y = pt.y();
-    
-    nml = find_course_normal( pt.x(), pt.z() );
+    ppogl::Vec3d pt =
+		model_matrix.transformPoint(ppogl::Vec3d(x,y,z));
+    double old_y = pt.y();
+    ppogl::Vec3d nml = find_course_normal( pt.x(), pt.z() );
+	
     pt.y() = find_y_coord( pt.x(), pt.z() ) + SHADOW_HEIGHT;
 
-    if ( pt.y() > old_y ) 
-	pt.y() = old_y;
-
-    gl::Normal( nml.x(), nml.y(), nml.z() );
-    gl::Vertex( pt.x(), pt.y(), pt.z() );
+    if(pt.y() > old_y){
+		pt.y() = old_y;
+	}
+    gl::Normal(nml);
+    gl::Vertex(pt);
 }

@@ -69,22 +69,22 @@ namespace gl{
 	
 	inline void TexCoord(GLdouble s, GLdouble t){glTexCoord2d(s, t);}
 	inline void TexCoord(GLint s, GLint t){glTexCoord2i(s, t);}
-	inline void TexCoord(const ppogl::Vec2d& st){glTexCoord2d(st.x(), st.y());}
-	inline void TexCoord(const ppogl::Vec3d& st){glTexCoord3d(st.x(), st.y(), st.z());}
+	inline void TexCoord(const ppogl::Vec2d& st){glTexCoord2dv(st.values);}
+	inline void TexCoord(const ppogl::Vec3d& st){glTexCoord3dv(st.values);}
 
 	inline void TexParameter(GLenum target, GLenum pname, GLfloat param){glTexParameterf(target, pname, param );}
 	
 	inline void GetTexLevelParameter(GLenum target, GLint level, GLenum pname, GLint *params){glGetTexLevelParameteriv(target, level, pname, params);}
 	
 	inline void Vertex(GLdouble x, GLdouble y){glVertex2d(x, y);}
-	inline void Vertex(const ppogl::Vec2d& pos){glVertex2d(pos.x(), pos.y());}
-	inline void Vertex(const ppogl::Vec3d& pos){glVertex3d(pos.x(), pos.y(), pos.z());}
+	inline void Vertex(const ppogl::Vec2d& pos){glVertex2dv(pos.values);}
+	inline void Vertex(const ppogl::Vec3d& pos){glVertex3dv(pos.values);}
 	inline void Vertex(GLfloat x, GLfloat y, GLfloat z){glVertex3f(x, y, z);}
 	
 	inline void Normal(GLfloat nx, GLfloat ny, GLfloat nz){glNormal3f(nx, ny, nz);}
-	inline void Normal(const ppogl::Vec3d& normal){glNormal3d(normal.x(), normal.y(), normal.z());}
+	inline void Normal(const ppogl::Vec3d& normal){glNormal3dv(normal.values);}
 		
-	inline void Color(const ppogl::Color& color){glColor4f(color.r(), color.g(), color.b(), color.a());}
+	inline void Color(const ppogl::Color& color){glColor4fv(color.values);}
 	inline void Color(const ppogl::Color& color, GLfloat alpha){glColor4f(color.r(), color.g(), color.b(), alpha);}
 	inline void Color(const GLfloat *color){glColor4fv(color);}
 	inline void Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a=1.0f){glColor4f(r,g,b,a);}
@@ -93,7 +93,7 @@ namespace gl{
 	inline void ClearColor(const ppogl::Color& color){glClearColor(color.r(), color.g(), color.b(), color.a());}
 	inline void Clear(GLbitfield mask){glClear(mask);}
 	
-	inline void Rect(const ppogl::Vec2d& pos1, const ppogl::Vec2d& pos2){glRectd(pos1.x(), pos1.y(), pos2.x(), pos2.y());}
+	inline void Rect(const ppogl::Vec2d& pos1, const ppogl::Vec2d& pos2){glRectdv(pos1.values, pos2.values);}
 	inline void Rect(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2){glRectd(x1, y1, x2, y2);}
 	inline void Rect(GLint x1, GLint y1, GLint x2, GLint y2){glRecti(x1, y1, x2, y2);}
 

@@ -63,30 +63,24 @@ static ppogl::Color particleColor;
 static Particle* head = NULL;
 static int num_particles = 0;
 
-double
-frand() 
+static double
+frand()
 {
     return double(rand())/RAND_MAX;
-} 
+}
 
 void
 create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint particle_binding) 
 {
-    Particle *newp;
-    int i;
-    double speed;
+    double speed = vel.normalize();
 
-    speed = vel.normalize();
+    // debug check to track down infinite particle bug 
+    if(num_particles + num > MAX_PARTICLES){
+		PP_ERROR("maximum number of particles exceeded");
+    }
 
-    /* Debug check to track down infinite particle bug */
-    if ( num_particles + num > MAX_PARTICLES ) {
-		PP_ERROR( "maximum number of particles exceeded" );
-    } 
-
-    for (i=0; i<num; i++) {
-
-        newp = new Particle;
-		PP_CHECK_ALLOC(newp);
+    for(int i=0; i<num; i++){
+        Particle* newp = new Particle;
 
         num_particles += 1;
 
@@ -97,22 +91,22 @@ create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint 
         newp->pt.y() = loc.y();
         newp->pt.z() = loc.z() + 2.*(frand() - 0.5) * START_RADIUS;
 
-	newp->type = int(frand() * (4.0 - EPS));
+		newp->type = int(frand() * (4.0 - EPS));
 		
-	//get_texture_binding( "snow_particle", &(newp->particle_binding) );	
-	newp->particle_binding = particle_binding;	
+		newp->particle_binding = particle_binding;	
 	
-	newp->base_size = ( frand() + 0.5 ) * OLD_PART_SIZE;
-	newp->cur_size = NEW_PART_SIZE;
+		newp->base_size = ( frand() + 0.5 ) * OLD_PART_SIZE;
+		newp->cur_size = NEW_PART_SIZE;
 
         newp->age = frand() * MIN_AGE;
         newp->death = frand() * MAX_AGE;
 
-
-        newp->vel =(speed*vel)+
-	    ppogl::Vec3d( VARIANCE_FACTOR * (frand() - 0.5) * speed, 
-			 VARIANCE_FACTOR * (frand() - 0.5) * speed,
-			 VARIANCE_FACTOR * (frand() - 0.5) * speed  );
+        newp->vel=(speed*vel)+
+			ppogl::Vec3d(
+				VARIANCE_FACTOR * (frand() - 0.5) * speed, 
+				VARIANCE_FACTOR * (frand() - 0.5) * speed,
+				VARIANCE_FACTOR * (frand() - 0.5) * speed
+			);
     }
 } 
 
@@ -157,48 +151,43 @@ update_particles(double time_step)
 void
 draw_particles(const Player& plyr)
 {
-    Particle *p;
     ppogl::Vec2d min_tex_coord, max_tex_coord;
-
     set_gl_options( PARTICLES );
-
     gl::TexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	
-    for (p=head; p!=NULL; p = p->next) {
-        if ( p->age < 0 ) continue;
+    for(Particle *p=head; p!=NULL; p = p->next){
+        if(p->age < 0) continue;
 		gl::BindTexture(GL_TEXTURE_2D, p->particle_binding);
-	if ( p->type == 0 || p->type == 1 ) {
-	    min_tex_coord.y() = 0;
-	    max_tex_coord.y() = 0.5;
-	} else {
-	    min_tex_coord.y() = 0.5;
-	    max_tex_coord.y() = 1.0;
-	}
+		if(p->type == 0 || p->type == 1){
+	    	min_tex_coord.y() = 0;
+	    	max_tex_coord.y() = 0.5;
+		}else{
+		    min_tex_coord.y() = 0.5;
+		    max_tex_coord.y() = 1.0;
+		}
 
-	if ( p->type == 0 || p->type == 3 ) {
-	    min_tex_coord.x() = 0;
-	    max_tex_coord.x() = 0.5;
-	} else {
-	    min_tex_coord.x() = 0.5;
-	    max_tex_coord.x() = 1.0;
-	}
+		if(p->type == 0 || p->type == 3){
+	    	min_tex_coord.x() = 0;
+	    	max_tex_coord.x() = 0.5;
+		}else{
+	    	min_tex_coord.x() = 0.5;
+	    	max_tex_coord.x() = 1.0;
+		}
 
-	gl::Color(particleColor, particleColor.a() * p->alpha );
+		gl::Color(particleColor, particleColor.a() * p->alpha);
 
-	draw_billboard( plyr, p->pt, p->cur_size, p->cur_size,
-			min_tex_coord, max_tex_coord );
-    } 
-
+		draw_billboard(plyr, p->pt, p->cur_size, p->cur_size,
+			min_tex_coord, max_tex_coord);
+    }
 } 
 
 void
 clear_particles()
 {
-    Particle *p, *q;
-
-    p = head;
-    for (;;) {
-        if (p == NULL ) break;
+    Particle* q;
+    Particle* p=head;
+    for(;;){
+        if(p==NULL) break;
         q=p;
         p=p->next;
         delete q;
