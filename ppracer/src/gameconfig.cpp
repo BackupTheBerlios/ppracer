@@ -29,7 +29,6 @@ int tuxShadowSphereDivisions=3;
 float courseDetails=100;
 bool useCVA=true;
 bool useTerrainEnvmap=true;
-bool useTerrainBlending=true;
 	
 bool disableCollisionDetection = false;
 bool drawParticles = true;
@@ -60,7 +59,6 @@ update()
 	courseDetails = PPConfig.getInt("course_detail_level");
 	useCVA = PPConfig.getBool("use_cva");
 	useTerrainEnvmap = PPConfig.getBool("terrain_envmap");
-	useTerrainBlending = PPConfig.getBool("terrain_blending");
 	
 	disableCollisionDetection = PPConfig.getBool("disable_collision_detection");
 	drawParticles = PPConfig.getBool("draw_particles");

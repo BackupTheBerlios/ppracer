@@ -90,7 +90,6 @@ class quadsquare
 
     static void makeTri( int a, int b, int c, int terrain );
     static void makeSpecialTri( int a, int b, int c);
-    static void makeNoBlendTri( int a, int b, int c, int terrain );
 
     static void drawTris(int terrain);
     static void drawEnvmapTris(GLuint MapTexId, int terrain);
@@ -103,7 +102,6 @@ public:
     void addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm);
     void staticCullData(const quadcornerdata& cd, const float ThresholdDetail);	
     float recomputeError(const quadcornerdata& cd);
-    int	countNodes();
 	
     void update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation);
     void render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array);

@@ -630,7 +630,6 @@ CourseRenderer::initQuadtree(const float *elevation, int nx, int nz,
 	GameConfig::update();	
 	
     // Debug info.
-    //print_debug( DEBUG_QUADTREE, "nodes = %d\n", root->CountNodes());
     PP_LOG( DEBUG_QUADTREE, "max error = " <<
 		 mp_root->recomputeError(m_rootCornerData));
 
@@ -640,8 +639,8 @@ CourseRenderer::initQuadtree(const float *elevation, int nx, int nz,
     mp_root->staticCullData(m_rootCornerData, CULL_DETAIL_FACTOR);
 
     // Post-cull debug info.
-    PP_LOG( DEBUG_QUADTREE, "nodes = " << mp_root->countNodes());
-    PP_LOG( DEBUG_QUADTREE, "max error = " << mp_root->recomputeError(m_rootCornerData));
+	//    PP_LOG( DEBUG_QUADTREE, "nodes = " << mp_root->countNodes());
+	//    PP_LOG( DEBUG_QUADTREE, "max error = " << mp_root->recomputeError(m_rootCornerData));
 
     // Run the update function a few times before we start rendering
     // to disable unnecessary quadsquares, so the first frame won't

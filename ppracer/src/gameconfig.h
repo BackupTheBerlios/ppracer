@@ -29,7 +29,6 @@ extern int tuxShadowSphereDivisions;
 extern float courseDetails;
 extern bool useCVA;
 extern bool useTerrainEnvmap;
-extern bool useTerrainBlending;
 	
 extern bool disableCollisionDetection;
 extern bool drawParticles;

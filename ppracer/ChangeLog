@@ -1,6 +1,13 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/quadtree.* src/gameconfig.* data/config.nut.in
+	removed settings for terrain blending
+	
+	* src/quadtree.cpp course_render.cpp
+	cleanups
+
 2005-10-27  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/sg/vnc.* src/course_load.* src/quadtree.*
 	added class VNCArray

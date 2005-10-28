@@ -198,12 +198,6 @@ will help improve performance.
 ",
 terrain_envmap = true,
 
-terrain_blending_description = @"
-Controls the blending of the terrain textures.  Setting this
-to false will help improve performance.
-",
-terrain_blending = true,
-
 disable_audio_description = @"
 If true, then audio in the game is completely disabled.
 ",

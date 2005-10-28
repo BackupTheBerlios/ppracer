@@ -44,13 +44,8 @@
 /** Amount to magnify errors by within ERROR_MAGNIFICATION_THRESHOLD */
 #define ERROR_MAGNIFICATION_AMOUNT 3
 
-
 /** Environment map alpha value, integer from 0-255 */ 
 #define ENV_MAP_ALPHA 50
-
-/** Useful macro for setting colors in the color array */
-//#define colorval(j,ch) \
-//s_VNCArray->data[j*STRIDE_GL_ARRAY+STRIDE_GL_ARRAY-4+(ch)]
 
 extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 extern unsigned int num_terrains;
@@ -122,10 +117,8 @@ quadsquare::~quadsquare()
     // Recursively delete sub-trees.
     for(int i=0; i<4; i++){
 		if(Child[i]) delete Child[i];
-		Child[i] = NULL;
     }
 }
-
 
 void
 quadsquare::setStatic(const quadcornerdata& cd)
@@ -141,20 +134,6 @@ quadsquare::setStatic(const quadcornerdata& cd)
 		    cd.parent->square->setStatic(*cd.parent);
 		}
     }
-}
-
-int
-quadsquare::countNodes()
-/// Debugging function.  Counts the number of nodes in this subtree.
-{
-    int	count=1; // Count ourself.
-
-    //Count descendants.
-    for(int i=0; i<4; i++){
-		if(Child[i]) count += Child[i]->countNodes();
-    }
-
-    return count;
 }
 
 quadsquare*
@@ -970,7 +949,6 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
      * Draw the "special" triangles that have different terrain types
      * at each of the corners 
      */
-    if(GameConfig::useTerrainBlending){
 
 	/*
 	 * Get the "special" three-terrain triangles
@@ -1030,15 +1008,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 		gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    
 		/* Need to set alpha values for ice */
-			
-		/*
-		for (i=0; i<VertexArrayCounter; i++) {
-		    colorval( VertexArrayIndices[i], 3 ) = 
-			(Terrain[VertexArrayIndices[i]] == Ice) ? 
-			ENV_MAP_ALPHA : 0;
-		}
-		*/
-			
+		
 		//the ice stuff should be rewritten...
 		for (i=0; i<int(VertexArrayCounter[0]); i++) {
 		    s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 
@@ -1049,7 +1019,6 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 		drawEnvmapTris(GameConfig::useTerrainEnvmap,0);
 	    }
 	}
-    }
 
     gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -1067,24 +1036,6 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 	
     const int whole = 2 << cd.level;
 	
-	/*
-	ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, cd.zorg*ScaleZ);
-    ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,(cd.zorg + whole) * ScaleZ);
-
-    // If the scales are negative we'll need to swap
-    if ( Min.x() > Max.x() ) {
-		float tmp = Min.x();
-		Min.x() = Max.x();
-		Max.x() = tmp;
-    }
-
-    if ( Min.z() > Max.z() ) {
-		float tmp = Min.z();
-		Min.z() = Max.z();
-		Max.z() = tmp;
-    }
-	*/
-
 	const ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, (cd.zorg + whole) * ScaleZ);
     const ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,cd.zorg*ScaleZ);
 
@@ -1105,12 +1056,6 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 }
 
 
-typedef void (*make_tri_func_t)( int a, int b, int c, int terrain );
-
-/* Local macro for setting alpha value based on terrain */
-#define setalphaval(i) s_VNCArray->colorValue(VertexIndices[i], 3) = \
-    ( terrain <= VertexTerrains[i] ) ? 255 : 0 
-
 #define update_min_max( idx,terrain ) \
     if ( idx > VertexArrayMaxIdx[terrain] ) { \
         VertexArrayMaxIdx[terrain] = idx; \
@@ -1122,18 +1067,15 @@ typedef void (*make_tri_func_t)( int a, int b, int c, int terrain );
 inline void
 quadsquare::makeTri(int a, int b, int c, int terrain)
 {
-    if ( ( VertexTerrains[a] == terrain || 
-	   VertexTerrains[b] == terrain || 
-	   VertexTerrains[c] == terrain ) )
+    if((VertexTerrains[a] == terrain || 
+	    VertexTerrains[b] == terrain || 
+	    VertexTerrains[c] == terrain ))
     { 
 	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[a]; 
-	//setalphaval(a); 
 	update_min_max( VertexIndices[a], terrain );
 	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[b]; 
-	//setalphaval(b); 
 	update_min_max( VertexIndices[b], terrain );
 	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[c]; 
-	//setalphaval(c); 
 	update_min_max( VertexIndices[c], terrain );
     }
 }
@@ -1152,28 +1094,6 @@ quadsquare::makeSpecialTri( int a, int b, int c)
 	update_min_max( VertexIndices[b],0 );
 	VertexArrayIndices[0][VertexArrayCounter[0]++] = VertexIndices[c]; 
 	update_min_max( VertexIndices[c],0 );
-    }
-}
-
-inline void
-quadsquare::makeNoBlendTri( int a, int b, int c, int terrain )
-{
-    if ( ( VertexTerrains[a] == terrain || 
-	   VertexTerrains[b] == terrain || 
-	   VertexTerrains[c] == terrain ) &&
-	 ( VertexTerrains[a] >= terrain &&
-	   VertexTerrains[b] >= terrain &&
-	   VertexTerrains[c] >= terrain ) )
-    { 
-	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[a]; 
-	setalphaval(a); 
-	update_min_max( VertexIndices[a],terrain );
-	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[b]; 
-	setalphaval(b);
-	update_min_max( VertexIndices[b],terrain );
-	VertexArrayIndices[terrain][VertexArrayCounter[terrain]++] = VertexIndices[c];
-	setalphaval(c);
-	update_min_max( VertexIndices[c],terrain );
     }
 }
 
@@ -1225,34 +1145,6 @@ quadsquare::renderAux(const quadcornerdata& cd, ClipResult vis)
     // Values in parens are bitmask values for the corresponding child squares
     //
 
-	    // Make the list of triangles to draw.
-#define make_tri_list(tri_func,terrain) \
-    if ((EnabledFlags & 1) == 0 ) { \
-	tri_func(0, 2, 8, terrain); \
-    } else { \
-	if (flags & 8) tri_func(0, 1, 8, terrain); \
-	if (flags & 1) tri_func(0, 2, 1, terrain); \
-    } \
-    if ((EnabledFlags & 2) == 0 ) {  \
-	tri_func(0, 4, 2, terrain);  \
-    } else { \
-	if (flags & 1) tri_func(0, 3, 2, terrain); \
-	if (flags & 2) tri_func(0, 4, 3, terrain); \
-    } \
-    if ((EnabledFlags & 4) == 0 ) { \
-	tri_func(0, 6, 4, terrain); \
-    } else { \
-	if (flags & 2) tri_func(0, 5, 4, terrain); \
-	if (flags & 4) tri_func(0, 6, 5, terrain); \
-    } \
-    if ((EnabledFlags & 8) == 0 ) { \
-	tri_func(0, 8, 6, terrain); \
-    } else { \
-	if (flags & 4) tri_func(0, 7, 6, terrain); \
-	if (flags & 8) tri_func(0, 8, 7, terrain); \
-    }
-
-	
 	{
 		//bool terraintest[num_terrains];
 		for (unsigned int i=0; i<num_terrains; i++) terraintest[i]=false;
@@ -1270,15 +1162,37 @@ quadsquare::renderAux(const quadcornerdata& cd, ClipResult vis)
 	    terraintest[ initVert(7, cd.xorg + half, cd.zorg + whole) ] = true;
 	    terraintest[ initVert(8, cd.xorg + whole, cd.zorg + whole) ] = true;
 	
-		for(unsigned int j=0; j<num_terrains; j++) {
-			 if(terraintest[j]==true){			 
-			 	if(GameConfig::useTerrainBlending){make_tri_list(makeTri,j);}
-				else{make_tri_list(makeNoBlendTri,j);}
-			 }
+		for(unsigned int j=0; j<num_terrains; j++){
+			if(terraintest[j]==true){			 
+				// Make the list of triangles to draw
+				if ((EnabledFlags & 1) == 0 ) {
+					makeTri(0, 2, 8, j);
+				} else {
+					if (flags & 8) makeTri(0, 1, 8, j);
+					if (flags & 1) makeTri(0, 2, 1, j);
+				}
+ 				if ((EnabledFlags & 2) == 0 ) {
+					makeTri(0, 4, 2, j);
+ 				} else {
+					if (flags & 1) makeTri(0, 3, 2, j);
+					if (flags & 2) makeTri(0, 4, 3, j);
+ 				}
+ 				if ((EnabledFlags & 4) == 0 ) {
+					makeTri(0, 6, 4, j);
+ 				} else {
+					if (flags & 2) makeTri(0, 5, 4, j);
+					if (flags & 4) makeTri(0, 6, 5, j);
+ 				}
+ 				if ((EnabledFlags & 8) == 0 ) {
+					makeTri(0, 8, 6, j);
+ 				} else {
+					if (flags & 4) makeTri(0, 7, 6, j);
+					if (flags & 8) makeTri(0, 8, 7, j);
+ 				}
+			}
 		} 
 	}
 }
-
 
 void
 quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
@@ -1342,33 +1256,30 @@ quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
 	}
 		
     // Make the list of triangles to draw.
-#define make_spezialtri_list(tri_func) \
-    if ((EnabledFlags & 1) == 0 ) { \
-		tri_func(0, 2, 8); \
-    } else { \
-		if (flags & 8) tri_func(0, 1, 8); \
-		if (flags & 1) tri_func(0, 2, 1); \
-    } \
-    if ((EnabledFlags & 2) == 0 ) {  \
-		tri_func(0, 4, 2);  \
-    } else { \
-		if (flags & 1) tri_func(0, 3, 2); \
-		if (flags & 2) tri_func(0, 4, 3); \
-    } \
-    if ((EnabledFlags & 4) == 0 ) { \
-		tri_func(0, 6, 4); \
-    } else { \
-		if (flags & 2) tri_func(0, 5, 4); \
-		if (flags & 4) tri_func(0, 6, 5); \
-    } \
-    if ((EnabledFlags & 8) == 0 ) { \
-		tri_func(0, 8, 6); \
-    } else { \
-		if (flags & 4) tri_func(0, 7, 6); \
-		if (flags & 8) tri_func(0, 8, 7); \
+	if((EnabledFlags & 1) == 0){
+		makeSpecialTri(0, 2, 8);
+    }else{
+		if(flags & 8) makeSpecialTri(0, 1, 8);
+		if(flags & 1) makeSpecialTri(0, 2, 1);
     }
-	
-	make_spezialtri_list(makeSpecialTri);
+    if((EnabledFlags & 2) == 0){
+		makeSpecialTri(0, 4, 2);
+    }else{
+		if(flags & 1) makeSpecialTri(0, 3, 2);
+		if(flags & 2) makeSpecialTri(0, 4, 3);
+    }
+    if((EnabledFlags & 4) == 0){
+		makeSpecialTri(0, 6, 4);
+    }else{
+		if(flags & 2) makeSpecialTri(0, 5, 4);
+		if(flags & 4) makeSpecialTri(0, 6, 5);
+    }
+    if((EnabledFlags & 8) == 0){
+		makeSpecialTri(0, 8, 6);
+    }else{
+		if(flags & 4) makeSpecialTri(0, 7, 6);
+		if(flags & 8) makeSpecialTri(0, 8, 7);
+    }
 }
 
 void
