@@ -1285,26 +1285,12 @@ quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
 /// Recurses as necessary.
 {
-    /*
-	// If this square is outside the frustum, then don't render it.
-  
-	//if (vis != NoClip) {
-
-		if ((vis = ClipSquare( cd ))== NotVisible ) {
-	    // This square is completely outside the view frustum.
-		    return;
-		}
-	// else vis is either NoClip or SomeClip.  If it's NoClip, then child
-	// squares won't have to bother with the frustum check.
-    }
-	*/
-	
     int	flags = 0;
     int	mask = 1;
     quadcornerdata q;
 	
-    for (int i = 0; i < 4; i++, mask <<= 1) {
-		if (EnabledFlags & (16 << i)) {
+    for(int i = 0; i < 4; i++, mask <<= 1){
+		if(EnabledFlags & (16 << i)){
 			setupCornerData(&q, cd, i);
 			if (vis != NoClip) {
 				if ((vis = clipSquare( q ))!= NotVisible ) {
@@ -1313,7 +1299,7 @@ quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
    		 	}else{		
 		   		Child[i]->renderAuxSpezial(q, vis);
 			}
-		} else {
+		}else{
 		    flags |= mask;
 		}
     }
@@ -1340,55 +1326,49 @@ quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
     // Values in parens are bitmask values for the corresponding child squares
     //
 
-	
-
-	int terraintest=0;
 	{
-		const int	half = 1 << cd.level;
-    	const int	whole = 2 << cd.level;
+		const int half = 1 << cd.level;
+    	const int whole = 2 << cd.level;
 
-    	terraintest += initVert(0, cd.xorg + half, cd.zorg + half);
-    	terraintest += initVert(1, cd.xorg + whole, cd.zorg + half);
-    	terraintest += initVert(2, cd.xorg + whole, cd.zorg);
-    	terraintest += initVert(3, cd.xorg + half, cd.zorg);
-    	terraintest += initVert(4, cd.xorg, cd.zorg);
-    	terraintest += initVert(5, cd.xorg, cd.zorg + half);
-		terraintest += initVert(6, cd.xorg, cd.zorg + whole);
-	    terraintest += initVert(7, cd.xorg + half, cd.zorg + whole);
-	    terraintest += initVert(8, cd.xorg + whole, cd.zorg + whole);
+    	initVert(0, cd.xorg + half, cd.zorg + half);
+    	initVert(1, cd.xorg + whole, cd.zorg + half);
+    	initVert(2, cd.xorg + whole, cd.zorg);
+    	initVert(3, cd.xorg + half, cd.zorg);
+    	initVert(4, cd.xorg, cd.zorg);
+    	initVert(5, cd.xorg, cd.zorg + half);
+		initVert(6, cd.xorg, cd.zorg + whole);
+	    initVert(7, cd.xorg + half, cd.zorg + whole);
+	    initVert(8, cd.xorg + whole, cd.zorg + whole);
 	}
-		
 		
     // Make the list of triangles to draw.
 #define make_spezialtri_list(tri_func) \
     if ((EnabledFlags & 1) == 0 ) { \
-	tri_func(0, 2, 8); \
+		tri_func(0, 2, 8); \
     } else { \
-	if (flags & 8) tri_func(0, 1, 8); \
-	if (flags & 1) tri_func(0, 2, 1); \
+		if (flags & 8) tri_func(0, 1, 8); \
+		if (flags & 1) tri_func(0, 2, 1); \
     } \
     if ((EnabledFlags & 2) == 0 ) {  \
-	tri_func(0, 4, 2);  \
+		tri_func(0, 4, 2);  \
     } else { \
-	if (flags & 1) tri_func(0, 3, 2); \
-	if (flags & 2) tri_func(0, 4, 3); \
+		if (flags & 1) tri_func(0, 3, 2); \
+		if (flags & 2) tri_func(0, 4, 3); \
     } \
     if ((EnabledFlags & 4) == 0 ) { \
-	tri_func(0, 6, 4); \
+		tri_func(0, 6, 4); \
     } else { \
-	if (flags & 2) tri_func(0, 5, 4); \
-	if (flags & 4) tri_func(0, 6, 5); \
+		if (flags & 2) tri_func(0, 5, 4); \
+		if (flags & 4) tri_func(0, 6, 5); \
     } \
     if ((EnabledFlags & 8) == 0 ) { \
-	tri_func(0, 8, 6); \
+		tri_func(0, 8, 6); \
     } else { \
-	if (flags & 4) tri_func(0, 7, 6); \
-	if (flags & 8) tri_func(0, 8, 7); \
+		if (flags & 4) tri_func(0, 7, 6); \
+		if (flags & 8) tri_func(0, 8, 7); \
     }
 	
-	//if (terraintest>0){
-		make_spezialtri_list(makeSpecialTri);	
-	//}
+	make_spezialtri_list(makeSpecialTri);
 }
 
 void

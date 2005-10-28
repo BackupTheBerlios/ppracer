@@ -68,18 +68,17 @@ class quadsquare
 {
     quadsquare*	Child[4];
 
-    float	Vertex[5];	// center, e, n, w, s
-    float	Error[6];	// e, s, children: ne, nw, sw, se
-    float	MinY, MaxY;	// Bounds for frustum culling and error testing.
-    unsigned char	EnabledFlags;	// bits 0-7: e, n, w, s, ne, nw, sw, se
-    unsigned char	SubEnabledCount[2];	// e, s enabled reference counts.
-    bool	Static;
-    bool	Dirty;	// Set when vertex data has changed, but error/enabled data has not been recalculated.
+    float Vertex[5];	// center, e, n, w, s
+    float Error[6];	// e, s, children: ne, nw, sw, se
+    float MinY, MaxY;	// Bounds for frustum culling and error testing.
+    unsigned char EnabledFlags;	// bits 0-7: e, n, w, s, ne, nw, sw, se
+    unsigned char SubEnabledCount[2];	// e, s enabled reference counts.
+    bool Static;
+    bool Dirty;	// Set when vertex data has changed, but error/enabled data has not been recalculated.
 
     bool ForceEastVert;
     bool ForceSouthVert;
 	
-
     static float ScaleX, ScaleZ;
     static int RowSize, NumRows;
     static int* Terrain;
@@ -118,28 +117,27 @@ public:
 	inline void	setTerrain(int *terrain){Terrain = terrain;};
 	
 private:
-    void	enableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd);
+    void enableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd);
     quadsquare*	enableDescendant(int count, int stack[], const quadcornerdata& cd);
-    void	enableChild(int index, const quadcornerdata& cd);
-    void	notifyChildDisable(const quadcornerdata& cd, int index);
+    void enableChild(int index, const quadcornerdata& cd);
+    void notifyChildDisable(const quadcornerdata& cd, int index);
 
-    void	resetTree();
-    void	staticCullAux(const quadcornerdata& cd, const float ThresholdDetail, const int TargetLevel);
+    void resetTree();
+    void staticCullAux(const quadcornerdata& cd, const float ThresholdDetail, const int TargetLevel);
 
     quadsquare*	getNeighbor(const int dir, const quadcornerdata& cd) const;
-    void	createChild(int index, const quadcornerdata& cd);
-    void	setupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
+    void createChild(int index, const quadcornerdata& cd);
+    void setupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
 
-    void	updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
-    void	renderAux(const quadcornerdata& cd, ClipResult vi);
-    void	renderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
-    void	setStatic(const quadcornerdata& cd);
-	int initVert(const int i, const int x, const int z);
+    void updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
+    void renderAux(const quadcornerdata& cd, ClipResult vi);
+    void renderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
+    void setStatic(const quadcornerdata& cd);
+	int	initVert(const int i, const int x, const int z);
 
-    bool	vertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
-    bool	boxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
-    ClipResult clipSquare( const quadcornerdata& cd );
-
+    bool vertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
+    bool boxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
+    ClipResult clipSquare(const quadcornerdata& cd);
 };
 
 #endif // _QUADTREE_H_
