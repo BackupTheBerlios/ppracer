@@ -63,11 +63,10 @@ Log::Log()
 	m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
 }
 
-
 Log::~Log()
 {
 }
-	
+
 
 /// Set the file for the log.
 void

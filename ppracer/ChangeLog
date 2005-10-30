@@ -2,6 +2,10 @@
 === ppracer 0.5 alpha2 ===
 
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/audio/audiomgr.cpp
+	fix memleak in destructor
+
+2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.* src/gameconfig.* data/config.nut.in
 	removed settings for terrain blending
 	

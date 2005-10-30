@@ -38,6 +38,10 @@ AudioMgr::AudioMgr()
 
 AudioMgr::~AudioMgr()
 {
+	//free music and sounds before Mix_CloseAudio() is called
+	m_musicBindings.clear();
+	m_soundBindings.clear();
+		
 	if(m_initialized){
 		Mix_CloseAudio();	
 	}
