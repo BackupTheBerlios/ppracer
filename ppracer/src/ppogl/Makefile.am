@@ -36,6 +36,7 @@ libppogl_a_SOURCES = 		\
 	base/refptr.h		\
 	base/resourcemgr.h	\
 	base/signal.h		\
+	base/signal.cpp		\
 	base/singleton.h	\
 	base/vec2d.cpp		\
 	base/vec2d.h		\

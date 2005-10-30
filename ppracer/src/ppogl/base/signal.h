@@ -31,30 +31,32 @@ class BaseSignal;
 class BaseArgument;
 
 
-class BaseArgument {
+class BaseArgument
+{
 public:
-	BaseArgument(int cnt) : mCnt(cnt){};
+	BaseArgument(int cnt);
 
-	virtual ~BaseArgument() {}
-	int Count() const { return mCnt; }
+	int Count() const {return mCnt;}
 private:
 	int mCnt;
 };
 
-class Argument0 : public BaseArgument {
+class Argument0
+ : public BaseArgument
+ {
 public:
-	Argument0() : BaseArgument(0) { }
-	~Argument0() { }
+	Argument0() : BaseArgument(0){}
 };
 
 template<class R1>
-class Argument1 : public BaseArgument {
+class Argument1
+ : public BaseArgument
+{
 public:
 	Argument1(R1 a1) : BaseArgument(1)
 	{
 		mArg1 = a1;
 	}
-	~Argument1() { }
 
 	R1 Arg1() const { return mArg1; }
 private:
@@ -62,17 +64,18 @@ private:
 };
 
 template<class R1, class R2>
-class Argument2 : public BaseArgument {
+class Argument2
+ : public BaseArgument
+{
 public:
 	Argument2(R1 a1, R2 a2) : BaseArgument(2)
 	{
 		mArg1 = a1;
 		mArg2 = a2;
 	}
-	~Argument2() { }
 
-	R1 Arg1() const { return mArg1; }
-	R2 Arg2() const { return mArg2; }
+	R1 Arg1() const {return mArg1;}
+	R2 Arg2() const {return mArg2;}
 private:
 	R1 mArg1;
 	R2 mArg2;
@@ -80,16 +83,16 @@ private:
 
 //Slotklasse
 
-class BaseSlot {
+class BaseSlot
+{
 public:
-	BaseSlot() { }
-	virtual ~BaseSlot() { }
-
 	virtual void Call(BaseArgument *arg) = 0;
 };
 
 template<class T>
-class Slot0 : public BaseSlot {
+class Slot0
+ : public BaseSlot
+{
 public:
 	typedef void (T::*SlotPtr_t)();
 	Slot0(T *rcv, SlotPtr_t sl)
@@ -97,7 +100,6 @@ public:
 		mRcv = rcv;
 		mSlot = sl;
 	}
-	~Slot0() { }
 
 	void Call(BaseArgument *arg)
 	{
@@ -111,7 +113,9 @@ private:
 
 
 template<class T, class R1>
-class Slot1 : public BaseSlot {
+class Slot1
+ : public BaseSlot
+{
 public:
 	typedef void (T::*SlotPtr_t)(R1);
 	Slot1(T *rcv, SlotPtr_t sl)
@@ -119,7 +123,6 @@ public:
 		mRcv = rcv;
 		mSlot = sl;
 	}
-	~Slot1() { }
 
 	void Call(BaseArgument *arg)
 	{
@@ -138,7 +141,9 @@ private:
 };
 
 template<class T, class R1, class R2>
-class Slot2 : public BaseSlot {
+class Slot2
+ : public BaseSlot
+{
 public:
 	typedef void (T::*SlotPtr_t)(R1,R2);
 	Slot2(T *rcv, SlotPtr_t sl)
@@ -162,22 +167,13 @@ private:
 
 //Signalklasse
 
-class BaseSignal {
+class BaseSignal
+{
 public:
-	BaseSignal() : mSlot(NULL)
-	{
-	}
+	BaseSignal();
+	virtual ~BaseSignal();
 	
-	virtual ~BaseSignal()
-	{
-		Clean();
-	}
-	
-	void Connect(BaseSlot *slot)
-	{
-		Clean();
-		mSlot = slot;
-	}
+	void Connect(BaseSlot *slot);
 private:
 	//only to ensure noone tries to do this
 	BaseSignal(const BaseSignal&);	
@@ -194,11 +190,10 @@ protected:
 	BaseSlot *mSlot;
 };
 
-class Signal0 : public BaseSignal {
+class Signal0
+ : public BaseSignal
+{
 public:
-	Signal0() { }
-	~Signal0() { }
-
 	void Emit()
 	{
 		if (mSlot) {
@@ -209,11 +204,10 @@ public:
 };
 
 template<class R1>
-class Signal1 : public BaseSignal {
+class Signal1
+ : public BaseSignal
+{
 public:
-	Signal1() { }
-	~Signal1() { }
-
 	void Emit(R1 r1)
 	{
 		if (mSlot) {
@@ -224,11 +218,10 @@ public:
 };
 
 template<class R1, class R2>
-class Signal2 : public BaseSignal {
+class Signal2
+ : public BaseSignal
+{
 public:
-	Signal2() { }
-	~Signal2() { }
-
 	void Emit(R1 r1, R2 r2)
 	{
 		if (mSlot) {

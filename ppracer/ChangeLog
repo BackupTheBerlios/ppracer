@@ -1,7 +1,7 @@
 
 === ppracer 0.5 alpha2 ===
 
-2005-10-28  Volker Stroebel <volker@planetpenguin.de>
+2005-10-30  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/audio/audiomgr.cpp
 	fix memleak in destructor
 	
@@ -12,6 +12,11 @@
 	
 	* src/ppogl/base/errors.cpp
 	don't use rdbuf to set logfile
+	
+	* src/ppogl/base/signal.*
+	added sinal.cpp
+	moved some code to signal.cpp
+	
 
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.* src/gameconfig.* data/config.nut.in

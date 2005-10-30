@@ -60,16 +60,16 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	translation.$(OBJEXT) assert.$(OBJEXT) color.$(OBJEXT) \
 	errors.$(OBJEXT) glwrappers.$(OBJEXT) glextensions.$(OBJEXT) \
 	glstuff.$(OBJEXT) os.$(OBJEXT) refptr.$(OBJEXT) \
-	vec2d.$(OBJEXT) vec3d.$(OBJEXT) vec3f.$(OBJEXT) \
-	vec4f.$(OBJEXT) image.$(OBJEXT) readPNG.$(OBJEXT) \
-	writePPM.$(OBJEXT) widget.$(OBJEXT) button.$(OBJEXT) \
-	label.$(OBJEXT) uimgr.$(OBJEXT) uitheme.$(OBJEXT) \
-	alignment.$(OBJEXT) checkbox.$(OBJEXT) listbox.$(OBJEXT) \
-	imagebutton.$(OBJEXT) entry.$(OBJEXT) textarea.$(OBJEXT) \
-	frame.$(OBJEXT) scale.$(OBJEXT) sound.$(OBJEXT) \
-	music.$(OBJEXT) audiomgr.$(OBJEXT) geoms.$(OBJEXT) \
-	materials.$(OBJEXT) vnc.$(OBJEXT) model.$(OBJEXT) \
-	model_ac.$(OBJEXT)
+	signal.$(OBJEXT) vec2d.$(OBJEXT) vec3d.$(OBJEXT) \
+	vec3f.$(OBJEXT) vec4f.$(OBJEXT) image.$(OBJEXT) \
+	readPNG.$(OBJEXT) writePPM.$(OBJEXT) widget.$(OBJEXT) \
+	button.$(OBJEXT) label.$(OBJEXT) uimgr.$(OBJEXT) \
+	uitheme.$(OBJEXT) alignment.$(OBJEXT) checkbox.$(OBJEXT) \
+	listbox.$(OBJEXT) imagebutton.$(OBJEXT) entry.$(OBJEXT) \
+	textarea.$(OBJEXT) frame.$(OBJEXT) scale.$(OBJEXT) \
+	sound.$(OBJEXT) music.$(OBJEXT) audiomgr.$(OBJEXT) \
+	geoms.$(OBJEXT) materials.$(OBJEXT) vnc.$(OBJEXT) \
+	model.$(OBJEXT) model_ac.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -232,6 +232,7 @@ libppogl_a_SOURCES = \
 	base/refptr.h		\
 	base/resourcemgr.h	\
 	base/signal.h		\
+	base/signal.cpp		\
 	base/singleton.h	\
 	base/vec2d.cpp		\
 	base/vec2d.h		\
@@ -377,6 +378,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readPNG.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/refptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scale.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sound.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textarea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textures.Po@am__quote@
@@ -516,6 +518,20 @@ refptr.obj: base/refptr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/refptr.cpp' object='refptr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o refptr.obj `if test -f 'base/refptr.cpp'; then $(CYGPATH_W) 'base/refptr.cpp'; else $(CYGPATH_W) '$(srcdir)/base/refptr.cpp'; fi`
+
+signal.o: base/signal.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT signal.o -MD -MP -MF "$(DEPDIR)/signal.Tpo" -c -o signal.o `test -f 'base/signal.cpp' || echo '$(srcdir)/'`base/signal.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/signal.Tpo" "$(DEPDIR)/signal.Po"; else rm -f "$(DEPDIR)/signal.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/signal.cpp' object='signal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o signal.o `test -f 'base/signal.cpp' || echo '$(srcdir)/'`base/signal.cpp
+
+signal.obj: base/signal.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT signal.obj -MD -MP -MF "$(DEPDIR)/signal.Tpo" -c -o signal.obj `if test -f 'base/signal.cpp'; then $(CYGPATH_W) 'base/signal.cpp'; else $(CYGPATH_W) '$(srcdir)/base/signal.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/signal.Tpo" "$(DEPDIR)/signal.Po"; else rm -f "$(DEPDIR)/signal.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/signal.cpp' object='signal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o signal.obj `if test -f 'base/signal.cpp'; then $(CYGPATH_W) 'base/signal.cpp'; else $(CYGPATH_W) '$(srcdir)/base/signal.cpp'; fi`
 
 vec2d.o: base/vec2d.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vec2d.o -MD -MP -MF "$(DEPDIR)/vec2d.Tpo" -c -o vec2d.o `test -f 'base/vec2d.cpp' || echo '$(srcdir)/'`base/vec2d.cpp; \
