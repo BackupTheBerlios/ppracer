@@ -36,6 +36,14 @@
 #include "game_mgr.h"
 
 
+TrackQuad::TrackQuad()
+ : trackType(TYPE_NONE),
+   terrain(0),
+   alpha(1.0f)
+{
+}
+
+
 #undef TRACK_TRIANGLES
 
 #define TRACK_WIDTH  0.7
@@ -81,14 +89,14 @@ TrackMarks::draw()
 	trackColor.a() = q->alpha;
 	set_material( trackColor, ppogl::Color::black, 1.0 );
 
-	switch (q->track_type){
-		case TRACK_HEAD:
+	switch (q->trackType){
+		case TrackQuad::TYPE_HEAD:
 			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.head);
 			break;
-		case TRACK_MARK:
+		case TrackQuad::TYPE_MARK:
 			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
 			break;
-		case TRACK_TAIL:
+		case TrackQuad::TYPE_TAIL:
 			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.tail);
 			break;		
 		default:
@@ -96,7 +104,7 @@ TrackMarks::draw()
 			break;	
 	}
 
-	if ((q->track_type == TRACK_HEAD) || (q->track_type == TRACK_TAIL)) { 
+	if ((q->trackType == TrackQuad::TYPE_HEAD) || (q->trackType == TrackQuad::TYPE_TAIL)) { 
 	    gl::Begin(GL_QUADS);
 	    
 	    gl::Normal( q->n1.x(), q->n1.y(), q->n1.z() );
@@ -140,7 +148,7 @@ TrackMarks::draw()
 		gl::Begin(GL_QUADS);
 		
 	    qnext = &quads[(first_quad+current_quad+1)%maxNumQuads];
-	    while (( qnext->track_type == TRACK_MARK ) && (current_quad+1 < num_quads)) {
+	    while (( qnext->trackType == TrackQuad::TYPE_MARK ) && (current_quad+1 < num_quads)) {
 		current_quad++;
 		
 		if (q->terrain != qnext->terrain){
@@ -185,14 +193,14 @@ TrackMarks::discontinue()
     qprev = &quads[(current_mark-1)%maxNumQuads];
     qprevprev = &quads[(current_mark-2)%maxNumQuads];
 
-    if (current_mark > 0) {
-	qprev->track_type = TRACK_TAIL;
-	qprev->t1 = ppogl::Vec2d(0.0, 0.0);
-	qprev->t2 = ppogl::Vec2d(1.0, 0.0);
-	qprev->t3 = ppogl::Vec2d(0.0, 1.0);
-	qprev->t4 = ppogl::Vec2d(1.0, 1.0);
-	qprevprev->t3.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
-	qprevprev->t4.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
+    if(current_mark > 0){
+		qprev->trackType = TrackQuad::TYPE_TAIL;
+		qprev->t1 = ppogl::Vec2d(0.0, 0.0);
+		qprev->t2 = ppogl::Vec2d(1.0, 0.0);
+		qprev->t3 = ppogl::Vec2d(0.0, 1.0);
+		qprev->t4 = ppogl::Vec2d(1.0, 1.0);
+		qprevprev->t3.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
+		qprevprev->t4.y() = MAX(int(qprevprev->t3.y()+0.5), int(qprevprev->t1.y()+1));
     }
     last_mark_time = -99999;
     last_mark_pos = ppogl::Vec3d(-9999, -9999, -9999);
@@ -292,7 +300,7 @@ TrackMarks::update()
 
     if (!continuing_track) {
 		discontinue();
-	q->track_type = TRACK_HEAD;
+	q->trackType = TrackQuad::TYPE_HEAD;
 	q->v1 = ppogl::Vec3d( left_wing.x(), left_y + TRACK_HEIGHT, left_wing.z() );
 	q->v2 = ppogl::Vec3d( right_wing.x(), right_y + TRACK_HEIGHT, right_wing.z() );
 	q->n1 = find_course_normal( q->v1.x(), q->v1.z());
@@ -308,17 +316,17 @@ TrackMarks::update()
 	    q->n2 = qprev->n4;
 	    q->t1 = qprev->t3; 
 	    q->t2 = qprev->t4;
-	    if ( qprev->track_type != TRACK_HEAD ) {
-			qprev->track_type = TRACK_MARK;
+	    if ( qprev->trackType != TrackQuad::TYPE_HEAD ) {
+			qprev->trackType = TrackQuad::TYPE_MARK;
 	    }
-	    q->track_type = TRACK_MARK;
+	    q->trackType = TrackQuad::TYPE_MARK;
 	}
 	q->v3 = ppogl::Vec3d( left_wing.x(), left_y + TRACK_HEIGHT, left_wing.z() );
 	q->v4 = ppogl::Vec3d( right_wing.x(), right_y + TRACK_HEIGHT, right_wing.z() );
 	q->n3 = find_course_normal( q->v3.x(), q->v3.z());
 	q->n4 = find_course_normal( q->v4.x(), q->v4.z());
 	tex_end = speed*GameMgr::getInstance().getTimeStep()/TRACK_WIDTH;
-	if (q->track_type == TRACK_HEAD) {
+	if (q->trackType == TrackQuad::TYPE_HEAD) {
 	    q->t3= ppogl::Vec2d(0.0, 1.0);
 	    q->t4= ppogl::Vec2d(1.0, 1.0);
 	} else {

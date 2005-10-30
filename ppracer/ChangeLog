@@ -4,6 +4,11 @@
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/audio/audiomgr.cpp
 	fix memleak in destructor
+	
+	* src/track_marks.*
+	fixed uninitialized values
+	fixed possible gpf
+	cleanups
 
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.* src/gameconfig.* data/config.nut.in

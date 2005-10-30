@@ -26,22 +26,26 @@
 #include "ppogl/base/vec2d.h"
 #include "ppogl/base/vec3d.h"
 
-enum TrackTypes
+class TrackQuad
 {
-    TRACK_HEAD,
-    TRACK_MARK,
-    TRACK_TAIL,
-    NUM_TRACK_TYPES
-};
+public:
+	TrackQuad();
 
-struct TrackQuad
-{
-    ppogl::Vec3d v1, v2, v3, v4;
+	enum TrackTypes
+	{
+    	TYPE_NONE,
+		TYPE_HEAD,
+    	TYPE_MARK,
+    	TYPE_TAIL,
+    	NUM_TYPES
+	};
+
+	ppogl::Vec3d v1, v2, v3, v4;
     ppogl::Vec2d t1, t2, t3, t4;
     ppogl::Vec3d n1, n2, n3, n4;
-    TrackTypes track_type;
+    TrackTypes trackType;
 	int terrain;
-    double alpha;
+    float alpha;
 };
 
 class TrackMarks
