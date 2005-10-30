@@ -9,6 +9,9 @@
 	fixed uninitialized values
 	fixed possible gpf
 	cleanups
+	
+	* src/ppogl/base/errors.cpp
+	don't use rdbuf to set logfile
 
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.* src/gameconfig.* data/config.nut.in

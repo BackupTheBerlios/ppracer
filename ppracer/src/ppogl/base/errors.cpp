@@ -60,29 +60,22 @@ Log::Log()
  : m_level(LogWarning),
    m_verbose(false)
 {
-	m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
 }
 
 Log::~Log()
 {
 }
 
-
 /// Set the file for the log.
 void
 Log::setFilename(const std::string& filename)
 {
 	if(filename.empty()){
-		//reset logfile to stderr
 		PP_WARNING("unable to open logfile: filename is empty");
 	}else{
 		//try to open logfile
-		std::ofstream* filestr = new std::ofstream;
-		filestr->open(filename.c_str());
-		if(filestr->is_open()){
-			m_logfile.std::ios::rdbuf(filestr->rdbuf());
-		}else{
-			m_logfile.std::ios::rdbuf(std::cerr.rdbuf());
+		m_logfile.open(filename.c_str());
+		if(m_logfile.is_open()==false){
 			PP_WARNING("unable to open logfile: " << filename << " -> in: " << ppogl::os::cwd());
 		}
 	}
@@ -110,26 +103,33 @@ Log::mesg(int mode,
 {
 	//check if we should handle this message
 	if(checkLevel(mode)==false) return;
-		
-	if(mode==LogMessage){
-		m_logfile << "Message: ";
-	}else if(mode==LogWarning){
-		m_logfile << "Warning: ";
-	}else if(mode==LogError){
-		m_logfile << "Error: ";
-	}else if(mode==LogPedantic){
-		m_logfile << "Pedantic Warning: ";
-	}else if(mode<-1000 && mode > int(PP_NUM_ELEMENTS(LevelMessages))*(-1)-1000){
-		m_logfile << "Log("<< LevelMessages[mode*(-1)-1000] << "): ";		
-	}else{
-		m_logfile << "Log("<< mode << "): ";
+
+	std::ostream* stream=&std::cerr;
+	
+	if(m_logfile.is_open()){
+		//use logfile for stream
+		stream = &m_logfile;
 	}
 		
-	m_logfile << message << std::endl;
+	if(mode==LogMessage){
+		*stream << "Message: ";
+	}else if(mode==LogWarning){
+		*stream << "Warning: ";
+	}else if(mode==LogError){
+		*stream << "Error: ";
+	}else if(mode==LogPedantic){
+		*stream << "Pedantic Warning: ";
+	}else if(mode<-1000 && mode > int(PP_NUM_ELEMENTS(LevelMessages))*(-1)-1000){
+		*stream << "Log("<< LevelMessages[mode*(-1)-1000] << "): ";		
+	}else{
+		*stream << "Log("<< mode << "): ";
+	}
+		
+	*stream << message << std::endl;
 
 	if(m_verbose){	
-		m_logfile << "File: " << file << std::endl;
-		m_logfile << "Line: " << line << "\n" << std::endl;
+		*stream << "File: " << file << std::endl;
+		*stream << "Line: " << line << "\n" << std::endl;
 	}
 	
 	if(mode==LogError){
@@ -141,7 +141,11 @@ Log::mesg(int mode,
 std::ostream&
 Log::getStream()
 {
-	return m_logfile;
+	if(m_logfile.is_open()){	
+		return m_logfile;
+	}else{
+		return std::cerr;
+	}
 }
 
 bool
