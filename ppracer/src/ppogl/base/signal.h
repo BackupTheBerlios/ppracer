@@ -86,6 +86,7 @@ private:
 class BaseSlot
 {
 public:
+	virtual ~BaseSlot(){};
 	virtual void Call(BaseArgument *arg) = 0;
 };
 

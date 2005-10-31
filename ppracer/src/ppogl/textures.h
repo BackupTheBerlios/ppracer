@@ -70,10 +70,10 @@ public:
 namespace gl{
 	inline void BindTexture(GLenum target, const ppogl::TextureRef& texture)
 	{
-		if(texture){
-			glBindTexture(target, texture->getID());
-		}else{
+		if(texture.isNull()){
 			glBindTexture(target, 0);
+		}else{
+			glBindTexture(target, texture->getID());
 		}
 	}
 } // namespace gl

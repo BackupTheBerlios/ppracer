@@ -55,6 +55,7 @@ enum{
 class Error
 {	
 public:
+	virtual ~Error(){};
 	virtual void printMessage();
 };
 

@@ -408,16 +408,12 @@ find_course_normal(const float x, const float z)
     ppogl::Vec3d n0, n1, n2;
     float u, v;
 
-    float* elevation = Course::getElevData();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
     Course::getDivisions( &nx, &ny );
     ppogl::Vec3d* course_nmls = courseRenderer.getNormals();
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    float xidx = x / courseDim.x() * ( float(nx) - 1. );
-    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
-
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
     n0 = course_nmls[ idx0.i + nx * idx0.j ];
@@ -462,7 +458,6 @@ find_y_coord(float x, float z)
 
 	Course::getDivisions( &nx, &ny );
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    float* elevation = Course::getElevData();
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
