@@ -27,7 +27,8 @@
 namespace ppogl{
 	
 /// A simple text label widget
-class Label : public Widget
+class Label
+ : public Widget
 {
 protected:
 	ppogl::FontRef m_font;
@@ -46,7 +47,6 @@ public:
 	void setFont(const std::string& binding);
 	void setFont(ppogl::FontRef font);
 };
-
 
 } //namepsace ppogl
 

@@ -30,7 +30,8 @@
 namespace ppogl{
 	
 /// A widget displaying an image and with support for state switch and highlighting
-class ImageButton : public Widget
+class ImageButton
+ : public Widget
 {
 public:
 	enum Mode{

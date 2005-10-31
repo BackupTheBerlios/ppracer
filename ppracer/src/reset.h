@@ -23,11 +23,10 @@
 #define _RESET_H_
 
 #include "loop.h"
-
 #include "ppogl/base/color.h"
 
-
-class Reset : public GameMode
+class Reset
+ : public GameMode
 {
 	const ppogl::Color m_textColor;
 	double m_resetStartTime;
@@ -39,4 +38,4 @@ public:
 	void loop(float timestep);
 };
 
-#endif
+#endif // _RESET_H_

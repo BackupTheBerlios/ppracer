@@ -28,7 +28,6 @@
 #include "ui/imagebutton.h"
 #include "ui/entry.h"
 #include "ui/textarea.h"
-#include "ui/frame.h"
 #include "ui/scale.h"
 
 #endif // _PPOGL_UI_H_

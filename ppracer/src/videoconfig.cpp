@@ -139,9 +139,9 @@ VideoConfig::apply()
 {
 	bool updatevideo = false;
 	
-	ppogl::ListBox<Resolution>::iterator resit = m_resolutionListBox.getSelected();
-	ppogl::ListBox<int>::iterator bppit = m_bppListBox.getSelected();
-	ppogl::ListBox<int>::iterator multiit = m_multisampleListBox.getSelected();
+	ppogl::ListBox<Resolution>::Iterator resit = m_resolutionListBox.getSelected();
+	ppogl::ListBox<int>::Iterator bppit = m_bppListBox.getSelected();
+	ppogl::ListBox<int>::Iterator multiit = m_multisampleListBox.getSelected();
 		
 	if ( (*resit).data.x != resolutionX ){
 		PPConfig.setInt("x_resolution",(*resit).data.x);

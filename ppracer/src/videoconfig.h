@@ -21,43 +21,43 @@
 
 #include "configmode.h"
 
-#include "ppgltk/listbox.h"
-#include "ppgltk/checkbox.h"
+#include "ppogl/ui.h"
 
-
-typedef struct{
-	std::string name;
-	int x;
-	int y;
-}resolution_t;
-
-typedef struct{
-	std::string name;
-	int data;
-}bpp_t, multisample_t;
-
-
-class VideoConfig : public ConfigMode
+class VideoConfig
+ : public ConfigMode
 {
-	pp::Listbox<resolution_t>* mp_resolutionListbox;
-	pp::Listbox<bpp_t>* mp_bppListbox;
-	pp::Listbox<multisample_t>* mp_multisampleListbox;
+	struct Resolution
+	{
+		Resolution(int _x=0, int _y=0):x(_x),y(_y){};
+		int x;
+		int y;
+	};
 	
-	std::list<resolution_t> m_resolutionList;
-	std::list<bpp_t> m_bppList;
-	std::list<multisample_t> m_multisampleList;
+	ppogl::Label m_resolutionLbl;
+	ppogl::ListBox<Resolution> m_resolutionListBox;
+		
+	ppogl::Label m_bppLbl;
+	ppogl::ListBox<int> m_bppListBox;
+	
+	ppogl::Label m_multisampleLbl;
+	ppogl::ListBox<int> m_multisampleListBox;
 
-	pp::CheckBox* mp_fullscreenBox;
-	pp::CheckBox* mp_stencilBox;
-	pp::CheckBox* mp_fsaaBox;
+	ppogl::Label m_fullscreenLbl;
+	ppogl::CheckBox m_fullscreenBox;
+	
+	ppogl::Label m_stencilLbl;
+	ppogl::CheckBox m_stencilBox;
+	
+	ppogl::Label m_fsaaLbl;
+	ppogl::CheckBox m_fsaaBox;
+	
+	ppogl::Label m_warningLbl;
 	
 	void initVideoModes();
 		
 public:
 	VideoConfig();
-	~VideoConfig();
 
-	void setWidgetPositions();
 	void apply();
 };
 

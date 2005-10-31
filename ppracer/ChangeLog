@@ -1,6 +1,16 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-10-31  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	some scary cleanups
+
+	* src/ppogl/ui/frame.*
+	removed scary frame widget
+	
+	* src/paused.*
+	replaced scary frame widget with dark scary background
+
 2005-10-30  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/audio/audiomgr.cpp
 	fix memleak in destructor
@@ -16,7 +26,6 @@
 	* src/ppogl/base/signal.*
 	added sinal.cpp
 	moved some code to signal.cpp
-	
 
 2005-10-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.* src/gameconfig.* data/config.nut.in

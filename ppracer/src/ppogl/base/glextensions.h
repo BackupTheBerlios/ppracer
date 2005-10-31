@@ -40,14 +40,18 @@ namespace gl{
 //EXTcompiledVertexArray
 extern PFNGLLOCKARRAYSEXTPROC p_LockArraysEXT;
 extern PFNGLUNLOCKARRAYSEXTPROC p_UnlockArraysEXT;
-	
+
+/// initial compiled vertex array extension if possible
 bool EXTcompiledVertexArrayInit();
+	
+/// return true if the compiled vertex array extension is available 
 inline bool
-	EXTcompiledVertexArray()
+EXTcompiledVertexArray()
 {
 	return(p_LockArraysEXT && p_UnlockArraysEXT);
 }
 	
+/// lock arrays
 inline void
 LockArraysEXT(GLint first, GLsizei count)
 {
@@ -55,6 +59,7 @@ LockArraysEXT(GLint first, GLsizei count)
 	p_LockArraysEXT(first, count);
 }
 
+/// unlock locked arrays
 inline void
 UnlockArraysEXT()
 {

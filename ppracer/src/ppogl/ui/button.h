@@ -24,8 +24,9 @@
 
 namespace ppogl{
 	
-/// A Buttun Widget
-class Button : public Label
+/// A button widget
+class Button
+ : public Label
 {
 	/// the font used when button is highlighted	
 	ppogl::FontRef m_hilitFont;
@@ -36,7 +37,6 @@ public:
 
 	virtual void draw(const ppogl::Vec2d& position);
 };
-
 
 } //namepsace ppogl
 

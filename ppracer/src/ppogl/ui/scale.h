@@ -26,9 +26,12 @@
 namespace ppogl{
 	
 /// Base class for scale widgets
-class Scale : public Widget
+class Scale
+ : public Widget
 {	
 protected:
+	Scale(int width, int height);
+	
 	ppogl::ImageButton m_upBtn;
 	ppogl::ImageButton m_downBtn;
 	
@@ -36,8 +39,6 @@ protected:
 	float m_step;
 
 public:
-	Scale(int width=176, int height=32);
-
 	void setPosition(const ppogl::Vec2d& position);
 	
 	void setValue(float value);
@@ -56,7 +57,8 @@ public:
 };	
 
 /// A horizontal slider widget
-class HScale : public Scale
+class HScale
+ : public Scale
 {
 public:
 	HScale(int width=176, int height=32);

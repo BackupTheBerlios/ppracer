@@ -29,8 +29,9 @@
 
 namespace ppogl{
 	
-/// A widget displaying muliple Lines of text
-class Textarea : public Widget
+/// A widget displaying muliple lines of text
+class Textarea
+ : public Widget
 {	
 protected:
 	/// the font used for this texture area

@@ -1,7 +1,8 @@
 /* 
  * PPOGL - PlanetPenguin Open Game Library
- * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
- * 
+ * Copyright (C) 2004-2005 Peter Reichel <peter@apps4linux.org>
+ *                         Volker Stroebel <volker@planetpenguin.de>
+ * 						
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -16,26 +17,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-#include "frame.h"
-
-#include "../base/glstuff.h"
+ 
+#include "signal.h"
 
 namespace ppogl{
 	
-Frame::Frame(int width, int height)
- : Widget()
+BaseArgument::BaseArgument(int cnt)
+ : mCnt(cnt)
 {
-	m_size.x()=width;
-	m_size.y()=height;	
+}
+
+BaseSignal::BaseSignal()
+ : mSlot(NULL)
+{
+}
+	
+BaseSignal::~BaseSignal()
+{
+	Clean();
 }
 
 void
-Frame::draw(const ppogl::Vec2d& position)
+BaseSignal::Connect(BaseSlot *slot)
 {
-	ppogl::drawRectangle(position,m_size);
-  	ppogl::drawRectangle(position+4, m_size-8,
-						ppogl::Color(0.5, 0.6, 0.9));
+	Clean();
+	mSlot = slot;
 }
 
-} //namepsace ppogl
+} // namepsace ppogl

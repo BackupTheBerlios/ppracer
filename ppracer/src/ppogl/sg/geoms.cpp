@@ -20,7 +20,7 @@
 #include "geoms.h"
 
 namespace ppogl{
-
+	
 Polygon::Polygon(const Polygon& poly)
 {
 	numVertices=poly.numVertices;

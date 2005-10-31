@@ -25,7 +25,8 @@
 #include "racingmode.h"
 #include "player.h"
 
-class Racing : public RacingMode
+class Racing
+ : public RacingMode
 {
 	/// struct holding several state for the players
 	struct States
@@ -56,5 +57,4 @@ public:
 	bool keyPressEvent(SDLKey key);
 };
 
-
-#endif
+#endif //_RACING_H_

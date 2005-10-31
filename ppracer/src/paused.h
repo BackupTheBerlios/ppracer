@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,24 +21,24 @@
 #define _PAUSED_H_
 
 #include "loop.h"
+#include "racingmode.h"
 
-#include "ppgltk/frame.h"
-#include "ppgltk/button.h"
-#include "ppgltk/label.h"
+#include "ppogl/ui.h"
 
-class Paused : public GameMode
+class Paused
+ : public RacingMode
 {
-	pp::Frame *mp_backgroundFrm;
-	pp::Button *mp_configBtn;
-	pp::Button *mp_resumeBtn;
-	pp::Button *mp_quitBtn;
-	pp::Label *mp_pausedLbl;
+	ppogl::Label m_pausedLbl;
+	ppogl::Button m_configBtn;
+	ppogl::Button m_resumeBtn;
+	ppogl::Button m_quitBtn;
 	
 public:
 	Paused();
-	~Paused();
-	
-	void loop(float timeStep);
+
+	void preDisplay(float timeStep);
+	void postDisplay(float timeStep);
+
 	bool keyPressEvent(SDLKey key);
 
 	void resume();

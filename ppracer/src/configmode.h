@@ -26,7 +26,8 @@
 
 #include <string>
 
-class ConfigMode : public GameMode
+class ConfigMode
+ : public GameMode
 {
 protected:
 	ppogl::Label m_titleLbl;

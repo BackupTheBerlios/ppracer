@@ -40,6 +40,14 @@ static const char* LevelMessages[] = {
 	"Models"
 };	
 
+
+/// print error message
+void
+Error::printMessage()
+{
+	// default error message is empty
+}
+
 // the pointer to the one and only instance (singleton)
 Log* Log::sm_instance = NULL;
 

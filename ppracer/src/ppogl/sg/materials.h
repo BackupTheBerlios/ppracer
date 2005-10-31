@@ -25,7 +25,8 @@
 
 namespace ppogl{
 
-class UV : public ppogl::Vec2d
+class UV
+ : public ppogl::Vec2d
 {
 public:
 	double& u(){return values[0];};

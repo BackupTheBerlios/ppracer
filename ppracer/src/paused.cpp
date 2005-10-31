@@ -41,16 +41,12 @@
 #include "bench.h"
 
 Paused::Paused()
- : m_backgroundFrm(240,260),
-   m_pausedLbl(_("Paused"),"paused"),
+ : m_pausedLbl(_("Paused"),"paused"),
    m_configBtn(_("Configuration")),
    m_resumeBtn(_("Resume")),
    m_quitBtn(_("Quit"))
 {
 	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
-
-	m_backgroundFrm.setPosition(ppogl::Vec2d(320,250));
-	m_backgroundFrm.alignment.set(0.5, 0.5);
 	
 	m_pausedLbl.setPosition(ppogl::Vec2d(320,350));
 	m_pausedLbl.alignment.set(0.5,0.5);
@@ -69,7 +65,6 @@ Paused::Paused()
 
 	m_paused=true;
 	
-	//ppogl::AudioMgr::getInstance().playMusic("paused");
 	ppogl::AudioMgr::getInstance().pauseMusic();
 }
 
@@ -94,6 +89,23 @@ Paused::postDisplay(float timestep)
 	set_gl_options(GUI);
 	
    	if(Benchmark::getMode()!=Benchmark::PAUSED){
+		gl::PushMatrix();
+		{
+		gl::MatrixMode(GL_PROJECTION);
+	    gl::LoadIdentity();
+	    gl::Ortho(0.0, resolutionX, 0.0, resolutionY, -1.0, 1.0);
+	    gl::MatrixMode(GL_MODELVIEW);
+	    gl::LoadIdentity();
+	    gl::Translate(0.0, 0.0, -1.0);
+	    gl::Color(ppogl::Color::white);
+		
+		gl::Disable(GL_TEXTURE_2D);
+	    gl::Color(0.0,0.0,0.0,0.5);
+    	gl::Rect(0,0,resolutionX, resolutionY);
+    	gl::Enable(GL_TEXTURE_2D);
+		}
+		gl::PopMatrix();
+		
 		ppogl::UIManager::getInstance().draw(resolutionX, resolutionY,
 											 false); // no decoration
 	}    	

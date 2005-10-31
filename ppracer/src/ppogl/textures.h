@@ -58,8 +58,6 @@ class TextureMgr
    public ResourceMgr<Texture>
 {
 public:
-	TextureMgr(){};	
-
 	TextureRef load(const std::string& binding, const std::string& filename, bool repeatable=true); 
 	void bind(const std::string& binding, const std::string& name);
 			

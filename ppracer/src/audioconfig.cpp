@@ -130,10 +130,10 @@ AudioConfig::apply()
 	else PPConfig.setBool("music_enabled",true);
 	PPConfig.setInt("music_volume",musicVolume);
 	
-	ppogl::ListBox<int>::iterator bpsit = m_bpsListBox.getSelected();
+	ppogl::ListBox<int>::Iterator bpsit = m_bpsListBox.getSelected();
 	PPConfig.setInt("audio_format_mode",(*bpsit).data);
 		
-	ppogl::ListBox<int>::iterator freqit = m_freqListBox.getSelected();
+	ppogl::ListBox<int>::Iterator freqit = m_freqListBox.getSelected();
 	PPConfig.setInt("audio_freq_mode",(*freqit).data);
 		
 	write_config_file();

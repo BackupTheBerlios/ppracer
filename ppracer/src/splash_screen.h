@@ -20,12 +20,12 @@
 #ifndef _SPLASH_SCREEN_H_
 #define _SPLASH_SCREEN_H_
 
-
 #include "loop.h"
 
 #include "ppogl/ui/label.h"
 
-class SplashScreen : public GameMode
+class SplashScreen
+ : public GameMode
 {
 	ppogl::Label m_anykeyLbl;
 	ppogl::Label m_versionLbl;

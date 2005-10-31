@@ -22,9 +22,9 @@
 
 #include "loop.h"
 #include "ppogl/ui.h"
-#include "ppogl/ui/scale.h"
 
-class GameTypeSelect : public GameMode
+class GameTypeSelect
+ : public GameMode
 {
 	ppogl::Button m_enterEventBtn;
 	ppogl::Button m_practiceBtn;

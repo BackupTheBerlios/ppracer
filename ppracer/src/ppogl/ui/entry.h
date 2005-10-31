@@ -28,7 +28,8 @@
 namespace ppogl{
 	
 /// A text entry widget
-class Entry : public Widget
+class Entry
+ : public Widget
 {
 protected:
 	ppogl::FontRef m_font;

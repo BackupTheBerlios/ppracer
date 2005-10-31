@@ -34,16 +34,6 @@ int Benchmark::sm_fc=0;
 ppogl::Vec2d Benchmark::sm_pos;
 double Benchmark::sm_timeStep=-1;
 CourseData::Condition Benchmark::sm_condition=CourseData::CONDITION_SUNNY;
-	
-Benchmark::Benchmark()
-{	
-}
-
-Benchmark::~Benchmark()
-{
-		
-	
-}
 
 void
 Benchmark::loop(float timeStep)

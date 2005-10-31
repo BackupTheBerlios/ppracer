@@ -24,8 +24,9 @@
 
 namespace ppogl{
 	
-/// A Widget displaying a checkbox
-class CheckBox : public Widget
+/// A widget displaying a checkbox
+class CheckBox
+ : public Widget
 {
 protected:
 	bool m_selected;
@@ -40,7 +41,6 @@ public:
 	inline void setSelected(bool selected){m_selected=selected;};
 	inline bool isSelected(){return m_selected;};
 };
-
 
 } //namepsace ppogl
 

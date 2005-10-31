@@ -55,11 +55,8 @@ enum{
 class Error
 {	
 public:
-	Error(){};
-	virtual ~Error(){}
-	virtual void printMessage(){};
+	virtual void printMessage();
 };
-	
 
 /// The global log system (singleton) 
 class Log

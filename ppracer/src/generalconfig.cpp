@@ -35,7 +35,7 @@ GeneralConfig::GeneralConfig()
 					ppogl::Translation::getInstance().getLanguages();
 	
 	std::map<std::string, std::string>::iterator iter;
-	ppogl::ListBox<std::string>::iterator langit;
+	ppogl::ListBox<std::string>::Iterator langit;
 
 	if(languages.empty()){	
 		PP_WARNING("Language list is empty");
@@ -83,7 +83,7 @@ GeneralConfig::GeneralConfig()
 void
 GeneralConfig::apply()
 {
-	ppogl::ListBox<std::string>::iterator langit =
+	ppogl::ListBox<std::string>::Iterator langit =
 		m_langListBox.getSelected();
 	
 	PPConfig.setString("ui_language", (*langit).data);

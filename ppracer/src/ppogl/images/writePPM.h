@@ -34,7 +34,6 @@ class WritePPM
 {
 public:
 	WritePPM(const std::string& filename, const Image& image);
-	~WritePPM(){};
 };
 
 } //namespace ppogl

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
@@ -19,9 +19,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef OS_UTIL_H
-#define OS_UTIL_H 1
+#ifndef _OS_UTIL_H_
+#define _OS_UTIL_H_
 
-int get_os_version( char *buff, unsigned int size );
+int get_os_version(char *buff, unsigned int size);
 
-#endif /* OS_UTIL_H */
+#endif // OS_UTIL_H_

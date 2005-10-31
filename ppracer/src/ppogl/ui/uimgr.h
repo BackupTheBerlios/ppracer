@@ -32,7 +32,8 @@ namespace ppogl{
 class Widget;	
 	
 /// A singleton managing the ui widgets
-class UIManager : public Singleton<UIManager>
+class UIManager
+ : public Singleton<UIManager>
 {
 	std::list<ppogl::Widget*> m_widgets;	
 	ppogl::Widget* mp_focusedWidget;

@@ -108,7 +108,6 @@ public:
 
 	ppogl::ModelObject* getModel(){return mp_model;}
 	int getDisplayList();
-
 };
 
 } //namepsace pp

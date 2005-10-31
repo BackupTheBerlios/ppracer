@@ -23,7 +23,8 @@
 
 #include "ppogl/ui.h"
 
-class AudioConfig : public ConfigMode
+class AudioConfig
+ : public ConfigMode
 {
 	ppogl::Label  m_bpsListLbl;
 	ppogl::ListBox<int> m_bpsListBox;

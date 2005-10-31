@@ -29,7 +29,8 @@
 #define CREDITS_MAX_Y -140
 #define CREDITS_MIN_Y 64
 
-struct creditLine{
+struct creditLine
+{
     bool translateable;
 	const char *binding;
     const char *text;

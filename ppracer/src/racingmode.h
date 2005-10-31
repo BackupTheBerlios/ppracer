@@ -22,7 +22,8 @@
 
 #include "loop.h"
 
-class RacingMode : public GameMode
+class RacingMode
+ : public GameMode
 {
 protected:
 	bool m_paused;

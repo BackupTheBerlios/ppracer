@@ -28,7 +28,8 @@
 #include <string>
 
 
-class Benchmark : public GameMode
+class Benchmark
+ : public GameMode
 {	
 	static std::string sm_course;
 	static double sm_frames;
@@ -41,9 +42,6 @@ class Benchmark : public GameMode
 	static CourseData::Condition sm_condition;
 	
 public:
-	Benchmark();
-	~Benchmark();
-
 	void loop(float timeStep);
 
 	enum BenchMode{

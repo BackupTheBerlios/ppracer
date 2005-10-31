@@ -27,7 +27,8 @@
 
 namespace ppogl{
 
-class UITheme : public Singleton<UITheme>
+class UITheme
+ : public Singleton<UITheme>
 {
 public:
 	UITheme();

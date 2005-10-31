@@ -24,7 +24,8 @@
 
 #include "ppogl/ui.h"
 
-class Configuration : public GameMode
+class Configuration
+ : public GameMode
 {
 	ppogl::Label m_titleLbl;
 	ppogl::Button m_generalBtn;

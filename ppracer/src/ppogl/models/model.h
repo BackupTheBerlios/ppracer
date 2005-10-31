@@ -31,7 +31,9 @@ namespace ppogl{
 class ModelObject;
 class ModelAC;
 
-class Model : public RefObject{
+class Model
+ : public RefObject
+{
 	int m_displayList;
 	ppogl::ModelAC* mp_model;
 	void copyObject(ppogl::Polyhedron* ph, ppogl::ModelObject* object);

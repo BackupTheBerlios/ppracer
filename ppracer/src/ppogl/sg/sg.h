@@ -21,5 +21,7 @@
 #define _PPOGL_SG_H_
 
 #include "geoms.h"
+#include "materials.h"
+#include "vnc.h"
 
 #endif // _PPOGL_SG_H_
