@@ -30,7 +30,13 @@ ppcourse.add_model({
 	position = [30,15],
 	
 	// the height above the ground at the specified position
-	above_ground = 1.0		// optional
+	above_ground = 3.0,		// optional
+	
+	// the vector to scale the model
+	scale = [5.0,5.0,5.0],
+	
+	// the angle and vector to rotation the model
+	rotation = [90,1.0,0.0,0.0]
 });
 	
 // add reset point to course at position 50,30

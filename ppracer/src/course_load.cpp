@@ -1156,7 +1156,7 @@ add_model_cb(ppogl::Script *vm)
 	std::map<std::string,ppogl::RefPtr<ModelType> >::iterator it;
 
 	if((it=modelTypes.find(name))==modelTypes.end()){
-		PP_WARNING("ppcourse.add_item: Unable to find item: " << name);
+		PP_WARNING("ppcourse.add_model: Unable to find item: " << name);
 		return vm->defaultError();
 	}
 	
@@ -1165,10 +1165,62 @@ add_model_cb(ppogl::Script *vm)
 	if(vm->isKeyInTable("above_ground")){
 		aboveGround += vm->getFloatFromTable("above_ground");
 	}
-		
+	
 	position.y() = find_y_coord(position.x(),position.z()) + aboveGround;
 	
 	Model model((*it).second, position);
+	
+	if(vm->isKeyInTable("scale")){
+		ppogl::Vec3d scale;
+		vm->pushString("scale");
+		if(vm->get() && vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			scale.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			scale.y() = vm->getFloat();
+			vm->pop(2);	
+			vm->next(-2);
+			scale.z() = vm->getFloat();
+			vm->pop(2);
+			vm->pop(2);
+		
+			model.setScale(scale);
+		}else{
+			PP_WARNING("ppcourse.add_model: Invalid scale");
+			return vm->defaultError();
+		}	
+	}
+	
+	if(vm->isKeyInTable("rotation")){
+		double angle;
+		ppogl::Vec3d rotation;
+		vm->pushString("rotation");
+		if(vm->get() && vm->isArray()){
+			// position array
+			vm->pushNull();
+			vm->next(-2);
+			angle = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			rotation.x() = vm->getFloat();
+			vm->pop(2);
+			vm->next(-2);
+			rotation.y() = vm->getFloat();
+			vm->pop(2);	
+			vm->next(-2);
+			rotation.z() = vm->getFloat();
+			vm->pop(2);
+			vm->pop(2);
+		
+			model.setRotation(angle, rotation);
+		}else{
+			PP_WARNING("ppcourse.add_model: Invalid rotation");
+			return vm->defaultError();
+		}	
+	}
 	
 	modelLocs.push_back(model);
 	

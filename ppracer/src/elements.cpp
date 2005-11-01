@@ -91,7 +91,18 @@ Model::draw(const ppogl::Vec3d& normal)
 	gl::PushMatrix();
 	{    
 		gl::Translate(m_position);
-		gl::Normal(normal);	
+		
+		if(m_angle!=0.0){
+			gl::Rotate(m_angle,m_rotation);
+		}
+		
+		if(	m_scale.x()!=0.0 || 
+			m_scale.y()!=0.0 ||
+			m_scale.z()!=0.0){
+			gl::Scale(m_scale);		
+		}		
+		
+		gl::Normal(normal);
 		m_type->getModel()->draw();
 	}	
     gl::PopMatrix();

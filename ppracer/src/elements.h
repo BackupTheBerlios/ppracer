@@ -107,10 +107,10 @@ protected:
 	ppogl::ModelRef m_model;
 	
 public:	
-	ModelType():height(1.0),diameter(1.0), ph(NULL){};
+	ModelType():height(1.0),diameter(1.0), ph(NULL){}
     ~ModelType();
 		
-	bool operator!=(const ModelType& type)const{return this!=&type;};
+	bool operator!=(const ModelType& type)const{return this!=&type;}
 	
 	double height;
 	double diameter;
@@ -118,22 +118,29 @@ public:
 	ppogl::Polyhedron* ph;
 	
 	void setModel(ppogl::ModelRef model);
-	inline ppogl::ModelRef getModel(){return m_model;};
+	inline ppogl::ModelRef getModel(){return m_model;}
 };
 
 class Model
 {
 	ppogl::RefPtr<ModelType> m_type;
 	ppogl::Vec3d m_position;
-public:
-	Model(ppogl::RefPtr<ModelType> type, const ppogl::Vec3d& position):m_type(type), m_position(position){};
+	ppogl::Vec3d m_scale;
+	double m_angle;
+	ppogl::Vec3d m_rotation;	
 	
-	inline ppogl::Polyhedron* getPolyhedron(){return m_type->ph;};
-	inline ppogl::Vec3d& getPosition(){return m_position;};
-	inline ppogl::RefPtr<ModelType> getType(){return m_type;};
-	inline double getHeight(){return m_type->height;};
-	inline double getDiameter(){return m_type->diameter;};
+public:
+	Model(ppogl::RefPtr<ModelType> type, const ppogl::Vec3d& position):m_type(type), m_position(position), m_angle(0.0){}
+	
+	inline ppogl::Polyhedron* getPolyhedron(){return m_type->ph;}
+	inline ppogl::Vec3d& getPosition(){return m_position;}
+	inline ppogl::RefPtr<ModelType> getType(){return m_type;}
+	inline double getHeight(){return m_type->height;}
+	inline double getDiameter(){return m_type->diameter;}
 
+	inline void setScale(const ppogl::Vec3d& scale){m_scale=scale;}
+	inline void setRotation(double angle, const ppogl::Vec3d& rotation){m_angle=angle; m_rotation=rotation;}
+	
 	void draw(const ppogl::Vec3d& normal);
 };
 

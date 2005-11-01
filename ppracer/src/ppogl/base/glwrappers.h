@@ -61,6 +61,10 @@ namespace gl{
 	inline void Translate(const ppogl::Vec3d& pos){glTranslated(pos.x(), pos.y(), pos.z());}
 	inline void Translate(GLdouble x, GLdouble y, GLdouble z=0.0){glTranslated(x, y, z);}
 	
+	inline void Scale(const ppogl::Vec3d& vec){glScaled(vec.x(),vec.y(),vec.z());}
+	
+	inline void Rotate(GLdouble angle, const ppogl::Vec3d& vec){glRotated(angle, vec.x(), vec.y(), vec.z());}
+	
 	inline void TexEnv(GLenum target, GLenum pname, GLfloat param){glTexEnvf(target, pname, param);}
 	
 	inline void TexGen(GLenum coord, GLenum pname, const ppogl::Vec4f& param){glTexGenfv(coord, pname, param.values);}
