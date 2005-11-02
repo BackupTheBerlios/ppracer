@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PPOGL_COLOR_H
-#define _PPOGL_COLOR_H
+#ifndef _PPOGL_COLOR_H_
+#define _PPOGL_COLOR_H_
 
 #include "assert.h"
 
@@ -114,4 +114,4 @@ public:
 
 } // namespace ppogl
 
-#endif // _PPOGL_COLOR_H
+#endif // _PPOGL_COLOR_H_

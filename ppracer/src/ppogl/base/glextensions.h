@@ -22,8 +22,8 @@
  * In addition it wrapps several ppogl data types
  */ 
  
-#ifndef _PPOGL_GL_EXTENSIONS_H
-#define _PPOGL_GL_EXTENSIONS_H
+#ifndef _PPOGL_GL_EXTENSIONS_H_
+#define _PPOGL_GL_EXTENSIONS_H_
  
 #include "assert.h"
 
@@ -70,4 +70,4 @@ UnlockArraysEXT()
 
 } // namespace gl
  
-#endif // _PPOGL_GL_EXTENSIONS_H
+#endif // _PPOGL_GL_EXTENSIONS_H_

@@ -180,8 +180,8 @@ void
 HUD::fps(const int i)
 {
     if(m_element[i].font){
-		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), fpsCounter.get());
+		char string[16];
+		snprintf(string, 16, m_element[i].string.c_str(), fpsCounter.get());
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -195,8 +195,8 @@ void
 HUD::herring(const int i, const int herring_count)
 {
 	if(m_element[i].font){
-		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), herring_count );
+		char string[12];
+		snprintf(string, 12, m_element[i].string.c_str(), herring_count );
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -246,11 +246,11 @@ void
 HUD::time(const int i)
 {
     if(m_element[i].font){
-		char string[BUFF_LEN];
+		char string[16];
 		int minutes, seconds, hundredths;
 		    
 		getTimeComponents( GameMgr::getInstance().time, minutes, seconds, hundredths );
-		sprintf( string, m_element[i].string.c_str(), minutes, seconds, hundredths);
+		snprintf(string, 16, m_element[i].string.c_str(), minutes, seconds, hundredths);
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -265,8 +265,8 @@ void
 HUD::speed(const int i, const double speed)
 {
 	if(m_element[i].font){
-		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), speed );
+		char string[16];
+		snprintf(string, 16, m_element[i].string.c_str(), speed );
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -547,8 +547,8 @@ void
 HUD::coursePercentage(const int i, const Player& plyr)
 {
 	if(m_element[i].font){
-		char string[BUFF_LEN];
-		sprintf( string, m_element[i].string.c_str(), plyr.getCoursePercentage() );
+		char string[16];
+		snprintf(string, 16, m_element[i].string.c_str(), plyr.getCoursePercentage() );
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));

@@ -30,13 +30,6 @@
 #include <list>
 #include <string>
 
-/// Convenience macro for accessing terrain elevations
-#define ELEV(varx,vary) ( Course::elevation[(varx) + nx*(vary)] )
-
-/// Convenience macro to create a course vertex
-#define COURSE_VERTEX(varx,vary) ppogl::Vec3d( float(varx)/(nx-1.)*(courseDim.x()), \
-                       ELEV((varx),(vary)), -float(vary)/(ny-1.)*(courseDim.y())) 
-
 class Course
 {
 private:
@@ -47,12 +40,12 @@ public:
 	
 	static ppogl::Vec2d dimension;
 	static ppogl::Vec2d playDimension;
-	//static GLubyte* vncArray;
 	static ppogl::VNCArray *sm_vncArray;
 	
 	static float angle;
 	static float* elevation;
 	static int* terrain;
+	static int nx, ny;
 
 	static bool load(const std::string& course);
 	
@@ -66,7 +59,7 @@ public:
 
 	static float getTerrainBaseHeight(float distance);
 	static float getTerrainMaxHeight(float distance);
-	static void getDivisions(int *nx, int *ny);
+		
 	static void setStartPt(const ppogl::Vec2d& p);
 	static const ppogl::Vec2d& getStartPt();
 
@@ -74,6 +67,23 @@ public:
 
 	static void registerCallbacks();
 	static void fillGLArrays();
+		
+	/// get elevation at point x,y	
+	static float& getElevation(int x, int y)
+	{
+		PP_REQUIRE(x>=0 && x<nx ,"Invalid value: " << x);
+		PP_REQUIRE(y>=0 && y<ny ,"Invalid value: " << y);
+		return Course::elevation[x + nx*y];
+	}
+	
+	/// get vertex for point x,y	
+	static const ppogl::Vec3d getVertex(int x, int y)
+	{
+		PP_REQUIRE(x>=0 && x<nx ,"Invalid value: " << x);
+		PP_REQUIRE(y>=0 && y<ny ,"Invalid value: " << y);
+		return ppogl::Vec3d(float(x)/(nx-1.)*(dimension.x()),
+			Course::getElevation(x,y),-float(y)/(ny-1.)*(dimension.y()));
+	}	
 };
 
 class TerrainTex

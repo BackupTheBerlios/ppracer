@@ -238,7 +238,7 @@ std::string KeyboardConfig::getKey(SDLKey key)
 			content=key;
 		}else{
 			char temp[10];
-			sprintf(temp,"%d",key);
+			snprintf(temp,12,"%d",key);
 			content = "key ";
 			content += temp;
 		}

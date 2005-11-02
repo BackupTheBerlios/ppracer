@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_OS_H
-#define _PPOGL_OS_H
+#ifndef _PPOGL_OS_H_
+#define _PPOGL_OS_H_
 
 #include <string>
 #include <list>
@@ -63,4 +63,4 @@ const std::string& getUserDir();
 } // namespace os
 } // namespace ppogl
 
-#endif // _PPOGL_OS_H
+#endif // _PPOGL_OS_H_

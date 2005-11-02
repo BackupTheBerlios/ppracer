@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_VEC2D_H
-#define _PPOGL_VEC2D_H
+#ifndef _PPOGL_VEC2D_H_
+#define _PPOGL_VEC2D_H_
 
 #include "assert.h"
 
@@ -63,4 +63,4 @@ public:
 
 } //namespace ppogl
 
-#endif // _PPOGL_VEC2D_H
+#endif // _PPOGL_VEC2D_H_

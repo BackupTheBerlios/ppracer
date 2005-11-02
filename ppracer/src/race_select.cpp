@@ -200,20 +200,20 @@ RaceSelect::updateStatusMsg()
 	PlayerCourseData data;
 	
 	if(players[0].getOpenCourseData((*curElem).getName(),data)){
-		char buff[BUFF_LEN];
+		char buff[12];
 		int minutes;
 		int seconds;
 		int hundredths;
 	
 		getTimeComponents( data.time, minutes, seconds, hundredths );
 
-		sprintf( buff, "%02d:%02d.%02d",minutes, seconds, hundredths);
+		snprintf(buff, 12, "%02d:%02d.%02d",minutes, seconds, hundredths);
 		m_timeLbl.setText(buff);
 		
-		sprintf( buff, "%03d", data.herring ); 
+		snprintf(buff, 12, "%03d", data.herring); 
 		m_herringLbl.setText(buff);
 				
-		sprintf( buff, "%06d", data.score );
+		snprintf(buff, 12, "%06d", data.score);
 		m_scoreLbl.setText(buff);
 	}else{
 		m_timeLbl.setText("");

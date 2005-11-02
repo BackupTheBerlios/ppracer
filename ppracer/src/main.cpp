@@ -161,7 +161,7 @@ init_log()
 	stream << "PlanetPenguin Racer Version: " << VERSION << std::endl;
 	stream << "OS:              ";
 	
-	char buff[BUFF_LEN];
+	char buff[512];
 	
     if ( get_os_version( buff, sizeof( buff ) ) == 0 ) {
 		stream << buff << "\n" << std::endl;

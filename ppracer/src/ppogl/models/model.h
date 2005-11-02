@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PP_MODEL_H
-#define _PP_MODEL_H
+#ifndef _PP_MODEL_H_
+#define _PP_MODEL_H_
 
 //#include "model_ac.h"
 
@@ -52,4 +52,4 @@ typedef RefPtr<Model> ModelRef;
 
 } // namespace pp
 
-#endif // _PP_MODEL_H
+#endif // _PP_MODEL_H_

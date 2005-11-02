@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_ERRORS_H
-#define _PPOGL_ERRORS_H
+#ifndef _PPOGL_ERRORS_H_
+#define _PPOGL_ERRORS_H_
 
 #include <iostream>
 #include <fstream>
@@ -148,4 +148,4 @@ private:
 
 } //namespace ppogl
 
-#endif // _PPOGL_ERRORS_H
+#endif // _PPOGL_ERRORS_H_

@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _RACINGMODE_H
-#define _RACINGMODE_H
+#ifndef _RACINGMODE_H_
+#define _RACINGMODE_H_
 
 #include "loop.h"
 
@@ -41,4 +41,4 @@ public:
 	virtual void postPlayer(int player, float timestep){};
 };
 
-#endif // _RACINGMODE_H
+#endif // _RACINGMODE_H_

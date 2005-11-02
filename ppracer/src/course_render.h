@@ -25,6 +25,7 @@
 #include "ppogl/base/vec3d.h"
 #include "ppogl/textures.h"
 #include "quadtree.h"
+#include "course_load.h"
 
 class CourseRenderer
 {

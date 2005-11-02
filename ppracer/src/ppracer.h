@@ -115,43 +115,6 @@
 
 #define PROG_NAME "ppracer"
 
-#if defined( HAVE_FINITE )
-#   define FINITE(x) (finite(x))
-#elif defined( HAVE__FINITE )
-#   define FINITE(x) (_finite(x))
-#elif defined( HAVE_ISNAN )
-#   define FINITE(x) (!isnan(x))
-#elif defined( HAVE__ISNAN )
-#   define FINITE(x) (!_isnan(x))
-#else
-#   error "You don't have finite(), _finite(), isnan(), or _isnan() on your system!"
-#endif
-
-
-/* Macros for swapping bytes */
-#define SWAP_WORD(x) \
-{ \
-unsigned long tmp; \
-tmp  = ((x) >> 24) & 0x000000ff; \
-tmp |= ((x) >> 8)  & 0x0000ff00; \
-tmp |= ((x) << 8)  & 0x00ff0000; \
-tmp |= ((x) << 24) & 0xff000000; \
-(x) = tmp; \
-}
-
-#define SWAP_SHORT(x) \
-{ \
-unsigned short tmp; \
-tmp  = ((x) << 8)  & 0xff00; \
-tmp |= ((x) >> 8)  & 0x00ff; \
-(x) = tmp; \
-}
-
-#define BUFF_LEN 512
-
-/// Number of lives players get to complete a cup
-#define INIT_NUM_LIVES 4
-
 /// The custom log modes 
 enum DebugMode{
     DEBUG_ODE       = 1,
@@ -169,6 +132,9 @@ enum DebugMode{
     DEBUG_GL_INFO,
     NUM_DEBUG_MODES
 };
+
+/// Number of lives players get to complete a cup
+#define INIT_NUM_LIVES 4
 
 /// multiplier for scaling the textures to match the terrains
 #define TEX_SCALE 6

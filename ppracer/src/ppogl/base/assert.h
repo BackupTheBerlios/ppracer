@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_ASSERT_H
-#define _PPOGL_ASSERT_H
+#ifndef _PPOGL_ASSERT_H_
+#define _PPOGL_ASSERT_H_
 
 #include <sstream>
 
@@ -102,4 +102,4 @@ private:
 	#define PP_CHECK_ALLOC(ptr)
 #endif
 
-#endif // _PPOGL_ASSERT_H
+#endif // _PPOGL_ASSERT_H_

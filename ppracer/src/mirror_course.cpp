@@ -35,7 +35,6 @@ static bool mirrored = false;
 void
 mirror_course() 
 {
-    int x, y;
     int idx1, idx2;
     float tmp;
     int tmp_terrain;
@@ -44,29 +43,27 @@ mirror_course()
     ppogl::Vec3d *nmls;
     int *terrain;
     ppogl::Vec2d start_pt;
-    int nx, ny;
 
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    Course::getDivisions( &nx, &ny );
     elevation = Course::getElevData();
     terrain = Course::getTerrainData();
     nmls = courseRenderer.getNormals();
 
-    for ( y=0; y<ny; y++ ) {
-	for ( x=0; x<nx/2; x++ ) {
-	    tmp = ELEV(x,y);
-	    ELEV(x,y) = ELEV(nx-1-x, y);
-	    ELEV(nx-1-x,y) = tmp;
+    for(int y=0; y<Course::ny; y++){
+	for(int x=0; x<Course::nx/2; x++){
+	    tmp = Course::getElevation(x,y);
+	    Course::getElevation(x,y) = Course::getElevation(Course::nx-1-x, y);
+	    Course::getElevation(Course::nx-1-x,y) = tmp;
 
 	    // first column of texture values not used
-            idx1 = (x+1) + nx*(y);
-            idx2 = (nx-1-x) + nx*(y);
+            idx1 = (x+1) + Course::nx*(y);
+            idx2 = (Course::nx-1-x) +Course:: nx*(y);
 	    tmp_terrain = terrain[idx1];
 	    terrain[idx1] = terrain[idx2];
 	    terrain[idx2] = tmp_terrain;
 
-            idx1 = (x) + nx*(y);
-            idx2 = (nx-1-x) + nx*(y);
+            idx1 = (x) + Course::nx*(y);
+            idx2 = (Course::nx-1-x) + Course::nx*(y);
 	    tmp_vec = nmls[idx1];
 	    nmls[idx1] = nmls[idx2];
 	    nmls[idx2] = tmp_vec;
@@ -108,10 +105,10 @@ mirror_course()
 	
 	courseRenderer.resetQuadtree();
 	
-    if ( nx > 0 && ny > 0 ) {
+    if ( Course::nx > 0 && Course::ny > 0 ) {
 		PP_LOG( DEBUG_QUADTREE, "mirroring quadtree" );
-		courseRenderer.initQuadtree( elevation, nx, ny, courseDim.x()/(nx-1), 
-			      -courseDim.y()/(ny-1),
+		courseRenderer.initQuadtree( elevation, Course::nx, Course::ny, courseDim.x()/(Course::nx-1), 
+			      -courseDim.y()/(Course::ny-1),
 			      players[0].view.pos);
     }
 

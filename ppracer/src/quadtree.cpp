@@ -624,8 +624,6 @@ quadsquare::enableChild(int index, const quadcornerdata& cd)
     }
 }
 
-
-//static int BlockDeleteCount = 0;
 static int BlockUpdateCount = 0;
 
 void
@@ -911,8 +909,6 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
     s_VNCArray = vnc_array;
     const bool fog_on=fogPlane.isEnabled();
     int i,idx;
-    int nx, ny;
-    Course::getDivisions( &nx, &ny );
 
     //Draw the "normal" blended triangles
 

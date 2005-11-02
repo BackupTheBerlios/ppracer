@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _CONFIGMODE_H
-#define _CONFIGMODE_H
+#ifndef _CONFIGMODE_H_
+#define _CONFIGMODE_H_
 
 #include "loop.h"
 
@@ -51,4 +51,4 @@ public:
 	virtual void apply() = 0;
 };
 
-#endif // _CONFIGMODE_H
+#endif // _CONFIGMODE_H_

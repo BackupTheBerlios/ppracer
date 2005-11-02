@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PPOGL_WRITEPPM_H
-#define _PPOGL_WRITEPPM_H
+#ifndef _PPOGL_WRITEPPM_H_
+#define _PPOGL_WRITEPPM_H_
 
 
 #include "image.h"
@@ -38,4 +38,4 @@ public:
 
 } //namespace ppogl
 
-#endif // _PPOGL_WRITEPPM_H
+#endif // _PPOGL_WRITEPPM_H_

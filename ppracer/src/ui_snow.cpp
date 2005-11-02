@@ -46,10 +46,6 @@
 #define PARTICLE_MIN_SIZE 1
 #define PARTICLE_SIZE_RANGE 10
 
-#define min(x,y) ((x)<(y)?(x):(y))
-#define max(x,y) ((x)>(y)?(x):(y))
-
-
 struct Particle
 {
     ppogl::Vec2d pt;
@@ -151,10 +147,10 @@ update_ui_snow(double time_step, bool windy)
 	    
 	    f.y() = PUSH_FACTOR * push_vector.y() / push_timestep; 
 
-	    f.x() = min(MAX_PUSH_FORCE,f.x());
-	    f.x() = max(-MAX_PUSH_FORCE,f.x());
-	    f.y() = min(MAX_PUSH_FORCE,f.y());
-	    f.y() = max(-MAX_PUSH_FORCE,f.y());
+	    f.x() = MIN(MAX_PUSH_FORCE,f.x());
+	    f.x() = MAX(-MAX_PUSH_FORCE,f.x());
+	    f.y() = MIN(MAX_PUSH_FORCE,f.y());
+	    f.y() = MAX(-MAX_PUSH_FORCE,f.y());
 
 	    f.x() *= 1.0/(PUSH_DIST_DECAY*dist_from_push + 1) * 
 		size/PARTICLE_SIZE_RANGE;

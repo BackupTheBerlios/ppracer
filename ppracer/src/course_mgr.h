@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _COURSE_MGR_H
-#define _COURSE_MGR_H
+#ifndef _COURSE_MGR_H_
+#define _COURSE_MGR_H_
 
 #include "ppracer.h"
 
@@ -106,4 +106,4 @@ extern std::list<EventData> eventList;
 // register scripting callbacks
 void register_course_manager_callbacks();
 
-#endif // _COURSE_MGR_H
+#endif // _COURSE_MGR_H_

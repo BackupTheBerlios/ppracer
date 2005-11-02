@@ -18,13 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef PPOGL_SIGNAL_H
-#define PPOGL_SIGNAL_H
+#ifndef _PPOGL_SIGNAL_H_
+#define _PPOGL_SIGNAL_H_
 
 #include <stdlib.h>
 
 namespace ppogl{
-
 
 class BaseSlot;
 class BaseSignal;
@@ -254,4 +253,4 @@ BaseSlot* CreateSlot(T* rcv, void (T::*sl)(R1,R2))
 
 }// namepsace ppogl
 
-#endif // PPOGL_SIGNAL_H
+#endif // PPOGL_SIGNAL_H_

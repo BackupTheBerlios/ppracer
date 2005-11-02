@@ -106,38 +106,38 @@ GameOver::GameOver()
     }else{	
 		m_raceOverLbl.setText(_("Race Over"));
 	
-		char buff[BUFF_LEN];
+		char buff[40];
 		int minutes, seconds, hundredths;
 
 		getTimeComponents( GameMgr::getInstance().time, minutes, seconds, hundredths );
-		sprintf( buff, _("Time: %02d:%02d.%02d").c_str(), minutes, seconds, hundredths );	
+		snprintf(buff, 40, _("Time: %02d:%02d.%02d").c_str(), minutes, seconds, hundredths );	
 		pos.y()-=100;
 		
 		m_timeLbl.setPosition(pos);
 		m_timeLbl.alignment.center();
 		m_timeLbl.setText(buff);
 	
-		sprintf( buff, _("Herring: %3d").c_str(), players[0].herring );
+		snprintf(buff, 40, _("Herring: %3d").c_str(), players[0].herring );
 		pos.y()-=30;
 		m_herringLbl.setPosition(pos);
 		m_herringLbl.alignment.center();
 		m_herringLbl.setText(buff);
 	
-		sprintf( buff, _("Score: %6d").c_str(), players[0].score );
+		snprintf(buff, 40, _("Score: %6d").c_str(), players[0].score );
 		pos.y()-=30;
 		m_scoreLbl.setPosition(pos);
 		m_scoreLbl.alignment.center();
 		m_scoreLbl.setText(buff);
 	
 		int speed = int(double(players[0].max_speed) * M_PER_SEC_TO_KM_PER_H);
-		sprintf( buff, _("Max speed: %3d km/h").c_str(), speed);
+		snprintf(buff, 40, _("Max speed: %3d km/h").c_str(), speed);
 		pos.y()-=30;
 		m_maxspeedLbl.setPosition(pos);
 		m_maxspeedLbl.alignment.center();
 		m_maxspeedLbl.setText(buff);
 	
 		double percent = (players[0].airbornetime / GameMgr::getInstance().time) * 100.0;
-		sprintf( buff, _("Was flying: %.01f %% of time").c_str(), percent);
+		snprintf(buff, 40, _("Was flying: %.01f %% of time").c_str(), percent);
 		pos.y()-=30;
 		m_flyingLbl.setPosition(pos);
 		m_flyingLbl.alignment.center();

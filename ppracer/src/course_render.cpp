@@ -34,13 +34,19 @@
 #include "ppogl/base/vec4f.h"
 #include "ppogl/base/glwrappers.h"
 
-/// Macros for converting indices in height map to world coordinates
-#define XCD(val) (double(val) / (nx-1.) * courseDim.x())
+/// convert x indices in height map to world coordinate
+inline double
+getXCD(double x)
+{
+	return(x / (Course::nx-1.0) * Course::dimension.x());
+}
 
-/// Macros for converting indices in height map to world coordinates
-#define ZCD(val) (-double(val) / (ny-1.) * courseDim.y())
-
-#define NORMAL(x, y) ( mp_nmls[ (x) + nx * (y) ] )
+/// convert y indices in height map to world coordinate
+inline double
+getZCD(double y)
+{
+	return (-y / (Course::ny-1.0) * Course::dimension.y());
+}
 
 #define CULL_DETAIL_FACTOR 25
 
@@ -56,25 +62,19 @@ CourseRenderer::CourseRenderer()
 void
 CourseRenderer::calcNormals()
 {
-    //float courseWidth, courseLength;
-    int nx, ny;
     int x,y;
     ppogl::Vec3d p0, p1, p2;
     ppogl::Vec3d n, nml, v1, v2;
 
-    const ppogl::Vec2d& courseDim = Course::getDimensions();
-    Course::getDivisions( &nx, &ny );
-
     if(mp_nmls!=NULL) delete[] mp_nmls;
       
-	mp_nmls = new ppogl::Vec3d[nx*ny]; 
-	PP_CHECK_ALLOC(mp_nmls);
+	mp_nmls = new ppogl::Vec3d[Course::nx*Course::ny]; 
 
-    for ( y=0; y<ny; y++) {
-        for ( x=0; x<nx; x++) {
+    for ( y=0; y<Course::ny; y++) {
+        for ( x=0; x<Course::nx; x++) {
             nml = ppogl::Vec3d( 0., 0., 0. );
 
-            p0 = ppogl::Vec3d( XCD(x), ELEV(x,y), ZCD(y) );
+            p0 = ppogl::Vec3d( getXCD(x), Course::getElevation(x,y), getZCD(y) );
 
 	    /* The terrain is meshed as follows:
 	             ...
@@ -90,7 +90,7 @@ CourseRenderer::calcNormals()
 	       eight (x+y is even).
 	    */
 
-#define POINT(x,y) ppogl::Vec3d( XCD(x), ELEV(x,y), ZCD(y) )
+#define POINT(x,y) ppogl::Vec3d(getXCD(x), Course::getElevation(x,y), getZCD(y))
 
 	    if ( (x + y) % 2 == 0 ) {
 		if ( x > 0 && y > 0 ) {
@@ -116,7 +116,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x > 0 && y < ny-1 ) {
+		if ( x > 0 && y < Course::ny-1 ) {
 		    p1 = POINT(x-1,y  );
 		    p2 = POINT(x-1,y+1);
 		    v1 = p1-p0;
@@ -139,7 +139,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x < nx-1 && y > 0 ) {
+		if ( x < Course::nx-1 && y > 0 ) {
 		    p1 = POINT(x+1,y  );
 		    p2 = POINT(x+1,y-1);
 		    v1 = p1-p0;
@@ -162,7 +162,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x < nx-1 && y < ny-1 ) {
+		if ( x < Course::nx-1 && y < Course::ny-1 ) {
 		    p1 = POINT(x+1,y  );
 		    p2 = POINT(x+1,y+1);
 		    v1 = p1-p0;
@@ -200,7 +200,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x > 0 && y < ny-1 ) {
+		if ( x > 0 && y < Course::ny-1 ) {
 		    p1 = POINT(x-1,y  );
 		    p2 = POINT(x  ,y+1);
 		    v1 = p1-p0;
@@ -212,7 +212,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x < nx-1 && y > 0 ) {
+		if ( x < Course::nx-1 && y > 0 ) {
 		    p1 = POINT(x+1,y  );
 		    p2 = POINT(x  ,y-1);
 		    v1 = p1-p0;
@@ -224,7 +224,7 @@ CourseRenderer::calcNormals()
 		    n.normalize();
 		    nml = nml+n;
 		} 
-		if ( x < nx-1 && y < ny-1 ) {
+		if ( x < Course::nx-1 && y < Course::ny-1 ) {
 		    p1 = POINT(x+1,y  );
 		    p2 = POINT(x  ,y+1);
 		    v1 = p1-p0;
@@ -239,7 +239,7 @@ CourseRenderer::calcNormals()
 	    }
 
             nml.normalize();
-            NORMAL(x,y) = nml;
+			mp_nmls[x + Course::nx*y] = nml;
             continue;
         } 
 #undef POINT
@@ -560,8 +560,6 @@ CourseRenderer::render(const ppogl::Vec3d& pos)
 	//draw fog
 	drawFogPlane(pos);
 
-    int nx, ny;
-	Course::getDivisions(&nx, &ny);
     set_gl_options( COURSE );
 
     setupTexGen();

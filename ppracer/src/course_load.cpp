@@ -69,9 +69,9 @@ int* Course::terrain;
 
 ppogl::Vec2d Course::dimension;
 ppogl::Vec2d Course::playDimension;
+int Course::nx, Course::ny;
 
 static float elev_scale;
-static int nx, ny;
 static ppogl::Vec2d start_pt;
 
 static std::string courseAuthor;
@@ -148,13 +148,6 @@ Course::getTerrainMaxHeight( float distance )
     return getTerrainBaseHeight( distance ) + elev_scale;
 }
 
-void
-Course::getDivisions( int *x, int *y )
-{
-    *x = nx;
-    *y = ny;
-} 
-
 static void
 reset_course()
 {
@@ -163,7 +156,7 @@ reset_course()
 	Course::dimension = ppogl::Vec2d(50,130);
 	Course::playDimension = ppogl::Vec2d(50,130);
 
-    nx = ny = -1;
+    Course::nx = Course::ny = -1;
     start_pt.x() = 0;
     start_pt.y() = 0;
     base_height_value = 127;
@@ -219,7 +212,7 @@ Course::fillGLArrays()
 	    const int idx = y*nx+x;
 	   	Course::sm_vncArray->setVertex(idx,
 			GLfloat(x) / (nx-1.) * dimension.x(),
-			ELEV(x,y),
+			Course::getElevation(x,y),
 			-GLfloat(y)/ (ny-1.) * dimension.y());
 		Course::sm_vncArray->setNormal(idx,normals[ x + y * nx ]);
 		Course::sm_vncArray->setColor(idx,255, 255, 255, 255);
@@ -395,22 +388,21 @@ elev_cb(ppogl::Script *vm)
 		return vm->defaultError();
     }
 	
-    nx = elev_img->width;
-    ny = elev_img->height;
+    Course::nx = elev_img->width;
+    Course::ny = elev_img->height;
 
-    Course::elevation = new float[nx*ny];
+    Course::elevation = new float[Course::nx*Course::ny];
 	
     slope = tan(ANGLES_TO_RADIANS(Course::angle));
 
 	pad = 0;    /* RGBA images rows are aligned on 4-byte boundaries */
-    for (y=0; y<ny; y++) {
-        for (x=0; x<nx; x++) {
-	    ELEV(nx-1-x, ny-1-y) = 
-		( ( elev_img->data[ (x + nx * y) * elev_img->depth + pad ] 
+    for (y=0; y<Course::ny; y++) {
+        for (x=0; x<Course::nx; x++) {
+	    Course::getElevation(Course::nx-1-x, Course::ny-1-y) = 
+		( ( elev_img->data[ (x + Course::nx * y) * elev_img->depth + pad ] 
 		    - base_height_value ) / 255.0 ) * elev_scale
-		- double(ny-1.-y)/ny * Course::dimension.y() * slope;
+		- double(Course::ny-1.-y)/Course::ny * Course::dimension.y() * slope;
         } 
-        //pad += (nx*elev_img->depth) % 4;
     } 
 
 	delete elev_img;
@@ -454,19 +446,19 @@ terrain_cb(ppogl::Script *vm)
 		return vm->defaultError();
     }
 
-    if ( nx != terrain_img->width || ny != terrain_img->height ) {
+    if ( Course::nx != terrain_img->width || Course::ny != terrain_img->height ) {
         PP_WARNING("ppcourse.load_terrain: terrain bitmap must have same " 
 			 "dimensions as elevation bitmap");
 		return vm->defaultError();
     }
 
-    Course::terrain = new int[nx*ny];
+    Course::terrain = new int[Course::nx*Course::ny];
 	PP_CHECK_ALLOC(Course::terrain);
 		
-    for(int y=0; y<ny; y++){
-        for(int x=0; x<nx; x++){
-			idx = (nx-1-x) + nx*(ny-1-y);	
-			image_pointer=(x+nx*y)*terrain_img->depth;
+    for(int y=0; y<Course::ny; y++){
+        for(int x=0; x<Course::nx; x++){
+			idx = (Course::nx-1-x) + Course::nx*(Course::ny-1-y);	
+			image_pointer=(x+Course::nx*y)*terrain_img->depth;
 			
 			terrain_value=terrain_img->data[image_pointer] +
 						(terrain_img->data[image_pointer+1] << 8)+ 

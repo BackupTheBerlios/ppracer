@@ -263,24 +263,21 @@ void
 get_indices_for_point(double x, double z, 
 			    int *x0, int *y0, int *x1, int *y1)
 {
-    int nx, ny;
-
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    Course::getDivisions( &nx, &ny );
     
-    float xidx = x / courseDim.x() * ( float(nx) - 1. );
-    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
+    float xidx = x / courseDim.x() * ( float(Course::nx) - 1. );
+    float yidx = -z / courseDim.y() * ( float(Course::ny) - 1. );
 
     if (xidx < 0) {
         xidx = 0;
-    } else if ( xidx > nx-1 ) {
-        xidx = nx-1;
+    } else if ( xidx > Course::nx-1 ) {
+        xidx = Course::nx-1;
     } 
 
     if (yidx < 0) {
         yidx = 0;
-    } else if ( yidx > ny-1 ) {
-        yidx = ny-1;
+    } else if ( yidx > Course::ny-1 ) {
+        yidx = Course::ny-1;
     } 
 
     /* I found that ceil(3) was quite slow on at least some architectures, 
@@ -291,7 +288,7 @@ get_indices_for_point(double x, double z,
     *y1 = int( yidx + 0.9999 );   /* ceil(yidx) */
 
     if(*x0 == *x1){
-		if(*x1 < nx - 1){
+		if(*x1 < Course::nx - 1){
 	    	(*x1)++;
 		}else{ 
 	    	(*x0)--;
@@ -299,7 +296,7 @@ get_indices_for_point(double x, double z,
     } 
 
     if(*y0 == *y1){
-		if(*y1 < ny - 1){
+		if(*y1 < Course::ny - 1){
 	    	(*y1)++;
 		}else{ 
 	   		(*y0)--;
@@ -307,13 +304,13 @@ get_indices_for_point(double x, double z,
     }
 
     PP_ENSURE( *x0 >= 0, "invalid x0 index" );
-    PP_ENSURE( *x0 < nx, "invalid x0 index" );
+    PP_ENSURE( *x0 < Course::nx, "invalid x0 index" );
     PP_ENSURE( *x1 >= 0, "invalid x1 index" );
-    PP_ENSURE( *x1 < nx, "invalid x1 index" );
+    PP_ENSURE( *x1 < Course::nx, "invalid x1 index" );
     PP_ENSURE( *y0 >= 0, "invalid y0 index" );
-    PP_ENSURE( *y0 < ny, "invalid y0 index" );
+    PP_ENSURE( *y0 < Course::ny, "invalid y0 index" );
     PP_ENSURE( *y1 >= 0, "invalid y1 index" );
-    PP_ENSURE( *y1 < ny, "invalid y1 index" );
+    PP_ENSURE( *y1 < Course::ny, "invalid y1 index" );
 }
 
 
@@ -324,19 +321,17 @@ find_barycentric_coords(float x, float z,
 			      Index2d *idx2,
 			      float *u, float *v)
 {
-    int nx, ny;
     int x0, x1, y0, y1;
     float dx, ex, dz, ez, qx, qz, invdet; // to calc. barycentric coords 
     float *elevation;
 
     elevation = Course::getElevData();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
-    Course::getDivisions( &nx, &ny );
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
-    float xidx = x / courseDim.x() * ( float(nx) - 1. );
-    float yidx = -z / courseDim.y() * ( float(ny) - 1. );
+    float xidx = x / courseDim.x() * ( float(Course::nx) - 1. );
+    float yidx = -z / courseDim.y() * ( float(Course::ny) - 1. );
 
 
     /* The terrain is meshed as follows:
@@ -401,28 +396,25 @@ find_barycentric_coords(float x, float z,
 ppogl::Vec3d
 find_course_normal(const float x, const float z)
 {
-    int nx, ny;
     int x0, x1, y0, y1;
     ppogl::Vec3d p0, p1, p2;
     Index2d idx0, idx1, idx2;
     ppogl::Vec3d n0, n1, n2;
     float u, v;
 
-    const ppogl::Vec2d& courseDim = Course::getDimensions();
-    Course::getDivisions( &nx, &ny );
     ppogl::Vec3d* course_nmls = courseRenderer.getNormals();
 
     get_indices_for_point( x, z, &x0, &y0, &x1, &y1 );
     
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
-    n0 = course_nmls[ idx0.i + nx * idx0.j ];
-    n1 = course_nmls[ idx1.i + nx * idx1.j ];
-    n2 = course_nmls[ idx2.i + nx * idx2.j ];
+    n0 = course_nmls[ idx0.i + Course::nx * idx0.j ];
+    n1 = course_nmls[ idx1.i + Course::nx * idx1.j ];
+    n2 = course_nmls[ idx2.i + Course::nx * idx2.j ];
 
-    p0 = COURSE_VERTEX( idx0.i, idx0.j );
-    p1 = COURSE_VERTEX( idx1.i, idx1.j );
-    p2 = COURSE_VERTEX( idx2.i, idx2.j );
+    p0 = Course::getVertex(idx0.i, idx0.j);
+    p1 = Course::getVertex(idx1.i, idx1.j);
+    p2 = Course::getVertex(idx2.i, idx2.j);
     
 	ppogl::Vec3d smooth_nml = (u*n0)+(v*n1+( 1.-u-v)*n2);
 
@@ -446,7 +438,6 @@ find_y_coord(float x, float z)
     ppogl::Vec3d p0, p1, p2;
     Index2d idx0, idx1, idx2;
     float u, v;
-    int nx, ny;
 
     // cache last request
     static float last_x, last_z, last_y;
@@ -456,14 +447,11 @@ find_y_coord(float x, float z)
 		return last_y;
     }
 
-	Course::getDivisions( &nx, &ny );
-	const ppogl::Vec2d& courseDim = Course::getDimensions();
-
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
-    p0 = COURSE_VERTEX( idx0.i, idx0.j );
-    p1 = COURSE_VERTEX( idx1.i, idx1.j );
-    p2 = COURSE_VERTEX( idx2.i, idx2.j );
+    p0 = Course::getVertex(idx0.i, idx0.j);
+    p1 = Course::getVertex(idx1.i, idx1.j);
+    p2 = Course::getVertex(idx2.i, idx2.j);
 
     ycoord = u * p0.y() + v * p1.y() + ( 1. - u - v ) * p2.y();
 
@@ -479,29 +467,26 @@ void
 get_surface_type(float x, float z, float weights[])
 {
     int *terrain;
-    int nx, ny;
     Index2d idx0, idx1, idx2;
     float u, v;
-    unsigned int i;
 
     find_barycentric_coords( x, z, &idx0, &idx1, &idx2, &u, &v );
 
     terrain = Course::getTerrainData();
-    Course::getDivisions( &nx, &ny );
 
-    for (i=0; i<num_terrains; i++) {
-	weights[i] = 0;
-	if ( terrain[ idx0.i + nx*idx0.j ] == int(i) ) {
-	    weights[i] += u;
+    for(int i=0; i<int(num_terrains); i++){
+		weights[i] = 0;
+		if(terrain[idx0.i + Course::nx*idx0.j] == i){
+			weights[i] += u;
+		}
+		if(terrain[idx1.i + Course::nx*idx1.j] == i){
+		    weights[i] += v;
+		}
+		if(terrain[idx2.i + Course::nx*idx2.j] == i){
+			weights[i] += 1.0 - u - v;
+		}
 	}
-	if ( terrain[ idx1.i + nx*idx1.j ] == int(i) ) {
-	    weights[i] += v;
-	}
-	if ( terrain[ idx2.i + nx*idx2.j ] == int(i) ) {
-	    weights[i] += 1.0 - u - v;
-	}
-    }
-} 
+}
 
 pp::Plane
 get_local_course_plane(const ppogl::Vec3d& pt)

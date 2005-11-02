@@ -1,6 +1,12 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-02  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	replaced several macros with inline functions
+	removed several unused macros
+	code cleanups
+
 2005-11-01  Volker Stroebel <volker@planetpenguin.de>
 	* src/elements.* src/course_load.cpp
 	added simple scale and rotation support for models

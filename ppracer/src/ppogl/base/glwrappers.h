@@ -23,8 +23,8 @@
  * In addition it wrapps several ppogl data types
  */ 
  
-#ifndef _PPOGL_GL_WRAPPERS_H
-#define _PPOGL_GL_WRAPPERS_H
+#ifndef _PPOGL_GL_WRAPPERS_H_
+#define _PPOGL_GL_WRAPPERS_H_
 
 #include "color.h"
 #include "vec2d.h"
@@ -189,4 +189,4 @@ namespace glu{
 	};	
 } // namespace glu
 
-#endif // _PPOGL_GL_WRAPPERS_H
+#endif // _PPOGL_GL_WRAPPERS_H_

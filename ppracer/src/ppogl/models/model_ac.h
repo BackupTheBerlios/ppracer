@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PPOGL_MODEL_AC_H
-#define _PPOGL_MODEL_AC_H
+#ifndef _PPOGL_MODEL_AC_H_
+#define _PPOGL_MODEL_AC_H_
 
 
 #include "../sg/geoms.h"
@@ -112,4 +112,4 @@ public:
 
 } //namepsace pp
 
-#endif // _PP_MODEL_AC_H
+#endif // _PP_MODEL_AC_H_

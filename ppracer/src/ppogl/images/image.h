@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PPOGL_IMAGE_H
-#define _PPOGL_IMAGE_H
+#ifndef _PPOGL_IMAGE_H_
+#define _PPOGL_IMAGE_H_
 
 #include "../base/assert.h"
 #include "../base/color.h"
@@ -113,4 +113,4 @@ namespace glu{
 	inline GLint Build2DMipmaps(GLenum target, const ppogl::Image& image){return gluBuild2DMipmaps(target, image.depth, image.width, image.height, (image.depth == 3)?(GL_RGB):(GL_RGBA), GL_UNSIGNED_BYTE, image.data);}
 } // namespace glu
 
-#endif // _PPOGL_IMAGE_H
+#endif // _PPOGL_IMAGE_H_

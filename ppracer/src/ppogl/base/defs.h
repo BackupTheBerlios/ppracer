@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_DEFS_H
-#define _PPOGL_DEFS_H
+#ifndef _PPOGL_DEFS_H_
+#define _PPOGL_DEFS_H_
 
 #include <math.h>
 
@@ -49,4 +49,4 @@
 /// This only works for static arrays in the same context
 #define PP_NUM_ELEMENTS(array) (sizeof(array) / sizeof ((array)[0]))
 
-#endif // PPOGL_DEFS_H
+#endif // PPOGL_DEFS_H_

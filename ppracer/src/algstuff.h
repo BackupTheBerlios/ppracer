@@ -22,8 +22,8 @@
  * They will be replaced as soon as there are useable replacements in ppogl
  */
  
-#ifndef _ALGSTUFF_H
-#define _ALGSTUFF_H
+#ifndef _ALGSTUFF_H_
+#define _ALGSTUFF_H_
 
 #include "ppogl/base/vec3d.h"
 

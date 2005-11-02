@@ -1,5 +1,5 @@
 /*  
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -17,34 +17,48 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _KEYBOARD_CONFIG_H
-#define _KEYBOARD_CONFIG_H
+#ifndef _KEYBOARD_CONFIG_H_
+#define _KEYBOARD_CONFIG_H_
 
 #include "configmode.h"
 
-#include "ppgltk/entry.h"
+#include "ppogl/ui.h"
 
 class KeyboardConfig : public ConfigMode
 {
-	pp::Entry* mp_leftEntry;
-	pp::Entry* mp_rightEntry;
-	pp::Entry* mp_paddleEntry;
-	pp::Entry* mp_brakeEntry;
-	pp::Entry* mp_jumpEntry;
-	pp::Entry* mp_trickEntry;
-	pp::Entry* mp_resetEntry;
+	ppogl::Label m_leftLbl;	
+	ppogl::Entry m_leftEntry;
+	
+	ppogl::Label m_rightLbl;
+	ppogl::Entry m_rightEntry;
+	
+	ppogl::Label m_paddleLbl;
+	ppogl::Entry m_paddleEntry;
+	
+	ppogl::Label m_brakeLbl;
+	ppogl::Entry m_brakeEntry;
+	
+	ppogl::Label m_jumpLbl;
+	ppogl::Entry m_jumpEntry;
+	
+	ppogl::Label m_trickLbl;
+	ppogl::Entry m_trickEntry;
+	
+	ppogl::Label m_resetLbl;
+	ppogl::Entry m_resetEntry;
+	
+	ppogl::Label m_pauseLbl;
+	ppogl::Entry m_pauseEntry;
 	
 public:
 	KeyboardConfig();
-	~KeyboardConfig();
 
-	void setWidgetPositions();
 	void apply();
 
 	std::string getKey(SDLKey key);
 	SDLKey getKey(std::string& string);
 
-	void setKey(pp::Entry* widget, SDLKey key);
+	void setKey(ppogl::Entry *widget, SDLKey key);
 };
 
-#endif // KEYBOARD_CONFIG_H
+#endif // KEYBOARD_CONFIG_H_

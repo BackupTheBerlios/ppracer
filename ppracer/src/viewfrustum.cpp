@@ -25,7 +25,7 @@
 
 #include "ppogl/base/defs.h"
 
-#define DOT_PRODUCT( v1, v2 ) (double(v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()))
+#define DOT_PRODUCT(v1, v2) (double(v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()))
 
 static pp::Plane frustum_planes[6];
 

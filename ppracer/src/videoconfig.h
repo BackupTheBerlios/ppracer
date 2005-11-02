@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _VIDEO_CONFIG_H
-#define _VIDEO_CONFIG_H
+#ifndef _VIDEO_CONFIG_H_
+#define _VIDEO_CONFIG_H_
 
 #include "configmode.h"
 
@@ -62,4 +62,4 @@ public:
 };
 
 
-#endif // _VIDEO_CONFIG_H
+#endif // _VIDEO_CONFIG_H_

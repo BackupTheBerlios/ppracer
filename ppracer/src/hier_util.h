@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _HIER_UTIL_H
-#define _HIER_UTIL_H
+#ifndef _HIER_UTIL_H_
+#define _HIER_UTIL_H_
 
 #include "ppogl/sg/geoms.h"
 #include "ppogl/sg/materials.h"
@@ -69,4 +69,4 @@ bool check_polyhedron_collision_with_dag(
     SceneNode *node,const pp::Matrix& modelMatrix, const pp::Matrix& invModelMatrix,
     const ppogl::Polyhedron& ph );
 
-#endif // _HIER_UTIL_H
+#endif // _HIER_UTIL_H_
