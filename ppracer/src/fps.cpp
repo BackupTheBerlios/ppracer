@@ -26,23 +26,55 @@ FPS fpsCounter;
 
 FPS::FPS() 
  : m_frames(0), 
-   m_time(0.0),
-   m_fps(0.0)
+   m_time(0.0f),
+   m_fps(0.0f),
+   m_maxStep(0.0f),
+   m_lastTime(0.0f),
+   m_maxFPSFrames(0)
 {
 }
 
 void
-FPS::update()
+FPS::update(float timestep)
 {
-    m_time += GameMgr::getInstance().getTimeStep();
+	m_time += timestep;
 	m_frames++;
-	if( m_time>0.3){
+	if(m_time>0.5f){
 		m_fps = m_frames / m_time;
-		m_time = 0.0;
+		m_time = 0.0f;
 		m_frames = 0;
-		
 		if( Benchmark::getMode()!= Benchmark::NONE ){
 			Benchmark::updateFPS(m_fps);
 		}
+	}
+		
+	// If a maximum fps is set, 
+	// delay the programm to a certan amount of ms if necessary.
+	// This implementation is not perfect but should be sufficient.
+		
+	if(m_maxStep>0){
+		m_maxFPSFrames++;
+		m_lastTime+=timestep;
+		const float delay = m_maxStep*float(m_maxFPSFrames) - m_lastTime;
+		if(delay>0){
+			SDL_Delay(int(1000.0f*delay));
+		}else{
+			// reset counters
+			m_maxFPSFrames=0;
+			m_lastTime=0.0f;
+		}		
+	}
+}
+
+void
+FPS::setMaxFPS(int fps)
+{
+	if(fps>0){
+		m_maxFPSFrames=0;
+		m_maxStep=1.0f/float(fps);
+		m_lastTime=0.0f;
+	}else{
+		// no max fps
+		m_maxStep=0.0f;
 	}
 }

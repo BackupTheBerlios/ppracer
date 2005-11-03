@@ -166,6 +166,8 @@ GameOver::GameOver()
 	}
 	//Set the racing mode to paused to disable player updates
 	m_paused=true;
+	
+	fpsCounter.setMaxFPS(PPConfig.getInt("gui_max_fps"));
 }
 
 void

@@ -65,6 +65,9 @@ Paused::Paused()
 
 	m_paused=true;
 	
+	if(Benchmark::getMode()!=Benchmark::PAUSED){
+		fpsCounter.setMaxFPS(PPConfig.getInt("gui_max_fps"));
+	}
 	ppogl::AudioMgr::getInstance().pauseMusic();
 }
 
@@ -130,6 +133,7 @@ Paused::keyPressEvent(SDLKey key)
 void
 Paused::resume()
 {
+	fpsCounter.setMaxFPS(PPConfig.getInt("max_fps"));
 	ppogl::AudioMgr::getInstance().pauseMusic(false);
 	setMode( RACING );
 }

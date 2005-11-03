@@ -41,9 +41,6 @@ RacingMode::RacingMode()
 void
 RacingMode::loop(float timestep)
 {
-	//update the FPS counter for this frame
-    fpsCounter.update();
-	
 	// the multiplayer stuff is experimental
 	if(GameMode::exp_multiscreen<0){
 		// player 0 (first player)

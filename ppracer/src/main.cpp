@@ -43,6 +43,7 @@
 #include "stuff.h"
 #include "winsys.h"
 #include "ui_snow.h"
+#include "fps.h"
 
 #include "ppogl/translation.h"
 #include "ppogl/ui/uitheme.h"
@@ -341,6 +342,8 @@ main(int argc, char *argv[])
 	// load "cached" configuration values
 	GameConfig::update();
 
+	fpsCounter.setMaxFPS(PPConfig.getInt("gui_max_fps"));
+	
 	PP_MESSAGE("Init joystick");
     init_joystick();
 		

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -22,15 +22,22 @@
 
 class FPS
 {
-	int	m_frames;
-	double m_time;
-	double m_fps;
+	unsigned int m_frames;
+	float m_time;
+	float m_fps;
+	
+	// members used for the max fps stuff
+	float m_maxStep;
+	float m_lastTime;
+	unsigned int m_maxFPSFrames;
 	
 public:
 	FPS();
 
-	void 	update();
-	double 	get(){return m_fps;};
+	void update(float timestep);
+	float get(){return m_fps;};
+	
+	void setMaxFPS(int fps);
 };
 
 extern FPS fpsCounter;

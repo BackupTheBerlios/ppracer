@@ -41,6 +41,7 @@
 #include "event_select.h"
 #include "event_race_select.h"
 #include "bench.h"
+#include "fps.h"
 
 #include "configuration.h"
 #include "generalconfig.h"
@@ -192,13 +193,18 @@ GameMode::mainLoop()
 	
 	clear_rendering_context();	
 	
-	if ( Benchmark::getTimeStep() >0.0 ){
+	const float timestep = GameMgr::getInstance().getTimeStep();
+		
+	if(Benchmark::getTimeStep() >0.0){
 		GameMode::currentMode->loop(Benchmark::getTimeStep());
 	}else{	
-		GameMode::currentMode->loop( GameMgr::getInstance().getTimeStep() );
+		GameMode::currentMode->loop(timestep);
 	}
 	
-	updateDisplay();	
+	updateDisplay();
+	
+	//update the FPS counter for this frame
+    fpsCounter.update(timestep);	
 }
 
 GameMode::GameMode()

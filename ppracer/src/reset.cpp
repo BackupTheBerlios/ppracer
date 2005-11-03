@@ -62,8 +62,6 @@ Reset::loop(float timeStep)
     static bool tux_visible = true; 
     static int tux_visible_count = 0;
 
-    fpsCounter.update();
-
     fogPlane.setup();
 
     update_player_pos(EPS);

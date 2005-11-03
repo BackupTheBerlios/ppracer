@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-03  Volker Stroebel <volker@planetpenguin.de>
+	* src/fps.* src/* data/config.nut.in
+	added max fps for gui and racing
+
 2005-11-02  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	replaced several macros with inline functions

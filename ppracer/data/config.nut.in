@@ -375,6 +375,15 @@ Joystick button for doing tricks (numbering starts at 0)
 ",
 joystick_trick_button = 1,
 
+max_fps_description = @"
+Maximum number of frames per second (use 0 to diable)
+",
+max_fps = 0,
+
+gui_max_fps_description = @"
+Maximum number of frames per second (use 0 to diable)
+",
+gui_max_fps = 30,
 }
 
 if(rawin("ppconfig")){	

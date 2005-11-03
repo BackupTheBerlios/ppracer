@@ -82,6 +82,7 @@ Intro::Intro()
     	update_view(players[i], EPS);
 	}
 	
+	fpsCounter.setMaxFPS(PPConfig.getInt("max_fps"));
 	ppogl::AudioMgr::getInstance().playMusic("intro");
 }
 
