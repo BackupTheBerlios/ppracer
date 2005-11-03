@@ -283,6 +283,17 @@ Course::load(const std::string& course)
 	return true;
 }
 
+void
+Course::cleanup()
+{
+	if(sm_vncArray){
+		delete sm_vncArray;
+		sm_vncArray=NULL;		
+	}
+}
+
+
+
 static inline int
 intensity_to_terrain(const int intensity)
 {

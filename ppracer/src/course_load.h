@@ -48,7 +48,7 @@ public:
 	static int nx, ny;
 
 	static bool load(const std::string& course);
-	
+
 	static float* getElevData(){return elevation;}
 	static int* getTerrainData(){return terrain;}
 	
@@ -83,7 +83,9 @@ public:
 		PP_REQUIRE(y>=0 && y<ny ,"Invalid value: " << y);
 		return ppogl::Vec3d(float(x)/(nx-1.)*(dimension.x()),
 			Course::getElevation(x,y),-float(y)/(ny-1.)*(dimension.y()));
-	}	
+	}
+	
+	static void cleanup();
 };
 
 class TerrainTex

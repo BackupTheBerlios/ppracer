@@ -1444,6 +1444,19 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
     if (Dirty) setStatic(cd);
 }
 
+void
+quadsquare::cleanup()
+{
+// root node should delete VertexArrayIndices
+	if(VertexArrayIndices[0]!= NULL){
+		for(int i=0; i<NUM_TERRAIN_TYPES; i++){
+			if(VertexArrayIndices[i]!=NULL)
+				delete VertexArrayIndices[i];
+				VertexArrayIndices[i]=NULL;
+		}
+	}
+}
+
 float quadsquare::ScaleX;
 float quadsquare::ScaleZ;
 int* quadsquare::Terrain;

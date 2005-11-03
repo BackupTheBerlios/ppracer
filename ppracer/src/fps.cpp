@@ -62,7 +62,7 @@ FPS::update(float timestep)
 			// reset counters
 			m_maxFPSFrames=0;
 			m_lastTime=0.0f;
-		}		
+		}	
 	}
 }
 

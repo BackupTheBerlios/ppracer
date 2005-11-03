@@ -114,6 +114,8 @@ public:
 
 	inline void	setTerrain(int *terrain){Terrain = terrain;};
 	
+	static void cleanup();
+	
 private:
     void enableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd);
     quadsquare*	enableDescendant(int count, int stack[], const quadcornerdata& cd);
