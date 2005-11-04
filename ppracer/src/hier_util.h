@@ -34,7 +34,10 @@ struct SphereNode
 	float radius;
 	
 	/// How many divisions do we use to draw a sphere?
-    int divisions;		
+    int divisions;
+
+	/// Resolution for this sphere
+	float resolution;	
 };
 
 struct SceneNode

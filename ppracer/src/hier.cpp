@@ -289,7 +289,7 @@ create_tranform_node(const std::string& parent_name, const std::string& child_na
 }
 
 std::string
-create_sphere_node(const std::string& parent_name, const std::string& child_name, double resolution ) 
+create_sphere_node(const std::string& parent_name, const std::string& child_name, float resolution ) 
 {
     SceneNode *node;
 
@@ -305,6 +305,7 @@ create_sphere_node(const std::string& parent_name, const std::string& child_name
 	    MIN_SPHERE_DIVISIONS, 
 	    ROUND_TO_NEAREST(PPConfig.getInt("tux_sphere_divisions") * resolution ) 
 	    ) );
+	node->sphere.resolution = resolution; 
 
     return msg;
 }
@@ -341,4 +342,18 @@ collide(const std::string& node, const ppogl::Polyhedron& ph)
     } 
 
     return check_polyhedron_collision_with_dag( nodePtr, mat, invmat, ph );
+}
+
+void
+update_scene_nodes()
+{
+	//update sphere divisions for all nodes	
+	std::map<std::string, SceneNode *>::iterator it;
+	for(it=nodes.begin(); it!=nodes.end();it++){	
+		(*it).second->sphere.divisions = MIN( 
+			MAX_SPHERE_DIVISIONS, MAX( 
+	    	MIN_SPHERE_DIVISIONS, 
+	    	ROUND_TO_NEAREST(PPConfig.getInt("tux_sphere_divisions") * (*it).second->sphere.resolution) 
+	    	));	
+	}
 }

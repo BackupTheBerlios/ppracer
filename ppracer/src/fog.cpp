@@ -44,7 +44,7 @@ FogPlane::reset()
 void 
 FogPlane::setup()
 {
-    if(!m_isOn || PPConfig.getBool("disable_fog") ) {
+	if(!m_isOn || GameConfig::disableFog){
 		gl::Disable(GL_FOG);
     }else{
 		gl::Enable(GL_FOG);

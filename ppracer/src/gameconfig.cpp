@@ -41,12 +41,14 @@ int backwardClipDistance = 10;
 
 int fov = 60;
 
-bool drawTrackMarks;
+bool drawTrackMarks = true;
 
 int joystickBrakeButton;
 int joystickPaddleButton;
 int joystickJumpButton;
 int joystickTrickButton;
+
+bool disableFog=false;
 
 /// update configuration data
 void
@@ -77,6 +79,8 @@ update()
 	joystickPaddleButton = PPConfig.getInt("joystick_paddle_button");
 	joystickJumpButton = PPConfig.getInt("joystick_jump_button");
 	joystickTrickButton = PPConfig.getInt("joystick_trick_button");
+
+	disableFog = PPConfig.getBool("disable_fog");
 }
 
 } // namespace GameConfig

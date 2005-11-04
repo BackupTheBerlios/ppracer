@@ -44,9 +44,7 @@ class GraphicsConfig : public ConfigMode
 		
 	//ppogl::HScale   m_trackmarksDetailHScl;
 	//ppogl::Label    m_trackmarksDetailLbl;
-	
-	ppogl::Label    m_warningLbl;
-	
+		
 	ppogl::HScale   m_playerDetailHScl;
 	ppogl::Label    m_playerDetailLbl;
 	

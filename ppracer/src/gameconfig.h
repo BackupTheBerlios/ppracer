@@ -47,6 +47,8 @@ extern int joystickPaddleButton;
 extern int joystickJumpButton;
 extern int joystickTrickButton;
 	
+extern bool disableFog;
+	
 void update();
 
 } // namespace GameConfig

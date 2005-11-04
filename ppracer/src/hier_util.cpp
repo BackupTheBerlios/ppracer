@@ -50,33 +50,27 @@ static GLuint
 get_sphere_display_list(int divisions)
 {
     static bool initialized = false;
-    static int num_display_lists;
+    static int num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
     static GLuint *display_lists = NULL;
-    int base_divisions;
-    int idx;
 
-    if ( !initialized ) {
+    if(!initialized){
 		initialized = true;
-		base_divisions = PPConfig.getInt("tux_sphere_divisions");
 
-		num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
-
-		PP_ASSERT( display_lists == NULL, "display_lists not NULL" );
+		PP_ASSERT(display_lists == NULL, "display_lists not NULL");
 		display_lists = new GLuint[num_display_lists];
 		PP_CHECK_ALLOC(display_lists);		
 		
-		for (int i=0; i<num_display_lists; i++) {
+		for(int i=0; i<num_display_lists; i++){
 			display_lists[i] = 0;
 		}
     }
 
-    idx = divisions - MIN_SPHERE_DIVISIONS;
+    const int idx = divisions - MIN_SPHERE_DIVISIONS;
 
-    PP_ENSURE( idx >= 0 &&
-		     idx < num_display_lists, 
+    PP_ENSURE(idx >= 0 && idx < num_display_lists, 
 		     "invalid number of sphere subdivisions" );
 
-    if ( display_lists[idx] == 0 ) {
+    if(display_lists[idx]==0){
 		// Initialize the sphere display list 
 		display_lists[idx] = gl::GenLists(1);
 		gl::NewList( display_lists[idx], GL_COMPILE );
@@ -86,8 +80,6 @@ get_sphere_display_list(int divisions)
 
     return display_lists[idx];
 }
-
-
 
 /*--------------------------------------------------------------------------*/
 

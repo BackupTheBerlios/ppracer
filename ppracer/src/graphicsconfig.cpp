@@ -20,6 +20,7 @@
 #include "graphicsconfig.h"
 
 #include "stuff.h"
+#include "hier.h"
 
 /// minimum course detail level
 #define MIN_CDL 20.0f
@@ -42,7 +43,6 @@ GraphicsConfig::GraphicsConfig()
    m_terrainDetailLbl(_("Terrain:")),
    m_textureDetailLbl(_("Textures:")),
    //m_trackmarksDetailLbl(_("Track marks:")),
-   m_warningLbl(_("(needs restart)")),
    m_playerDetailLbl(_("Player Model:"))
 {
 	setTitle(_("Graphics Configuration"));	
@@ -102,12 +102,7 @@ GraphicsConfig::GraphicsConfig()
 	m_trackmarksDetailHScl.alignment.right();
 	m_trackmarksDetailHScl.setValue((PPConfig.getInt("max_track_marks")-1000.f)/10000.0f);
 	*/
-	
-	position.y()-=50;
-	position2.y()-=50;
-	
-	m_warningLbl.setPosition(position);
-	
+		
 	position.y()-=40;
 	position2.y()-=40;
 	
@@ -179,6 +174,8 @@ GraphicsConfig::apply()
 	setTextureDetailLevel(m_textureDetailHScl.getValue());
 	setPlayerDetailLevel(m_playerDetailHScl.getValue());
  	
+	update_scene_nodes();
+	
 	//PPConfig.setInt("max_track_marks", int(m_trackmarksDetailHScl.getValue()*10000+1000));
 	
 	write_config_file();

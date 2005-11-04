@@ -270,7 +270,7 @@ void
 reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos ) 
 {
     push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolutionX),
-				  pos.y()/double(GameMode::resolutionY) );
+				  (double(GameMode::resolutionY)-pos.y())/double(GameMode::resolutionY) );
     last_push_position = push_position;
     push_position_initialized = true;
 }
@@ -278,8 +278,8 @@ reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos )
 void 
 push_ui_snow(const ppogl::Vec2d& pos)
 {
-    push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolutionX),
-				  pos.y()/double(GameMode::resolutionY) );
+    push_position = ppogl::Vec2d(pos.x()/double(GameMode::resolutionX),
+				  (double(GameMode::resolutionY)-pos.y())/double(GameMode::resolutionY) );
     if ( !push_position_initialized ) {
 		last_push_position = push_position;
     }
@@ -290,7 +290,8 @@ void
 make_ui_snow(const ppogl::Vec2d& pos)
 {
     if(num_particles < MAX_NUM_PARTICLES){
-		make_particle( num_particles, pos.x()/GameMode::resolutionX, pos.y()/GameMode::resolutionY);
+		make_particle( num_particles, pos.x()/GameMode::resolutionX,
+				(double(GameMode::resolutionY)-pos.y())/GameMode::resolutionY);
 		num_particles++;
     }
 }

@@ -78,7 +78,7 @@ updateDisplay()
 }
 
 void
-GameMode::setMode( GameMode::Mode mode ) 
+GameMode::setMode(GameMode::Mode mode) 
 {
     new_mode = mode;
 }
@@ -212,17 +212,18 @@ GameMode::GameMode()
 }
 	
 void
-GameMode::drawSnow( float timeStep, bool windy )
+GameMode::drawSnow(float timeStep, bool windy)
 {
 	// check wether ui snow is 
 	if(PPConfig.getBool("ui_snow")){
 		// update and draw snow
-		update_ui_snow( timeStep, windy );
+		update_ui_snow(timeStep, windy);
 		draw_ui_snow();
     }
 }
 
-void loop_mouse_func (int button, int state, int x, int y)
+void
+loop_mouse_func(int button, int state, int x, int y)
 {
     if( button == SDL_BUTTON_MIDDLE ){
 		middleMouseButtonDown = ( state == SDL_PRESSED );
@@ -244,31 +245,33 @@ void loop_mouse_func (int button, int state, int x, int y)
 }
 
 
-void loop_mouse_motion_func( int x, int y )
+void
+loop_mouse_motion_func(int x, int y)
 {
-	if( cursorPos.x() != x || cursorPos.y() != y ) {
+	if(cursorPos.x() != x || cursorPos.y() != y){
 		// Update UI snow 
 		if(PPConfig.getBool("ui_snow")){
-			if ( rightMouseButtonDown ) {
-				make_ui_snow( cursorPos );
-				reset_ui_snow_cursor_pos( cursorPos );
-			} else if ( middleMouseButtonDown ) {
-				make_ui_snow( cursorPos );
-				push_ui_snow( cursorPos );
-			} else {
-				push_ui_snow( cursorPos );
+			if(rightMouseButtonDown){
+				make_ui_snow(cursorPos);
+				reset_ui_snow_cursor_pos(cursorPos);
+			}else if(middleMouseButtonDown){
+				make_ui_snow(cursorPos);
+				push_ui_snow(cursorPos);
+			}else{
+				push_ui_snow(cursorPos);
 			}
 		}
     }
 	cursorPos.x()=x;
-	cursorPos.y()=y;	
+	cursorPos.y()=y;
 	
 	// Reverse y coordinate
     y = GameMode::resolutionY - y;
 	ppogl::UIManager::getInstance().mouseEvent(x,y);
 }
 
-void loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y)
+void
+loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y)
 {
 	if(GameMode::currentMode!=NULL){		
 		if (key < SDLK_UP) {
@@ -286,7 +289,6 @@ void loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y)
 		ppogl::UIManager::getInstance().keyboardEvent(key,mod,release);
 	}
 }
-
 
 // multiscreen is an experimental feature
 GameMode::MultiscreenMode GameMode::exp_multiscreen = GameMode::MULTISCREEN_NONE;
