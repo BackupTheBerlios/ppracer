@@ -151,14 +151,15 @@ reset_scene_node(const std::string& node)
     nodePtr->invtrans.makeIdentity();
 }
 
-std::string 
+void 
 rotate_scene_node(const std::string& node, char axis, double angle ) 
 {
     SceneNode *nodePtr;
     pp::Matrix rotMatrix;
 
-    if (get_scene_node( node, &nodePtr ) != true){
-        return "No such node";
+    if(get_scene_node( node, &nodePtr )!= true){
+        PP_WARNING("No such node");
+		return;
     } 
 
     rotMatrix.makeRotation( angle, axis );
@@ -166,37 +167,35 @@ rotate_scene_node(const std::string& node, char axis, double angle )
 	
     rotMatrix.makeRotation( -angle, axis );
     nodePtr->invtrans=rotMatrix*nodePtr->invtrans;
-
-    return "";
 }
 
-std::string 
+void 
 translate_scene_node(const std::string& node, const ppogl::Vec3d& vec ) 
 {
     SceneNode *nodePtr;
     pp::Matrix xlateMatrix;
 
     if(get_scene_node( node, &nodePtr ) != true){
-        return "No such node";
-    } 
+        PP_WARNING("No such node");
+		return;
+    }
 
     xlateMatrix.makeTranslation( vec.x(), vec.y(), vec.z() );
 	nodePtr->trans=nodePtr->trans*xlateMatrix;
 	
     xlateMatrix.makeTranslation( -vec.x(), -vec.y(), -vec.z() );
     nodePtr->invtrans=xlateMatrix*nodePtr->invtrans;
-
-    return "";
 }
 
-std::string 
+void 
 scale_scene_node(const std::string& node, const ppogl::Vec3d& center, const ppogl::Vec3d& factor) 
 {
     SceneNode *nodePtr;
     pp::Matrix matrix;
 
-    if(get_scene_node( node, &nodePtr ) != true){
-        return "No such node";
+    if(get_scene_node(node, &nodePtr)!=true){
+		PP_WARNING("No such node");
+		return;
     } 
 
     matrix.makeTranslation( -center.x(), -center.y(), -center.z() );
@@ -216,87 +215,76 @@ scale_scene_node(const std::string& node, const ppogl::Vec3d& center, const ppog
 	
     matrix.makeTranslation( -center.x(), -center.y(), -center.z() );
     nodePtr->invtrans=matrix*nodePtr->invtrans;
-
-    return "";
 }
 
-std::string 
+void 
 transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invmat ) 
 {
     SceneNode *nodePtr;
 
-    if(get_scene_node( node, &nodePtr ) != true){
-        return "No such node";
+    if(get_scene_node(node, &nodePtr)!=true){
+		PP_WARNING("No such node");
+		return;
     } 
 
     nodePtr->trans=nodePtr->trans*mat;
     nodePtr->invtrans=invmat*nodePtr->invtrans;
-
-    return "";
 }
 
-std::string 
+void 
 set_scene_node_material(const std::string& node, const std::string& mat) 
 {
     ppogl::Material *matPtr;
     SceneNode *nodePtr;
 
     if(get_scene_node(node, &nodePtr) != true){
-        return "No such node";
+        PP_WARNING("No such node");
+		return;
     }
 
     if(get_material( mat, &matPtr ) != true){
-        return "No such material";
+        PP_WARNING("No such material");
+		return;
     } 
 
     nodePtr->mat = matPtr;
-
-    return "";
 }
 
-std::string 
+void 
 set_scene_node_shadow_state(const std::string& node, const std::string& state) 
 {
     SceneNode *nodePtr;
 
     if(get_scene_node(node, &nodePtr) != true){
-        return "No such node";
-    } 
+        PP_WARNING("No such node");
+		return;
+	}
 
     if(state=="off"){
 		nodePtr->renderShadow = false;
     }else if(state=="on"){
 		nodePtr->renderShadow = true;
     } else {
-		return "Shadow state must be 'on' or 'off'";
+		PP_WARNING("Shadow state must be 'on' or 'off'");
+		return;
     }
-
-    return "";
 }
 
-std::string 
+void 
 create_tranform_node(const std::string& parent_name, const std::string& child_name ) 
 {
     SceneNode *node;
-    std::string msg = create_scene_node(parent_name, child_name, &node);
-    if (!msg.empty()){
-        return msg;
-    } 
+    create_scene_node(parent_name, child_name, &node);
 
     node->isSphere = false;
-
-    return msg;
 }
 
-std::string
+void
 create_sphere_node(const std::string& parent_name, const std::string& child_name, float resolution ) 
 {
     SceneNode *node;
 
-    std::string msg = create_scene_node(parent_name, child_name, &node);
-    if(!msg.empty()){
-        return msg;
-    } 
+    create_scene_node(parent_name, child_name, &node);
 
     node->isSphere = true;
     node->sphere.radius = 1.0;
@@ -305,9 +293,7 @@ create_sphere_node(const std::string& parent_name, const std::string& child_name
 	    MIN_SPHERE_DIVISIONS, 
 	    ROUND_TO_NEAREST(PPConfig.getInt("tux_sphere_divisions") * resolution ) 
 	    ) );
-	node->sphere.resolution = resolution; 
-
-    return msg;
+	node->sphere.resolution = resolution;
 }
 
 void

@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -24,38 +24,35 @@
 
 #include "course_mgr.h"
 
-#include "ppgltk/button.h"
-#include "ppgltk/listbox.h"
-#include "ppgltk/label.h"
+#include "ppogl/ui.h"
 
-
-class EventSelect : public GameMode
+class EventSelect
+ : public GameMode
 {
-	pp::Listbox<EventData>* mp_eventListbox;
-	pp::Listbox<CupData>* mp_cupListbox;
-	
+	ppogl::ListBox< std::list<EventData>::iterator > m_eventListBox;
+	ppogl::ListBox< std::list<CupData>::iterator > m_cupListBox;
+
 	std::list<EventData>::iterator m_curEvent;
 	std::list<CupData>::iterator m_curCup;
+		
+	ppogl::Button m_backBtn;
+	ppogl::Button m_continueBtn;
+		
+	ppogl::Label m_titleLbl;
+	ppogl::Label m_eventLbl;
+	ppogl::Label m_cupLbl;
+	ppogl::Label m_statusLbl;
 	
 	bool m_curCupComplete;
 	bool m_curCupPlayable;
-	
-	pp::Button* mp_backBtn;
-	pp::Button* mp_continueBtn;
-		
-	pp::Label *mp_titleLbl;
-	pp::Label *mp_eventLbl;
-	pp::Label *mp_cupLbl;
-	pp::Label *mp_statusLbl;
 	
 	void updateCupStates();
 	void updateButtonEnabledStates();
 	
 public:
 	EventSelect();
-	~EventSelect();
 
-	void loop(float timeStep);
+	void loop(float timestep);
 
 	void cupChanged();
 	void eventChanged();

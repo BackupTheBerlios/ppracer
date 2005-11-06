@@ -32,21 +32,19 @@ bool get_scene_node(const std::string& node_name, SceneNode **node );
 
 void reset_scene_node(const std::string& node);
 
-std::string rotate_scene_node(const std::string& node, char axis, double angle);
-std::string translate_scene_node(const std::string& node, const ppogl::Vec3d& trans);
-std::string scale_scene_node(const std::string& node, const ppogl::Vec3d& origin, const ppogl::Vec3d& factor);
-std::string transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invMat);
+void rotate_scene_node(const std::string& node, char axis, double angle);
+void translate_scene_node(const std::string& node, const ppogl::Vec3d& trans);
+void scale_scene_node(const std::string& node, const ppogl::Vec3d& origin, const ppogl::Vec3d& factor);
+void transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invMat);
 
-std::string set_scene_node_material(const std::string& node, const std::string& mat);
+void set_scene_node_material(const std::string& node, const std::string& mat);
 
 void add_material(const std::string& name, const ppogl::Material& material);
 
-std::string set_scene_resolution(const std::string& resolution);
+void set_scene_node_shadow_state(const std::string& node, const std::string& state);
 
-std::string set_scene_node_shadow_state(const std::string& node, const std::string& state);
-
-std::string create_tranform_node(const std::string& parent, const std::string& name);
-std::string create_sphere_node(const std::string& parent_name, const std::string& child_name, float resolution);
+void create_tranform_node(const std::string& parent, const std::string& name);
+void create_sphere_node(const std::string& parent_name, const std::string& child_name, float resolution);
 
 void draw_scene_graph(const std::string& node);
 bool collide(const std::string& node, const ppogl::Polyhedron& ph);

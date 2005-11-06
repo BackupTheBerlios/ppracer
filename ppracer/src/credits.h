@@ -23,7 +23,8 @@
 #include "loop.h"
 #include "ppogl/font.h"
 
-class Credits : public GameMode
+class Credits
+ : public GameMode
 {	
 	struct CLine{
 		ppogl::FontRef font;

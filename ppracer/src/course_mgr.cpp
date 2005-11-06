@@ -26,11 +26,6 @@
 std::list<CourseData> openCourseList;
 std::list<EventData> eventList;
 
-
-
-
-
-
 const std::string&
 CupData::getName()
 {
@@ -112,6 +107,15 @@ register_course_cb(ppogl::Script *vm)
 	openCourseList.push_back(data);
 	
     return 0;
+}
+
+CourseData::CourseData()
+ : par_time(0),
+   condition(CONDITION_SUNNY),
+   mirrored(false),
+   windy(false),
+   snowing(false)
+{
 }
 
 const std::string&

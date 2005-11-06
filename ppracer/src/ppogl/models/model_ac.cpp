@@ -111,7 +111,7 @@ ModelAC::ModelAC(const std::string& filename)
     readLine(f);
 
     if (strncmp(ma_buff, "AC3D", 4)){
-		PP_WARNING("ac_load_ac '" << filename << "' is not a valid AC3D file");
+		PP_WARNING("No valid ac3d file: " << filename);
 		fclose(f);
 		return;
     }

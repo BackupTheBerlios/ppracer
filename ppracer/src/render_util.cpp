@@ -81,7 +81,7 @@ clear_rendering_context()
 
 void
 set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
-			 const double specular_exp )
+			 const float specular_exp)
 ///Sets the material properties
 {
   // Set material color (used when lighting is on)
@@ -94,7 +94,7 @@ set_material(const ppogl::Color& diffuse, const ppogl::Color& specular,
 
 void
 draw_billboard(const Player& plyr, 
-		     const ppogl::Vec3d& center_pt, double width, double height, 
+		     const ppogl::Vec3d& center_pt, float width, float height, 
 		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord )
 {
     ppogl::Vec3d pt;

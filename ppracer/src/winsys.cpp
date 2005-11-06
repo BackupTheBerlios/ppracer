@@ -23,6 +23,8 @@
 #include "loop.h"
 #include "render_util.h"
 #include "stuff.h"
+#include "course_load.h"
+#include "quadtree.h"
 
 #include "ppogl/base/glwrappers.h"
 
@@ -209,5 +211,9 @@ winsys_exit(int code)
     write_config_file();
 	PP_MESSAGE("Quit SDL");
 	SDL_Quit();
+			
+	Course::cleanup();
+	quadsquare::cleanup();
+	
 	exit(code);
 }

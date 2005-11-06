@@ -32,7 +32,7 @@ class Racing
 	struct States
 	{
 		States();
-		double chargeStartTime;
+		float chargeStartTime;
 		int lastTerrain;
 		bool rightTurn;
 		bool leftTurn;

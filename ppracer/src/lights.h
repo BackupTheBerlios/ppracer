@@ -38,13 +38,13 @@ struct Light
     ppogl::Vec4f position;
 	ppogl::Vec3f spot_direction;
 	
-    GLfloat spot_exponent;
-    GLfloat spot_cutoff;
-    GLfloat constant_attenuation;
-    GLfloat linear_attenuation;
-    GLfloat quadratic_attenuation;
+    float spot_exponent;
+    float spot_cutoff;
+    float constant_attenuation;
+    float linear_attenuation;
+    float quadratic_attenuation;
 	
-	bool is_on;
+	bool enabled;
 };
 
 Light* get_course_lights();

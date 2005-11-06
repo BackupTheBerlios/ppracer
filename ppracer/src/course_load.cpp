@@ -56,6 +56,17 @@
 #define MIN_ANGLE 5
 #define MAX_ANGLE 80
 
+TerrainTex::TerrainTex()
+ : type(1),
+   value(0),
+   friction(0.5),
+   compression(0.1),
+   wheight(150),
+   count(0),
+   soundactive(false)
+{
+}
+
 TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
 
 unsigned int num_terrains=0;

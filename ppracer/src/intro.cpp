@@ -119,7 +119,7 @@ Intro::postDisplay(float timestep)
 void
 Intro::abort(Player& plyr)
 {
-    ppogl::Vec2d start_pt = Course::getStartPt();
+    const ppogl::Vec2d start_pt = Course::getStartPt();
 
     setMode(RACING);
 

@@ -83,8 +83,6 @@ tux_translate(ppogl::Script *vm)
 static int
 tux_scale(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string nodename;
     ppogl::Vec3d origin;
     ppogl::Vec3d factors; 
@@ -113,12 +111,7 @@ tux_scale(ppogl::Script *vm)
 		vm->pop(2);		
 	}
 	
-    errmsg = scale_scene_node(nodename,origin,factors);
-
-    // report error, if any 
-    if(!errmsg.empty()) {
-        PP_WARNING(errmsg);
-    }
+    scale_scene_node(nodename,origin,factors);
   
     return 0;
 }
@@ -126,8 +119,6 @@ tux_scale(ppogl::Script *vm)
 static int
 tux_transform(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string parent_name;
     std::string child_name;
 
@@ -142,20 +133,14 @@ tux_transform(ppogl::Script *vm)
     // obtain child's name
     child_name = vm->getString(2);
 
-    errmsg = create_tranform_node(parent_name, child_name);
+    create_tranform_node(parent_name, child_name);
 
-    // report error, if any
-    if(!errmsg.empty()) {
-        PP_WARNING("tux.transform: " << errmsg << "\n" << parent_name << " -> " << child_name); 
-    }
-    return 0;
+	return 0;
 }
 
 static int
 tux_sphere(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string parent_name;
     std::string child_name;
     double resolution;
@@ -173,12 +158,8 @@ tux_sphere(ppogl::Script *vm)
 	
 	resolution = vm->getFloat(3);
 	
-    errmsg = create_sphere_node(parent_name, child_name, resolution);
+    create_sphere_node(parent_name, child_name, resolution);
 
-    // report error, if any
-    if(!errmsg.empty()){
-        PP_WARNING(errmsg);
-    }
     return 0;
 }
 
@@ -222,8 +203,6 @@ tux_material(ppogl::Script *vm)
 static int
 tux_surfaceproperty(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string node_name;
     std::string mat_name;
 
@@ -238,20 +217,14 @@ tux_surfaceproperty(ppogl::Script *vm)
     // obtain material name
     mat_name = vm->getString(2);
 
-    errmsg = set_scene_node_material(node_name, mat_name);
+    set_scene_node_material(node_name, mat_name);
 
-    // report error, if any
-    if(!errmsg.empty()){
-        PP_WARNING("tux.surfaceproperty: " << errmsg << "\n" << node_name << " -> " << mat_name); 
-    }
     return 0;
 }
 
 static int
 tux_shadow(ppogl::Script *vm) 
 {
-    std::string errmsg;
-
     std::string node_name;
     std::string state;
 
@@ -263,12 +236,8 @@ tux_shadow(ppogl::Script *vm)
     node_name = vm->getString(1);
     state = vm->getString(2);
 
-    errmsg = set_scene_node_shadow_state(node_name, state);
+    set_scene_node_shadow_state(node_name, state);
 
-    // report error, if any
-    if(!errmsg.empty()){
-        PP_WARNING("tux.shadow: " << errmsg << "\n" << node_name << " -> " << state);
-    }
     return 0;
 }
 

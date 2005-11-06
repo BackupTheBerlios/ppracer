@@ -29,7 +29,7 @@ class Reset
  : public GameMode
 {
 	const ppogl::Color m_textColor;
-	double m_resetStartTime;
+	float m_resetStartTime;
 	bool m_positionReset;
 	
 public:

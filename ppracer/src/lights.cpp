@@ -27,18 +27,20 @@
 
 static Light course_lights[NUM_COURSE_LIGHTS];
 
-Light* get_course_lights() { 
+Light*
+get_course_lights()
+{ 
     return course_lights; 
 }
 
-
-void reset_lights()
+void
+reset_lights()
 {
-    for (int i=0; i<NUM_COURSE_LIGHTS; i++) {
+    for(int i=0; i<NUM_COURSE_LIGHTS; i++){
 		// Note: we initialize the lights to default OpenGL values
         // EXCEPT that light 0 isn't treated differently than the
         // others 
-		course_lights[i].is_on = false;
+		course_lights[i].enabled = false;
 		course_lights[i].spot_direction.z()=-1.0;
 		course_lights[i].spot_exponent = 0.0;
 		course_lights[i].spot_cutoff = 180.0;
@@ -51,18 +53,19 @@ void reset_lights()
     gl::LightModel(GL_LIGHT_MODEL_AMBIENT, ppogl::Color::black);
 }
 
-void setup_course_lighting()
+void
+setup_course_lighting()
 {
     Light *course_lights;
 
     course_lights = get_course_lights();
 
-    for (int i=0; i<NUM_COURSE_LIGHTS; i++) {
-		if ( !course_lights[i].is_on ) {
-			gl::Disable( GL_LIGHT0 + i );
+    for(int i=0; i<NUM_COURSE_LIGHTS; i++){
+		if(!course_lights[i].enabled){
+			gl::Disable(GL_LIGHT0 + i);
 			continue;
 		}
-		gl::Enable( GL_LIGHT0 + i );
+		gl::Enable(GL_LIGHT0 + i);
 
 		gl::Light( GL_LIGHT0 + i, GL_AMBIENT, course_lights[i].ambient );
 		gl::Light( GL_LIGHT0 + i, GL_DIFFUSE, course_lights[i].diffuse );
@@ -101,7 +104,7 @@ course_light_cb(ppogl::Script *vm)
 
 	// activated
 	if(num_args>=2){
-		course_lights[light_num].is_on = vm->getBool(2);		
+		course_lights[light_num].enabled = vm->getBool(2);		
 	}
 	
 	// position
@@ -151,7 +154,8 @@ static const struct ppogl::Script::Lib ppthemelib[]={
 	{NULL, NULL}
 };
 
-void register_course_light_callbacks()
+void
+register_course_light_callbacks()
 {
 	script.registerLib("pptheme", ppthemelib);
 }

@@ -28,7 +28,7 @@
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
 
-/* This constant is here as part of a debugging check to prevent an infinite 
+/** This constant is here as part of a debugging check to prevent an infinite 
    number of particles from being created */
 #define MAX_PARTICLES 500000
 
@@ -63,7 +63,8 @@ static ppogl::Color particleColor;
 static Particle* head = NULL;
 static int num_particles = 0;
 
-static double
+
+inline double
 frand()
 {
     return double(rand())/RAND_MAX;

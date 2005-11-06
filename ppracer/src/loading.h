@@ -27,7 +27,8 @@
 
 #include <string>
 
-class Loading : public GameMode
+class Loading
+ : public GameMode
 {
 	ppogl::Label m_loadingLbl;
 	

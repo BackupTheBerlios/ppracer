@@ -42,5 +42,4 @@ public:
 
 extern FPS fpsCounter;
 
-
 #endif //_FPS_H

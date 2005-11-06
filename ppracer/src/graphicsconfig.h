@@ -23,7 +23,8 @@
 
 #include "ppogl/ui.h"
 
-class GraphicsConfig : public ConfigMode
+class GraphicsConfig
+ : public ConfigMode
 {
 	ppogl::CheckBox m_fogBox;
 	ppogl::Label    m_fogLbl;

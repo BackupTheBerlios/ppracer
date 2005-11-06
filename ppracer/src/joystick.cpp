@@ -21,7 +21,7 @@
 
 #include "joystick.h"
 
-#if defined( HAVE_SDL_JOYSTICKOPEN )
+#if defined(HAVE_SDL_JOYSTICKOPEN)
 
 #include "SDL.h"
 #include "SDL_joystick.h"
@@ -212,12 +212,12 @@ void update_joystick()
 {
 }
 
-double get_joystick_x_axis()
+float get_joystick_x_axis()
 {
     return 0.0;
 }
 
-double get_joystick_y_axis()
+float get_joystick_y_axis()
 {
     return 0.0;
 }

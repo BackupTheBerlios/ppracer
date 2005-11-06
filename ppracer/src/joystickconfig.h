@@ -21,50 +21,33 @@
 
 #include "configmode.h"
 
-#include "ppgltk/checkbox.h"
-#include "ppgltk/label.h"
-#include "ppgltk/listbox.h"
+#include "ppogl/ui.h"
 
-typedef struct{
-	std::string name;
-	int data;
-}button_t;
-
-
-class JoystickConfig : public ConfigMode
+class JoystickConfig
+ : public ConfigMode
 {
-	pp::CheckBox *mp_enableJoystickBox;
+	ppogl::CheckBox m_enableJoystickBox;
 	
-	pp::Label *mp_enableJoystickLbl;
+	ppogl::Label m_enableJoystickLbl;
 	
-	pp::Label *mp_paddleLbl;
-	pp::Listbox<button_t> *mp_paddleListbox;
-	std::list<button_t> m_paddleList;
+	ppogl::Label m_paddleLbl;
+	ppogl::ListBox<int> m_paddleListBox;
 	
-	pp::Label *mp_brakeLbl;
-	pp::Listbox<button_t> *mp_brakeListbox;
-	std::list<button_t> m_brakeList;
+	ppogl::Label m_brakeLbl;
+	ppogl::ListBox<int> m_brakeListBox;
 	
-	pp::Label *mp_jumpLbl;
-	pp::Listbox<button_t> *mp_jumpListbox;
-	std::list<button_t> m_jumpList;
+	ppogl::Label m_jumpLbl;
+	ppogl::ListBox<int> m_jumpListBox;
 	
-	pp::Label *mp_trickLbl;
-	pp::Listbox<button_t> *mp_trickListbox;
-	std::list<button_t> m_trickList;
+	ppogl::Label m_trickLbl;
+	ppogl::ListBox<int> m_trickListBox;
 	
-	void createButtonList(std::list<button_t> &list);
-	void setButton(int button, pp::Listbox<button_t> *listbox);
-	void updateWidgetsEnabledStates();
+	void createButtonList(ppogl::ListBox<int> &list);
 	
 public:
 	JoystickConfig();
-	~JoystickConfig();
 
-	void setWidgetPositions();
 	void apply();
-
-	void checkboxClicked();
 
 	void paddleClicked();
 	void brakeClicked();
@@ -72,7 +55,6 @@ public:
 	void trickClicked();
 	
 	void customLoop(double TimeStep);
-
 };
 
 #endif // _JOYSTICK_CONFIG_H_

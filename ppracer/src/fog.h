@@ -26,7 +26,7 @@
 #include "ppogl/base/color.h"
 #include "ppogl/base/glwrappers.h"
 
-class FogPlane {
+class FogPlane{
 	
 	bool m_isOn;
     GLint m_mode;
@@ -36,9 +36,6 @@ class FogPlane {
     ppogl::Color m_color;
 	
 public:
-	FogPlane(){};
-	~FogPlane(){};
-		
 	void reset();
 	
 	inline bool isEnabled() const {return m_isOn;}

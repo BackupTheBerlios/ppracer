@@ -25,9 +25,9 @@
 void init_joystick();
 bool is_joystick_active();
 void update_joystick();
-double get_joystick_x_axis();
-double get_joystick_y_axis();
-bool is_joystick_button_down( int button ); 
+float get_joystick_x_axis();
+float get_joystick_y_axis();
+bool is_joystick_button_down(int button); 
 bool is_joystick_continue_button_down();
 int get_joystick_down_button();
 

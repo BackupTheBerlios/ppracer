@@ -87,9 +87,6 @@ class FontMgr
    public ResourceMgr<Font>
 {
 public:
-	FontMgr();
-	~FontMgr();
-				
 	/// loads and registers the ttf file to the specified binding
 	bool registerFont(const std::string& binding, const std::string& fileName, unsigned int size, const ppogl::Color &color);
 	
@@ -99,8 +96,6 @@ public:
 	/// bind font to the specified font with a different color
 	bool bindFont(const std::string& binding, const std::string& fontName, const ppogl::Color& color);
 	
-	void draw(const std::string& binding, const std::string& string, float x, float y);
-
 	static int sqLoad(ppogl::Script *vm);
 	static int sqBind(ppogl::Script *vm);
 };

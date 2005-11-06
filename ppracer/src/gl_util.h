@@ -40,7 +40,7 @@ enum RenderMode{
     TRACK_MARKS
 };
 
-void set_gl_options( const RenderMode mode );
+void set_gl_options(const RenderMode mode);
 
 void print_gl_info();
 

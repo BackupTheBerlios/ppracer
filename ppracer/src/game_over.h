@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,33 +21,36 @@
 #define _GAME_OVER_H_
 
 #include "loop.h"
+#include "racingmode.h"
 
-#include "ppgltk/label.h"
+#include "ppogl/ui.h"
 
-
-class GameOver : public GameMode
+class GameOver
+ : public RacingMode
 {
 	bool m_aborted;
 	bool m_bestScore;
 	
-	pp::Label *mp_raceOverLbl;
+	ppogl::Label m_raceOverLbl;
 	
-	pp::Label *mp_timeLbl;
-	pp::Label *mp_herringLbl;
-	pp::Label *mp_scoreLbl;
-	pp::Label *mp_maxspeedLbl;
-	pp::Label *mp_flyingLbl;
+	ppogl::Label m_timeLbl;
+	ppogl::Label m_herringLbl;
+	ppogl::Label m_scoreLbl;
+	ppogl::Label m_maxspeedLbl;
+	ppogl::Label m_flyingLbl;
 	
-	pp::Label *mp_resultsLbl;
+	ppogl::Label m_resultsLbl;
 	
 public:
 	GameOver();
-	~GameOver();
 
-	void loop(float timeStep);
+	void preDisplay(float timestep);
+	void postDisplay(float timestep);
 
 	bool keyPressEvent(SDLKey key);
 	bool mouseButtonEvent(int button, int x, int y, bool pressed);
+
+	bool useDefaultDisplay(){return false;};
 };
 
-#endif
+#endif // _GAME_OVER_H_

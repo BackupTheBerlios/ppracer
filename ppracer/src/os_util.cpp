@@ -30,10 +30,11 @@
 #endif
 
 
-/* This function only used in Win32; ifdef'd to eliminate "unused" warnings */
-#if defined( WIN32 )
+// This function only used in Win32; ifdef'd to eliminate "unused" warnings
+#if defined WIN32
 
-static bool append_to_buff( char **buff, int *size, char *string )
+static bool
+append_to_buff(char **buff, int *size, char *string)
 {
     int len;
 
@@ -54,7 +55,7 @@ static bool append_to_buff( char **buff, int *size, char *string )
 	return true;
 }
 
-#endif /* WIN32 */
+#endif // WIN32
 
 
 /*---------------------------------------------------------------------------*/
@@ -66,14 +67,15 @@ static bool append_to_buff( char **buff, int *size, char *string )
   \date    Created:  2000-10-30
   \date    Modified: 2000-10-30
 */
-int get_os_version( char *buff, unsigned int size )
+int
+get_os_version( char *buff, unsigned int size )
 {
 
 #ifdef WIN32
-    /* Win32 Version */
+    // Win32 Version
 
-    /* See http://www.mvps.org/vb/index2.html?tips/getversionex.htm for 
-       a table mapping OSVERSIONINFOEX entries to Windows version */
+    // See http://www.mvps.org/vb/index2.html?tips/getversionex.htm for 
+    // a table mapping OSVERSIONINFOEX entries to Windows version
 
     char tmp_buff[BUFF_LEN];
     int tmp_buff_size = BUFF_LEN;
@@ -93,7 +95,7 @@ int get_os_version( char *buff, unsigned int size )
     {
     case VER_PLATFORM_WIN32_NT:
 	
-	/* Check for NT versus 2000 */
+	// Check for NT versus 2000
 	if ( osvi.dwMajorVersion <= 4 ) {
 	    if ( !append_to_buff( &ptr, &tmp_buff_size, 
 				  "Microsoft Windows NT" ) )
@@ -110,8 +112,7 @@ int get_os_version( char *buff, unsigned int size )
 	    }
 	}
 	
-
-	/* Display version, service pack (if any), and build number. */
+	// Display version, service pack (if any), and build number.
 	len = snprintf(ptr, tmp_buff_size, " version %d.%d %s (Build %d)",
 		       osvi.dwMajorVersion,
 		       osvi.dwMinorVersion,
@@ -170,7 +171,7 @@ int get_os_version( char *buff, unsigned int size )
 	    }
 	}
 
-	/* Append Build */
+	// Append Build
 	len = snprintf(ptr, tmp_buff_size, " (Build %d)",
 		       osvi.dwBuildNumber & 0xFFFF);
 
@@ -194,7 +195,7 @@ int get_os_version( char *buff, unsigned int size )
 
     len = snprintf( buff, size, "%s", tmp_buff );
     if ( len < 0 ) {
-	/* buffer too small */
+	// buffer too small
 	buff[size-1] = (char)0;
 	return 1;
     }
@@ -202,7 +203,7 @@ int get_os_version( char *buff, unsigned int size )
     return 0;
     
 #else
-    /* Unix/Linux version */
+    // Unix/Linux version 
 
     struct utsname utsname;
 
@@ -222,11 +223,8 @@ int get_os_version( char *buff, unsigned int size )
 	return 0;
 	
     } else {
-	/* uname failed */
+	// uname failed
 	return -1;
     }
-#endif /* WIN32 */
+#endif // WIN32
 }
-
-
-/* EOF */

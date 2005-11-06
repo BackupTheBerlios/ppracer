@@ -195,10 +195,6 @@ Player::Player()
  : health(100)
 {
 }
-	
-Player::~Player()
-{	
-}
 
 bool
 Player::isCupComplete( std::string event,

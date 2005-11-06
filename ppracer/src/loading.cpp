@@ -49,10 +49,6 @@ Loading::Loading()
 	ppogl::AudioMgr::getInstance().playMusic("loading");
 }
 
-
-extern void updateDisplay();
-
-
 void
 Loading::loop(float timeStep)
 {

@@ -63,16 +63,16 @@ static ppogl::Vec2d last_push_position;
 static double last_update_time = -1;
 static bool push_position_initialized = false;
 
-static double
+static float
 frand()
 {
-    return double(rand())/RAND_MAX;
+    return float(rand())/RAND_MAX;
 } 
 
 static void
-make_particle(int i, double x, double y)
+make_particle(int i, float x, float y)
 {
-    double p_dist;
+    float p_dist;
     int type;
 
     particles[i].pt.x() = x;
@@ -107,17 +107,17 @@ init_ui_snow()
 }
 
 void
-update_ui_snow(double time_step, bool windy)
+update_ui_snow(float time_step, bool windy)
 {
     ppogl::Vec2d *v, f;
     ppogl::Vec2d *pt;
-    double size;
-    double dist_from_push, p_dist;
+    float size;
+    float dist_from_push, p_dist;
     ppogl::Vec2d push_vector;
     int i;
-    double push_timestep, time;
+    float push_timestep;
 
-    time = getClockTime();
+    float time = SDL_GetTicks()/1000.0;
 
     push_vector.x() = 0;
     push_vector.y() = 0;
@@ -211,7 +211,7 @@ void
 draw_ui_snow()
 {
     ppogl::Vec2d *pt, *tex_min, *tex_max;
-    double size;
+    float size;
     int i;
 	
 	gl::PushMatrix();

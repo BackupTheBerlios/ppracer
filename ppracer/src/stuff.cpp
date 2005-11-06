@@ -43,12 +43,6 @@ getTimeComponents(	float time,
     hundredths = int(time * 100 + 0.5) % 100;
 }
 
-float
-getClockTime()
-{
-    return SDL_GetTicks()/1000.0;
-}
-
 std::string
 get_config_dir_name()
 {

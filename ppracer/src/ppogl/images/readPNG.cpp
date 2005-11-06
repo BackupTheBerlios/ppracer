@@ -24,7 +24,6 @@ namespace ppogl{
 ReadPNG::ReadPNG(const std::string& filename)
 {
 	png_byte header[4]; 
-	
 	data = NULL; 
 	
 	FILE *fp = fopen(filename.c_str(), "rb");
@@ -33,25 +32,23 @@ ReadPNG::ReadPNG(const std::string& filename)
     }
 	
     fread(header, 1, 4, fp);
-    bool is_png = !png_sig_cmp(header, 0, 4);
-   	if (!is_png)
-    {
+   	if(png_sig_cmp(header, 0, 4)){
+		//no png image
 		fclose(fp);
         return;
 	}
 		
-	PP_LOG(LogImages,"Loading PNG image: " << filename);
+	PP_LOG(LogImages,"Loading image: " << filename);
 	
     png_structp png_ptr = png_create_read_struct
        (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (!png_ptr){
+    if(!png_ptr){
 		fclose(fp);
         return;
 	}
 	
     png_infop info_ptr = png_create_info_struct(png_ptr);
-    if (!info_ptr)
-    {
+    if(!info_ptr){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
 		fclose(fp);
         return;
@@ -82,7 +79,7 @@ ReadPNG::ReadPNG(const std::string& filename)
 	}
 	
 	if( color_type == PNG_COLOR_TYPE_GRAY ||
-		color_type == PNG_COLOR_TYPE_GRAY_ALPHA ){
+		color_type == PNG_COLOR_TYPE_GRAY_ALPHA){
 		png_set_gray_to_rgb(png_ptr);
 		png_read_update_info(png_ptr, info_ptr);
 		png_get_IHDR(png_ptr, info_ptr, &width, &height,
@@ -92,14 +89,13 @@ ReadPNG::ReadPNG(const std::string& filename)
 	this->width=width;
 	this->height=height;
 			
-	if ( color_type==PNG_COLOR_TYPE_RGB){
+	if(color_type==PNG_COLOR_TYPE_RGB){
 		depth=3;
 		loadData(png_ptr, 3);
-	} else if ( color_type==PNG_COLOR_TYPE_RGB_ALPHA){
+	}else if(color_type==PNG_COLOR_TYPE_RGB_ALPHA){
 		depth=4;
 		loadData(png_ptr, 4);
-	} else {
-		fflush(stdout);			
+	}else{
 		data = NULL;
 	}
 	

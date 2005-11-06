@@ -24,7 +24,8 @@
 
 #include "ppogl/ui.h"
 
-class KeyboardConfig : public ConfigMode
+class KeyboardConfig
+ : public ConfigMode
 {
 	ppogl::Label m_leftLbl;	
 	ppogl::Entry m_leftEntry;

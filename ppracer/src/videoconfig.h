@@ -28,7 +28,7 @@ class VideoConfig
 {
 	struct Resolution
 	{
-		Resolution(int _x=0, int _y=0):x(_x),y(_y){};
+		Resolution(int x, int y);
 		int x;
 		int y;
 	};
@@ -60,6 +60,5 @@ public:
 
 	void apply();
 };
-
 
 #endif // _VIDEO_CONFIG_H_

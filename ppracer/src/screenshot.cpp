@@ -27,8 +27,6 @@
 
 #include <sstream>
 
-static int screenshot_num = 0;
-
 bool
 take_screenshot(const std::string& filename)
 {
@@ -42,7 +40,7 @@ take_screenshot(const std::string& filename)
 	image.height=viewport[3];
 	image.depth=3;
 	
-	for (int i=0; i<viewport[3]; i++){
+	for(int i=0; i<viewport[3]; i++){
 		gl::ReadPixels(viewport[0], viewport[1]+viewport[3]-1-i,
 			viewport[2], 1, GL_RGB, 
 			GL_UNSIGNED_BYTE, image.data+viewport[2]*i*3
@@ -55,7 +53,8 @@ take_screenshot(const std::string& filename)
 void
 screenshot()
 {
-    screenshot_num++;
+    static int screenshot_num = 0;
+	screenshot_num++;
 		
 	std::stringstream temp(std::ios::in| std::ios::out | std::ios::trunc);
 

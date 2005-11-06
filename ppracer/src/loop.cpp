@@ -77,6 +77,10 @@ updateDisplay()
 	SDL_GL_SwapBuffers();
 }
 
+GameMode::~GameMode()
+{
+}
+
 void
 GameMode::setMode(GameMode::Mode mode) 
 {

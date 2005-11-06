@@ -372,11 +372,6 @@ main(int argc, char *argv[])
 	PP_MESSAGE("Entering event loop");
     winsys_process_events();
 	
-	PP_WARNING("Cleanup");
-	
-	Course::cleanup();
-	quadsquare::cleanup();
-	
     return 0;
 	
 	}catch(ppogl::Error &e){

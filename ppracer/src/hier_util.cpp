@@ -50,16 +50,11 @@ static GLuint
 get_sphere_display_list(int divisions)
 {
     static bool initialized = false;
-    static int num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
-    static GLuint *display_lists = NULL;
+    static const int num_display_lists = MAX_SPHERE_DIVISIONS - MIN_SPHERE_DIVISIONS + 1;
+    static GLuint display_lists[num_display_lists];
 
     if(!initialized){
 		initialized = true;
-
-		PP_ASSERT(display_lists == NULL, "display_lists not NULL");
-		display_lists = new GLuint[num_display_lists];
-		PP_CHECK_ALLOC(display_lists);		
-		
 		for(int i=0; i<num_display_lists; i++){
 			display_lists[i] = 0;
 		}

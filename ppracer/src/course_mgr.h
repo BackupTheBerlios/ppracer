@@ -47,15 +47,8 @@ public:
     	NUM_DIFFICULTYS
 	};
 
-	CourseData()
-	 : par_time(0),
-	   condition(CONDITION_SUNNY),
-	   mirrored(false),
-	   windy(false),
-	   snowing(false)
-	{};
-	~CourseData(){};
-
+	CourseData();
+	
 	std::string course;
 	std::map<std::string, std::string> names;
 	std::map<std::string, std::string> descriptions;

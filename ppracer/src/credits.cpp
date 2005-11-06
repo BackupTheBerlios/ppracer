@@ -29,22 +29,22 @@
 #define CREDITS_MAX_Y -140
 #define CREDITS_MIN_Y 64
 
-struct creditLine
+struct CreditLine
 {
     bool translateable;
 	const char *binding;
     const char *text;
 };
 
-static creditLine creditLines[] = 
+static CreditLine creditLines[] = 
 {
 	{false, "credits_h1", "PlanetPenguin Racer" },
     {false, "credits_text", "http://racer.planetpenguin.de" },
 	{false, "credits_text", "" },
-    {true, "credits_h2", "Development Team" },
+    {true,  "credits_h2", "Development Team" },
     {false, "credits_text", "Volker Ströbel" },
     {false, "credits_text", "" },
-	{true, "credits_h2", "Translators" },
+	{true,  "credits_h2", "Translators" },
 	{false, "credits_text", "Alexander Aksenov" },	
 	{false, "credits_text", "Eric Alvarez Llimos" },	
 	{false, "credits_text", "Helder Correia" },	
@@ -60,13 +60,13 @@ static creditLine creditLines[] =
 	{false, "credits_text", "Theo Snelleman" },	
 	{false, "credits_text", "Trygve B. Wiig" },
     {false, "credits_text", "" },
-	{true, "credits_h2", "Contributors" },
+	{true,  "credits_h2", "Contributors" },
 	{false, "credits_text", "Peter Reichel" },
 	{false, "credits_text", "Rainer Koschnick" },
 	{false, "credits_text", "Teemu Vesala" },
 	{false, "credits_text", "Theo Snelleman" },
     {false, "credits_text", "" },
-    {true, "credits_h2", "Tux Racer Development Team" },
+    {true,  "credits_h2", "Tux Racer Development Team" },
     {false, "credits_text", "Patrick \"Pog\" Gilhuly" },
     {false, "credits_text", "Eric \"Monster\" Hall" },
     {false, "credits_text", "Rick Knowles" },
@@ -74,10 +74,10 @@ static creditLine creditLines[] =
     {false, "credits_text", "Jasmin Patry" },
     {false, "credits_text", "Mark Riddell" },
     {false, "credits_text", "" },
-    {true, "credits_h2", "Music" },
+    {true,  "credits_h2", "Music" },
     {false, "credits_text", "Joseph Toscano" },
     {false, "credits_text", "" },
-    {true, "credits_h2", "Thanks To:" },
+    {true,  "credits_h2", "Thanks To:" },
     {false, "credits_text", "Larry Ewing" },
     {false, "credits_text", "Thatcher Ulrich" },
     {false, "credits_text", "Steve Baker" },

@@ -212,14 +212,6 @@ Font::utf8ToUnicode(wchar_t* buff, const std::string& string)
 
 PPOGL_SINGLETON(FontMgr);
 
-FontMgr::FontMgr()
-{
-}
-
-FontMgr::~FontMgr()
-{	
-}
-
 bool
 FontMgr::registerFont(const std::string& binding, const std::string& filename, unsigned int size, const ppogl::Color &color)
 {
@@ -252,16 +244,6 @@ FontMgr::bindFont(const std::string& binding, const std::string& fontName, const
 		
 	m_bindings[binding] = FontRef(new ppogl::Font(font->getFTFont(), color));
 	return true;
-}
-
-void
-FontMgr::draw(const std::string& binding, const std::string& string, float x, float y)
-{
-	FontRef font = get(binding);
-	
-	if(font){	
-		font->draw(string, x, y);
-	}
 }
 
 int

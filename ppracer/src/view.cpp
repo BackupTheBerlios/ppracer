@@ -268,21 +268,21 @@ setup_view_matrix(Player& plyr)
   \date    Modified: 2000-08-26
 */
 void
-update_view(Player& plyr, double dt)
+update_view(Player& plyr, float dt)
 {
     ppogl::Vec3d view_pt;
     ppogl::Vec3d view_dir, up_dir, vel_dir, view_vec;
-    double ycoord;
-    double course_angle;
+    float ycoord;
+    float course_angle;
     ppogl::Vec3d axis;
     pp::Matrix rot_mat;
     ppogl::Vec3d y_vec;
     ppogl::Vec3d mz_vec;
     ppogl::Vec3d vel_proj;
     pp::Quat rot_quat;
-    double speed;
+    float speed;
     ppogl::Vec3d vel_cpy;
-    double time_constant_mult;
+    float time_constant_mult;
 
     vel_cpy = plyr.vel;
     speed = vel_cpy.normalize();

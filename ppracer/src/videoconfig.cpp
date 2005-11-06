@@ -43,6 +43,12 @@
 #define RES_MIN_WIDTH 600
 #define RES_MIN_HEIGHT 400
 
+VideoConfig::Resolution::Resolution(int x, int y)
+ : x(x),
+   y(y)
+{
+}
+
 VideoConfig::VideoConfig()
  : 	m_resolutionLbl(_("Resolution:")),
 	m_bppLbl(_("Bits Per Pixel:")),

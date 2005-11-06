@@ -91,15 +91,7 @@ public:
 class TerrainTex
 {
 public:
-	TerrainTex()
-	 : type(1),
-	   value(0),
-	   friction(0.5),
-	   compression(0.1),
-	   wheight(150),
-	   count(0),
-	   soundactive(false)
-	{};
+	TerrainTex();
 	   
     int type;
 	int value;

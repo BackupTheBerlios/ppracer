@@ -50,8 +50,6 @@ void getTimeComponents(	float time,
 						int& seconds,
 			  			int& hundredths );
 
-float getClockTime();
-
 std::string get_config_dir_name();
 std::string get_config_file_name();
 void write_config_file();

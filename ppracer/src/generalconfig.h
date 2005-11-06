@@ -24,7 +24,8 @@
 #include "ppogl/ui.h"
 #include "ppogl/ui/listbox.h"
 
-class GeneralConfig : public ConfigMode
+class GeneralConfig
+ : public ConfigMode
 {
 	ppogl::CheckBox m_uiSnowBox;
 	ppogl::Label    m_uiSnowLbl;

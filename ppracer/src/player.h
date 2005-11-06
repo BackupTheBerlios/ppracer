@@ -19,7 +19,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
@@ -178,7 +177,6 @@ class Player
 	
 public:
 	Player();
-	~Player();
 
 	bool isCupComplete(std::string event,
 						std::string cup);

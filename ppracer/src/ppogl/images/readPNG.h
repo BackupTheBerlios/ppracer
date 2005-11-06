@@ -26,7 +26,8 @@
 
 namespace ppogl {
 
-class ReadPNG : public Image
+class ReadPNG
+ : public Image
 {
 	void loadData(png_structp png_ptr, unsigned char depth);
 	

@@ -50,7 +50,7 @@
 
 Reset::Reset()
  : m_textColor(0.0, 0.0, 0.0),
-   m_resetStartTime(getClockTime()),
+   m_resetStartTime(SDL_GetTicks()/1000.0),
    m_positionReset(false)
 {
 }
@@ -58,7 +58,7 @@ Reset::Reset()
 void
 Reset::loop(float timeStep)
 {
-	float elapsed_time = getClockTime() - m_resetStartTime;
+	float elapsed_time = SDL_GetTicks()/1000.0 - m_resetStartTime;
     static bool tux_visible = true; 
     static int tux_visible_count = 0;
 

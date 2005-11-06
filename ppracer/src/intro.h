@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -22,16 +22,19 @@
 
 #include "loop.h"
 #include "player.h"
+#include "racingmode.h"
 
-class Intro : public GameMode
+class Intro
+ : public RacingMode
 {
-	void abort( Player& plyr );
+	void abort(Player& plyr);
 	
 public:
 	Intro();
-	~Intro();
 
-	void loop(float timeStep);
+	void preDisplay(float timeStep);
+	void postDisplay(float timestep);
+
 	bool keyPressEvent(SDLKey key);
 };
 

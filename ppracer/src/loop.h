@@ -72,8 +72,9 @@ protected:
 	
 public:
 	GameMode();
-	virtual ~GameMode(){};
-
+//	virtual ~GameMode(){};
+	virtual ~GameMode();
+	
 	virtual void loop(float timeStep) = 0;
 	
 	virtual bool keyboardEvent(SDLKey key, bool release){return false;};

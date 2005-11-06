@@ -27,7 +27,8 @@
 
 #include <list>
 
-class ItemType : public ppogl::RefObject
+class ItemType
+ : public ppogl::RefObject
 {
 public:
 	enum Type{
@@ -36,15 +37,7 @@ public:
 		LIFE	
 	};
 	
-	ItemType()
-	 : diam(0.8),
-	   height(0.5),
-	   above_ground(0.0),
-	   type(UNCOLLECTABLE),
-	   score(1),
-	   reset_point(false),
-	   use_normal(false)
-	{};
+	ItemType();
 	
 	bool operator!=(ItemType& type){return this!=&type;};
 
@@ -101,14 +94,15 @@ public:
 	void setNormal(const ppogl::Vec3d& normal);
 };
 
-class ModelType : public ppogl::RefObject
+class ModelType
+ : public ppogl::RefObject
 {
 protected:
 	ppogl::ModelRef m_model;
 	
 public:	
-	ModelType():height(1.0),diameter(1.0), ph(NULL){}
-    ~ModelType();
+	ModelType();
+	~ModelType();
 		
 	bool operator!=(const ModelType& type)const{return this!=&type;}
 	

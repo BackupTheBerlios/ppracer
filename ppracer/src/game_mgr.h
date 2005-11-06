@@ -28,7 +28,8 @@
 #include "ppogl/base/singleton.h"
 
 
-class GameMgr : public ppogl::Singleton<GameMgr>
+class GameMgr
+ : public ppogl::Singleton<GameMgr>
 {
 	std::list<CourseData>::iterator mi_currentRace;
 	

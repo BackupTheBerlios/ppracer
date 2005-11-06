@@ -27,7 +27,8 @@
 
 #include "ppogl/ui.h"
 
-class EventRaceSelect : public GameMode
+class EventRaceSelect
+ : public GameMode
 {
 	ppogl::Label m_titleLbl;
 	ppogl::Textarea m_descTa;
@@ -57,12 +58,12 @@ class EventRaceSelect : public GameMode
 	
 	PlayerCourseData m_data;
 
-	enum {
+	enum{
 		DEAD,
 		RACEWON,
 		PLAYABLE,
 		UNPLAYABLE		
-	} state;
+	}state;
 	
 	void updateStates();
 	void updateStatusMsg();

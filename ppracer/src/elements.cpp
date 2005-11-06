@@ -22,6 +22,17 @@
 #include "ppogl/base/glwrappers.h"
 
 
+ItemType::ItemType()
+ : diam(0.8),
+   height(0.5),
+   above_ground(0.0),
+   type(UNCOLLECTABLE),
+   score(1),
+   reset_point(false),
+   use_normal(false)
+{
+}
+
 Item::Item(ppogl::RefPtr<ItemType> type, const ppogl::Vec3d& position)
  : m_type(type),
    m_position(position),
@@ -82,6 +93,13 @@ Item::setNormal(const ppogl::Vec3d& normal)
 {
 	m_normal = normal;
 	m_useNormal = true;
+}
+
+ModelType::ModelType()
+ : height(1.0),
+   diameter(1.0),
+   ph(NULL)
+{
 }
 
 void

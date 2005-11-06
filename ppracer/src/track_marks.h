@@ -63,7 +63,7 @@ public:
 	TrackQuad* quads;
     int current_mark;
     int next_mark;
-    double last_mark_time;
+    float last_mark_time;
     ppogl::Vec3d last_mark_pos;
 	bool continuing_track;
 // end old stuff
