@@ -173,25 +173,25 @@ reset_course()
     base_height_value = 127;
 	
     reset_course_mirroring();
-
     reset_lights();
     fogPlane.reset();
     reset_particles();
 
+
 	courseAuthor.erase();
 	courseName.erase();
 
-	if ( course_loaded == false ) return;
+	if(!course_loaded) return;
 
 	courseRenderer.resetQuadtree();
 
-    delete[] Course::elevation;
+    delete [] Course::elevation;
 	Course::elevation=NULL;
 	
-    delete[] Course::terrain;
+    delete [] Course::terrain;
 	Course::terrain=NULL;
 
-    delete[] Course::sm_vncArray;
+    delete Course::sm_vncArray;
 	Course::sm_vncArray=NULL;
 
 	modelLocs.clear();
@@ -240,17 +240,18 @@ Course::load(const std::string& course)
 	
 	if( sm_loadedCourse.empty() ||
 		sm_loadedCourse != course ||
-		sm_loadedCondition != GameMgr::getInstance().getCurrentRace().condition ) 
+		sm_loadedCondition != GameMgr::getInstance().getCurrentRace().condition) 
     {
 		reset_course();
+
 		HUD1.reset();
 		HUD2.reset();
-	
+
 		std::string cwd = ppogl::os::cwd();
 		if(cwd.empty()){
 			PP_ERROR("Unable to get curent working directory");
     	}
-	
+
 		if(course[0]!='/'){		
 			std::string data_dir = PPConfig.getString("data_dir");
 			if(!script.doFile(data_dir+"/"+course+"/course.nut")){

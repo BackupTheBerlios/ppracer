@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-06  Volker Stroebel <volker@planetpenguin.de>
+	* src/course_load.cpp
+	fixed crash
+
 2005-11-04  Volker Stroebel <volker@planetpenguin.de>
 	* src/fog.cpp src/gameconfig.*
 	cached disable_fog

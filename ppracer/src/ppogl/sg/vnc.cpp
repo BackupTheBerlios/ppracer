@@ -31,15 +31,15 @@ VNCArray::VNCArray(int size)
 VNCArray::~VNCArray()
 {
 	if(mp_vertices){
-		delete mp_vertices;
+		delete [] mp_vertices;
 	}
 	
 	if(mp_normals){
-		delete mp_normals;
+		delete [] mp_normals;
 	}
 		
 	if(mp_colors){
-		delete mp_colors;
+		delete [] mp_colors;
 	}
 }
 

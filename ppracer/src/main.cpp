@@ -177,13 +177,13 @@ main(int argc, char *argv[])
     try{ // used to catch all unhandled Errors and Assertions		
 	
 		// print copyright notice 
-    	std::cout << "PlanetPenguin Racer " VERSION " -- http://racer.planetpenguin.de" << std::endl;
-	    std::cout << "(c) 2004-2005 PlanetPenguin Racer team" << std::endl;
-	    std::cout << "(c) 1999-2001 Jasmin F. Patry" << std::endl;
-	    std::cout << "<jfpatry@sunspirestudios.com>" << std::endl;
-	    std::cout << "PlanetPenguin Racer comes with ABSOLUTELY NO WARRANTY."<< std::endl;
-	    std::cout << "This is free software,\nand you are welcome to redistribute it under certain conditions."<< std::endl;
-	    std::cout << "See http://www.gnu.org/copyleft/gpl.html for details.\n" << std::endl;
+    	std::cout << "PlanetPenguin Racer " VERSION " -- http://racer.planetpenguin.de"
+	    	<< "(c) 2004-2005 PlanetPenguin Racer team"
+	    	<< "(c) 1999-2001 Jasmin F. Patry"
+	    	<< "<jfpatry@sunspirestudios.com>"
+	    	<< "PlanetPenguin Racer comes with ABSOLUTELY NO WARRANTY."
+	    	<< "This is free software,\nand you are welcome to redistribute it under certain conditions."
+	    	<< "See http://www.gnu.org/copyleft/gpl.html for details.\n" << std::endl;
 
 		// set current directory to be used as base
 		ppogl::os::setBaseDir();
