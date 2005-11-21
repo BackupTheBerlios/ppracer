@@ -375,6 +375,11 @@ Joystick button for doing tricks (numbering starts at 0)
 ",
 joystick_trick_button = 1,
 
+joystick_continue_button_description = @"
+Joystick button for continueing
+",
+joystick_continue_button = 0,
+
 max_fps_description = @"
 Maximum number of frames per second (use 0 to diable)
 ",

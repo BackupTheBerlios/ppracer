@@ -345,7 +345,7 @@ main(int argc, char *argv[])
 	fpsCounter.setMaxFPS(PPConfig.getInt("gui_max_fps"));
 	
 	PP_MESSAGE("Init joystick");
-    init_joystick();
+    GameMode::joystick.init();
 		
 	init_ui_snow();
   

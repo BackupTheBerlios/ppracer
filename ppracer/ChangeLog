@@ -1,6 +1,14 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-21  Volker Stroebel <volker@planetpenguin.de>
+	* src/joystick.* data/config.nut.in
+	fixed joystick support
+	added class Joystick
+	
+	* src/*
+	changed code to use new Joystick class
+
 2005-11-06  Volker Stroebel <volker@planetpenguin.de>
 	* src/course_load.cpp
 	fixed crash

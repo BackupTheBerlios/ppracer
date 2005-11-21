@@ -153,48 +153,45 @@ Racing::prePlayer(int plyr, float timestep)
 
     // Joystick
 
-    if ( is_joystick_active() ) {
-	float joy_x;
-	float joy_y;
+    if(joystick.isActive()){
+		joystick.update();
+		
+		const float joy_x = joystick.getXAxis();
+		const float joy_y = joystick.getYAxis();
 
-	update_joystick();
+		if(joy_x > 0.1){
+	    	joy_right_turn = true;
+	    	joy_turn_fact = joy_x;
+		}else if(joy_x < -0.1){
+	    	joy_left_turn = true;
+	    	joy_turn_fact = joy_x;
+		}
 
-	joy_x = get_joystick_x_axis();
-	joy_y = get_joystick_y_axis();
+		if(GameConfig::joystickBrakeButton >= 0){
+		    joy_braking = 
+				joystick.isButtonDown(GameConfig::joystickBrakeButton);
+		} 
+		if(!joy_braking){
+	    	joy_braking = (joy_y > 0.5);
+		}
 
-	if ( joy_x > 0.1 ) {
-	    joy_right_turn = true;
-	    joy_turn_fact = joy_x;
-	} else if ( joy_x < -0.1 ) {
-	    joy_left_turn = true;
-	    joy_turn_fact = joy_x;
-	}
+		if(GameConfig::joystickPaddleButton >= 0){
+	    	joy_paddling = 
+				joystick.isButtonDown(GameConfig::joystickPaddleButton);
+		}
+		if(!joy_paddling){
+	    	joy_paddling = (joy_y < -0.5);
+		}
 
-	if(GameConfig::joystickBrakeButton >= 0 ) {
-	    joy_braking = 
-		is_joystick_button_down(GameConfig::joystickBrakeButton);
-	} 
-	if( !joy_braking ) {
-	    joy_braking = ( joy_y > 0.5 );
-	}
+		if(GameConfig::joystickJumpButton >= 0){
+	    	joy_charging = 
+				joystick.isButtonDown(GameConfig::joystickJumpButton);
+		}
 
-	if(GameConfig::joystickPaddleButton >= 0 ) {
-	    joy_paddling = 
-		is_joystick_button_down(GameConfig::joystickPaddleButton);
-	}
-	if ( !joy_paddling ) {
-	    joy_paddling = ( joy_y < -0.5 );
-	}
-
-	if (GameConfig::joystickJumpButton >= 0 ) {
-	    joy_charging = 
-		is_joystick_button_down(GameConfig::joystickJumpButton);
-	}
-
-	if (GameConfig::joystickTrickButton >= 0 ) {
-	    joy_tricks = 
-		is_joystick_button_down(GameConfig::joystickTrickButton);
-	}
+		if(GameConfig::joystickTrickButton >= 0){
+	    	joy_tricks = 
+				joystick.isButtonDown(GameConfig::joystickTrickButton);
+		}
     }
 
     // Update braking 

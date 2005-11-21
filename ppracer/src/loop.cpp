@@ -65,8 +65,11 @@ GameMode::Mode GameMode::prevmode;
 int GameMode::resolutionX=0;
 int GameMode::resolutionY=0;
 
-static GameMode::Mode new_mode = GameMode::NO_MODE;
+/// the joystick
+Joystick GameMode::joystick;
 
+static GameMode::Mode new_mode = GameMode::NO_MODE;
+	
 static ppogl::Vec2d cursorPos;
 static bool rightMouseButtonDown  = false;
 static bool middleMouseButtonDown = false;

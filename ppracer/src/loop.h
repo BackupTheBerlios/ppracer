@@ -32,6 +32,7 @@
 #include "render_util.h"
 #include "winsys.h"
 #include "gameconfig.h"
+#include "joystick.h"
 
 void loop_mouse_func (int button, int state, int x, int y);
 void loop_mouse_motion_func( int x, int y );
@@ -72,7 +73,6 @@ protected:
 	
 public:
 	GameMode();
-//	virtual ~GameMode(){};
 	virtual ~GameMode();
 	
 	virtual void loop(float timeStep) = 0;
@@ -88,6 +88,8 @@ public:
 	static GameMode* currentMode;
 	static GameMode::Mode mode;
 	static GameMode::Mode prevmode;
+	
+	static Joystick joystick;
 	
 	static int resolutionX;
 	static int resolutionY; 	

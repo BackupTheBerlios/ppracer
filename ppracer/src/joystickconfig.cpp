@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -19,246 +19,138 @@
  
 #include "joystickconfig.h"
 
+#include "stuff.h"
 #include "joystick.h"
-#include "ppgltk/ui_mgr.h"
 
 #define MAX_JOY_BUTTON 8
 
 JoystickConfig::JoystickConfig()
+ : m_enableJoystickLbl(_("Enable Joystick")),
+   m_paddleLbl(_("Paddle:")),
+   m_brakeLbl(_("Brake:")),
+   m_jumpLbl(_("Jump:")),
+   m_trickLbl(_("Trick:"))
 {	
 	setTitle(_("Joystick Configuration"));
-	pp::Vec2d pos(0,0);
+		
+	ppogl::Vec2d position(40,350);
+	ppogl::Vec2d position2(600,350);
 	
-	mp_enableJoystickLbl = new pp::Label(pos, "button_label",
-										 _("Enable Joystick"));
+	m_enableJoystickLbl.setPosition(position);
+	m_enableJoystickBox.setPosition(position2);
+	m_enableJoystickBox.alignment.right();
+	m_enableJoystickBox.setSelected(!PPConfig.getBool("disable_joystick"));
 	
-	mp_enableJoystickBox = new pp::CheckBox(pos, pp::Vec2d(32, 32) );
-	mp_enableJoystickBox->setState( !getparam_disable_joystick());
-    mp_enableJoystickBox->signalClicked.Connect(pp::CreateSlot(this,&JoystickConfig::checkboxClicked));
-	
+	position.y()-=60;
+	position2.y()-=60;
 	
 	//paddle button
-	mp_paddleLbl = new pp::Label(pos,"button_label",_("Paddle:"));
-	mp_paddleLbl->setInsensitiveFont("button_label_disabled");
-	
-	createButtonList(m_paddleList);
-	mp_paddleListbox = new pp::Listbox<button_t>(pos,
-				   pp::Vec2d(96, 32),
-				   "listbox_item",
-				   m_paddleList);
-	mp_paddleListbox->setInsensitiveFont("listbox_item_insensitive");
-	mp_paddleListbox->signalClicked.Connect(pp::CreateSlot(this,&JoystickConfig::paddleClicked));
-	setButton(getparam_joystick_paddle_button(), mp_paddleListbox);
+	createButtonList(m_paddleListBox);
+	m_paddleLbl.setPosition(position);
+	m_paddleListBox.setPosition(position2);
+	m_paddleListBox.alignment.right();
+	m_paddleListBox.signalClicked.Connect(ppogl::CreateSlot(this,&JoystickConfig::paddleClicked));
+	m_paddleListBox.setSelectedData(PPConfig.getInt("joystick_paddle_button"));
 		
+	position.y()-=40;
+	position2.y()-=40;
+	
 	//brake button
-	mp_brakeLbl = new pp::Label(pos,"button_label",_("Brake:"));
-	mp_brakeLbl->setInsensitiveFont("button_label_disabled");
-
-	createButtonList(m_brakeList);
-	mp_brakeListbox = new pp::Listbox<button_t>(pos,
-				   pp::Vec2d(96, 32),
-				   "listbox_item",
-				   m_brakeList);
-	mp_brakeListbox->setInsensitiveFont("listbox_item_insensitive");
-	mp_brakeListbox->signalClicked.Connect(pp::CreateSlot(this,&JoystickConfig::brakeClicked));
-	setButton(getparam_joystick_brake_button(), mp_brakeListbox);
+	createButtonList(m_brakeListBox);
+	m_brakeLbl.setPosition(position);
+	m_brakeListBox.setPosition(position2);
+	m_brakeListBox.alignment.right();
+	m_brakeListBox.signalClicked.Connect(ppogl::CreateSlot(this,&JoystickConfig::brakeClicked));
+	m_brakeListBox.setSelectedData(PPConfig.getInt("joystick_brake_button"));
+	
+	position.y()-=40;
+	position2.y()-=40;
 	
 	//jump button
-	mp_jumpLbl = new pp::Label(pos,"button_label",_("Jump:"));
-	mp_jumpLbl->setInsensitiveFont("button_label_disabled");
-
-	createButtonList(m_jumpList);
-	mp_jumpListbox = new pp::Listbox<button_t>(pos,
-				   pp::Vec2d(96, 32),
-				   "listbox_item",
-				   m_jumpList);
-	mp_jumpListbox->setInsensitiveFont("listbox_item_insensitive");
-	mp_jumpListbox->signalClicked.Connect(pp::CreateSlot(this,&JoystickConfig::jumpClicked));
-	setButton(getparam_joystick_jump_button(), mp_jumpListbox);
+	createButtonList(m_jumpListBox);
+	m_jumpLbl.setPosition(position);
+	m_jumpListBox.setPosition(position2);
+	m_jumpListBox.alignment.right();
+	m_jumpListBox.signalClicked.Connect(ppogl::CreateSlot(this,&JoystickConfig::jumpClicked));
+	m_jumpListBox.setSelectedData(PPConfig.getInt("joystick_jump_button"));
+	
+	position.y()-=40;
+	position2.y()-=40;
 	
 	//trick button
-	mp_trickLbl = new pp::Label(pos,"button_label",_("Trick:"));
-	mp_trickLbl->setInsensitiveFont("button_label_disabled");
-	
-	createButtonList(m_trickList);
-	mp_trickListbox = new pp::Listbox<button_t>(pos,
-				   pp::Vec2d(96, 32),
-				   "listbox_item",
-				   m_trickList);
-	mp_trickListbox->setInsensitiveFont("listbox_item_insensitive");
-	mp_trickListbox->signalClicked.Connect(pp::CreateSlot(this,&JoystickConfig::trickClicked));
-	setButton(getparam_joystick_trick_button(), mp_trickListbox);
-	
-	updateWidgetsEnabledStates();
-}
-
-JoystickConfig::~JoystickConfig()
-{
-	delete mp_enableJoystickLbl;
-	delete mp_enableJoystickBox;
-	
-	delete mp_paddleLbl;
-	delete mp_paddleListbox;
-		
-	delete mp_brakeLbl;
-	delete mp_brakeListbox;
-			
-	delete mp_jumpLbl;
-	delete mp_jumpListbox;
-		
-	delete mp_trickLbl;
-	delete mp_trickListbox;
+	createButtonList(m_trickListBox);
+	m_trickLbl.setPosition(position);
+	m_trickListBox.setPosition(position2);
+	m_trickListBox.alignment.right();
+	m_trickListBox.signalClicked.Connect(ppogl::CreateSlot(this,&JoystickConfig::trickClicked));
+	m_trickListBox.setSelectedData(PPConfig.getInt("joystick_trick_button"));
 }
 
 void
-JoystickConfig::createButtonList(std::list<button_t> &list)
+JoystickConfig::createButtonList(ppogl::ListBox<int> &list)
 {
-	button_t button;
-	char buff[8];
-	
+	char buff[4];
 	for(int i=0; i<MAX_JOY_BUTTON; i++){
-		sprintf(buff,"%d",i);
-		button.name=buff;
-		button.data=i;		
-		list.push_back(button);			
+		snprintf(buff,4,"%d",i);
+		list.addElement(buff, i);		
 	}	
-}
-
-void
-JoystickConfig::setButton(int button, pp::Listbox<button_t> *listbox)
-{
-	std::list<button_t>::iterator it;
-	std::list<button_t> &list = listbox->getItemList();
-	
-	
-	for(it=list.begin(); it!=list.end(); it++){
-		if((*it).data==button){
-			listbox->setCurrentItem(it);
-			break;
-		}		
-	}	
-}
-
-void
-JoystickConfig::updateWidgetsEnabledStates()
-{
-	bool state = mp_enableJoystickBox->getState();
-	
-	mp_paddleLbl->setSensitive(state);
-	mp_paddleListbox->setSensitive(state);
-	
-	mp_brakeLbl->setSensitive(state);
-	mp_brakeListbox->setSensitive(state);
-	
-	mp_jumpLbl->setSensitive(state);
-	mp_jumpListbox->setSensitive(state);
-	
-	mp_trickLbl->setSensitive(state);
-	mp_trickListbox->setSensitive(state);
-}
-
-void
-JoystickConfig::checkboxClicked()
-{
-	updateWidgetsEnabledStates();
 }
 
 void
 JoystickConfig::customLoop(double TimeStep)
 {
 	// Check joystick
-    if ( is_joystick_active() ){
-		update_joystick();
+    if(joystick.isActive() ){
+		joystick.update();
 
-		int button = get_joystick_down_button();
+		int button = joystick.getDownButton();
 		if(button>-1){
-			if(mp_paddleListbox->hasFocus()){
-				setButton(button, mp_paddleListbox);
-			}else if(mp_brakeListbox->hasFocus()){
-				setButton(button, mp_brakeListbox);
-			}else if(mp_jumpListbox->hasFocus()){
-				setButton(button, mp_jumpListbox);
-			}else if(mp_trickListbox->hasFocus()){
-				setButton(button, mp_trickListbox);
+			if(m_paddleListBox.hasFocus()){
+				m_paddleListBox.setSelectedData(button);
+			}else if(m_brakeListBox.hasFocus()){
+				m_brakeListBox.setSelectedData(button);
+			}else if(m_jumpListBox.hasFocus()){
+				m_jumpListBox.setSelectedData(button);
+			}else if(m_trickListBox.hasFocus()){
+				m_trickListBox.setSelectedData(button);
 			}
 		}
     }
 }
 
 void
-JoystickConfig::setWidgetPositions()
-{
-	int width = 500;
-	int height = 240;
-
-	pp::Vec2d pos(getparam_x_resolution()/2 - width/2,
-				  getparam_y_resolution()/2 + height/2);
-	
-	mp_enableJoystickLbl->setPosition(pos);
-	mp_enableJoystickBox->setPosition(pp::Vec2d(pos.x+width-32,pos.y));
-	
-	pos.y-=100;
-	mp_paddleLbl->setPosition(pos);
-	mp_paddleListbox->setPosition(pp::Vec2d(pos.x+width-96,pos.y));
-		
-	pos.y-=40;
-	mp_brakeLbl->setPosition(pos);
-	mp_brakeListbox->setPosition(pp::Vec2d(pos.x+width-96,pos.y));
-	
-	pos.y-=40;
-	mp_jumpLbl->setPosition(pos);
-	mp_jumpListbox->setPosition(pp::Vec2d(pos.x+width-96,pos.y));
-	
-	pos.y-=40;
-	mp_trickLbl->setPosition(pos);
-	mp_trickListbox->setPosition(pp::Vec2d(pos.x+width-96,pos.y));
-}
-
-
-void
 JoystickConfig::apply()
 {
-	setparam_disable_joystick(!bool(mp_enableJoystickBox->getState() ));
-		
-	std::list<button_t>::iterator it;
-	
-	it = mp_paddleListbox->getCurrentItem();
-	setparam_joystick_paddle_button((*it).data);
-	
-	it = mp_brakeListbox->getCurrentItem();
-	setparam_joystick_brake_button((*it).data);
-	
-	it = mp_jumpListbox->getCurrentItem();
-	setparam_joystick_jump_button((*it).data);
-	
-	it = mp_trickListbox->getCurrentItem();
-	setparam_joystick_trick_button((*it).data);	
+	PPConfig.setBool("disable_joystick",!m_enableJoystickBox.isSelected());
+	PPConfig.setInt("joystick_paddle_button", m_paddleListBox.getSelectedData());
+	PPConfig.setInt("joystick_brake_button", m_brakeListBox.getSelectedData());
+	PPConfig.setInt("joystick_jump_button", m_jumpListBox.getSelectedData());
+	PPConfig.setInt("joystick_trick_button", m_trickListBox.getSelectedData());	
 	
 	write_config_file();
-	set_game_mode( GameMode::prevmode );
-    UIMgr.setDirty();	
+	setMode( GameMode::prevmode );
 }
 
 void
 JoystickConfig::paddleClicked()
 {
-	mp_paddleListbox->setFocus();
+	m_paddleListBox.setFocus();
 }
 
 void
 JoystickConfig::brakeClicked()
 {
-	mp_brakeListbox->setFocus();
+	m_brakeListBox.setFocus();
 }
 
 void
 JoystickConfig::jumpClicked()
 {
-	mp_jumpListbox->setFocus();
+	m_jumpListBox.setFocus();
 }
 
 void
 JoystickConfig::trickClicked()
 {
-	mp_trickListbox->setFocus();
+	m_trickListBox.setFocus();
 }

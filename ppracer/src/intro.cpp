@@ -95,9 +95,9 @@ Intro::preDisplay(float timeStep)
     }
 
     // Check joystick
-    if(is_joystick_active()){
-		update_joystick();
-		if(is_joystick_continue_button_down()){
+    if(joystick.isActive()){
+		joystick.update();
+		if(joystick.isContinueButtonDown()){
 	    	abort(players[0]);
 	    	return;
 		}

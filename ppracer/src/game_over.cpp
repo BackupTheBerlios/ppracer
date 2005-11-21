@@ -173,10 +173,10 @@ GameOver::GameOver()
 void
 GameOver::preDisplay(float timestep)
 {
-	if(is_joystick_active()){
-		update_joystick();
+	if(joystick.isActive()){
+		joystick.update();
 
-		if(is_joystick_continue_button_down()){
+		if(joystick.isContinueButtonDown()){
 	    	if(GameMgr::getInstance().gametype != GameMgr::PRACTICING){
 				setMode(EVENT_RACE_SELECT);
 			}else{

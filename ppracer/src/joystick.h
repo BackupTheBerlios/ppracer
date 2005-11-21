@@ -22,13 +22,74 @@
 #ifndef _JOYSTICK_H_
 #define _JOYSTICK_H_
 
-void init_joystick();
-bool is_joystick_active();
-void update_joystick();
-float get_joystick_x_axis();
-float get_joystick_y_axis();
-bool is_joystick_button_down(int button); 
-bool is_joystick_continue_button_down();
-int get_joystick_down_button();
+#include "ppracer.h"
+
+#ifdef HAVE_SDL_JOYSTICKOPEN
+
+#include "SDL.h"
+#include "SDL_joystick.h"
+
+/// Class for handling Joysticks
+class Joystick
+{
+	/// pointer to the used joystick
+	SDL_Joystick* mp_joystick;
+
+	/// number of buttons available for the joystick
+	int m_numButtons;
+	
+	/// number of axes available for the joystick
+	int m_numAxes;
+	
+	/// is joystick active
+	bool m_active;
+
+public:
+	Joystick();
+
+	/// initialize joystick
+	void init();
+	
+	/// returns whether joystick is active
+	bool isActive(){return m_active;}
+	
+	/// updates the state of the joystick
+	void update();
+	
+	/// get horizontal axis
+	float getXAxis();
+	
+	/// get vertical axis
+	float getYAxis();
+	
+	/// returns true if button is down
+	bool isButtonDown(int button);
+	
+	/// returns true if continue button is down
+	bool isContinueButtonDown();
+	
+	/// returns number of pressed button oder -1
+	int getDownButton();
+};
+
+#else
+// stub implementation if joystick support is not available in SDL
+
+class Joystick
+{
+public:
+	Joystick(){};
+		
+	void init(){};
+	bool isActive(){return false;}
+	void update(){}
+	float getXAxis(){return 0.0f;}
+	float getYAxis(){return 0.0f;}
+	bool isButtonDown(int button){return false;}
+	bool isContinueButtonDown(){return false;}
+	int getDownButton(){return -1;}
+};
+
+#endif // HAVE_SDL_JOYSTICKOPEN
 
 #endif // _JOYSTICK_H_
