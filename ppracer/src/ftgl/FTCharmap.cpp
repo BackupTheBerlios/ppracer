@@ -2,8 +2,9 @@
 #include "FTCharmap.h"
 
 
-FTCharmap::FTCharmap( FTFace* face)
-:   ftFace( *(face->Face())),
+FTCharmap::FTCharmap(FTFace* face)
+:	ftFace( *(face->Face())),
+	charMap(),
     err(0)
 {
     if( !ftFace->charmap)

@@ -101,9 +101,9 @@ private:
 /// Logs custom messages.
 #define PP_LOG(mode, message) \
 {	\
-	std::stringstream tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
-	tmp << message;	\
-	ppogl::Log::Instance()->mesg(mode, __FILE__, __LINE__, tmp.str()); \
+	std::stringstream _pp_tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
+	_pp_tmp << message;	\
+	ppogl::Log::Instance()->mesg(mode, __FILE__, __LINE__, _pp_tmp.str()); \
 }
 
 /// A normal message.
@@ -138,9 +138,9 @@ private:
 /// This is only activated if PPOGL_PEDANTIC is defined
 #define PP_PEDANTIC(message)	\
 {	\
-	std::stringstream tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
-	tmp << message;	\
-	ppogl::Log::Instance()->mesg(ppogl::LogPedantic, __FILE__, __LINE__, tmp.str()); \
+	std::stringstream _pp_tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
+	_pp_tmp << message;	\
+	ppogl::Log::Instance()->mesg(ppogl::LogPedantic, __FILE__, __LINE__, _pp_tmp.str()); \
 }
 #else
 	#define PP_PEDANTIC(message)

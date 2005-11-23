@@ -22,9 +22,11 @@
 #ifndef _WINSYS_H_
 #define _WINSYS_H_
 
+#include "ppogl/base/defs.h"
+
 void setup_sdl_video_mode();
 void winsys_init(const char *window_title, const char *icon_title);
-void winsys_process_events(); // never returns
+void winsys_process_events();
 
 void winsys_exit(int code);
 

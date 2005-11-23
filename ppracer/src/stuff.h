@@ -22,6 +22,7 @@
 #ifndef _STUFF_H_
 #define _STUFF_H_
 
+#include "ppogl/base/defs.h"
 #include "ppogl/base/vec3d.h"
 
 #include <string>

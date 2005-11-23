@@ -116,7 +116,7 @@ ModelAC::ModelAC(const std::string& filename)
 		return;
     }
     m_startMatIndex = m_numPalette;
-    mp_model = loadObject(f, NULL, filename);
+    mp_model = loadObject(f, filename);
     fclose(f);
     calculateVertexNormals(mp_model);	
 }
@@ -315,7 +315,7 @@ ModelAC::stringToObjectType(const std::string& string)
 }
 
 ModelObject*
-ModelAC::loadObject(FILE *f, ModelObject *parent, const std::string& filename)
+ModelAC::loadObject(FILE *f, const std::string& filename)
 {
     char t[20];
 	std::string type;
@@ -480,7 +480,7 @@ ModelAC::loadObject(FILE *f, ModelObject *parent, const std::string& filename)
 			ob->num_kids = num;
 
 			for (n = 0; n < num; n++){
-				ModelObject *k = loadObject(f, ob, filename);
+				ModelObject *k = loadObject(f, filename);
 
 				if (k == NULL){
 					PP_WARNING("Error reading expected child object " << n+1 << " of " << num << " at line: " << m_line << " : " << filename);

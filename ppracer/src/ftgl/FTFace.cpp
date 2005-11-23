@@ -3,23 +3,23 @@
 
 #include FT_TRUETYPE_TABLES_H
 
-FTFace::FTFace( const char* fontFilePath)
-:   numGlyphs(0),
+FTFace::FTFace(const char* fontFilePath)
+:   ftFace(0),
+	charSize(),
+	numGlyphs(0),
     fontEncodingList(0),
-    err(0)
+	err(0),
+	hasKerningTable(false)
 {
     const FT_Long DEFAULT_FACE_INDEX = 0;
     ftFace = new FT_Face;
 
     err = FT_New_Face( *FTLibrary::Instance().GetLibrary(), fontFilePath, DEFAULT_FACE_INDEX, ftFace);
 
-    if( err)
-    {
+    if(err){
         delete ftFace;
         ftFace = 0;
-    }
-    else
-    {
+    }else{
         numGlyphs = (*ftFace)->num_glyphs;
         hasKerningTable = FT_HAS_KERNING((*ftFace));
     }

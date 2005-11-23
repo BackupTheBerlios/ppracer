@@ -27,7 +27,8 @@
 namespace ppogl {
 	
 /// An error class that gets thrown from assertion exceptions
-class Assertion : public ppogl::Error
+class Assertion
+ : public ppogl::Error
 {
 public:
 	/// The available types for assertions
@@ -67,9 +68,9 @@ private:
 
 #define PP_ASSERTION(type, expression,description)	\
 {	\
-	std::stringstream tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
-	tmp << description;	\
-	throw ppogl::Assertion(ppogl::Assertion::type, #type"("expression")", __FILE__, __LINE__, tmp.str());	\
+	std::stringstream _pp_tmp(std::ios::in| std::ios::out | std::ios::trunc);	\
+	_pp_tmp << description;	\
+	throw ppogl::Assertion(ppogl::Assertion::type, #type"("expression")", __FILE__, __LINE__, _pp_tmp.str());	\
 }	
 
 #ifdef PPOGL_ENABLE_ASSERT

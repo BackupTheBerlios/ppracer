@@ -45,8 +45,7 @@ class FTGL_EXPORT FTCharToGlyphIndexMap
 
         virtual ~FTCharToGlyphIndexMap()
         {
-            if( this->Indices)
-            {
+            if(this->Indices){
                 // Free all buckets
                 this->clear();
         

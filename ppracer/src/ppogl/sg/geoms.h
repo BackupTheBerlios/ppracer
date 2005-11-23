@@ -40,12 +40,12 @@ public:
 class Polyhedron
 {
 public:
-	Polyhedron():num_vertices(0),num_polygons(0),vertices(NULL),polygons(NULL){}
+	Polyhedron();
     Polyhedron(const Polyhedron& ph);
 	~Polyhedron();
 		
-	int num_vertices;
-    int num_polygons;
+	int numVertices;
+    int numPolygons;
     ppogl::Vec3d *vertices;
     ppogl::Polygon *polygons;
 };

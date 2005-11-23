@@ -227,7 +227,7 @@ intersect_polyhedron(const ppogl::Polyhedron& p)
 {
     bool hit = false;
 		
-    for(int i=0; i<p.num_polygons; i++){
+    for(int i=0; i<p.numPolygons; i++){
 		hit = intersect_polygon( p.polygons[i], p.vertices );
 		if ( hit == true ) 
             break;
@@ -238,7 +238,7 @@ intersect_polyhedron(const ppogl::Polyhedron& p)
 void
 trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph)
 {
-	for(int i=0; i<ph.num_vertices; i++) {
+	for(int i=0; i<ph.numVertices; i++) {
 		ph.vertices[i] = mat.transformPoint(ph.vertices[i]);
 	}
 }

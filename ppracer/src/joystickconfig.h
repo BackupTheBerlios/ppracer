@@ -54,7 +54,7 @@ public:
 	void jumpClicked();
 	void trickClicked();
 	
-	void customLoop(double TimeStep);
+	void customLoop(float TimeStep);
 };
 
 #endif // _JOYSTICK_CONFIG_H_

@@ -26,8 +26,8 @@
 #include "ppogl/base/color.h"
 #include "ppogl/base/glwrappers.h"
 
-class FogPlane{
-	
+class FogPlane
+{
 	bool m_isOn;
     GLint m_mode;
     GLfloat m_density;

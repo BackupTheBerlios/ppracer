@@ -93,7 +93,7 @@ class ModelAC
 	void setColor(long matno);
 	void setSimpleColor(long matno);
 	int stringToObjectType(const std::string& string);
-	ModelObject* loadObject(FILE *f, ModelObject *parent, const std::string& filename);
+	ModelObject* loadObject(FILE *f, const std::string& filename);
 	void objectCalculateVertexNormals(ModelObject *ob);
 	void calculateVertexNormals(ModelObject *ob);
 	int getTokens(char *s, int *argc, char *argv[]);

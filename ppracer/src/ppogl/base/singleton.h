@@ -32,19 +32,18 @@ class Singleton
 {
 public:
 	static T&
-	getInstance() throw(std::bad_exception)
+	getInstance()
 	/// create the instance if necessary and returns a reference of the instance
 	{
-		
-		T* temp(sm_instance.get());
-    	if(temp==0){
-			temp=new T;
+		T* temp = sm_instance.get();
+    	if(temp == NULL){
+			temp = new T;
 			PP_ENSURE(temp!=NULL,"Unable to create singleton instance")
         	sm_instance.reset(temp);
 		}
 		return *temp;
 	}
-	
+
 protected:
 	Singleton(){};
 	virtual ~Singleton(){};

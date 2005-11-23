@@ -97,7 +97,7 @@ JoystickConfig::createButtonList(ppogl::ListBox<int> &list)
 }
 
 void
-JoystickConfig::customLoop(double TimeStep)
+JoystickConfig::customLoop(float TimeStep)
 {
 	// Check joystick
     if(joystick.isActive() ){

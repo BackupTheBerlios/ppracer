@@ -55,12 +55,12 @@ void
 Model::copyObject(ppogl::Polyhedron* ph, ppogl::ModelObject* object)
 {
 	if(object->num_vert>0 && object->num_surf>0){
-		int vert0 = ph->num_vertices;
-		int poly0 = ph->num_polygons;
+		int vert0 = ph->numVertices;
+		int poly0 = ph->numPolygons;
 		
 		for(int i=0; i<object->num_vert; i++){
 			ph->vertices[vert0+i]=object->vertices[i].vec;
-			ph->num_vertices++;
+			ph->numVertices++;
 		}
 
 		for(int i=0; i<object->num_surf; i++){
@@ -77,7 +77,7 @@ Model::copyObject(ppogl::Polyhedron* ph, ppogl::ModelObject* object)
 					ph->polygons[poly0+i].vertices[u]=
 						object->surfaces[i].vertices[u] + vert0;		
 				}
-				ph->num_polygons++;
+				ph->numPolygons++;
 			}
 		}
 	}	
@@ -92,8 +92,8 @@ Model::getPolyhedron()
 {
 	ppogl::Polyhedron* ph = new ppogl::Polyhedron;
 	
-	ph->num_vertices=0;
-	ph->num_polygons=0;
+	ph->numVertices=0;
+	ph->numPolygons=0;
 	ph->vertices = new ppogl::Vec3d[1024];
 	ph->polygons = new ppogl::Polygon[256];
 		

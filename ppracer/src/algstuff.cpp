@@ -341,12 +341,12 @@ Matrix::makeChangeOfBasisMatrix(Matrix& mat,
     invMat.data[2][2] = w3.z();
 }
 
-Plane::Plane(const double x, const double y, const double z, const double d)
+Plane::Plane(const double x, const double y, const double z, const double _d)
 {
 	nml.x()=x;
 	nml.y()=y;
 	nml.z()=z;
-	this->d=d;
+	d=_d;
 }
 
 double
@@ -395,8 +395,8 @@ Plane::intersect( const Plane& s1, const Plane& s2, const Plane& s3, ppogl::Vec3
     }
 }
 
-Quat::Quat(const double x, const double y, const double z, const double w)
- : x(x), y(y), z(z), w(w)
+Quat::Quat(const double _x, const double _y, const double _z, const double _w)
+ : x(_x), y(_y), z(_z), w(_w)
 {
 }	
 	
@@ -465,12 +465,12 @@ Quat::Quat(const Matrix& matrix)
 
 
 void
-Quat::set(const double x, const double y, const double z, const double w)
+Quat::set(const double _x, const double _y, const double _z, const double _w)
 {
-	this->x=x;
-	this->y=y;
-	this->z=z;
-	this->w=w;
+	x=_x;
+	y=_y;
+	z=_z;
+	w=_w;
 }
 
 

@@ -43,9 +43,9 @@
 #define RES_MIN_WIDTH 600
 #define RES_MIN_HEIGHT 400
 
-VideoConfig::Resolution::Resolution(int x, int y)
- : x(x),
-   y(y)
+VideoConfig::Resolution::Resolution(int _x, int _y)
+ : x(_x),
+   y(_y)
 {
 }
 

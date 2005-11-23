@@ -244,8 +244,8 @@ Script::registerLib(const std::string& name, const Script::Lib *callbacks)
 	for(int i=0; callbacks[i].name!=NULL; i++){
 		sq_pushstring(m_vm,callbacks[i].name,-1);
 					
-		sq_pushuserpointer(m_vm,(SQUserPointer *)this);
-		sq_pushuserpointer(m_vm,*((SQUserPointer *)&(callbacks[i].function) ));
+		sq_pushuserpointer(m_vm,reinterpret_cast<SQUserPointer *>(this));
+		sq_pushuserpointer(m_vm,*(reinterpret_cast<const SQUserPointer *>(&(callbacks[i].function))));
 				
     	sq_newclosure(m_vm,Script::defaultCb,2);
     	sq_createslot(m_vm,-3); 
@@ -259,8 +259,8 @@ Script::defaultCb(HSQUIRRELVM vm)
 	Script *script;
 	ScriptFunc *func;
 	
-	sq_getuserpointer(vm,-1,(SQUserPointer *)&script);
-	sq_getuserpointer(vm,-2,(SQUserPointer *)&func);
+	sq_getuserpointer(vm,-1,reinterpret_cast<SQUserPointer *>(&script));
+	sq_getuserpointer(vm,-2,reinterpret_cast<SQUserPointer *>(&func));
 
 	sq_pop(vm,2);
 	sq_remove(vm,1);

@@ -22,6 +22,8 @@
 #ifndef _NMRCL_H_
 #define _NMRCL_H_
 
+#include "ppogl/base/defs.h"
+
 class ODESolver
 {
 	double k[7];

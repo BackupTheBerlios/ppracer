@@ -248,7 +248,7 @@ class Index2d
 {
 public:
 	Index2d(){};
-	Index2d(const int i, const int j):i(i),j(j){}
+	Index2d(const int _i, const int _j):i(_i),j(_j){}
 	int i,j;
 };	
 

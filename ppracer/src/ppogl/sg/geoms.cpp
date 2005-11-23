@@ -54,22 +54,29 @@ Polygon::operator=(const Polygon& poly)
 	}
 	return *this;
 }
-	
+
+Polyhedron::Polyhedron()
+ : numVertices(0),
+   numPolygons(0),
+   vertices(NULL),
+   polygons(NULL)
+{}
+
 Polyhedron::Polyhedron(const Polyhedron& ph)
 {
-	num_vertices=ph.num_vertices;
-	num_polygons=ph.num_polygons;
+	numVertices=ph.numVertices;
+	numPolygons=ph.numPolygons;
 	
-	if(num_vertices>0 && ph.vertices!=NULL){
-		vertices = new ppogl::Vec3d[num_vertices];
-		for(int i=0; i<num_vertices; i++) {
+	if(numVertices>0 && ph.vertices!=NULL){
+		vertices = new ppogl::Vec3d[numVertices];
+		for(int i=0; i<numVertices; i++) {
         	vertices[i] = ph.vertices[i];
     	}
 	}
 	
-	if(num_polygons>0 && ph.polygons!=NULL){
-		polygons = new ppogl::Polygon[num_polygons];
-		for(int i=0; i<num_polygons; i++){
+	if(numPolygons>0 && ph.polygons!=NULL){
+		polygons = new ppogl::Polygon[numPolygons];
+		for(int i=0; i<numPolygons; i++){
         	polygons[i] = ph.polygons[i];
     	}
 	}

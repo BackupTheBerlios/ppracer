@@ -16,4 +16,3 @@ FTPoint operator*( double multiplier, FTPoint& point)
 {
     return point * multiplier;
 }
-        

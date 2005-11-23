@@ -21,6 +21,7 @@
 #define _PPOGL_VEC2D_H_
 
 #include "assert.h"
+#include "defs.h"
 
 ///
 namespace ppogl {

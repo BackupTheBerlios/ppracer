@@ -65,7 +65,7 @@ class FTGL_EXPORT FTLibrary
          * objects.
          */
         FTLibrary();
-        FTLibrary( const FT_Library&){}
+        FTLibrary( const FT_Library&):library(0),err(0){}
         FTLibrary& operator=( const FT_Library&) { return *this; }
         
         /**

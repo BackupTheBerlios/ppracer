@@ -89,9 +89,9 @@ Benchmark::getPosition()
 }
 
 void
-Benchmark::setMode(Benchmark::BenchMode mode)
+Benchmark::setMode(Benchmark::BenchMode _mode)
 {
-	sm_mode = mode;
+	sm_mode = _mode;
 }
 
 Benchmark::BenchMode

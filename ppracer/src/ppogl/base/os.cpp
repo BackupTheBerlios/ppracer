@@ -84,8 +84,8 @@ mkdir(const std::string& dir)
 dir::dir(std::string path, const bool only_dirs)
 /// Constructs a std::list with the directory content
 {
-	DIR *dir;
-	if((dir=opendir(path.c_str())) == NULL){
+	DIR* directory;
+	if((directory=opendir(path.c_str())) == NULL){
 		PP_WARNING("Unable to open directory: " << path);
 		return;
 	}
@@ -93,7 +93,7 @@ dir::dir(std::string path, const bool only_dirs)
 	if(!path.empty()) path+="/"; 
 	
 	struct dirent *entry;
-	while((entry=readdir(dir)) != NULL){
+	while((entry=readdir(directory)) != NULL){
 		if(!strcmp(entry->d_name,".") || !strcmp(entry->d_name,"..")){
 			continue;
 		}
@@ -111,7 +111,7 @@ dir::dir(std::string path, const bool only_dirs)
 		push_back(entry->d_name);
 	}
 	
-	closedir(dir);
+	closedir(directory);
 }
 
 bool

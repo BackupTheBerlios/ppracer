@@ -272,15 +272,11 @@ set_gl_options(const RenderMode mode)
     } 
 } 
 
-struct GLValue
-{
-    char *name;
+static struct{
+    const char *name;
     GLenum value;
     GLenum type;
-};
-
-// Add more things here as needed
-GLValue glValues[] = {
+} glValues[] = {
     { "maximum lights", GL_MAX_LIGHTS, GL_INT },
     { "modelview stack depth", GL_MAX_MODELVIEW_STACK_DEPTH, GL_INT },
     { "projection stack depth", GL_MAX_PROJECTION_STACK_DEPTH, GL_INT },

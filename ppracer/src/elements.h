@@ -39,7 +39,7 @@ public:
 	
 	ItemType();
 	
-	bool operator!=(ItemType& type){return this!=&type;};
+	bool operator!=(ItemType& _type){return this!=&_type;};
 
     ppogl::TextureRef texture;
     double diam, height;

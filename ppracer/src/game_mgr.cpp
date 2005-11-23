@@ -52,9 +52,9 @@ GameMgr::reset(GameType type)
 }
 
 unsigned int
-GameMgr::calculateScore(double time, int herring, int health)
+GameMgr::calculateScore(double _time, int herring, int health)
 {
-	int timescore = MAX( 0, int(100*((*mi_currentRace).time_req[CourseData::DIFFICULTY_EASY]-time)));
+	int timescore = MAX( 0, int(100*((*mi_currentRace).time_req[CourseData::DIFFICULTY_EASY]-_time)));
 	int herringscore = 200*herring;
 	
 	//for future use
