@@ -37,22 +37,24 @@
 //Translation.set("Resolution:","");
 //Translation.set("Bits Per Pixel:","");
 //Translation.set("Fullscreen:","");
+//Translation.set("Stencil Buffer:","");
 //Translation.set("Experimental (needs restart)","");
 //Translation.set("Enable FSAA:","");
+//Translation.set("FSAA Multisamples:","");
 
 //graphics configuration
 //Translation.set("Graphics Configuration","");
 //Translation.set("Draw Fog:","");
 //Translation.set("Reflections:","");
 //Translation.set("Shadows:","");
-//Translation.set("Detail Settings","");
+//Translation.set("Detail settings","");
 //Translation.set("Terrain:","");
 //Translation.set("Textures:","");
-//Translation.set("Player model:","");
+//Translation.set("Player Model:","");
 
 //audio configuration
 //Translation.set("Audio Configuration","");
-//Translation.set("Sound volume:","");
+//Translation.set("Sound Volume:","");
 //Translation.set("Music Volume:","");
 //Translation.set("(needs restart)","");
 //Translation.set("Disable Audio:","");

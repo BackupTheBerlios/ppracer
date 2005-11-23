@@ -4,6 +4,10 @@
 2005-11-23  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	cleanups
+	
+	* src/data/translations/en_GB.nut 
+	  src/data/translations/nn_NO.nut
+	updated translations (Karl Ove Hufthammer)
 
 2005-11-21  Volker Stroebel <volker@planetpenguin.de>
 	* src/joystick.* data/config.nut.in
