@@ -13,10 +13,26 @@ tux.material("white_penguin2",
             [0.58,0.58,0.58],
 			[0.2,0.2,0.2],
 			50.0);
+/*
+// ugly blue penguin
 tux.material("black_penguin2",
 			[0.1,0.1,0.9],
 			[0.5,0.5,0.5],
 			20.0);
+*/
+/*
+//brown penguin
+tux.material("black_penguin2",
+			[0.23,0.15,0.06],
+			[0.9,0.9,0.9],
+			20.0);
+*/				
+//shiny dark blue penguin
+tux.material("black_penguin2",
+			[0.10,0.10,0.25],
+			[0.4,0.4,1],
+			20.0);		
+
 tux.material("beak_color2",
 			[0.64,0.54,0.06],
 			[0.4,0.4,0.4],
