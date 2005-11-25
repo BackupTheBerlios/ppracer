@@ -379,41 +379,37 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     if(fogPlane.isEnabled()==false){
 		return;
     }   
-
-    ppogl::Vec3d left_pt, right_pt, pt;
-    ppogl::Vec3d top_left_pt, top_right_pt;
-    ppogl::Vec3d bottom_left_pt, bottom_right_pt;
-    ppogl::Vec3d left_vec, right_vec;
    
-	const ppogl::Vec2d& courseDim = Course::getDimensions();
     const double course_angle = Course::getAngle();
     const double slope = tan( ANGLES_TO_RADIANS( course_angle ) );
-
-    const pp::Plane left_edge_plane(1.0, 0.0, 0.0, 0.0);
-    const pp::Plane right_edge_plane(-1.0, 0.0, 0.0, courseDim.x());
 
     const pp::Plane& far_clip_plane = get_far_clip_plane();
     const pp::Plane& left_clip_plane = get_left_clip_plane();
     const pp::Plane& right_clip_plane = get_right_clip_plane();
     const pp::Plane& bottom_clip_plane = get_bottom_clip_plane();
 
-	pp::Plane bottom_plane, top_plane;
     // Find the bottom plane 
+	pp::Plane bottom_plane;
     bottom_plane.nml = ppogl::Vec3d( 0.0, 1, -slope );
     double height = Course::getTerrainBaseHeight( 0 );
 
     bottom_plane.d = -height * bottom_plane.nml.y();
 
-    // Find the top plane 
+    // Find the top plane
+	pp::Plane  top_plane;
     top_plane.nml = bottom_plane.nml;
     height = Course::getTerrainMaxHeight( 0 );
     top_plane.d = -height * top_plane.nml.y();
+
+	ppogl::Vec3d left_pt, right_pt, pt;
+    ppogl::Vec3d top_left_pt, top_right_pt;
+    ppogl::Vec3d bottom_left_pt, bottom_right_pt;
 
     // Now find the bottom left and right points of the fog plane 
     if ( !pp::Plane::intersect( bottom_plane, far_clip_plane, left_clip_plane,
 			    &left_pt ) )
     {
-	return;
+		return;
     }
 
     if ( !pp::Plane::intersect( bottom_plane, far_clip_plane, right_clip_plane,
@@ -445,10 +441,9 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     {
 		return;
     }
-
-    left_vec = top_left_pt - left_pt;
-    right_vec = top_right_pt - right_pt;
-
+	
+    const ppogl::Vec3d left_vec = top_left_pt - left_pt;
+    const ppogl::Vec3d right_vec = top_right_pt - right_pt;
 
     // Now draw the fog plane 
 
@@ -487,8 +482,6 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
 void
 CourseRenderer::drawElements(const ppogl::Vec3d& pos) 
 {
-    ppogl::Vec3d normal;
-
     const double fwd_clip_limit = GameConfig::forwardClipDistance;
     const double bwd_clip_limit = GameConfig::backwardClipDistance;
 
@@ -507,7 +500,7 @@ CourseRenderer::drawElements(const ppogl::Vec3d& pos)
 	    	if ( (*it).getPosition().z() - pos.z() > bwd_clip_limit )
 			continue;
 		}
-		normal = pos - (*it).getPosition();
+		ppogl::Vec3d normal = pos - (*it).getPosition();
 		normal.normalize();
 		(*it).draw(normal);
     }
@@ -527,7 +520,7 @@ CourseRenderer::drawElements(const ppogl::Vec3d& pos)
 				continue;
 		}
 
-		normal = pos - (*it).getPosition();
+		ppogl::Vec3d normal = pos - (*it).getPosition();
 		normal.normalize();
 	   	if (normal.y() == 1.0) {
 			continue;
