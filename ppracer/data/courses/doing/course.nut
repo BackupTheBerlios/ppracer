@@ -29,4 +29,4 @@ ppcourse.init({
 
 // executes the files elements.nut that contains additional elements (items/models)
 // this is an experimental feature. 
-dofile("elements.nut");
+// dofile("elements.nut");
