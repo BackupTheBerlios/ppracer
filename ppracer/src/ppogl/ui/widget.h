@@ -53,6 +53,7 @@ protected:
 
 public:
 	Widget();
+
 	virtual ~Widget();
 
 	void setPosition(const ppogl::Vec2d& position);

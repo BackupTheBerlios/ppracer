@@ -18,7 +18,7 @@ FTFont::unreference()
 	}	
 }
 
-FTFont::FTFont(const char* fontFilePath)
+FTFont::FTFont(const std::string& fontFilePath)
  : face( fontFilePath),
    m_references(0), 
    glyphList(0),

@@ -113,14 +113,13 @@ update_ui_snow(float time_step, bool windy)
     ppogl::Vec2d *pt;
     float size;
     float dist_from_push, p_dist;
-    ppogl::Vec2d push_vector;
     int i;
     float push_timestep;
 
     float time = SDL_GetTicks()/1000.0;
 
-    push_vector.x() = 0;
-    push_vector.y() = 0;
+	ppogl::Vec2d push_vector;
+
     push_timestep = 0;
 	
     if (push_position_initialized){

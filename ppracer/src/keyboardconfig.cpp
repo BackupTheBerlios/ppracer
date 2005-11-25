@@ -108,7 +108,8 @@ static KeyMap keymap[] = {
 
 	
 KeyboardConfig::KeyboardConfig()
- : m_leftLbl(_("Turn left:")),
+ : ConfigMode(_("Keyboard Configuration")),
+   m_leftLbl(_("Turn left:")),
    m_rightLbl(_("Turn right:")),
    m_paddleLbl(_("Paddle:")),
    m_brakeLbl(_("Brake:")),
@@ -117,8 +118,6 @@ KeyboardConfig::KeyboardConfig()
    m_resetLbl(_("Reset:")),
    m_pauseLbl(_("Pause:"))
 {
-	setTitle(_("Keyboard Configuration"));
-	
 	ppogl::Vec2d position(40,350);
 	ppogl::Vec2d position2(600,350);
 	

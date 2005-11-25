@@ -61,10 +61,9 @@ struct SceneNode
     bool renderShadow;
 };
 
-
 void draw_sphere(int num_divisions);
 
-void traverse_dag(SceneNode *node, ppogl::Material *mat);
+void traverse_dag(const SceneNode *node, ppogl::Material *mat);
 
 void trans_polyhedron(const pp::Matrix& mat, const ppogl::Polyhedron& ph);
 

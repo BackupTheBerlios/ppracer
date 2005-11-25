@@ -91,7 +91,7 @@ GameOver::GameOver()
 	
 	{  
 	ppogl::Vec3d dir = players[0].vel;
-	int speed = int(dir.normalize());
+	const int speed = int(dir.normalize());
 	//set max_speed
 	if (speed > players[0].max_speed) players[0].max_speed=int(speed);
 	}
@@ -106,10 +106,10 @@ GameOver::GameOver()
     }else{	
 		m_raceOverLbl.setText(_("Race Over"));
 	
-		char buff[40];
 		int minutes, seconds, hundredths;
-
 		getTimeComponents( GameMgr::getInstance().time, minutes, seconds, hundredths );
+		
+		char buff[40];
 		snprintf(buff, 40, _("Time: %02d:%02d.%02d").c_str(), minutes, seconds, hundredths );	
 		pos.y()-=100;
 		
@@ -129,14 +129,14 @@ GameOver::GameOver()
 		m_scoreLbl.alignment.center();
 		m_scoreLbl.setText(buff);
 	
-		int speed = int(double(players[0].max_speed) * M_PER_SEC_TO_KM_PER_H);
+		const int speed = int(double(players[0].max_speed) * M_PER_SEC_TO_KM_PER_H);
 		snprintf(buff, 40, _("Max speed: %3d km/h").c_str(), speed);
 		pos.y()-=30;
 		m_maxspeedLbl.setPosition(pos);
 		m_maxspeedLbl.alignment.center();
 		m_maxspeedLbl.setText(buff);
 	
-		double percent = (players[0].airbornetime / GameMgr::getInstance().time) * 100.0;
+		const double percent = (players[0].airbornetime / GameMgr::getInstance().time) * 100.0;
 		snprintf(buff, 40, _("Was flying: %.01f %% of time").c_str(), percent);
 		pos.y()-=30;
 		m_flyingLbl.setPosition(pos);

@@ -73,7 +73,7 @@ register_course_cb(ppogl::Script *vm)
 		return 0;
 	}
 	
-	CourseData data;	
+	CourseData data;
 	
 	data.course = vm->getStringFromTable("path");
 	data.setName(vm->getStringFromTable("name"));

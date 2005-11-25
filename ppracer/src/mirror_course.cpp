@@ -39,15 +39,12 @@ mirror_course()
     float tmp;
     int tmp_terrain;
     ppogl::Vec3d tmp_vec;
-    float *elevation;
-    ppogl::Vec3d *nmls;
-    int *terrain;
     ppogl::Vec2d start_pt;
 
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    elevation = Course::getElevData();
-    terrain = Course::getTerrainData();
-    nmls = courseRenderer.getNormals();
+    float* elevation = Course::getElevData();
+    int* terrain = Course::getTerrainData();
+    ppogl::Vec3d* nmls = courseRenderer.getNormals();
 
     for(int y=0; y<Course::ny; y++){
 	for(int x=0; x<Course::nx/2; x++){
@@ -79,6 +76,7 @@ mirror_course()
 		(*it).getPosition().y() = 
 	    find_y_coord((*it).getPosition().x(),
 			  (*it).getPosition().z() ) + (*it).getType()->height;
+		(*it).mirror();		
     }
 	}
 	

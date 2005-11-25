@@ -55,7 +55,7 @@ protected:
 	ppogl::ImageButton m_downBtn;
 
 	///update the position of the up and down button widgets
-	void updateButtonStates()
+	void updateButtonPositions()
 	{
 		ppogl::Vec2d temp = alignment.alignPosition(m_position,m_size);
 	
@@ -65,7 +65,27 @@ protected:
 		temp.y()+=m_size.y()-16;
 		m_upBtn.setPosition(temp);
 	}
+	
+	///update the state of the up and down button widgets
+	void updateButtonStates()
+	{
+		if(m_it != m_elements.begin()){
+			m_upBtn.setState(0);
+			m_upBtn.setMode(ImageButton::MODE_HILIT);
+		}else{
+			m_upBtn.setState(1);
+			m_upBtn.setMode(ImageButton::MODE_NONE);
+		}
 
+		if(m_it != --m_elements.end()){
+			m_downBtn.setState(0);
+			m_downBtn.setMode(ImageButton::MODE_HILIT);
+		}else{
+			m_downBtn.setState(1);
+			m_downBtn.setMode(ImageButton::MODE_NONE);
+		}	
+	}
+	
 public:
 	ListBox(int width=176, int height=32)
 	 : Widget(),
@@ -218,26 +238,6 @@ public:
 		}
 	}
 	
-	///update the state of the up and down button widgets
-	void updateButtonPositions()
-	{
-		if(m_it != m_elements.begin()){
-			m_upBtn.setState(0);
-			m_upBtn.setMode(ImageButton::MODE_HILIT);
-		}else{
-			m_upBtn.setState(1);
-			m_upBtn.setMode(ImageButton::MODE_NONE);
-		}
-
-		if(m_it != --m_elements.end()){
-			m_downBtn.setState(0);
-			m_downBtn.setMode(ImageButton::MODE_HILIT);
-		}else{
-			m_downBtn.setState(1);
-			m_downBtn.setMode(ImageButton::MODE_NONE);
-		}	
-	}
-
 	ListBox<T>& operator++()
 	{
 		if(m_it != --m_elements.end()){

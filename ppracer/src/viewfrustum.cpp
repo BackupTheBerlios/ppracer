@@ -46,7 +46,7 @@ setup_view_frustum(const Player& plyr,
 					double(GameMode::resolutionY);
 
 	ppogl::Vec3d pt;
-    ppogl::Vec3d origin(0., 0., 0.);
+    ppogl::Vec3d origin;
     double half_fov = ANGLES_TO_RADIANS( GameConfig::fov * 0.5 );
     double half_fov_horiz = atan(tan(half_fov) * aspect); 
 	

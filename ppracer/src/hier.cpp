@@ -98,13 +98,13 @@ std::string
 create_scene_node(const std::string& parent_name, const std::string& child_name, 
 			 SceneNode **node )
 {
-    SceneNode *parent, *child;
+    SceneNode *parent;
 		
     if(get_scene_node(parent_name, &parent) != true){
         return "Parent node does not exist";
     }
 
-    child = new SceneNode;
+    SceneNode* child = new SceneNode;
 	PP_CHECK_ALLOC(child);
 	
     // Initialize node
@@ -155,13 +155,13 @@ void
 rotate_scene_node(const std::string& node, char axis, double angle ) 
 {
     SceneNode *nodePtr;
-    pp::Matrix rotMatrix;
 
     if(get_scene_node( node, &nodePtr )!= true){
         PP_WARNING("No such node");
 		return;
-    } 
-
+    }
+	
+    pp::Matrix rotMatrix;
     rotMatrix.makeRotation( angle, axis );
     nodePtr->trans=nodePtr->trans*rotMatrix;
 	
@@ -173,13 +173,13 @@ void
 translate_scene_node(const std::string& node, const ppogl::Vec3d& vec ) 
 {
     SceneNode *nodePtr;
-    pp::Matrix xlateMatrix;
 
     if(get_scene_node( node, &nodePtr ) != true){
         PP_WARNING("No such node");
 		return;
     }
-
+	pp::Matrix xlateMatrix;
+	
     xlateMatrix.makeTranslation( vec.x(), vec.y(), vec.z() );
 	nodePtr->trans=nodePtr->trans*xlateMatrix;
 	
@@ -191,13 +191,13 @@ void
 scale_scene_node(const std::string& node, const ppogl::Vec3d& center, const ppogl::Vec3d& factor) 
 {
     SceneNode *nodePtr;
-    pp::Matrix matrix;
 
     if(get_scene_node(node, &nodePtr)!=true){
 		PP_WARNING("No such node");
 		return;
     } 
-
+	
+	pp::Matrix matrix;
     matrix.makeTranslation( -center.x(), -center.y(), -center.z() );
     nodePtr->trans=nodePtr->trans*matrix;
 	
@@ -234,13 +234,14 @@ transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::M
 void 
 set_scene_node_material(const std::string& node, const std::string& mat) 
 {
-    ppogl::Material *matPtr;
     SceneNode *nodePtr;
 
     if(get_scene_node(node, &nodePtr) != true){
         PP_WARNING("No such node");
 		return;
     }
+
+	ppogl::Material *matPtr;
 
     if(get_material( mat, &matPtr ) != true){
         PP_WARNING("No such material");

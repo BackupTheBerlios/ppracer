@@ -9,6 +9,8 @@
 #include "FTPoint.h"
 #include "FTSize.h"
 
+#include <string>
+
 /**
  * FTFace class provides an abstraction layer for the Freetype Face.
  *
@@ -23,7 +25,7 @@ class FTGL_EXPORT FTFace
          *
          * @param fontFilePath  font file path.
          */
-        FTFace( const char* fontFilePath);
+        FTFace(const std::string& fontFilePath);
 
         /**
          * Destructor

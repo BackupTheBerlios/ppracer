@@ -33,13 +33,10 @@ protected:
 	ppogl::Label m_titleLbl;
 	ppogl::Button m_cancelBtn;
 	ppogl::Button m_applyBtn;
-
 	std::string m_title;
 
-	void setTitle(const std::string& title);
-		
 public:
-	ConfigMode();
+	ConfigMode(const std::string& title);
 
 	void loop(float timeStep);
 

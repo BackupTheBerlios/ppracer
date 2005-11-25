@@ -1,5 +1,5 @@
 /* 
- * PPRacer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  * 
  * This program is free software; you can redistribute it and/or
@@ -20,77 +20,47 @@
  
 #include "configmode.h"
 
-ConfigMode::ConfigMode()
+ConfigMode::ConfigMode(const std::string& title)
+ : m_titleLbl(title,"heading"),
+   m_cancelBtn(_("Cancel")),
+   m_applyBtn(_("Ok"))
 {
-	pp::Vec2d pos(0,0);
-		
-	mp_titleLbl = new pp::Label(pos,
-					"heading", "");
-	mp_titleLbl->alignment.center();
-	mp_titleLbl->alignment.middle();
-								
+	ppogl::UIManager::getInstance().setBoxDimension(ppogl::Vec2d(640,480));	
 	
-	mp_cancelBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40),
-				     "button_label",
-				     _("Cancel") );
-    mp_cancelBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_cancelBtn->signalClicked.Connect(pp::CreateSlot(this,&ConfigMode::cancel));
-   
-	mp_applyBtn = new pp::Button(pos,
-				     pp::Vec2d(300, 40), 
-				     "button_label", 
-				     _("Ok") );
-    mp_applyBtn->setHilitFontBinding( "button_label_hilit" );
-    mp_applyBtn->signalClicked.Connect(pp::CreateSlot(this,&ConfigMode::apply));
-}
-
-ConfigMode::~ConfigMode()
-{
-	delete mp_cancelBtn;
-	delete mp_applyBtn;
-	delete mp_titleLbl;
+	ppogl::Vec2d position(320,440);
+	
+	m_titleLbl.setPosition(position);
+	m_titleLbl.alignment.set(0.5f, 1.0f);
+	
+	position.x()=80;
+	position.y()=0;
+	
+	m_cancelBtn.setPosition(position);
+    m_cancelBtn.signalClicked.Connect(ppogl::CreateSlot(this,&ConfigMode::cancel));
+    
+	position.x()=560;
+	
+	m_applyBtn.setPosition(position);
+	m_applyBtn.alignment.right();
+    m_applyBtn.signalClicked.Connect(ppogl::CreateSlot(this,&ConfigMode::apply));
 }
 
 void
 ConfigMode::loop(float timeStep)
 {
-	update_audio();
     set_gl_options( GUI );
-    clear_rendering_context();
-    UIMgr.setupDisplay();
-	
-	drawTextandWidgets();
-	
-	// forces the config mode to update it's widget positions
-	// perhaps we should call this only when the screen size changes
-	setWidgetPositions();
-	
+		
 	// calls the custom loop of the derived class (if it exists)
 	customLoop( timeStep );
 	
 	// draw snow if enabled
 	drawSnow( timeStep );
 	
-	theme.drawMenuDecorations();
+	// draw ui
+	ppogl::UIManager::getInstance().draw(resolutionX,
+										 resolutionY);	
 	
-	// draw ui widgets
-    UIMgr.draw();
-	
-	
-    reshape( getparam_x_resolution(), getparam_y_resolution() );
-    winsys_swap_buffers();
-}
-
-void
-ConfigMode::drawTextandWidgets()
-{
-	int w = getparam_x_resolution();
-    int h = getparam_y_resolution();
-
-	mp_cancelBtn->setPosition(pp::Vec2d(w/2-300,h/2-240));
-	mp_applyBtn->setPosition(pp::Vec2d(w/2,h/2-240));
-	mp_titleLbl->setPosition(pp::Vec2d(w/2,h/2+200));
+    reshape(resolutionX, resolutionY);
 }
 
 bool
@@ -111,12 +81,5 @@ ConfigMode::keyPressEvent(SDLKey key)
 void
 ConfigMode::cancel()
 {
-	set_game_mode( GameMode::prevmode );
-    UIMgr.setDirty();
-}
-
-void
-ConfigMode::setTitle(const char* title)
-{
-	mp_titleLbl->setText(title);
+	setMode( GameMode::prevmode );
 }

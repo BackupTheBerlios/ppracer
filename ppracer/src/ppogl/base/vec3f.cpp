@@ -25,9 +25,9 @@ namespace ppogl{
 
 Vec3f::Vec3f()
 {
-	values[0]=0.0;
-	values[1]=0.0;
-	values[2]=0.0;
+	values[0]=0.0f;
+	values[1]=0.0f;
+	values[2]=0.0f;
 }
 	
 Vec3f::Vec3f(const float x, const float y, const float z)

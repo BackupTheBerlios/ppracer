@@ -69,8 +69,8 @@ class Plane
 {
 public:
 	Plane(){};
-	Plane(const double x, const double y, const double z, const double d);
-
+	Plane(const double x, const double y, const double z, const double _d);
+	
 	double distance(const ppogl::Vec3d& point) const;
 	static bool intersect( const Plane& s1, const Plane& s2, const Plane& s3, ppogl::Vec3d *p );
 		

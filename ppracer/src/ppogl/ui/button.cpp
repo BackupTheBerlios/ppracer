@@ -30,7 +30,7 @@ Button::Button()
 }
 	
 Button::Button(const std::string& text, const std::string& binding)
- : Label(text,binding)
+ : Label(text, binding)
 ///construct button object with the given text and binding
 {	
 	m_hilitFont = ppogl::UITheme::getInstance().hilitLabelFont;

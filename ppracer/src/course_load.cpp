@@ -129,18 +129,14 @@ Course::setStartPt(const ppogl::Vec2d& p)
   \date    Modified: 2000-08-30
 */
 float
-Course::getTerrainBaseHeight( float distance )
+Course::getTerrainBaseHeight(float distance)
 {
     PP_REQUIRE( distance > -EPS, "distance should be positive" );
 	
-	float slope = tan(ANGLES_TO_RADIANS(angle));
-    float base_height;
-    
-
-    /* This will need to be fixed once we add variably-sloped terrain */
-    base_height = -slope * distance - 
-	base_height_value / 255.0 * elev_scale;
-    return base_height;
+	const float slope = tan(ANGLES_TO_RADIANS(angle));
+    const float base_height = -slope * distance - 
+			base_height_value / 255.0 * elev_scale;
+    return base_height;	
 }
 
 /*! 
@@ -154,7 +150,7 @@ Course::getTerrainBaseHeight( float distance )
   \date    Modified: 2000-08-30
 */
 float
-Course::getTerrainMaxHeight( float distance )
+Course::getTerrainMaxHeight(float distance)
 {
     return getTerrainBaseHeight( distance ) + elev_scale;
 }
@@ -163,7 +159,7 @@ static void
 reset_course()
 {
 	num_terrains = 0;
-	Course::angle  = 20;
+	Course::angle = 20;
 	Course::dimension = ppogl::Vec2d(50,130);
 	Course::playDimension = ppogl::Vec2d(50,130);
 
@@ -358,15 +354,13 @@ course_dim_cb(ppogl::Script *vm)
 static int
 angle_cb(ppogl::Script *vm)
 {
-    double angle;
-
     if(vm->getTop()!=1){
         PP_WARNING("ppcourse.angle_cb: invalid number of arguments");
 		return vm->defaultError();
 
     } 
 
-    angle = vm->getFloat(1);
+    double angle = vm->getFloat(1);
 
     if(angle < MIN_ANGLE){
 		PP_WARNING("course angle is too small. Setting to " << MIN_ANGLE);
@@ -389,11 +383,6 @@ elev_cb(ppogl::Script *vm)
 {
     PP_MESSAGE("Loading elevation");
 	
-	ppogl::Image *elev_img;
-    float slope;
-    int   x,y;
-    int   pad;
-
 	if(vm->getTop() != 1){
         PP_WARNING("ppcourse.elev: Invalid number of arguments");
 		return vm->defaultError();
@@ -405,8 +394,8 @@ elev_cb(ppogl::Script *vm)
     }
 
 	std::string filename = vm->getString(1);
-    elev_img = ppogl::Image::readFile(filename);
-    if ( elev_img == NULL ) {
+    ppogl::Image* elev_img = ppogl::Image::readFile(filename);
+    if(elev_img == NULL){
 		PP_WARNING( "ppcourse.elev: couldn't load " << filename);
 		return vm->defaultError();
     }
@@ -415,14 +404,13 @@ elev_cb(ppogl::Script *vm)
     Course::ny = elev_img->height;
 
     Course::elevation = new float[Course::nx*Course::ny];
-	
-    slope = tan(ANGLES_TO_RADIANS(Course::angle));
+    
+	float slope = tan(ANGLES_TO_RADIANS(Course::angle));
 
-	pad = 0;    /* RGBA images rows are aligned on 4-byte boundaries */
-    for (y=0; y<Course::ny; y++) {
-        for (x=0; x<Course::nx; x++) {
+    for(int y=0; y<Course::ny; y++) {
+        for(int x=0; x<Course::nx; x++) {
 	    Course::getElevation(Course::nx-1-x, Course::ny-1-y) = 
-		( ( elev_img->data[ (x + Course::nx * y) * elev_img->depth + pad ] 
+		( ( elev_img->data[ (x + Course::nx * y) * elev_img->depth] 
 		    - base_height_value ) / 255.0 ) * elev_scale
 		- double(Course::ny-1.-y)/Course::ny * Course::dimension.y() * slope;
         } 
@@ -450,11 +438,6 @@ terrain_cb(ppogl::Script *vm)
 {
     PP_MESSAGE("Loading terrain");
 	
-	ppogl::Image *terrain_img;
-    int idx;
-	int	terrain_value;
-	int	image_pointer;
-
     if(vm->getTop()!=1){
         PP_WARNING("ppcourse.load_terrain: Invalid number of arguments");
 		return vm->defaultError();
@@ -462,7 +445,7 @@ terrain_cb(ppogl::Script *vm)
 
 	std::string filename = vm->getString(1);
 	
-    terrain_img = ppogl::Image::readFile(filename);
+    ppogl::Image* terrain_img = ppogl::Image::readFile(filename);
 
     if(terrain_img == NULL){
 		PP_WARNING("ppcourse.load_terrain: couldn't load " << filename);
@@ -477,26 +460,23 @@ terrain_cb(ppogl::Script *vm)
 
     Course::terrain = new int[Course::nx*Course::ny];
 	PP_CHECK_ALLOC(Course::terrain);
-		
+	
     for(int y=0; y<Course::ny; y++){
         for(int x=0; x<Course::nx; x++){
-			idx = (Course::nx-1-x) + Course::nx*(Course::ny-1-y);	
-			image_pointer=(x+Course::nx*y)*terrain_img->depth;
-			
-			terrain_value=terrain_img->data[image_pointer] +
+			const int idx = (Course::nx-1-x) + Course::nx*(Course::ny-1-y);	
+			const int image_pointer=(x+Course::nx*y)*terrain_img->depth;
+			const int terrain_value=terrain_img->data[image_pointer] +
 						(terrain_img->data[image_pointer+1] << 8)+ 
 						(terrain_img->data[image_pointer+2] << 16);
-			
-	    Course::terrain[idx] = intensity_to_terrain(terrain_value);
-		
-        } 
-    } 
+			Course::terrain[idx] = intensity_to_terrain(terrain_value);
+        }
+    }
 	
     delete terrain_img;
 
 	//build sorted list with used terrains for quadtree
 	usedTerrains.clear();
-	for (unsigned int i=0; i<num_terrains; i++){
+	for(unsigned int i=0; i<num_terrains; i++){
 		//check if the terraintype is used in the course
 		if(terrain_texture[i].count>0){
 			usedTerrains.push_back(i);
@@ -615,14 +595,14 @@ terrain_tex_cb(ppogl::Script *vm)
 static int
 start_pt_cb(ppogl::Script *vm)
 {
-    double xcd =0;
-	double ycd =0;
-
     if(vm->getTop() != 1){
         PP_WARNING("ppcourse.start_pt: Invalid number of arguments");
 		return vm->defaultError();
     }
 		
+	double xcd =0;
+	double ycd =0;
+	
 	if(vm->isArray()){
 		vm->pushNull();
 		vm->next(-2);
@@ -657,17 +637,14 @@ start_pt_cb(ppogl::Script *vm)
 
 static int
 elev_scale_cb(ppogl::Script *vm)
-{
-    double scale;
-    
+{  
 	if(vm->getTop() != 1){
         PP_WARNING("ppcourse.elev_scale: invalid number of arguments");
 		return vm->defaultError();
     } 
 	
-	scale = vm->getFloat(1);
-	
-    if(scale <= 0){
+	const double scale = vm->getFloat(1);
+	if(scale <= 0){
 		PP_WARNING("ppcourse.elev_scale: scale must be positive");
 		return vm->defaultError();
     }
@@ -687,7 +664,7 @@ elements_cb(ppogl::Script *vm)
 		return vm->defaultError();
 	}
 	
-	ppogl::Image *elementsImg;
+	ppogl::Image* elementsImg;
 	
 	std::string filename = vm->getString(1);
 	
@@ -932,7 +909,6 @@ wind_velocity_cb(ppogl::Script *vm)
 	}
 		
 	ppogl::Vec3d velocity;
-	double scale = 1.0;
 	
 	if(vm->isArray(1)){
 		vm->pushNull();
@@ -947,15 +923,15 @@ wind_velocity_cb(ppogl::Script *vm)
 	}
 	vm->pop();
 	
+	double scale = 1.0;
 	if(vm->getTop()==2){
 		scale = vm->getFloat(2);	
 	}
 		
-	set_wind_velocity(velocity,scale);
+	set_wind_velocity(velocity, scale);
 
 	return 0;
 }
-
 
 static int
 hud_cb(ppogl::Script *vm)
@@ -964,9 +940,6 @@ hud_cb(ppogl::Script *vm)
 		PP_WARNING("pptheme.hud: Invalid number of arguments");
 		return vm->defaultError();
 	}
-		
-	int element_num=-1;
-	HUD::Element element;
 	
 	int hud = int(vm->getFloatFromTable("hud")); 
 		
@@ -977,6 +950,8 @@ hud_cb(ppogl::Script *vm)
 	
 	std::string type = vm->getStringFromTable("element_type");
 		
+	HUD::Element element;
+	
 	if(type=="text"){
 		element.type=0;
 	}else if(type=="fsb"){
@@ -1078,6 +1053,8 @@ hud_cb(ppogl::Script *vm)
 		element.width = int(element.font->advance(element.u_string));
 	}
 		
+	const int element_num=-1;
+
 	if(hud!=1){
 		PP_WARNING("pptheme.hud: Invalid hud " << hud << " is not supported");
 	}else{

@@ -162,7 +162,6 @@ void
 EventRaceSelect::updateStatusMsg()
 {
     std::string msg;
-    char buff[12];
 	
 	switch(state){
 		case DEAD:
@@ -193,6 +192,8 @@ EventRaceSelect::updateStatusMsg()
 
 	getTimeComponents( m_data.time, minutes, seconds, hundredths );
 		
+	char buff[12];
+
 	snprintf(buff, 12, "%02d:%02d.%02d",minutes, seconds, hundredths);
 	m_timeLbl.setText(buff);
 		

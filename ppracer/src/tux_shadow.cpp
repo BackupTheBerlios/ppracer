@@ -42,24 +42,22 @@ draw_tux_shadow(int player)
     if(!GameConfig::drawTuxShadow){
 		return;
 	}
-	
-	pp::Matrix model_matrix;
-    SceneNode *tux_root_node;
-		
+			
     set_gl_options( TUX_SHADOW ); 
 	
 	// Make the shadow darker if the stencil buffer is active
-	
 	if(GameConfig::enableStencilBuffer){
     	gl::Color(0.0f,0.0f,0.0f,0.3f);
 	}else{
     	gl::Color(0.0f,0.0f,0.0f,0.1f);
 	}
 	
+	pp::Matrix model_matrix;
     model_matrix.makeIdentity();
 
 	const std::string& tux_root_node_name = tux[player].getRootNode();
-
+	SceneNode *tux_root_node;
+	
     if(get_scene_node(tux_root_node_name, &tux_root_node ) != true){
 		PP_ERROR( "couldn't find tux's root node" );
     } 
@@ -70,18 +68,15 @@ draw_tux_shadow(int player)
 static void
 traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 {
-    pp::Matrix new_model_matrix;
-    SceneNode *child;
-
     PP_CHECK_POINTER( node );
-
-    new_model_matrix=model_matrix*node->trans;
+	
+	pp::Matrix new_model_matrix = model_matrix*node->trans;
 
     if(node->isSphere == true && node->renderShadow){
 		draw_shadow_sphere( new_model_matrix );
     } 
 
-    child = node->child;
+    SceneNode* child = node->child;
     while (child != NULL) {
         traverse_dag_for_shadow(child, new_model_matrix);
         child = child->next;

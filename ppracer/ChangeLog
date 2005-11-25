@@ -1,6 +1,13 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	fixes
+	
+	* src/ppogl/ui/listbox.h
+	fixed up/down button states
+
 2005-11-23  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	cleanups

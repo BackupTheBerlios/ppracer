@@ -3,7 +3,7 @@
 
 #include FT_TRUETYPE_TABLES_H
 
-FTFace::FTFace(const char* fontFilePath)
+FTFace::FTFace(const std::string& fontFilePath)
 :   ftFace(0),
 	charSize(),
 	numGlyphs(0),
@@ -14,7 +14,7 @@ FTFace::FTFace(const char* fontFilePath)
     const FT_Long DEFAULT_FACE_INDEX = 0;
     ftFace = new FT_Face;
 
-    err = FT_New_Face( *FTLibrary::Instance().GetLibrary(), fontFilePath, DEFAULT_FACE_INDEX, ftFace);
+    err = FT_New_Face( *FTLibrary::Instance().GetLibrary(), fontFilePath.c_str(), DEFAULT_FACE_INDEX, ftFace);
 
     if(err){
         delete ftFace;

@@ -54,11 +54,11 @@ GameMgr::reset(GameType type)
 unsigned int
 GameMgr::calculateScore(double _time, int herring, int health)
 {
-	int timescore = MAX( 0, int(100*((*mi_currentRace).time_req[CourseData::DIFFICULTY_EASY]-_time)));
-	int herringscore = 200*herring;
+	const int timescore = MAX( 0, int(100*((*mi_currentRace).time_req[CourseData::DIFFICULTY_EASY]-_time)));
+	const int herringscore = 200*herring;
 	
 	//for future use
-	int healthscore = 0*health;
+	const int healthscore = 0*health;
 	
 	return timescore+herringscore+healthscore;
 }
@@ -67,7 +67,7 @@ GameMgr::calculateScore(double _time, int herring, int health)
 void
 GameMgr::updatePlayersScores()
 {
-	for (int i=0; i<numPlayers; i++){
+	for(int i=0; i<numPlayers; i++){
 		players[i].score=calculateScore(time,
 										players[i].herring,
 										players[i].health);
@@ -89,7 +89,7 @@ GameMgr::updateCurrentRaceData()
 		m_raceWon=false;
     }	
 	
-	bool bestScore = players[0].updateCupCourseData(
+	const bool bestScore = players[0].updateCupCourseData(
 					(*currentEvent).getName(),
 					(*currentCup).getName(),
 					(*mi_currentRace).getName(),
@@ -150,7 +150,7 @@ GameMgr::resetTimeStep()
 void
 GameMgr::updateTimeStep()
 {
-	double ticks = SDL_GetTicks()/1000.0;
+	const double ticks = SDL_GetTicks()/1000.0;
 	timeStep = ticks - m_lastTicks;
 	timeStep = MAX(timeStep,EPS);
 	m_lastTicks = ticks;

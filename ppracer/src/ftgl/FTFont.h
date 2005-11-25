@@ -43,7 +43,7 @@ class FTGL_EXPORT FTFont
          *
          * @param fontFilePath  font file path.
          */
-        FTFont( const char* fontFilePath);
+        FTFont(const std::string& fontFilePath);
         
         /**
          * Destructor

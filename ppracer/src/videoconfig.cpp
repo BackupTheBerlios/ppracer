@@ -50,16 +50,15 @@ VideoConfig::Resolution::Resolution(int _x, int _y)
 }
 
 VideoConfig::VideoConfig()
- : 	m_resolutionLbl(_("Resolution:")),
-	m_bppLbl(_("Bits Per Pixel:")),
-	m_multisampleLbl(_("FSAA Multisamples:")),
-	m_fullscreenLbl(_("Fullscreen:")),
-	m_stencilLbl(_("Stencil Buffer:")),
-	m_fsaaLbl(_("Enable FSAA:")),
-	m_warningLbl(_("Experimental (needs restart)"))
+ : ConfigMode(_("Video Configuration")),
+   m_resolutionLbl(_("Resolution:")),
+   m_bppLbl(_("Bits Per Pixel:")),
+   m_multisampleLbl(_("FSAA Multisamples:")),
+   m_fullscreenLbl(_("Fullscreen:")),
+   m_stencilLbl(_("Stencil Buffer:")),
+   m_fsaaLbl(_("Enable FSAA:")),
+   m_warningLbl(_("Experimental (needs restart)"))
 {
-	setTitle(_("Video Configuration"));	
-
 	m_bppListBox.addElement("Display", 0);
 	m_bppListBox.addElement("16", 1);
 	m_bppListBox.addElement("32", 2);

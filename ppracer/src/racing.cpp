@@ -129,8 +129,7 @@ Racing::prePlayer(int plyr, float timestep)
     bool joy_tricks = false;
     bool joy_charging = false;
     bool airborne;
-    ppogl::Vec3d dir;
-    float speed;
+    
     float terrain_weights[NUM_TERRAIN_TYPES];
     int new_terrain = 0;
     int slide_volume;
@@ -140,8 +139,8 @@ Racing::prePlayer(int plyr, float timestep)
 		m_state[plyr].paddling = true;
 	}
 	
-    dir = player.vel;
-    speed = dir.normalize();
+    ppogl::Vec3d dir = player.vel;
+    float speed = dir.normalize();
 	
 	//set max_speed
 	if (speed > player.max_speed) player.max_speed=int(speed);

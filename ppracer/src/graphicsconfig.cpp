@@ -36,7 +36,8 @@
 
 
 GraphicsConfig::GraphicsConfig()
- : m_fogLbl(_("Draw Fog:")),
+ : ConfigMode(_("Graphics Configuration")),
+   m_fogLbl(_("Draw Fog:")),
    m_reflectionsLbl(_("Reflections:")),
    m_shadowsLbl(_("Shadows:")),
    m_detailsLbl(_("Detail settings")),
@@ -44,9 +45,7 @@ GraphicsConfig::GraphicsConfig()
    m_textureDetailLbl(_("Textures:")),
    //m_trackmarksDetailLbl(_("Track marks:")),
    m_playerDetailLbl(_("Player Model:"))
-{
-	setTitle(_("Graphics Configuration"));	
-			
+{	
 	ppogl::Vec2d position(40,350);
 	ppogl::Vec2d position2(600,350);
 		
@@ -116,8 +115,8 @@ GraphicsConfig::GraphicsConfig()
 float
 GraphicsConfig::getTerrainDetailLevel()
 {
-	float cdl = PPConfig.getDouble("course_detail_level");
-	float details = (cdl-MIN_CDL)/(MAX_CDL-MIN_CDL);	
+	const float cdl = PPConfig.getDouble("course_detail_level");
+	const float details = (cdl-MIN_CDL)/(MAX_CDL-MIN_CDL);
 	return details;
 }
 
@@ -125,14 +124,14 @@ GraphicsConfig::getTerrainDetailLevel()
 void
 GraphicsConfig::setTerrainDetailLevel(float value)
 {
-	float cdl = MIN_CDL + value*(MAX_CDL-MIN_CDL);	
+	const float cdl = MIN_CDL + value*(MAX_CDL-MIN_CDL);	
 	PPConfig.setDouble("course_detail_level", cdl);
 }
 
 float
 GraphicsConfig::getTextureDetailLevel()
 {
-	int filter = PPConfig.getInt("texture_filter");
+	const int filter = PPConfig.getInt("texture_filter");
 		
 	if(filter<=0) return 0.0f; 
 	else if(filter<=1) return 0.2f;
@@ -151,15 +150,15 @@ GraphicsConfig::setTextureDetailLevel(float value)
 float
 GraphicsConfig::getPlayerDetailLevel()
 {
-	int tsd = PPConfig.getInt("tux_sphere_divisions");
-	float details = (tsd-MIN_TSD)/(MAX_TSD-MIN_TSD);	
+	const int tsd = PPConfig.getInt("tux_sphere_divisions");
+	const float details = (tsd-MIN_TSD)/(MAX_TSD-MIN_TSD);	
 	return details;	
 }
 
 void 
 GraphicsConfig::setPlayerDetailLevel(float value)
 {
-	int tsd = int(MIN_TSD + value*(MAX_TSD-MIN_TSD));
+	const int tsd = int(MIN_TSD + value*(MAX_TSD-MIN_TSD));
 	PPConfig.setInt("tux_sphere_divisions", tsd);
 }
 

@@ -23,16 +23,15 @@
 #include "game_mgr.h"
 
 GeneralConfig::GeneralConfig()
- : m_uiSnowLbl(_("Show UI Snow:")),
+ : ConfigMode(_("General Configuration")),
+   m_uiSnowLbl(_("Show UI Snow:")),
    m_fpsLbl(_("Display FPS:")),
    m_coursePercentageLbl(_("Display Progress Bar:")),
    m_langListLbl(_("Language:")),
    m_langListBox(240)
 {
-	setTitle(_("General Configuration"));	
-	
 	std::map<std::string, std::string> languages=
-					ppogl::Translation::getInstance().getLanguages();
+		ppogl::Translation::getInstance().getLanguages();
 	
 	std::map<std::string, std::string>::iterator iter;
 	ppogl::ListBox<std::string>::Iterator langit;

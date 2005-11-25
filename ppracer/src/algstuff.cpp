@@ -342,11 +342,9 @@ Matrix::makeChangeOfBasisMatrix(Matrix& mat,
 }
 
 Plane::Plane(const double x, const double y, const double z, const double _d)
+ : nml(x, y ,z),
+   d(_d)
 {
-	nml.x()=x;
-	nml.y()=y;
-	nml.z()=z;
-	d=_d;
 }
 
 double
@@ -504,7 +502,6 @@ Quat::operator*(const Quat& quat) const{
 Quat 
 Quat::interpolate(const Quat& q, Quat r, double t )
 {
-	Quat res;
     double cosphi;
     double sinphi;
     double phi;
@@ -533,12 +530,12 @@ Quat::interpolate(const Quat& q, Quat r, double t )
 	scale1 = t;
     }
 
-    res.x = scale0 * q.x + scale1 * r.x; 
-    res.y = scale0 * q.y + scale1 * r.y; 
-    res.z = scale0 * q.z + scale1 * r.z; 
-    res.w = scale0 * q.w + scale1 * r.w; 
-
-    return res;
+	return Quat(
+    	scale0 * q.x + scale1 * r.x,
+    	scale0 * q.y + scale1 * r.y,
+    	scale0 * q.z + scale1 * r.z,
+    	scale0 * q.w + scale1 * r.w
+	);
 }
 
 } //namespace pp

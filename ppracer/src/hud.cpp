@@ -58,7 +58,7 @@ HUD::reset()
 }
 
 bool
-HUD::add(Element newElement){
+HUD::add(const Element& newElement){
 	if( m_numElements < HUD_MAX_ITEMS){
 		m_element[m_numElements] = newElement;
 		m_numElements++;
@@ -67,9 +67,9 @@ HUD::add(Element newElement){
 		return false;
 	}	
 }
-	
+
 bool
-HUD::update(const int i, Element newElement){
+HUD::update(const int i, const Element& newElement){
 	if( m_numElements > i ){
 		m_element[i] = newElement;
 		return true;	
@@ -80,9 +80,9 @@ HUD::update(const int i, Element newElement){
 }
 
 void
-HUD::draw(Player& plyr, int width, int height)
+HUD::draw(const Player& plyr, int width, int height)
 {
-	m_width=width;
+	m_width = width;
 	m_height = height;
 	
 	gl::PushMatrix();

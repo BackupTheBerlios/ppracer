@@ -91,7 +91,11 @@ public:
 
 	
 	void draw(ppogl::Vec3d normal);
-	void setNormal(const ppogl::Vec3d& normal);
+	void setNormal(const ppogl::Vec3d& normal)
+	{
+		m_normal = normal;
+		m_useNormal = true;
+	}
 };
 
 class ModelType
@@ -134,6 +138,7 @@ public:
 
 	inline void setScale(const ppogl::Vec3d& scale){m_scale=scale;}
 	inline void setRotation(double angle, const ppogl::Vec3d& rotation){m_angle=angle; m_rotation=rotation;}
+	void mirror();
 	
 	void draw(const ppogl::Vec3d& normal);
 };

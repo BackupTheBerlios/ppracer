@@ -100,8 +100,8 @@ lin_interp(const double x[], const double y[], double val, int n)
 		}
     }
 	
-    double m = ( y[i+1] - y[i] ) / ( x[i+1] - x[i] );
-    double b = y[i] - m * x[i];
+    const double m = ( y[i+1] - y[i] ) / ( x[i+1] - x[i] );
+    const double b = y[i] - m * x[i];
 
     return m * val + b;
 }

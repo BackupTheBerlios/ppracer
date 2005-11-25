@@ -25,10 +25,10 @@ namespace ppogl{
 
 Vec4f::Vec4f()
 {
-	values[0]=0.0;
-	values[1]=0.0;
-	values[2]=0.0;
-	values[3]=0.0;
+	values[0]=0.0f;
+	values[1]=0.0f;
+	values[2]=0.0f;
+	values[3]=0.0f;
 }
 	
 Vec4f::Vec4f(const float x, const float y, const float z, const float w)

@@ -132,8 +132,7 @@ int
 ModelAC::getDisplayList()
 {
 	PP_LOG(LogModels,"Creating display list for model");
-	int list;
-    list = gl::GenLists(1);
+	int list = gl::GenLists(1);
     gl::NewList(list,GL_COMPILE);
 	render(mp_model);
     gl::EndList();

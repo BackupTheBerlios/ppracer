@@ -38,18 +38,17 @@ CourseData::Condition Benchmark::sm_condition=CourseData::CONDITION_SUNNY;
 void
 Benchmark::loop(float timeStep)
 {
-	static std::list<CourseData>::iterator it;
-	
-	it = openCourseList.begin();
+	static std::list<CourseData>::iterator it =
+			openCourseList.begin();
 
-	for (it=openCourseList.begin(); 
+	for(it=openCourseList.begin(); 
 		it != openCourseList.end();
 		it++)
 	{
 		if((*it).course == sm_course) break;			
 	}
 	
-	if( it != openCourseList.end() ){
+	if(it != openCourseList.end()){
 		GameMgr::getInstance().setCurrentRace(it);
 		GameMgr::getInstance().getCurrentRace().condition = sm_condition;
 	}else{
@@ -58,7 +57,7 @@ Benchmark::loop(float timeStep)
 		exit(0);
 	}
 	
-	GameMode::setMode( GameMode::LOADING );
+	GameMode::setMode(GameMode::LOADING);
 }
 
 void

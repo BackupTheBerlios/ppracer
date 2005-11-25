@@ -55,8 +55,8 @@ Tux::adjustJoints( double turnFact, bool isBraking,
     reset_scene_node( leftShoulderJoint );
     reset_scene_node( rightShoulderJoint );
 
-    if ( isBraking ) {
-	braking_angle = MAX_ARM_ANGLE;
+    if(isBraking){
+		braking_angle = MAX_ARM_ANGLE;
     }
 
     paddling_angle = MAX_PADDLING_ANGLE * sin(paddling_factor * M_PI);

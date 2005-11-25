@@ -27,7 +27,8 @@
 namespace ppogl{
 	
 Textarea::Textarea(int width, int height)
- : m_upBtn(ppogl::Vec2d(32,16)),
+ : Widget(),
+   m_upBtn(ppogl::Vec2d(32,16)),
    m_downBtn(ppogl::Vec2d(32,16))
 {
 	m_size.x()=width;

@@ -29,8 +29,7 @@
 #include "ppogl/base/glwrappers.h"
 
 /// Ray (half-line)
-struct Ray
-{ 
+struct Ray{ 
     ppogl::Vec3d pt;
     ppogl::Vec3d vec;
 };
@@ -81,10 +80,8 @@ get_sphere_display_list(int divisions)
 /* Traverses the DAG structure and draws the nodes
  */
 void
-traverse_dag(SceneNode *node, ppogl::Material *mat)
+traverse_dag(const SceneNode *node, ppogl::Material *mat)
 {
-    SceneNode *child;
-
     PP_CHECK_POINTER( node );
     gl::PushMatrix();
 
@@ -101,7 +98,7 @@ traverse_dag(SceneNode *node, ppogl::Material *mat)
 		node->sphere.divisions ) );
     } 
 
-    child = node->child;
+    SceneNode *child = node->child;
     while (child != NULL) {
         traverse_dag( child, mat );
         child = child->next;
@@ -122,14 +119,11 @@ make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v)
 {
     PP_REQUIRE( p.numVertices > 2, "number of vertices must be > 2" );
 	
-	ppogl::Vec3d normal, v1, v2;
-    double old_len;
+    const ppogl::Vec3d v1 = v[p.vertices[1]] - v[p.vertices[0]];
+    const ppogl::Vec3d v2 = v[p.vertices[p.numVertices-1]] - v[p.vertices[0]];
+    ppogl::Vec3d normal = v1^v2;
 
-    v1 = v[p.vertices[1]] - v[p.vertices[0]];
-    v2 = v[p.vertices[p.numVertices-1]] - v[p.vertices[0]];
-    normal = v1^v2;
-
-    old_len = normal.normalize();
+    const double old_len = normal.normalize();
     
 	PP_ENSURE( old_len > 0, "normal vector has length 0" );
 	
@@ -143,24 +137,16 @@ make_normal(const ppogl::Polygon& p, const ppogl::Vec3d *v)
 bool
 intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
 {
-    Ray ray; 
-    ppogl::Vec3d nml, edge_nml, edge_vec;
-    ppogl::Vec3d pt;
-    double d, s, nuDotProd, wec;
-    double edge_len, t, distsq;
-    int i;
-
     /* create a ray from origin along polygon normal */
-    nml = make_normal( p, v );
-    ray.pt = ppogl::Vec3d( 0., 0., 0. );
-    ray.vec = nml;
+    ppogl::Vec3d nml = make_normal( p, v );
+	Ray ray = { ppogl::Vec3d(), nml };
 
-    nuDotProd = nml*ray.vec;
+    const double nuDotProd = nml*ray.vec;
     if ( fabs(nuDotProd) < EPS )
         return false;
 
     /* determine distance of plane from origin */
-    d = -( nml.x() * v[p.vertices[0]].x() + 
+    const double d = -( nml.x() * v[p.vertices[0]].x() + 
            nml.y() * v[p.vertices[0]].y() + 
            nml.z() * v[p.vertices[0]].z() );
 
@@ -169,19 +155,20 @@ intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
         return false;
 
     /* check distances of edges from origin */
+	int i;
     for ( i=0; i < p.numVertices; i++ ) {
-	ppogl::Vec3d *v0, *v1;
 
-	v0 = &v[p.vertices[i]];
-	v1 = &v[p.vertices[ (i+1) % p.numVertices ]]; 
+	ppogl::Vec3d* v0 = &v[p.vertices[i]];
+	ppogl::Vec3d* v1 = &v[p.vertices[ (i+1) % p.numVertices ]]; 
 
-	edge_vec = (*v1) - (*v0) ;
-	edge_len = edge_vec.normalize();
+	ppogl::Vec3d edge_vec = (*v1) - (*v0) ;
+	const double edge_len = edge_vec.normalize();
 
 	/* t is the distance from v0 of the closest point on the line
            to the origin */
-	t = - ( *(reinterpret_cast<ppogl::Vec3d *>(v0))* edge_vec );
-
+	const double t = - ( *(reinterpret_cast<ppogl::Vec3d *>(v0))* edge_vec );
+ 	double distsq;
+		
 	if ( t < 0 ) {
 	    /* use distance from v0 */
 	    distsq = v0->length2();
@@ -200,17 +187,16 @@ intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
     }
 
     /* find intersection point of ray and plane */
-    s = - ( d + ( nml*ppogl::Vec3d(ray.pt.x(), ray.pt.y(), ray.pt.z()) ) ) /
+    const double s = - ( d + ( nml*ppogl::Vec3d(ray.pt.x(), ray.pt.y(), ray.pt.z()) ) ) /
         nuDotProd;
 
-    pt = ray.pt+(s*ray.vec);
+    const ppogl::Vec3d pt = ray.pt+(s*ray.vec);
 
     /* test if intersection point is in polygon by clipping against it 
      * (we are assuming that polygon is convex) */
-    for ( i=0; i < p.numVertices; i++ ) {
-        edge_nml = nml^( (v[p.vertices[ (i+1) % p.numVertices ]]) - v[p.vertices[i]] );
-
-        wec = (pt - v[p.vertices[i]] )*edge_nml;
+    for (i=0; i < p.numVertices; i++ ) {
+        const ppogl::Vec3d edge_nml = nml^( (v[p.vertices[ (i+1) % p.numVertices ]]) - v[p.vertices[i]] );
+        const double wec = (pt - v[p.vertices[i]] )*edge_nml;
         if (wec < 0)
             return false;
     } 
@@ -248,14 +234,11 @@ check_polyhedron_collision_with_dag(SceneNode *node,
 	const pp::Matrix& modelMatrix, const pp::Matrix& invModelMatrix,
     const ppogl::Polyhedron& ph)
 {
-    pp::Matrix newModelMatrix, newInvModelMatrix;
-    SceneNode *child;
+	PP_CHECK_POINTER( node );
+
     bool hit = false;
-
-    PP_CHECK_POINTER( node );
-
-    newModelMatrix=modelMatrix*node->trans;
-    newInvModelMatrix=node->invtrans*invModelMatrix;
+    pp::Matrix newModelMatrix=modelMatrix*node->trans;
+    pp::Matrix newInvModelMatrix=node->invtrans*invModelMatrix;
 
     if(node->isSphere == true){
         ppogl::Polyhedron newph(ph);
@@ -265,7 +248,7 @@ check_polyhedron_collision_with_dag(SceneNode *node,
 
     if (hit == true) return hit;
 
-    child = node->child;
+	SceneNode* child = node->child;
     while (child != NULL) {
 
         hit = check_polyhedron_collision_with_dag( 

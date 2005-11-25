@@ -138,7 +138,7 @@ Scale::downButtonCallback()
 		
 
 HScale::HScale(int width, int height)
- : Scale(width,height)
+ : Scale(width, height)
 {
 
 	m_upBtn.setTexture(ppogl::UITheme::getInstance().hScaleTex);

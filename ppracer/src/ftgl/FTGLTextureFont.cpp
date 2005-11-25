@@ -19,8 +19,8 @@ inline GLuint NextPowerOf2( GLuint in)
 }
 
 
-FTGLTextureFont::FTGLTextureFont( const char* fontFilePath)
-:   FTFont( fontFilePath),
+FTGLTextureFont::FTGLTextureFont(const std::string& fontFilePath)
+:   FTFont(fontFilePath),
     maximumGLTextureSize(0),
     textureWidth(0),
     textureHeight(0),

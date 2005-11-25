@@ -125,7 +125,6 @@ static const struct ppogl::Script::Lib ppthemelib[]={
 	{NULL, NULL}
 };
 
-
 void
 FogPlane::registerCallbacks()
 {

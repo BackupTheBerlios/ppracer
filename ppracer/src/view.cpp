@@ -91,23 +91,16 @@ interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos
 {
     static ppogl::Vec3d y_vec(0.0, 1.0, 0.0);
 
-    pp::Quat q1, q2;
-    ppogl::Vec3d vec1, vec2;
-    double alpha;
-    double theta;
-    pp::Matrix rot_mat;
-    ppogl::Vec3d axis;
-
-    vec1 = pos1 - plyr_pos1;
-    vec2 = pos2 - plyr_pos2;
+    ppogl::Vec3d vec1 = pos1 - plyr_pos1;
+    ppogl::Vec3d vec2 = pos2 - plyr_pos2;
 
     vec1.normalize();
     vec2.normalize();
 
-    q1 = pp::Quat( y_vec, vec1 );
-    q2 = pp::Quat( y_vec, vec2 );
+    pp::Quat q1(y_vec, vec1);
+    pp::Quat q2(y_vec, vec2);
 
-    alpha = MIN( MAX_INTERPOLATION_VALUE,
+    double alpha = MIN( MAX_INTERPOLATION_VALUE,
 		 1.0 - exp ( -dt / time_constant ) );
 
     q2 = pp::Quat::interpolate( q1, q2, alpha );
@@ -115,16 +108,16 @@ interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos
     vec2 = q2.rotate( y_vec );
 
     /* Constrain angle with x-z plane */
-    theta = RADIANS_TO_ANGLES( M_PI/2 - acos(vec2*y_vec) );
+    double theta = RADIANS_TO_ANGLES( M_PI/2 - acos(vec2*y_vec) );
 
-    if ( theta > max_vec_angle )
-    {
-	axis = y_vec^vec2;
-	axis.normalize();
-
-	rot_mat.makeRotationAboutVector( axis, 
+    if(theta > max_vec_angle){
+		ppogl::Vec3d axis = y_vec^vec2;
+		axis.normalize();
+    
+		pp::Matrix rot_mat;
+		rot_mat.makeRotationAboutVector( axis, 
 					   theta-max_vec_angle );
-	vec2 = rot_mat.transformVector( vec2 );
+		vec2 = rot_mat.transformVector( vec2 );
     }
 
     return plyr_pos2+dist*vec2;
@@ -155,47 +148,42 @@ interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
 			     ppogl::Vec3d *p_up2, ppogl::Vec3d *p_dir2,
 			     double dt, double time_constant )
 {
-    pp::Quat q1, q2;
-    double alpha;
-    ppogl::Vec3d x1, y1, z1;
-    ppogl::Vec3d x2, y2, z2;
-    pp::Matrix cob_mat1, inv_cob_mat1;
-    pp::Matrix inv_cob_mat2;
-
     /* Now interpolate between camera orientations */
-    z1 = -1.0*dir1;
+    ppogl::Vec3d z1 = -1.0*dir1;
     z1.normalize();
 
-    y1 = projectIntoPlane( z1, up1 );
+    ppogl::Vec3d y1 = projectIntoPlane( z1, up1 );
     y1.normalize();
 
-    x1 = y1^z1;
-
+    ppogl::Vec3d x1 = y1^z1;
+	
+    pp::Matrix cob_mat1, inv_cob_mat1;
     pp::Matrix::makeChangeOfBasisMatrix( cob_mat1, inv_cob_mat1,
 				 x1, y1, z1 );
 
-    q1 = pp::Quat( cob_mat1 );
+    pp::Quat q1(cob_mat1);
 
-    z2 = -1.0*(*p_dir2);
+    ppogl::Vec3d z2 = -1.0*(*p_dir2);
     z2.normalize();
 
-    y2 = projectIntoPlane( z2, *p_up2 );
+    ppogl::Vec3d y2 = projectIntoPlane( z2, *p_up2 );
     y2.normalize();
 
-    x2 = y2^z2;
-	{
-		pp::Matrix cob_mat2;
-    	pp::Matrix::makeChangeOfBasisMatrix( cob_mat2, inv_cob_mat2,
+    ppogl::Vec3d x2 = y2^z2;
+	pp::Matrix cob_mat2;
+	pp::Matrix inv_cob_mat2;
+
+    pp::Matrix::makeChangeOfBasisMatrix( cob_mat2, inv_cob_mat2,
 				 x2, y2, z2 );
 
-    	q2 = pp::Quat( cob_mat2 );
-	}
-    alpha = MIN( MAX_INTERPOLATION_VALUE, 
+    pp::Quat q2(cob_mat2);
+	
+    double alpha = MIN( MAX_INTERPOLATION_VALUE, 
 		 1.0 - exp( -dt / time_constant ) );
 
     q2 = pp::Quat::interpolate( q1, q2, alpha );
 
-    pp::Matrix cob_mat2( q2 );
+    cob_mat2 = q2;
 
     p_up2->x() = cob_mat2.data[1][0];
     p_up2->y() = cob_mat2.data[1][1];
@@ -209,13 +197,9 @@ interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
 void
 setup_view_matrix(Player& plyr) 
 {
-    ppogl::Vec3d view_x, view_y, view_z;
-    pp::Matrix view_mat;
-    ppogl::Vec3d viewpt_in_view_frame;
-
-    view_z = -1*plyr.view.dir;
-    view_x = plyr.view.up^view_z;
-    view_y = view_z^view_x;
+	ppogl::Vec3d view_z = -1*plyr.view.dir;
+    ppogl::Vec3d view_x = plyr.view.up^view_z;
+    ppogl::Vec3d view_y = view_z^view_x;
     view_z.normalize();
     view_x.normalize();
     view_y.normalize();
@@ -239,13 +223,15 @@ setup_view_matrix(Player& plyr)
     plyr.view.inv_view_mat.data[3][2] = plyr.view.pos.z();
     plyr.view.inv_view_mat.data[3][3] = 1;
     
-    view_mat.transpose(plyr.view.inv_view_mat);
+	pp::Matrix view_mat;
+	view_mat.transpose(plyr.view.inv_view_mat);
 
     view_mat.data[0][3] = 0;
     view_mat.data[1][3] = 0;
     view_mat.data[2][3] = 0;
     
-    viewpt_in_view_frame = view_mat.transformPoint( plyr.view.pos );
+    ppogl::Vec3d viewpt_in_view_frame = 
+			view_mat.transformPoint( plyr.view.pos );
     
     view_mat.data[3][0] = -viewpt_in_view_frame.x();
     view_mat.data[3][1] = -viewpt_in_view_frame.y();
@@ -271,43 +257,36 @@ void
 update_view(Player& plyr, float dt)
 {
     ppogl::Vec3d view_pt;
-    ppogl::Vec3d view_dir, up_dir, vel_dir, view_vec;
-    float ycoord;
-    float course_angle;
-    ppogl::Vec3d axis;
-    pp::Matrix rot_mat;
-    ppogl::Vec3d y_vec;
-    ppogl::Vec3d mz_vec;
-    ppogl::Vec3d vel_proj;
-    pp::Quat rot_quat;
-    float speed;
-    ppogl::Vec3d vel_cpy;
-    float time_constant_mult;
+    ppogl::Vec3d view_dir;
+    //ppogl::Vec3d vel_proj;
 
-    vel_cpy = plyr.vel;
-    speed = vel_cpy.normalize();
+	
+	
+	
+    ppogl::Vec3d vel_cpy = plyr.vel;
+    float speed = vel_cpy.normalize();
 
-    time_constant_mult = 1.0 /
+    float time_constant_mult = 1.0 /
 	MIN( 1.0, 
 	     MAX( 0.0, 
 		  ( speed - NO_INTERPOLATION_SPEED ) /
 		  ( BASELINE_INTERPOLATION_SPEED - NO_INTERPOLATION_SPEED )));
 
-    up_dir = ppogl::Vec3d( 0, 1, 0 );
+    ppogl::Vec3d up_dir = ppogl::Vec3d( 0, 1, 0 );
 
-    vel_dir = plyr.vel;
+    ppogl::Vec3d vel_dir = plyr.vel;
     vel_dir.normalize();
 
-    course_angle = Course::getAngle();
+    float course_angle = Course::getAngle();
 
-    switch( plyr.view.mode ) {
+    switch(plyr.view.mode){
 
     case BEHIND:
     {
-	/* Camera-on-a-string mode */
+		/* Camera-on-a-string mode */
 
-	/* Construct vector from player to camera */
-	view_vec = ppogl::Vec3d( 0, 
+		/* Construct vector from player to camera */
+		ppogl::Vec3d view_vec(0, 
 				sin( ANGLES_TO_RADIANS( 
 				    course_angle -
 				    CAMERA_ANGLE_ABOVE_SLOPE + 
@@ -317,84 +296,82 @@ update_view(Player& plyr, float dt)
 				    CAMERA_ANGLE_ABOVE_SLOPE + 
 				    PLAYER_ANGLE_IN_CAMERA ) ) );
 
-	view_vec = CAMERA_DISTANCE*view_vec;
+		view_vec = CAMERA_DISTANCE*view_vec;
 
-	y_vec = ppogl::Vec3d( 0.0, 1.0, 0.0 );
-	mz_vec = ppogl::Vec3d( 0.0, 0.0, -1.0 );
-	vel_proj = projectIntoPlane( y_vec, vel_dir );
+		ppogl::Vec3d y_vec(0.0, 1.0, 0.0);
+		ppogl::Vec3d mz_vec(0.0, 0.0, -1.0);
+		ppogl::Vec3d vel_proj = projectIntoPlane( y_vec, vel_dir );
 
-	vel_proj.normalize();
+		vel_proj.normalize();
 
-	/* Rotate view_vec so that it places the camera behind player */
-	rot_quat = pp::Quat( mz_vec, vel_proj );
+		/* Rotate view_vec so that it places the camera behind player */
+		pp::Quat rot_quat(mz_vec, vel_proj);
 
-	view_vec = rot_quat.rotate(view_vec);
+		view_vec = rot_quat.rotate(view_vec);
 
 
-	/* Construct view point */
-	view_pt = plyr.pos - view_vec;
+		/* Construct view point */
+		view_pt = plyr.pos - view_vec;
 
-	/* Make sure view point is above terrain */
-        ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+		/* Make sure view point is above terrain */
+        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
         } 
 
-	/* Interpolate view point */
-	if ( plyr.view.initialized ) {
-	    /* Interpolate twice to get a second-order filter */
-	    int i;
-	    for (i=0; i<2; i++) {
-		view_pt = 
-		    interpolate_view_pos( plyr.pos, plyr.pos, 
-					  MAX_CAMERA_PITCH, plyr.view.pos, 
-					  view_pt, CAMERA_DISTANCE, dt,
-					  BEHIND_ORBIT_TIME_CONSTANT * 
-					  time_constant_mult );
-	    }
-	}
+		/* Interpolate view point */
+		if ( plyr.view.initialized ) {
+	    	/* Interpolate twice to get a second-order filter */
+	    	for (int i=0; i<2; i++) {
+				view_pt = 
+		    		interpolate_view_pos( plyr.pos, plyr.pos, 
+						MAX_CAMERA_PITCH, plyr.view.pos, 
+						view_pt, CAMERA_DISTANCE, dt,
+						BEHIND_ORBIT_TIME_CONSTANT * 
+						time_constant_mult );
+	    	}
+		}
 
-	/* Make sure interpolated view point is above terrain */
+		/* Make sure interpolated view point is above terrain */
         ycoord = find_y_coord( view_pt.x(), view_pt.z() );
 
         if ( view_pt.y() < ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT;
         } 
 
-	/* Construct view direction */
-	view_vec = view_pt - plyr.pos;
+		/* Construct view direction */
+		view_vec = view_pt - plyr.pos;
 	
-	axis = y_vec^view_vec;
-	axis.normalize();
+		ppogl::Vec3d axis = y_vec^view_vec;
+		axis.normalize();
 	
-	rot_mat.makeRotationAboutVector( axis,
+		pp::Matrix rot_mat;
+		rot_mat.makeRotationAboutVector( axis,
 					   PLAYER_ANGLE_IN_CAMERA );
-	view_dir = -1.0*rot_mat.transformVector( view_vec );
+		view_dir = -1.0*rot_mat.transformVector( view_vec );
 
-	/* Interpolate orientation of camera */
-	if ( plyr.view.initialized ) {
-	    /* Interpolate twice to get a second-order filter */
-	    int i;
-	    for (i=0; i<2; i++) {
-		interpolate_view_frame( plyr.view.up, plyr.view.dir,
+		/* Interpolate orientation of camera */
+		if ( plyr.view.initialized ) {
+			/* Interpolate twice to get a second-order filter */
+			for (int i=0; i<2; i++) {
+				interpolate_view_frame( plyr.view.up, plyr.view.dir,
 					&up_dir, &view_dir, dt,
 					BEHIND_ORIENT_TIME_CONSTANT );
-		up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
-	    }
-	}
-
+			up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
+	    	}
+		}
         break;
     }
 
     case FOLLOW: 
     {
-	/* Camera follows player (above and behind) */
+		/* Camera follows player (above and behind) */
 
-	up_dir = ppogl::Vec3d( 0, 1, 0 );
+		up_dir = ppogl::Vec3d( 0, 1, 0 );
 
-	/* Construct vector from player to camera */
-	view_vec = ppogl::Vec3d( 0, 
+		/* Construct vector from player to camera */
+		ppogl::Vec3d view_vec( 0, 
 				sin( ANGLES_TO_RADIANS( 
 				    course_angle -
 				    CAMERA_ANGLE_ABOVE_SLOPE +
@@ -403,85 +380,83 @@ update_view(Player& plyr, float dt)
 				    course_angle -
 				    CAMERA_ANGLE_ABOVE_SLOPE + 
 				    PLAYER_ANGLE_IN_CAMERA ) ) );
-	view_vec = CAMERA_DISTANCE*view_vec;
+		view_vec = CAMERA_DISTANCE*view_vec;
 
-	y_vec = ppogl::Vec3d( 0.0, 1.0, 0.0 );
-	mz_vec = ppogl::Vec3d( 0.0, 0.0, -1.0 );
-	vel_proj = projectIntoPlane( y_vec, vel_dir );
+		ppogl::Vec3d y_vec(0.0, 1.0, 0.0);
+		ppogl::Vec3d mz_vec(0.0, 0.0, -1.0);
+		ppogl::Vec3d vel_proj = projectIntoPlane( y_vec, vel_dir );
 
-	vel_proj.normalize();
+		vel_proj.normalize();
 
-	/* Rotate view_vec so that it places the camera behind player */
-	rot_quat = pp::Quat( mz_vec, vel_proj );
+		/* Rotate view_vec so that it places the camera behind player */
+		pp::Quat rot_quat(mz_vec, vel_proj);
 
-	view_vec = rot_quat.rotate( view_vec );
-
-
-	/* Construct view point */
-	view_pt = plyr.pos + view_vec;
+		view_vec = rot_quat.rotate( view_vec );
 
 
-	/* Make sure view point is above terrain */
-        ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+		/* Construct view point */
+		view_pt = plyr.pos + view_vec;
+
+
+		/* Make sure view point is above terrain */
+        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
-	}
+		}
 
-	/* Interpolate view point */
-	if ( plyr.view.initialized ) {
-	    /* Interpolate twice to get a second-order filter */
-	    int i;
-	    for ( i=0; i<2; i++ ) {
-		view_pt = 
-		    interpolate_view_pos( plyr.view.plyr_pos, plyr.pos, 
+		/* Interpolate view point */
+		if ( plyr.view.initialized ) {
+		    /* Interpolate twice to get a second-order filter */
+	        for (int i=0; i<2; i++ ) {
+			view_pt = 
+		    	interpolate_view_pos( plyr.view.plyr_pos, plyr.pos, 
 					  MAX_CAMERA_PITCH, plyr.view.pos, 
 					  view_pt, CAMERA_DISTANCE, dt,
 					  FOLLOW_ORBIT_TIME_CONSTANT *
 					  time_constant_mult );
-	    }
-	}
+	    	}
+		}
 
-	/* Make sure interpolate view point is above terrain */
-        ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+		/* Make sure interpolate view point is above terrain */
+        	ycoord = find_y_coord( view_pt.x(), view_pt.z() );
 
-        if ( view_pt.y() < ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT ) {
-            view_pt.y() = ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT;
-        } 
+        	if ( view_pt.y() < ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT ) {
+            	view_pt.y() = ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT;
+        	} 
 
-	/* Construct view direction */
-	view_vec = view_pt - plyr.pos;
+		/* Construct view direction */
+		view_vec = view_pt - plyr.pos;
 	
-	axis = y_vec^view_vec;
-	axis.normalize();
-	
-	rot_mat.makeRotationAboutVector( axis, PLAYER_ANGLE_IN_CAMERA );
-	view_dir = -1.0*rot_mat.transformVector( view_vec );
+		ppogl::Vec3d axis = y_vec^view_vec;
+		axis.normalize();
+		
+		pp::Matrix rot_mat;
+		rot_mat.makeRotationAboutVector( axis, PLAYER_ANGLE_IN_CAMERA );
+		view_dir = -1.0*rot_mat.transformVector( view_vec );
 
-	/* Interpolate orientation of camera */
-	if ( plyr.view.initialized ) {
-	    /* Interpolate twice to get a second-order filter */
-	    int i;
-	    for ( i=0; i<2; i++ ) {
-		interpolate_view_frame( plyr.view.up, plyr.view.dir,
+		/* Interpolate orientation of camera */
+		if ( plyr.view.initialized ) {
+	    	/* Interpolate twice to get a second-order filter */
+	    	for (int i=0; i<2; i++ ) {
+			interpolate_view_frame( plyr.view.up, plyr.view.dir,
 					&up_dir, &view_dir, dt,
 					FOLLOW_ORIENT_TIME_CONSTANT );
-		up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
-	    }
-	}
-
+			up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
+	    	}
+		}
         break;
     }
 
     case ABOVE:
     {
-	/* Camera always uphill of player */
+		/* Camera always uphill of player */
 
-	up_dir = ppogl::Vec3d( 0, 1, 0 );
+		up_dir = ppogl::Vec3d( 0, 1, 0 );
 
 
-	/* Construct vector from player to camera */
-	view_vec = ppogl::Vec3d( 0, 
+		/* Construct vector from player to camera */
+		ppogl::Vec3d view_vec( 0, 
 				sin( ANGLES_TO_RADIANS( 
 				    course_angle - 
 				    CAMERA_ANGLE_ABOVE_SLOPE+
@@ -490,31 +465,31 @@ update_view(Player& plyr, float dt)
 				    course_angle - 
 				    CAMERA_ANGLE_ABOVE_SLOPE+ 
 				    PLAYER_ANGLE_IN_CAMERA ) ) );
-	view_vec = CAMERA_DISTANCE*view_vec;
+		view_vec = CAMERA_DISTANCE*view_vec;
 
 	
-	/* Construct view point */
-	view_pt = plyr.pos + view_vec;
+		/* Construct view point */
+		view_pt = plyr.pos + view_vec;
 
 
-	/* Make sure view point is above terrain */
-        ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+		/* Make sure view point is above terrain */
+        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
-            view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
-	}
+			view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
+		}
 
-	/* Construct view direction */
-	view_vec = view_pt - plyr.pos;
-
-	rot_mat.makeRotation( PLAYER_ANGLE_IN_CAMERA, 'x' );
-	view_dir = -1.0*rot_mat.transformVector( view_vec );
+		/* Construct view direction */
+		view_vec = view_pt - plyr.pos;
+		pp::Matrix rot_mat;
+		rot_mat.makeRotation( PLAYER_ANGLE_IN_CAMERA, 'x' );
+		view_dir = -1.0*rot_mat.transformVector( view_vec );
 
         break;
     }
 
     default:
-	PP_NOT_REACHED();
+		PP_NOT_REACHED();
     } 
 
     /* Create view matrix */

@@ -23,7 +23,8 @@
 #include "ppogl/base/defs.h"
 
 AudioConfig::AudioConfig()
- : m_bpsListLbl(_("Bits Per Sample:")),
+ : ConfigMode(_("Audio Configuration")),
+   m_bpsListLbl(_("Bits Per Sample:")),
    m_freqListLbl(_("Samples Per Second:")),
    m_audioLbl(_("Disable Audio:")),
    m_stereoLbl(_("Stereo:")),
@@ -31,7 +32,6 @@ AudioConfig::AudioConfig()
    m_soundVolumeLbl(_("Sound Volume:")),
    m_musicVolumeLbl(_("Music Volume:"))  
 {
-	setTitle(_("Audio Configuration"));
 
 	ppogl::Vec2d position(40,350);
 	ppogl::Vec2d position2(600,350);

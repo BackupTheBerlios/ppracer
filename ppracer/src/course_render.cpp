@@ -62,7 +62,6 @@ CourseRenderer::CourseRenderer()
 void
 CourseRenderer::calcNormals()
 {
-    int x,y;
     ppogl::Vec3d p0, p1, p2;
     ppogl::Vec3d n, nml, v1, v2;
 
@@ -70,8 +69,8 @@ CourseRenderer::calcNormals()
       
 	mp_nmls = new ppogl::Vec3d[Course::nx*Course::ny]; 
 
-    for ( y=0; y<Course::ny; y++) {
-        for ( x=0; x<Course::nx; x++) {
+    for(int y=0; y<Course::ny; y++) {
+        for(int x=0; x<Course::nx; x++) {
             nml = ppogl::Vec3d( 0., 0., 0. );
 
             p0 = ppogl::Vec3d( getXCD(x), Course::getElevation(x,y), getZCD(y) );
@@ -381,37 +380,27 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
 		return;
     }   
 
-	pp::Plane left_edge_plane, right_edge_plane;
-    pp::Plane left_clip_plane, right_clip_plane;
-    pp::Plane far_clip_plane;
-    pp::Plane bottom_clip_plane;
-    pp::Plane bottom_plane, top_plane;
-
-    double course_angle, slope;
-
     ppogl::Vec3d left_pt, right_pt, pt;
     ppogl::Vec3d top_left_pt, top_right_pt;
     ppogl::Vec3d bottom_left_pt, bottom_right_pt;
     ppogl::Vec3d left_vec, right_vec;
-    double height;
-
+   
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
-    course_angle = Course::getAngle();
-    slope = tan( ANGLES_TO_RADIANS( course_angle ) );
+    const double course_angle = Course::getAngle();
+    const double slope = tan( ANGLES_TO_RADIANS( course_angle ) );
 
-    left_edge_plane = pp::Plane( 1.0, 0.0, 0.0, 0.0 );
+    const pp::Plane left_edge_plane(1.0, 0.0, 0.0, 0.0);
+    const pp::Plane right_edge_plane(-1.0, 0.0, 0.0, courseDim.x());
 
-    right_edge_plane = pp::Plane( -1.0, 0.0, 0.0, courseDim.x());
+    const pp::Plane& far_clip_plane = get_far_clip_plane();
+    const pp::Plane& left_clip_plane = get_left_clip_plane();
+    const pp::Plane& right_clip_plane = get_right_clip_plane();
+    const pp::Plane& bottom_clip_plane = get_bottom_clip_plane();
 
-    far_clip_plane = get_far_clip_plane();
-    left_clip_plane = get_left_clip_plane();
-    right_clip_plane = get_right_clip_plane();
-    bottom_clip_plane = get_bottom_clip_plane();
-
-
+	pp::Plane bottom_plane, top_plane;
     // Find the bottom plane 
     bottom_plane.nml = ppogl::Vec3d( 0.0, 1, -slope );
-    height = Course::getTerrainBaseHeight( 0 );
+    double height = Course::getTerrainBaseHeight( 0 );
 
     bottom_plane.d = -height * bottom_plane.nml.y();
 
@@ -499,10 +488,9 @@ void
 CourseRenderer::drawElements(const ppogl::Vec3d& pos) 
 {
     ppogl::Vec3d normal;
-    double  fwd_clip_limit, bwd_clip_limit;
 
-    fwd_clip_limit = GameConfig::forwardClipDistance;
-    bwd_clip_limit = GameConfig::backwardClipDistance;
+    const double fwd_clip_limit = GameConfig::forwardClipDistance;
+    const double bwd_clip_limit = GameConfig::backwardClipDistance;
 
     set_gl_options(TREES);
 
@@ -666,23 +654,21 @@ CourseRenderer::getRootLevel(int nx, int nz)
     PP_REQUIRE( nx > 0, "heightmap has x dimension of 0 size" );
     PP_REQUIRE( nz > 0, "heightmap has z dimension of 0 size" );
 	
-	int xlev, zlev;
-
-    xlev = int( log(double(nx) ) / log (double(2.0) ) );
-    zlev = int( log(double(nz) ) / log (double(2.0) ) );
+    const int xlev = int( log(double(nx) ) / log (double(2.0) ) );
+    const int zlev = int( log(double(nz) ) / log (double(2.0) ) );
 
     // check to see if nx, nz are powers of 2
-    if ( ( nx >> xlev ) << xlev == nx ) {
+    if((nx >> xlev) << xlev == nx){
 		// do nothing
-    } else {
+    }else{
 		nx += 1;
     }
 
-    if ( ( nz >> zlev ) << zlev == nz ) {
+    if((nz >> zlev) << zlev == nz){
 		// do nothing 
-    } else {
+    }else{
 		nz += 1;
     }
 
-    return MAX( xlev, zlev );
+    return MAX(xlev, zlev);
 }

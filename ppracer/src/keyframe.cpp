@@ -31,7 +31,7 @@
 PlayerKeyFrames keyFrames[2];
 
 static double
-interp( double frac, double v1, double v2 ) 
+interp(const double frac, const double v1, const double v2 ) 
 {
     return frac*v1 + (1.-frac)*v2;
 }
@@ -63,12 +63,6 @@ PlayerKeyFrames::init(int plyr)
 void
 PlayerKeyFrames::update(Player& plyr, double dt)
 {
-    int idx;
-    double frac;
-    ppogl::Vec3d pos;
-    double v;
-    pp::Matrix cob_mat, rot_mat;
-
     const std::string& root = tux[player].getRootNode();
     const std::string& lsh  = tux[player].getLeftShoulderJoint();
     const std::string& rsh  = tux[player].getRightShoulderJoint();
@@ -84,6 +78,7 @@ PlayerKeyFrames::update(Player& plyr, double dt)
 
     keyTime += dt;
 
+	int idx;
     for(idx = 1; idx < numFrames; idx ++) {
         if ( keyTime < frames[idx].time )
             break;
@@ -108,24 +103,27 @@ PlayerKeyFrames::update(Player& plyr, double dt)
     reset_scene_node( tail );
 
     PP_ASSERT( idx > 0, "invalid keyframe index" );
-
-    if ( fabs( frames[idx-1].time - frames[idx].time ) < EPS ) {
-	frac = 1.;
-    } else {
-	frac = (keyTime - frames[idx].time) 
-	    / ( frames[idx-1].time - frames[idx].time );
+    
+	double frac;
+    if(fabs( frames[idx-1].time - frames[idx].time ) < EPS){
+		frac = 1.;
+    }else{
+		frac = (keyTime - frames[idx].time) 
+	    		/ ( frames[idx-1].time - frames[idx].time );
     }
-
+		    
+	ppogl::Vec3d pos;
     pos.x() = interp( frac, frames[idx-1].pos.x(), frames[idx].pos.x() );
     pos.z() = interp( frac, frames[idx-1].pos.z(), frames[idx].pos.z() );
     pos.y() = interp( frac, frames[idx-1].pos.y(), frames[idx].pos.y() );
     pos.y() += find_y_coord( pos.x(), pos.z() );
 
-    set_tux_pos( plyr, pos );
+	set_tux_pos( plyr, pos );
 
+	pp::Matrix cob_mat, rot_mat;
 	cob_mat.makeIdentity();
 
-    v = interp( frac, frames[idx-1].yaw, frames[idx].yaw );
+    double v = interp( frac, frames[idx-1].yaw, frames[idx].yaw );
     rotate_scene_node( root, 'y', v );
     rot_mat.makeRotation( v, 'y' );
     cob_mat=cob_mat*rot_mat;

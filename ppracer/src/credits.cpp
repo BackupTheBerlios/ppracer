@@ -132,25 +132,20 @@ Credits::loop(float timeStep)
 
 
 void
-Credits::drawText( float timeStep )
+Credits::drawText(float timeStep)
 {
-    int w = resolutionX;
-    int h = resolutionY;
-	
 	gl::PushMatrix();
 	{
 	gl::MatrixMode(GL_PROJECTION);
     gl::LoadIdentity();
-    gl::Ortho(0.0, w, 0.0, h, -1.0, 1.0);
+    gl::Ortho(0.0, resolutionX, 0.0, resolutionY, -1.0, 1.0);
     gl::MatrixMode(GL_MODELVIEW);
     gl::LoadIdentity();
     gl::Translate(0.0, 0.0, -1.0);
     gl::Color(ppogl::Color::white);
 	
-    float y;
-
     m_yOffset += timeStep * 30;
-    y = CREDITS_MIN_Y + m_yOffset;
+    float y = CREDITS_MIN_Y + m_yOffset;
 
 	//loop through all credit lines
 	for(unsigned int i=0; i<PP_NUM_ELEMENTS(creditLines); i++){
@@ -158,19 +153,19 @@ Credits::drawText( float timeStep )
 
 		//get the font and sizes for the binding
 		//ppogl::Font *font = ppogl::Font::get(line.binding);
-		float width = line.font->advance(line.text);
-		float desc = line.font->descender();
-		float asc = line.font->ascender();
+		const float width = line.font->advance(line.text);
+		const float desc = line.font->descender();
+		const float asc = line.font->ascender();
 		
 		//draw the line on the screen
-		line.font->draw(line.text, w/2 - width/2, y);
+		line.font->draw(line.text, resolutionX/2 - width/2, y);
 
 		//calculate the y value for the next line
 		y-=asc-desc;
 	}
 
 	//if the last string reaches the top, reset the y offset
-    if ( y > h+CREDITS_MAX_Y ) {
+    if(y > resolutionY+CREDITS_MAX_Y){
 		m_yOffset = 0;
     }
 
@@ -178,28 +173,28 @@ Credits::drawText( float timeStep )
     gl::Disable(GL_TEXTURE_2D);
 
 	gl::Color(ppogl::Color(0.5, 0.6, 0.9));
-    gl::Rect(0, 0, w, CREDITS_MIN_Y);
+    gl::Rect(0, 0, resolutionX, CREDITS_MIN_Y);
 
     gl::Begin(GL_QUADS);
     {
 		gl::Vertex(0, CREDITS_MIN_Y);
-		gl::Vertex(w, CREDITS_MIN_Y);
+		gl::Vertex(resolutionY, CREDITS_MIN_Y);
 		gl::Color(ppogl::Color(0.5, 0.6, 0.9, 0.0));
-		gl::Vertex(w, CREDITS_MIN_Y + 30);
+		gl::Vertex(resolutionY, CREDITS_MIN_Y + 30);
 		gl::Vertex(0, CREDITS_MIN_Y + 30);
     }
     gl::End();
 
     gl::Color(ppogl::Color(0.5, 0.6, 0.9));
-    gl::Rect(0, h+CREDITS_MAX_Y, w, h);
+    gl::Rect(0, resolutionY+CREDITS_MAX_Y, resolutionX, resolutionY);
 
     gl::Begin(GL_QUADS);
     {
-		gl::Vertex(w, h+CREDITS_MAX_Y);
-		gl::Vertex(0, h+CREDITS_MAX_Y);
+		gl::Vertex(resolutionX, resolutionY+CREDITS_MAX_Y);
+		gl::Vertex(0, resolutionY+CREDITS_MAX_Y);
 		gl::Color(ppogl::Color(0.5, 0.6, 0.9, 0.0));
-		gl::Vertex(0, h+CREDITS_MAX_Y - 30);
-		gl::Vertex(w, h+CREDITS_MAX_Y - 30);
+		gl::Vertex(0, resolutionY+CREDITS_MAX_Y - 30);
+		gl::Vertex(resolutionX, resolutionY+CREDITS_MAX_Y - 30);
     }
     gl::End();
 

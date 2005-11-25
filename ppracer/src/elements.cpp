@@ -62,7 +62,6 @@ Item::draw(ppogl::Vec3d normal)
 		gl::Normal(normal);
 	
 		const double radius = m_diameter/2;
-		const double &height = m_height;
 		
 		gl::Begin( GL_QUADS );
 		{
@@ -76,23 +75,16 @@ Item::draw(ppogl::Vec3d normal)
 			    -radius*normal.x() );
 			gl::TexCoord( 1., 1. );
 			gl::Vertex( radius*normal.z(), 
-			    height, 
+			    m_height, 
 			    -radius*normal.x() );
 			gl::TexCoord( 0., 1. );
 			gl::Vertex( -radius*normal.z(), 
-				height, 
+				m_height, 
 				radius*normal.x() );
 	   	}
 		gl::End();
 	}	
     gl::PopMatrix();
-}
-
-void
-Item::setNormal(const ppogl::Vec3d& normal)
-{
-	m_normal = normal;
-	m_useNormal = true;
 }
 
 ModelType::ModelType()
@@ -111,7 +103,7 @@ Model::draw(const ppogl::Vec3d& normal)
 		gl::Translate(m_position);
 		
 		if(m_angle!=0.0){
-			gl::Rotate(m_angle,m_rotation);
+			gl::Rotate(m_angle, m_rotation);
 		}
 		
 		if(	m_scale.x()!=0.0 || 
@@ -122,9 +114,17 @@ Model::draw(const ppogl::Vec3d& normal)
 		
 		gl::Normal(normal);
 		m_type->getModel()->draw();
-	}	
+	}
     gl::PopMatrix();
 }
+
+/// mirror model
+void
+Model::mirror()
+{
+	PP_MESSAGE("Mirroring of models not supported");
+}
+
 
 ModelType::~ModelType()
 {

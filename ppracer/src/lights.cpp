@@ -56,9 +56,7 @@ reset_lights()
 void
 setup_course_lighting()
 {
-    Light *course_lights;
-
-    course_lights = get_course_lights();
+    Light* course_lights = get_course_lights();
 
     for(int i=0; i<NUM_COURSE_LIGHTS; i++){
 		if(!course_lights[i].enabled){
@@ -88,14 +86,14 @@ setup_course_lighting()
 static int
 course_light_cb(ppogl::Script *vm)
 {
-	int num_args=vm->getTop();
+	const int num_args=vm->getTop();
 	
     if(num_args<=1){
 		PP_WARNING("pptheme.course_light: Invalid number of arguments");
 		return 0;
     }
 
-	int light_num = int(vm->getFloat(1));
+	const int light_num = int(vm->getFloat(1));
 	
 	if(light_num < 0 || light_num >= NUM_COURSE_LIGHTS ) {
 		PP_WARNING("pptheme.course_light: Invalid light number: " << light_num);

@@ -215,38 +215,21 @@ TrackMarks::update()
 		return;
     }
 	
-    ppogl::Vec3d width_vector;
-    ppogl::Vec3d left_vector;
-    ppogl::Vec3d right_vector;
-    float magnitude;
-    TrackQuad *q, *qprev, *qprevprev;
-    ppogl::Vec3d vel;
-    float speed;
-    ppogl::Vec3d left_wing, right_wing;
-    float left_y, right_y;
-    float dist_from_surface;
-    pp::Plane surf_plane;
-    float comp_depth;
     float tex_end;
-    float terrain_weights[NUM_TERRAIN_TYPES];
-    float dist_from_last_mark;
-    ppogl::Vec3d vector_from_last_mark;
-	bool break_marks;
 	float terrain_compression=0;
 	float old_terrain_weight=0;
 	unsigned int i;
 
-    q = &quads[current_mark%maxNumQuads];
-    qprev = &quads[(current_mark-1)%maxNumQuads];
-    qprevprev = &quads[(current_mark-2)%maxNumQuads];
+    TrackQuad* q = &quads[current_mark%maxNumQuads];
+    TrackQuad* qprev = &quads[(current_mark-1)%maxNumQuads];
 
-    vector_from_last_mark = player->pos - last_mark_pos;
-    dist_from_last_mark = vector_from_last_mark.normalize();
-	
-	
+    ppogl::Vec3d vector_from_last_mark = player->pos - last_mark_pos;
+    vector_from_last_mark.normalize();
+		    
+	float terrain_weights[NUM_TERRAIN_TYPES];
     get_surface_type(player->pos.x(), player->pos.z(), terrain_weights);
     
-	break_marks=true;
+	bool break_marks=true;
 	for (i=0;i<num_terrains;i++){
 		if (terrain_texture[i].trackmark.mark){	
 			if (terrain_weights[i] >= 0.5) {
@@ -265,34 +248,34 @@ TrackMarks::update()
 		return;
 	}
 
-    vel = player->vel;
-    speed = vel.normalize();
+	ppogl::Vec3d vel = player->vel;
+    float speed = vel.normalize();
     if (speed < SPEED_TO_START_TRENCH) {
 		discontinue();
 		return;
     }
 
-    width_vector = player->direction^ppogl::Vec3d( 0, 1, 0 );
-    magnitude = width_vector.normalize();
+	ppogl::Vec3d width_vector = player->direction^ppogl::Vec3d( 0, 1, 0 );
+    float magnitude = width_vector.normalize();
     if ( magnitude == 0 ) {
 		discontinue();
 		return;
     }
-
-    left_vector = (TRACK_WIDTH/2.0)*width_vector;
-    right_vector = (-TRACK_WIDTH/2.0)*width_vector;
-    left_wing =  player->pos - left_vector;
-    right_wing = player->pos - right_vector;
-    left_y = find_y_coord( left_wing.x(), left_wing.z() );
-    right_y = find_y_coord( right_wing.x(), right_wing.z() );
+	
+    ppogl::Vec3d left_vector = (TRACK_WIDTH/2.0)*width_vector;
+    ppogl::Vec3d right_vector = (-TRACK_WIDTH/2.0)*width_vector;
+    ppogl::Vec3d left_wing =  player->pos - left_vector;
+    ppogl::Vec3d right_wing = player->pos - right_vector;
+    float left_y = find_y_coord( left_wing.x(), left_wing.z() );
+    float right_y = find_y_coord( right_wing.x(), right_wing.z() );
     if (fabs(left_y-right_y) > MAX_TRACK_DEPTH) {
 		discontinue();
 		return;
     }
 
-    surf_plane = get_local_course_plane( player->pos );
-    dist_from_surface = surf_plane.distance( player->pos );
-    comp_depth = terrain_compression;
+    pp::Plane surf_plane = get_local_course_plane( player->pos );
+    float dist_from_surface = surf_plane.distance( player->pos );
+	float comp_depth = terrain_compression;
     if ( dist_from_surface >= (2*comp_depth) ) {
 		discontinue();
 		return;

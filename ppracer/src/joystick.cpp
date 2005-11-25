@@ -51,7 +51,7 @@ Joystick::init()
 		PP_ERROR("Couldn't initialize SDL: " << SDL_GetError());
     }
 
-	int num_joysticks = SDL_NumJoysticks();
+	const int num_joysticks = SDL_NumJoysticks();
 
     PP_MESSAGE("Found " << num_joysticks << " joysticks");
 

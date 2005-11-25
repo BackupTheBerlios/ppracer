@@ -26,48 +26,42 @@
 static int
 tux_rotate(ppogl::Script *vm) 
 {
-    std::string nodename;
-    std::string axis ="0";
-    double angle ;
-
     if(vm->getTop() !=3){
 		PP_WARNING("tux.rotate: Wrong number of arguments");
         return 0;
     }
 
     // obtain the nodename
-    nodename = vm->getString(1);
+    const std::string nodename = vm->getString(1);
 
     // obtain the axis 
-    axis = vm->getString(2);
+    const std::string axis = vm->getString(2);
     if ("x" != axis && "y" != axis && "z" != axis){
 		PP_WARNING("tux.rotate: Invalid rotation axes: " << axis);
 		return 0;
     }
     
     // obtain the angle
-	angle = vm->getFloat(3);
+	const double angle = vm->getFloat(3);
     
-    rotate_scene_node(nodename,axis.c_str()[0],angle);
- 
+    rotate_scene_node(nodename, axis.c_str()[0], angle);
+	
     return 0;
 }
 
 static int
 tux_translate(ppogl::Script *vm) 
 {
-    std::string nodename;
-    ppogl::Vec3d vec;
-
     if(vm->getTop()!=2){
 		PP_WARNING("tux.translate: Invalid number of arguments");
 		return 0;
     }
 
     // obtain the nodename
-    nodename = vm->getString(1);
+    const std::string nodename = vm->getString(1);
 
-    // obtain the translation vector
+	ppogl::Vec3d vec;
+    // obtain the translation vector	
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(2);
@@ -75,7 +69,7 @@ tux_translate(ppogl::Script *vm)
 		vm->pop(2);		
 	}
 	
-	translate_scene_node(nodename,vec);
+	translate_scene_node(nodename, vec);
  
     return 0;
 }
@@ -83,19 +77,16 @@ tux_translate(ppogl::Script *vm)
 static int
 tux_scale(ppogl::Script *vm) 
 {
-    std::string nodename;
-    ppogl::Vec3d origin;
-    ppogl::Vec3d factors; 
-
     if(vm->getTop()!=3){
         PP_WARNING("tux.scale: Invalid number of arguments");
 		return 0;
     }
 
     // obtain the nodename
-    nodename = vm->getString(1);
-
+    const std::string nodename = vm->getString(1);
+    
     // obtain the origin point
+	ppogl::Vec3d origin;
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(2);
@@ -104,6 +95,7 @@ tux_scale(ppogl::Script *vm)
 	}
 
     // obtain the scale factors
+	ppogl::Vec3d factors; 
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(3);
@@ -119,19 +111,16 @@ tux_scale(ppogl::Script *vm)
 static int
 tux_transform(ppogl::Script *vm) 
 {
-    std::string parent_name;
-    std::string child_name;
-
     if(vm->getTop() != 2){
         PP_WARNING("tux.transform: Invalid number of arguments");
 		return 0;
 	}
 
     // obtain parent's name
-    parent_name = vm->getString(1);
+    const std::string parent_name = vm->getString(1);
 
     // obtain child's name
-    child_name = vm->getString(2);
+    const std::string child_name = vm->getString(2);
 
     create_tranform_node(parent_name, child_name);
 
@@ -141,22 +130,18 @@ tux_transform(ppogl::Script *vm)
 static int
 tux_sphere(ppogl::Script *vm) 
 {
-    std::string parent_name;
-    std::string child_name;
-    double resolution;
-
     if(vm->getTop() != 3){
 		PP_WARNING("tux.sphere: Invalid number of arguments");
 		return 0;
     }
 
     // obtain parent's name
-    parent_name = vm->getString(1);
+    const std::string parent_name = vm->getString(1);
     	
 	// obtain child's name
-    child_name = vm->getString(2);
+    const std::string child_name = vm->getString(2);
 	
-	resolution = vm->getFloat(3);
+	const double resolution = vm->getFloat(3);
 	
     create_sphere_node(parent_name, child_name, resolution);
 
@@ -166,17 +151,15 @@ tux_sphere(ppogl::Script *vm)
 static int
 tux_material(ppogl::Script *vm) 
 {
-    std::string name;
-    ppogl::Material material;
-
 	if(vm->getTop() != 4){
         PP_WARNING("tux.material: Invalid number of arguments");
 		return 0; 
     }
     // obtain material name
-    name = vm->getString(1);
+    const std::string name = vm->getString(1);
 
     // obtain diffuse color
+    ppogl::Material material;
 	vm->pushNull();
 	for(int i=0; i<3; i++){
 		vm->next(2);
@@ -202,20 +185,17 @@ tux_material(ppogl::Script *vm)
 
 static int
 tux_surfaceproperty(ppogl::Script *vm) 
-{
-    std::string node_name;
-    std::string mat_name;
-
-    if(vm->getTop() != 2){
+{   
+	if(vm->getTop() != 2){
         PP_WARNING("tux.surfaceproperty: Invalid number of arguments");
 		return 0;
     }
 
     // obtain node name
-    node_name = vm->getString(1);
+    const std::string node_name = vm->getString(1);
 	
     // obtain material name
-    mat_name = vm->getString(2);
+    const std::string mat_name = vm->getString(2);
 
     set_scene_node_material(node_name, mat_name);
 
@@ -225,16 +205,13 @@ tux_surfaceproperty(ppogl::Script *vm)
 static int
 tux_shadow(ppogl::Script *vm) 
 {
-    std::string node_name;
-    std::string state;
-
     if(vm->getTop() != 2){
         PP_WARNING("tux.shadow: Invalid number of arguments");
 		return 0;
     }
 
-    node_name = vm->getString(1);
-    state = vm->getString(2);
+    const std::string node_name = vm->getString(1);
+    const std::string state = vm->getString(2);
 
     set_scene_node_shadow_state(node_name, state);
 

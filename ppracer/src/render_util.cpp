@@ -97,25 +97,24 @@ draw_billboard(const Player& plyr,
 		     const ppogl::Vec3d& center_pt, float width, float height, 
 		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord )
 {
-    ppogl::Vec3d pt;
-    ppogl::Vec3d x_vec;
-    ppogl::Vec3d y_vec;
-    ppogl::Vec3d z_vec;
+	ppogl::Vec3d x_vec(plyr.view.inv_view_mat.data[0][0],
+    		plyr.view.inv_view_mat.data[0][1],
+    		plyr.view.inv_view_mat.data[0][2]
+	);
 
-    x_vec.x() = plyr.view.inv_view_mat.data[0][0];
-    x_vec.y() = plyr.view.inv_view_mat.data[0][1];
-    x_vec.z() = plyr.view.inv_view_mat.data[0][2];
-
-	y_vec.x() = plyr.view.inv_view_mat.data[1][0];
-	y_vec.y() = plyr.view.inv_view_mat.data[1][1];
-	y_vec.z() = plyr.view.inv_view_mat.data[1][2];
-	z_vec.x() = plyr.view.inv_view_mat.data[2][0];
-	z_vec.y() = plyr.view.inv_view_mat.data[2][1];
-	z_vec.z() = plyr.view.inv_view_mat.data[2][2];
+	ppogl::Vec3d y_vec(plyr.view.inv_view_mat.data[1][0],
+			plyr.view.inv_view_mat.data[1][1],
+			plyr.view.inv_view_mat.data[1][2]
+	);
+	
+	ppogl::Vec3d z_vec(plyr.view.inv_view_mat.data[2][0],
+			plyr.view.inv_view_mat.data[2][1],
+			plyr.view.inv_view_mat.data[2][2]
+	);
 
     gl::Begin(GL_QUADS);
     {
-		pt = center_pt+((-width/2.0)*x_vec);
+		ppogl::Vec3d pt = center_pt+((-width/2.0)*x_vec);
 		pt = pt+((-height/2.0)*y_vec);
 		gl::Normal(z_vec);
 		gl::TexCoord(min_tex_coord);

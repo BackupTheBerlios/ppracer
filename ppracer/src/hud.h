@@ -43,10 +43,10 @@ public:
 		int angle;
 	};	
 
-	void draw(Player& plyr, int width, int height);
+	void draw(const Player& plyr, int width, int height);
 	void reset();
-	bool add(Element newElement);			
-	bool update(const int i,Element newElement);
+	bool add(const Element& newElement);			
+	bool update(const int i, const Element& newElement);
 
 private:
 	Element m_element[HUD_MAX_ITEMS];
@@ -64,7 +64,7 @@ private:
 		
 	void draw_partial_tri_fan(const double fraction);
 	ppogl::Vec2d calc_new_fan_pt(const double angle);
-	void start_tri_fan(void);
+	void start_tri_fan();
 
 	void fix_xy(int &x, int &y, const int asc=0, const int width=0);
 	void initGauge();

@@ -22,7 +22,7 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
          *
          * @param fontFilePath  font file path.
          */
-        FTGLTextureFont( const char* fontFilePath);
+        FTGLTextureFont(const std::string& fontFilePath);
         
         /**
          * Destructor
