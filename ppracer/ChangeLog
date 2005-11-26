@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-26  Volker Stroebel <volker@planetpenguin.de>
+	* src/tux_shadow.cpp
+	changed some code to use ppogl::Vec3d
+
 2005-11-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	fixes

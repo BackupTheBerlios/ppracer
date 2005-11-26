@@ -32,7 +32,7 @@
 
 static void traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix);
 static void draw_shadow_sphere(const pp::Matrix& model_matrix);
-static void draw_shadow_vertex(double x, double y, double z, 
+static void draw_shadow_vertex(const ppogl::Vec3d& point, 
 			 const pp::Matrix& model_matrix );
 
 
@@ -86,106 +86,97 @@ traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 static void
 draw_shadow_sphere(const pp::Matrix& model_matrix)
 {
-    double theta, phi, d_theta, d_phi, eps, twopi;
-    double x, y, z;
-    int div = GameConfig::tuxShadowSphereDivisions;
-    
-    eps = 1e-15;
-    twopi = M_PI * 2.0;
-
-    d_theta = d_phi = M_PI / div;
-
-    for ( phi = 0.0; phi + eps < M_PI; phi += d_phi ) {
-	double cos_theta, sin_theta;
-	double sin_phi, cos_phi;
-	double sin_phi_d_phi, cos_phi_d_phi;
-
-	sin_phi = sin( phi );
-	cos_phi = cos( phi );
-	sin_phi_d_phi = sin( phi + d_phi );
-	cos_phi_d_phi = cos( phi + d_phi );
+	int div = GameConfig::tuxShadowSphereDivisions;
+ 
+	double eps = 1e-15;
+	double twopi = M_PI * 2.0;
+	
+	double d_phi;
+    double d_theta = d_phi = M_PI / div;
+	
+	ppogl::Vec3d point;
+	
+    for(double phi = 0.0; phi + eps < M_PI; phi += d_phi ){
+		double cos_theta, sin_theta;
+		double sin_phi = sin( phi );
+		double cos_phi = cos( phi );
+		double sin_phi_d_phi = sin( phi + d_phi );
+		double cos_phi_d_phi = cos( phi + d_phi );
         
-        if ( phi <= eps ) {
+        if(phi<=eps){
+			glBegin( GL_TRIANGLE_FAN );
+			draw_shadow_vertex(ppogl::Vec3d(0.0, 0.0, 1.0), model_matrix );
 
-            glBegin( GL_TRIANGLE_FAN );
-		draw_shadow_vertex( 0., 0., 1., model_matrix );
+			for(double theta = 0.0; theta + eps < twopi; theta += d_theta){
+		    	sin_theta = sin( theta );
+		    	cos_theta = cos( theta );
 
-                for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
+                point.x() = cos_theta * sin_phi_d_phi;
+		    	point.y() = sin_theta * sin_phi_d_phi;
+                point.z() = cos_phi_d_phi;
+		    	draw_shadow_vertex(point, model_matrix);
+			} 
 
-                    x = cos_theta * sin_phi_d_phi;
-		    y = sin_theta * sin_phi_d_phi;
-                    z = cos_phi_d_phi;
-		    draw_shadow_vertex( x, y, z, model_matrix );
-                } 
-
-		x = sin_phi_d_phi;
-		y = 0.0;
-		z = cos_phi_d_phi;
-		draw_shadow_vertex( x, y, z, model_matrix );
+			point.x() = sin_phi_d_phi;
+			point.y() = 0.0;
+			point.z() = cos_phi_d_phi;
+			draw_shadow_vertex(point, model_matrix);
             glEnd();
 
-        } else if ( phi + d_phi + eps >= M_PI ) {
-            
-            gl::Begin( GL_TRIANGLE_FAN );
-		draw_shadow_vertex( 0., 0., -1., model_matrix );
+        }else if(phi+d_phi+eps >= M_PI){
+			gl::Begin( GL_TRIANGLE_FAN );
+			draw_shadow_vertex(ppogl::Vec3d(0.0, 0.0, -1.0), model_matrix );
+			for(double theta = twopi; theta - eps > 0; theta -= d_theta ){
+				sin_theta = sin( theta );
+				cos_theta = cos( theta );
 
-                for ( theta = twopi; theta - eps > 0; theta -= d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
+				point.x() = cos_theta * sin_phi;
+				point.y() = sin_theta * sin_phi;
+				point.z() = cos_phi;
+		    	draw_shadow_vertex(point, model_matrix);
+			} 
+			point.x() = sin_phi;
+			point.y() = 0.0;
+			point.z() = cos_phi;
+			draw_shadow_vertex(point, model_matrix);
+			gl::End();
 
-                    x = cos_theta * sin_phi;
-                    y = sin_theta * sin_phi;
-                    z = cos_phi;
-		    draw_shadow_vertex( x, y, z, model_matrix );
-                } 
-                x = sin_phi;
-                y = 0.0;
-                z = cos_phi;
-		draw_shadow_vertex( x, y, z, model_matrix );
-            gl::End();
+        }else{
+			gl::Begin( GL_TRIANGLE_STRIP );
+			for(double theta = 0.0; theta + eps < twopi; theta += d_theta ) {
+				sin_theta = sin( theta );
+				cos_theta = cos( theta );
 
-        } else {
-            
-            gl::Begin( GL_TRIANGLE_STRIP );
-                
-                for ( theta = 0.0; theta + eps < twopi; theta += d_theta ) {
-		    sin_theta = sin( theta );
-		    cos_theta = cos( theta );
+				point.x() = cos_theta * sin_phi;
+				point.y() = sin_theta * sin_phi;
+				point.z() = cos_phi;
+				draw_shadow_vertex(point, model_matrix);
 
-                    x = cos_theta * sin_phi;
-                    y = sin_theta * sin_phi;
-                    z = cos_phi;
-		    draw_shadow_vertex( x, y, z, model_matrix );
+				point.x() = cos_theta * sin_phi_d_phi;
+				point.y() = sin_theta * sin_phi_d_phi;
+				point.z() = cos_phi_d_phi;
+				draw_shadow_vertex(point, model_matrix);
+			}
+			point.x() = sin_phi;
+			point.y() = 0.0;
+			point.z() = cos_phi;
+			draw_shadow_vertex(point, model_matrix);
 
-                    x = cos_theta * sin_phi_d_phi;
-                    y = sin_theta * sin_phi_d_phi;
-                    z = cos_phi_d_phi;
-		    draw_shadow_vertex( x, y, z, model_matrix );
-                } 
-                x = sin_phi;
-                y = 0.0;
-                z = cos_phi;
-		draw_shadow_vertex( x, y, z, model_matrix );
-
-                x = sin_phi_d_phi;
-                y = 0.0;
-                z = cos_phi_d_phi;
-		draw_shadow_vertex( x, y, z, model_matrix );
-
-            gl::End();
-
-        }
-    }
-} 
+			point.x() = sin_phi_d_phi;
+			point.y() = 0.0;
+			point.z() = cos_phi_d_phi;
+			draw_shadow_vertex(point, model_matrix);
+			gl::End();
+		}
+	}
+}
 
 static void
-draw_shadow_vertex(double x, double y, double z, 
+draw_shadow_vertex(const ppogl::Vec3d& point, 
 			 const pp::Matrix& model_matrix )
 {
     ppogl::Vec3d pt =
-		model_matrix.transformPoint(ppogl::Vec3d(x,y,z));
+		model_matrix.transformPoint(point);
     double old_y = pt.y();
     ppogl::Vec3d nml = find_course_normal( pt.x(), pt.z() );
 	
