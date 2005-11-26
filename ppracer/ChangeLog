@@ -5,6 +5,9 @@
 	* src/tux_shadow.cpp
 	changed some code to use ppogl::Vec3d
 
+	* src/ppogl/base/vec* src/ppogl/base/color.*
+	moved several functions into the header files
+
 2005-11-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	fixes

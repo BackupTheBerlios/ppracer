@@ -23,22 +23,6 @@
 
 namespace ppogl{
 
-Vec4f::Vec4f()
-{
-	values[0]=0.0f;
-	values[1]=0.0f;
-	values[2]=0.0f;
-	values[3]=0.0f;
-}
-	
-Vec4f::Vec4f(const float x, const float y, const float z, const float w)
-{
-	values[0]=x;
-	values[1]=y;
-	values[2]=z;
-	values[3]=w;	
-}
-
 std::ostream& operator << (std::ostream& output, const Vec4f& vec)
 {
 	output 	<< vec.values[0] << ":"

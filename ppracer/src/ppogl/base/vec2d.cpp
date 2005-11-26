@@ -23,45 +23,9 @@
 
 namespace ppogl {
 
-Vec2d::Vec2d()
-{	
-	values[0]=0.0;
-	values[1]=0.0;
-}
-	
-Vec2d::Vec2d(const double x, const double y)
-{
-	values[0]=x;
-	values[1]=y;
-}
-
-Vec2d
-operator+(const Vec2d& vec1,const Vec2d& vec2)
-{
-	return Vec2d(vec1.x()+vec2.x(),vec1.y()+vec2.y());
-}
-
-Vec2d
-operator+(const Vec2d& vec,const double value)
-{
-	return Vec2d(vec.x()+value, vec.y()+value);
-}
-
-Vec2d
-operator-(const Vec2d& vec1,const Vec2d& vec2)
-{
-	return Vec2d(vec1.x()-vec2.x(),vec1.y()-vec2.y());
-}
-
-Vec2d
-operator-(const Vec2d& vec,const double value)
-{
-	return Vec2d(vec.x()-value, vec.y()-value);
-}
-
 std::ostream& operator << (std::ostream& output, const Vec2d& vec)
 {
-	output 	<< vec.values[0] << ":"
+	output	<< vec.values[0] << ":"
 			<< vec.values[1];		
 	return output;
 }

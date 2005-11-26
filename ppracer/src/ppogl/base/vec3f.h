@@ -30,16 +30,27 @@ class Vec3f
 public:
 	float values[3];	
 
-	Vec3f();
-	Vec3f(const float x, const float y, const float z);
+	Vec3f()
+	{
+		values[0]=0.0f;
+		values[1]=0.0f;
+		values[2]=0.0f;
+	}
 
-	float& x(){return values[0];};
-	float& y(){return values[1];};
-	float& z(){return values[2];};
+	Vec3f(const float x, const float y, const float z)
+	{
+		values[0]=x;
+		values[1]=y;
+		values[2]=z;	
+	}
+
+	float& x(){return values[0];}
+	float& y(){return values[1];}
+	float& z(){return values[2];}
 	
-	float x() const {return values[0];};
-	float y() const {return values[1];};	
-	float z() const {return values[2];};	
+	float x() const {return values[0];}
+	float y() const {return values[1];}
+	float z() const {return values[2];}
 	
 	float& operator[](const int position)
 	{

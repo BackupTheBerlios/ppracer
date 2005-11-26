@@ -30,18 +30,31 @@ class Color
 public: 
 	float values[4];
 		
-	Color();
-	Color(const float red, const float green, const float blue, const float alpha=1.0f);	
+	Color(){
+		values[0]=1.0f;
+		values[1]=1.0f;
+		values[2]=1.0f;
+		values[3]=1.0f;
+	}
 
-	float& r(){return values[0];};
-	float& g(){return values[1];};
-	float& b(){return values[2];};
-	float& a(){return values[3];};
+	Color(const float red, const float green, const float blue, const float alpha=1.0f)
+	{
+		values[0]=red;
+		values[1]=green;
+		values[2]=blue;
+		values[3]=alpha;
+	}
+
+
+	float& r(){return values[0];}
+	float& g(){return values[1];}
+	float& b(){return values[2];}
+	float& a(){return values[3];}
 	
-	float r() const {return values[0];};
-	float g() const {return values[1];};
-	float b() const {return values[2];};
-	float a() const {return values[3];};
+	float r() const {return values[0];}
+	float g() const {return values[1];}
+	float b() const {return values[2];}
+	float a() const {return values[3];}
 
 	float& operator[](const int position)
 	{
@@ -68,18 +81,31 @@ class Color4c
 public: 
 	unsigned char values[4];
 	
-	Color4c();
-	Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha = 255);	
+	Color4c()
+	{
+		values[0]=255;
+		values[1]=255;
+		values[2]=255;
+		values[3]=255;
+	}
 
-	unsigned char& r(){return values[0];};
-	unsigned char& g(){return values[1];};
-	unsigned char& b(){return values[2];};
-	unsigned char& a(){return values[3];};
+	Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha = 255)
+	{
+		values[0]=red;
+		values[1]=green;
+		values[2]=blue;
+		values[3]=alpha;
+	}
 	
-	unsigned char r() const {return values[0];};
-	unsigned char g() const {return values[1];};
-	unsigned char b() const {return values[2];};
-	unsigned char a() const {return values[3];};
+	unsigned char& r(){return values[0];}
+	unsigned char& g(){return values[1];}
+	unsigned char& b(){return values[2];}
+	unsigned char& a(){return values[3];}
+	
+	unsigned char r() const {return values[0];}
+	unsigned char g() const {return values[1];}
+	unsigned char b() const {return values[2];}
+	unsigned char a() const {return values[3];}
 	
 	unsigned char& operator[](const int position)
 	{
@@ -94,16 +120,16 @@ public:
 	}
 	
 	///returns integer for the RGB part of the color
-	inline unsigned int getRGB(){return r() + (g()<<8) + (b()<<16);};
+	inline unsigned int getRGB(){return r() + (g()<<8) + (b()<<16);}
 	
 	///returns integer value for this color
-	inline unsigned int getRGBA(){return r() + (g()<<8) + (b()<<16) + (a()<<24);};
+	inline unsigned int getRGBA(){return r() + (g()<<8) + (b()<<16) + (a()<<24);}
 	
 	bool compareRGB(const Color4c& color)
 	///compares two colors without alpha
 	{
 		return (r()==color.r()) && (g()==color.g()) && (b()==color.b());
-	};
+	}
 		
 	static const ppogl::Color4c black;
 	static const ppogl::Color4c white;

@@ -22,21 +22,7 @@
 #include <math.h>
 
 namespace ppogl{
-
-Vec3f::Vec3f()
-{
-	values[0]=0.0f;
-	values[1]=0.0f;
-	values[2]=0.0f;
-}
 	
-Vec3f::Vec3f(const float x, const float y, const float z)
-{
-	values[0]=x;
-	values[1]=y;
-	values[2]=z;	
-}
-
 std::ostream& operator << (std::ostream& output, const Vec3f& vec)
 {
 	output 	<< vec.values[0] << ":"

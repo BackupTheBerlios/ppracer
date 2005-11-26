@@ -30,18 +30,30 @@ class Vec4f
 public:
 	float values[4];
 	
-	Vec4f();
-	Vec4f(const float x, const float y, const float z, const float w);
+	Vec4f(){
+		values[0]=0.0f;
+		values[1]=0.0f;
+		values[2]=0.0f;
+		values[3]=0.0f;
+	}
+	
+	Vec4f(const float x, const float y, const float z, const float w)
+	{
+		values[0]=x;
+		values[1]=y;
+		values[2]=z;
+		values[3]=w;	
+	}
 
-	float& x(){return values[0];};
-	float& y(){return values[1];};
-	float& z(){return values[2];};
-	float& w(){return values[3];};
+	float& x(){return values[0];}
+	float& y(){return values[1];}
+	float& z(){return values[2];}
+	float& w(){return values[3];}
 
-	float x() const {return values[0];};
-	float y() const {return values[1];};	
-	float z() const {return values[2];};	
-	float w() const {return values[3];};
+	float x() const {return values[0];}
+	float y() const {return values[1];}
+	float z() const {return values[2];}	
+	float w() const {return values[3];}
 
 	float& operator[](const int position)
 	{

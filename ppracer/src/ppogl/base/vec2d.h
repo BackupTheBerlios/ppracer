@@ -32,14 +32,23 @@ class Vec2d
 public:
 	double values[2];
 	
-	Vec2d();
-	Vec2d(const double x, const double y);
+	Vec2d()
+	{	
+		values[0]=0.0;
+		values[1]=0.0;
+	}
 
-	double& x(){return values[0];};
-	double& y(){return values[1];};
+	Vec2d(const double x, const double y)
+	{
+		values[0]=x;
+		values[1]=y;
+	}	
+
+	double& x(){return values[0];}
+	double& y(){return values[1];}
 	
-	double x() const {return values[0];};
-	double y() const {return values[1];};	
+	double x() const {return values[0];}
+	double y() const {return values[1];}	
 
 	double& operator[](const int position)
 	{
@@ -53,11 +62,26 @@ public:
 		return values[position];
 	}
 		
-	friend Vec2d operator+(const Vec2d& vec1,const Vec2d& vec2);
-	friend Vec2d operator+(const Vec2d& vec1,const double value);
-	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2);
-	friend Vec2d operator-(const Vec2d& vec1,const double value);
-
+	friend Vec2d operator+(const Vec2d& vec1,const Vec2d& vec2)
+	{
+		return Vec2d(vec1.x()+vec2.x(),vec1.y()+vec2.y());
+	}
+	
+	friend Vec2d operator+(const Vec2d& vec,const double value)
+	{
+		return Vec2d(vec.x()+value, vec.y()+value);
+	}
+		
+	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2)
+	{
+		return Vec2d(vec1.x()-vec2.x(),vec1.y()-vec2.y());
+	}
+	
+	friend Vec2d operator-(const Vec2d& vec,const double value)
+	{
+		return Vec2d(vec.x()-value, vec.y()-value);
+	}
+	
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec2d& vec);	
 };

@@ -21,23 +21,6 @@
 
 namespace ppogl{
 
-	
-Color::Color()
-{
-	values[0]=1.0f;
-	values[1]=1.0f;
-	values[2]=1.0f;
-	values[3]=1.0f;
-}
-	
-Color::Color(const float red, const float green, const float blue, const float alpha)
-{
-	values[0]=red;
-	values[1]=green;
-	values[2]=blue;
-	values[3]=alpha;
-}
-
 std::ostream& operator << (std::ostream& output, const Color& color)
 {
 	output 	<< color.values[0] << ":"
@@ -49,22 +32,6 @@ std::ostream& operator << (std::ostream& output, const Color& color)
 
 const Color Color::black(0.0f,0.0f,0.0f);
 const Color Color::white(1.0f,1.0f,1.0f);
-
-Color4c::Color4c()
-{
-	values[0]=255;
-	values[1]=255;
-	values[2]=255;
-	values[3]=255;
-}
-
-Color4c::Color4c(const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)
-{
-	values[0]=red;
-	values[1]=green;
-	values[2]=blue;
-	values[3]=alpha;
-}
 
 std::ostream& operator << (std::ostream& output, const Color4c& color)
 {

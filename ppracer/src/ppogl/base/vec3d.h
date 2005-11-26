@@ -31,16 +31,27 @@ class Vec3d
 public:
 	double values[3];
 		
-	Vec3d();
-	Vec3d(const double x, const double y, const double z);
-
-	double& x(){return values[0];};
-	double& y(){return values[1];};
-	double& z(){return values[2];};
+	Vec3d()
+	{
+		values[0]=0.0;
+		values[1]=0.0;
+		values[2]=0.0;
+	}
 	
-	double x() const {return values[0];};
-	double y() const {return values[1];};	
-	double z() const {return values[2];};	
+	Vec3d(const double x, const double y, const double z)
+	{
+		values[0]=x;
+		values[1]=y;
+		values[2]=z;	
+	}	
+
+	double& x(){return values[0];}
+	double& y(){return values[1];}
+	double& z(){return values[2];}
+	
+	double x() const {return values[0];}
+	double y() const {return values[1];}
+	double z() const {return values[2];}
 
 	double& operator[](const int position)
 	{
@@ -54,17 +65,61 @@ public:
 		return values[position];
 	}
 		
-	double normalize();
-	double length() const;
-	double length2() const;
+	double normalize()
+	{
+    	const double len = length();
+		if(len>0.0){
+			x() /= len;
+			y() /= len;
+			z() /= len;
+		}                
+		return len;
+	}
+	
+	double length2() const
+	{
+		return x()*x()+y()*y()+z()*z();
+	}
+	
+	double length() const
+	{
+		return sqrt(length2());
+	}
 
-	friend Vec3d operator+(const Vec3d& vec1,const Vec3d& vec2);
-	friend Vec3d operator-(const Vec3d& vec1,const Vec3d& vec2);
-	friend Vec3d operator*(const Vec3d& vec, const double scalar);
-	friend Vec3d operator*(const double scalar, const Vec3d& vec);
-	friend double operator*(const Vec3d& vec1,const Vec3d& vec2);
-	friend Vec3d operator^(const Vec3d& vec1,const Vec3d& vec2);
-
+	friend Vec3d operator+(const Vec3d& vec1,const Vec3d& vec2)
+	{
+		return Vec3d(vec1.x()+vec2.x(),vec1.y()+vec2.y(),vec1.z()+vec2.z());
+	}
+	
+	friend Vec3d operator-(const Vec3d& vec1,const Vec3d& vec2)
+	{
+		return Vec3d(vec1.x()-vec2.x(),vec1.y()-vec2.y(),vec1.z()-vec2.z());
+	}
+	
+	friend Vec3d operator*(const Vec3d& vec, const double scalar)
+	{
+		return Vec3d(vec.x()*scalar,vec.y()*scalar,vec.z()*scalar);
+	}
+	
+	friend Vec3d operator*(const double scalar, const Vec3d& vec)
+	{
+		return Vec3d(vec.x()*scalar,vec.y()*scalar,vec.z()*scalar);
+	}	
+	
+	friend double operator*(const Vec3d& vec1,const Vec3d& vec2)
+	{
+		return vec1.x()*vec2.x()+vec1.y()*vec2.y()+vec1.z()*vec2.z();
+	}
+	
+	friend Vec3d operator^(const Vec3d& vec1,const Vec3d& vec2)
+	{
+		return Vec3d(
+			vec1.y() * vec2.z() - vec1.z() * vec2.y(),
+			vec1.z() * vec2.x() - vec1.x() * vec2.z(),
+			vec1.x() * vec2.y() - vec1.y() * vec2.x()
+		);
+	}
+	
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec3d& vec);
 };
