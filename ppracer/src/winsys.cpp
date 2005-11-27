@@ -156,14 +156,12 @@ winsys_process_events()
 		while(SDL_PollEvent(&event)){
 			switch(event.type){
 				case SDL_KEYDOWN:
-					SDL_GetMouseState(&x, &y);
 					loop_keyboard_func(event.key.keysym.sym,
-							event.key.keysym.mod, false, x, y);
+							event.key.keysym.mod, false);
 					break;
 	    		case SDL_KEYUP:
-					SDL_GetMouseState( &x, &y );
 					loop_keyboard_func( event.key.keysym.sym,
-							event.key.keysym.mod, true, x, y);
+							event.key.keysym.mod, true);
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 				case SDL_MOUSEBUTTONUP:

@@ -36,7 +36,7 @@
 
 void loop_mouse_func (int button, int state, int x, int y);
 void loop_mouse_motion_func( int x, int y );
-void loop_keyboard_func(SDLKey key, SDLMod mod, bool release, int x, int y);
+void loop_keyboard_func(SDLKey key, SDLMod mod, bool release);
 
 class GameMode
 {
