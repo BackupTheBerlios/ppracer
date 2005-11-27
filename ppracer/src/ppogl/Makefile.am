@@ -40,6 +40,8 @@ libppogl_a_SOURCES = 		\
 	base/singleton.h	\
 	base/vec2d.cpp		\
 	base/vec2d.h		\
+	base/vec2i.cpp		\
+	base/vec2i.h		\
 	base/vec3d.cpp		\
 	base/vec3d.h		\
 	base/vec3f.cpp		\

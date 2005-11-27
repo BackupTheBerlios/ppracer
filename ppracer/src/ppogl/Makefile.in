@@ -60,16 +60,16 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	translation.$(OBJEXT) assert.$(OBJEXT) color.$(OBJEXT) \
 	errors.$(OBJEXT) glwrappers.$(OBJEXT) glextensions.$(OBJEXT) \
 	glstuff.$(OBJEXT) os.$(OBJEXT) refptr.$(OBJEXT) \
-	signal.$(OBJEXT) vec2d.$(OBJEXT) vec3d.$(OBJEXT) \
-	vec3f.$(OBJEXT) vec4f.$(OBJEXT) image.$(OBJEXT) \
-	readPNG.$(OBJEXT) writePPM.$(OBJEXT) widget.$(OBJEXT) \
-	button.$(OBJEXT) label.$(OBJEXT) uimgr.$(OBJEXT) \
-	uitheme.$(OBJEXT) alignment.$(OBJEXT) checkbox.$(OBJEXT) \
-	listbox.$(OBJEXT) imagebutton.$(OBJEXT) entry.$(OBJEXT) \
-	textarea.$(OBJEXT) scale.$(OBJEXT) sound.$(OBJEXT) \
-	music.$(OBJEXT) audiomgr.$(OBJEXT) geoms.$(OBJEXT) \
-	materials.$(OBJEXT) vnc.$(OBJEXT) model.$(OBJEXT) \
-	model_ac.$(OBJEXT)
+	signal.$(OBJEXT) vec2d.$(OBJEXT) vec2i.$(OBJEXT) \
+	vec3d.$(OBJEXT) vec3f.$(OBJEXT) vec4f.$(OBJEXT) \
+	image.$(OBJEXT) readPNG.$(OBJEXT) writePPM.$(OBJEXT) \
+	widget.$(OBJEXT) button.$(OBJEXT) label.$(OBJEXT) \
+	uimgr.$(OBJEXT) uitheme.$(OBJEXT) alignment.$(OBJEXT) \
+	checkbox.$(OBJEXT) listbox.$(OBJEXT) imagebutton.$(OBJEXT) \
+	entry.$(OBJEXT) textarea.$(OBJEXT) scale.$(OBJEXT) \
+	sound.$(OBJEXT) music.$(OBJEXT) audiomgr.$(OBJEXT) \
+	geoms.$(OBJEXT) materials.$(OBJEXT) vnc.$(OBJEXT) \
+	model.$(OBJEXT) model_ac.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -236,6 +236,8 @@ libppogl_a_SOURCES = \
 	base/singleton.h	\
 	base/vec2d.cpp		\
 	base/vec2d.h		\
+	base/vec2i.cpp		\
+	base/vec2i.h		\
 	base/vec3d.cpp		\
 	base/vec3d.h		\
 	base/vec3f.cpp		\
@@ -383,6 +385,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uimgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uitheme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec2d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec2i.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec3d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec3f.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec4f.Po@am__quote@
@@ -543,6 +546,20 @@ vec2d.obj: base/vec2d.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/vec2d.cpp' object='vec2d.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vec2d.obj `if test -f 'base/vec2d.cpp'; then $(CYGPATH_W) 'base/vec2d.cpp'; else $(CYGPATH_W) '$(srcdir)/base/vec2d.cpp'; fi`
+
+vec2i.o: base/vec2i.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vec2i.o -MD -MP -MF "$(DEPDIR)/vec2i.Tpo" -c -o vec2i.o `test -f 'base/vec2i.cpp' || echo '$(srcdir)/'`base/vec2i.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vec2i.Tpo" "$(DEPDIR)/vec2i.Po"; else rm -f "$(DEPDIR)/vec2i.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/vec2i.cpp' object='vec2i.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vec2i.o `test -f 'base/vec2i.cpp' || echo '$(srcdir)/'`base/vec2i.cpp
+
+vec2i.obj: base/vec2i.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vec2i.obj -MD -MP -MF "$(DEPDIR)/vec2i.Tpo" -c -o vec2i.obj `if test -f 'base/vec2i.cpp'; then $(CYGPATH_W) 'base/vec2i.cpp'; else $(CYGPATH_W) '$(srcdir)/base/vec2i.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vec2i.Tpo" "$(DEPDIR)/vec2i.Po"; else rm -f "$(DEPDIR)/vec2i.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/vec2i.cpp' object='vec2i.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vec2i.obj `if test -f 'base/vec2i.cpp'; then $(CYGPATH_W) 'base/vec2i.cpp'; else $(CYGPATH_W) '$(srcdir)/base/vec2i.cpp'; fi`
 
 vec3d.o: base/vec3d.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vec3d.o -MD -MP -MF "$(DEPDIR)/vec3d.Tpo" -c -o vec3d.o `test -f 'base/vec3d.cpp' || echo '$(srcdir)/'`base/vec3d.cpp; \

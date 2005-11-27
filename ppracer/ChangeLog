@@ -1,11 +1,19 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-27  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/base/vec2i.*
+	added ppogl::Vec2i
+	
+	* src/phys_sim.cpp
+	used ppogl::Vec2i
+
 2005-11-26  Volker Stroebel <volker@planetpenguin.de>
 	* src/tux_shadow.cpp
 	changed some code to use ppogl::Vec3d
-
+	
 	* src/ppogl/base/vec* src/ppogl/base/color.*
+	  src/ppogl/sg/materials.*
 	moved several functions into the header files
 
 2005-11-25  Volker Stroebel <volker@planetpenguin.de>

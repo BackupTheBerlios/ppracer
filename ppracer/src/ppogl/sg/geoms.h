@@ -29,7 +29,11 @@ class Polygon
 public:
 	Polygon():numVertices(0),vertices(NULL){};
 	Polygon(const Polygon& poly);
-	~Polygon();
+		
+	~Polygon()
+	{
+		if(vertices) delete [] vertices;		
+	}
 		
     int numVertices;
     int *vertices;
@@ -40,9 +44,20 @@ public:
 class Polyhedron
 {
 public:
-	Polyhedron();
+	Polyhedron()
+	: numVertices(0),
+	   numPolygons(0),
+	   vertices(NULL),
+	   polygons(NULL)
+	{}
+
     Polyhedron(const Polyhedron& ph);
-	~Polyhedron();
+		
+	~Polyhedron()
+	{
+		if(vertices) delete [] vertices;
+		if(polygons) delete [] polygons;	
+	}
 		
 	int numVertices;
     int numPolygons;

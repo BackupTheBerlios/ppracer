@@ -44,7 +44,12 @@ private:
 	float m_specularExponent;
 
 public:
-	Material();
+	Material()
+	 : m_shininess(0.0),
+	   m_transparency(0.0),
+	   m_specularExponent(0.0)
+	{
+	}
 
 	ppogl::Color diffuse; 
 	ppogl::Color ambient;

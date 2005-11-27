@@ -31,11 +31,6 @@ Polygon::Polygon(const Polygon& poly)
     	}
 	}		
 }
-	
-Polygon::~Polygon()
-{
-	if(vertices) delete [] vertices;		
-}
 
 Polygon&
 Polygon::operator=(const Polygon& poly)
@@ -54,13 +49,6 @@ Polygon::operator=(const Polygon& poly)
 	}
 	return *this;
 }
-
-Polyhedron::Polyhedron()
- : numVertices(0),
-   numPolygons(0),
-   vertices(NULL),
-   polygons(NULL)
-{}
 
 Polyhedron::Polyhedron(const Polyhedron& ph)
 {
@@ -81,11 +69,5 @@ Polyhedron::Polyhedron(const Polyhedron& ph)
     	}
 	}
 }	
-	
-Polyhedron::~Polyhedron()
-{
-	if(vertices) delete [] vertices;
-	if(polygons) delete [] polygons;	
-}
 
 } //namepsace ppogl
