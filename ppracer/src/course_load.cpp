@@ -989,10 +989,10 @@ hud_cb(ppogl::Script *vm)
 			// position array
 			vm->pushNull();
 			vm->next(-2);
-			element.x = vm->getInt();
+			element.position.x() = vm->getInt();
 			vm->pop(2);
 			vm->next(-2);
-			element.y = vm->getInt();
+			element.position.y() = vm->getInt();
 			vm->pop(2);
 			vm->pop(2); //the table
 		}else{

@@ -165,16 +165,16 @@ winsys_process_events()
 				case SDL_MOUSEBUTTONUP:
 					loop_mouse_func( event.button.button,
 				   			event.button.state,
-				   			event.button.x,
-				   			event.button.y );
+				   			ppogl::Vec2i(event.button.x,
+				   			             event.button.y));
 					break;
 				case SDL_MOUSEMOTION:
 					if(event.motion.state){
 		    			// buttons are down
-						loop_mouse_motion_func( event.motion.x, event.motion.y );
+						loop_mouse_motion_func(ppogl::Vec2i(event.motion.x, event.motion.y));
 					}else{
 		    			// no buttons are down
-						loop_mouse_motion_func( event.motion.x, event.motion.y );
+						loop_mouse_motion_func(ppogl::Vec2i(event.motion.x, event.motion.y));
 					}
 					break;
 	    		case SDL_VIDEORESIZE:

@@ -36,7 +36,6 @@ HUD HUD2;
 
 HUD::Element::Element()
  : type(-1), 
-   x(0), y(0),
    font(NULL),
    texture(0),
    width(0), height(0),
@@ -80,17 +79,16 @@ HUD::update(const int i, const Element& newElement){
 }
 
 void
-HUD::draw(const Player& plyr, int width, int height)
+HUD::draw(const Player& plyr, const ppogl::Vec2i& resolution)
 {
-	m_width = width;
-	m_height = height;
+	m_resolution = resolution;
 	
 	gl::PushMatrix();
 	{
 	gl::MatrixMode(GL_PROJECTION);
     gl::LoadIdentity();
-    gl::Ortho(0.0, m_width, 0.0,
-			  m_height, -1.0, 1.0);
+    gl::Ortho(0.0, m_resolution.x(), 0.0,
+			  m_resolution.y(), -1.0, 1.0);
     gl::MatrixMode(GL_MODELVIEW);
     gl::LoadIdentity();
     gl::Translate(0.0, 0.0, -1.0);
@@ -168,11 +166,12 @@ void
 HUD::text(const int i)
 {
 	if(m_element[i].font){
-		fix_xy(m_element[i].x, m_element[i].y,
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position,
 			   m_element[i].height, m_element[i].width);
 		
 		m_element[i].font->draw(m_element[i].string,
-				   m_element[i].x, m_element[i].y);		
+				   position);		
 	}
 }
 
@@ -184,10 +183,12 @@ HUD::fps(const int i)
 		snprintf(string, 16, m_element[i].string.c_str(), fpsCounter.get());
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
-		int width = int(m_element[i].font->advance(m_element[i].u_string));
+		const int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
-		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
-		m_element[i].font->draw(m_element[i].u_string, m_element[i].x, m_element[i].y);		
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position, m_element[i].height, width);
+			
+		m_element[i].font->draw(m_element[i].u_string, position);		
 	}
 }
 
@@ -201,8 +202,9 @@ HUD::herring(const int i, const int herring_count)
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
-		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
-		m_element[i].font->draw(m_element[i].u_string, m_element[i].x, m_element[i].y);		
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position,m_element[i].height,width);
+		m_element[i].font->draw(m_element[i].u_string, position);		
 	}
 }
 
@@ -211,7 +213,8 @@ HUD::image(const int i)
 {
 	if(!m_element[i].texture) return;
 
-	fix_xy( m_element[i].x, m_element[i].y, m_element[i].height, m_element[i].width);
+	const ppogl::Vec2i position =
+			fixXY( m_element[i].position, m_element[i].height, m_element[i].width);
 	
     gl::PushMatrix();
     {
@@ -219,7 +222,7 @@ HUD::image(const int i)
 	gl::Enable(GL_TEXTURE_2D);
 	gl::Color(ppogl::Color::white);
 		
-	gl::Translate(m_element[i].x, m_element[i].y);
+	gl::Translate(position);
 
 	gl::Begin( GL_QUADS );
 	{
@@ -255,8 +258,9 @@ HUD::time(const int i)
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
-		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
-		m_element[i].font->draw(m_element[i].u_string, m_element[i].x, m_element[i].y);		
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position,m_element[i].height,width);
+		m_element[i].font->draw(m_element[i].u_string, position);		
 	
 	}
 }
@@ -269,11 +273,11 @@ HUD::speed(const int i, const double speed)
 		snprintf(string, 16, m_element[i].string.c_str(), speed );
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
-		int width = int(m_element[i].font->advance(m_element[i].u_string));
+		const int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
-		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
-		m_element[i].font->draw(m_element[i].u_string, m_element[i].x-(width/2), m_element[i].y);		
-		
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position,m_element[i].height, width);
+		m_element[i].font->draw(m_element[i].u_string, position);
 	}	
 }
 
@@ -284,10 +288,11 @@ HUD::bar(const int i, double percentage)
 	
 	if(percentage>1)percentage=1;
 	
-	double temp_sin=sin(double(m_element[i].angle)/180.0*M_PI);
-	double temp_cos=cos(double(m_element[i].angle)/180.0*M_PI);
+	const double temp_sin=sin(double(m_element[i].angle)/180.0*M_PI);
+	const double temp_cos=cos(double(m_element[i].angle)/180.0*M_PI);
 	
-	fix_xy(m_element[i].x,m_element[i].y,int(m_element[i].height));
+	const ppogl::Vec2i position =
+			fixXY(m_element[i].position, m_element[i].height);
 	
     gl::PushMatrix();
 	{
@@ -295,7 +300,7 @@ HUD::bar(const int i, double percentage)
     gl::BindTexture(GL_TEXTURE_2D, m_element[i].texture);
     gl::Color(ppogl::Color::white);
 		
-	gl::Translate(m_element[i].x, m_element[i].y,0);
+	gl::Translate(position);
 
 	gl::Begin(GL_QUADS);
 	{
@@ -368,7 +373,7 @@ HUD::gauge(const int i, const double speed, const double energy)
 
     gl::PushMatrix();
     {
-	gl::Translate(m_width - m_element[i].width,0);
+	gl::Translate(m_resolution.x() - m_element[i].width,0);
 
 	gl::Color(energy_background_color);
 
@@ -532,15 +537,17 @@ HUD::start_tri_fan(void)
     gl::Vertex(pt);
 }
 
-void
-HUD::fix_xy(int &x, int &y, const int asc, const int width)
+ppogl::Vec2i
+HUD::fixXY(const ppogl::Vec2i& position, const int asc, const int width)
 {
-	if(x<0){
-		x=m_width+x-width+1;
+	ppogl::Vec2i result = position;
+	if(position.x()<0){
+		result.x() = m_resolution.x()+position.x()-width+1;
 	}
-	if(y<0){
-		y=m_height+y-asc+1;
+	if(position.y()<0){
+		result.y() = m_resolution.y()+position.y()-asc+1;
 	}
+	return result;
 }
 
 void
@@ -553,8 +560,9 @@ HUD::coursePercentage(const int i, const Player& plyr)
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
-		fix_xy(m_element[i].x,m_element[i].y,m_element[i].height,width);
-		m_element[i].font->draw(m_element[i].u_string, m_element[i].x, m_element[i].y);		
+		const ppogl::Vec2i position =
+			fixXY(m_element[i].position,m_element[i].height,width);
+		m_element[i].font->draw(m_element[i].u_string, position);		
 		
 	}
 }

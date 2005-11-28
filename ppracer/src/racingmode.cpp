@@ -123,9 +123,9 @@ RacingMode::renderCourse(int player, float timestep)
 	}
 	
 	if(player==0){
-    	HUD1.draw(players[0], resolution.x(), resolution.y());
+    	HUD1.draw(players[0], resolution);
 	}else if(player==1){
-		HUD2.draw(players[1], resolution.x(), resolution.y());
+		HUD2.draw(players[1], resolution);
 	}else{
 		PP_WARNING("Player " << player << " is not supported");		
 	}

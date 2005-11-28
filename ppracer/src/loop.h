@@ -34,8 +34,8 @@
 #include "gameconfig.h"
 #include "joystick.h"
 
-void loop_mouse_func (int button, int state, int x, int y);
-void loop_mouse_motion_func( int x, int y );
+void loop_mouse_func(int button, int state, const ppogl::Vec2i& position);
+void loop_mouse_motion_func(ppogl::Vec2i position);
 void loop_keyboard_func(SDLKey key, SDLMod mod, bool release);
 
 class GameMode

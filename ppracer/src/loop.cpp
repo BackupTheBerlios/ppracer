@@ -229,7 +229,7 @@ GameMode::drawSnow(float timeStep, bool windy)
 }
 
 void
-loop_mouse_func(int button, int state, int x, int y)
+loop_mouse_func(int button, int state,const ppogl::Vec2i& position)
 {
     if( button == SDL_BUTTON_MIDDLE ){
 		middleMouseButtonDown = ( state == SDL_PRESSED );
@@ -240,11 +240,11 @@ loop_mouse_func(int button, int state, int x, int y)
 	
 	if(GameMode::currentMode!=NULL){
 		bool pressed = state && SDL_PRESSED;
-		if(GameMode::currentMode->mouseButtonEvent(button,x,y,pressed)) return;
+		if(GameMode::currentMode->mouseButtonEvent(button,position.x(), position.y(),pressed)) return;
 		else if(pressed){
-			if(GameMode::currentMode->mouseButtonPressEvent(button,x,y)) return;
+			if(GameMode::currentMode->mouseButtonPressEvent(button,position.x(),position.y())) return;
 		}else{
-			if(GameMode::currentMode->mouseButtonReleaseEvent(button,x,y)) return;
+			if(GameMode::currentMode->mouseButtonReleaseEvent(button,position.x(),position.y())) return;
 		}	
 		ppogl::UIManager::getInstance().mouseButtonEvent(button,state);
 	}	
@@ -252,9 +252,9 @@ loop_mouse_func(int button, int state, int x, int y)
 
 
 void
-loop_mouse_motion_func(int x, int y)
+loop_mouse_motion_func(ppogl::Vec2i position)
 {
-	if(cursorPos.x() != x || cursorPos.y() != y){
+	if(cursorPos.x() != position.x() || cursorPos.y() != position.y()){
 		// Update UI snow 
 		if(PPConfig.getBool("ui_snow")){
 			if(rightMouseButtonDown){
@@ -268,12 +268,11 @@ loop_mouse_motion_func(int x, int y)
 			}
 		}
     }
-	cursorPos.x()=x;
-	cursorPos.y()=y;
+	cursorPos = position;
 	
 	// Reverse y coordinate
-    y = GameMode::resolution.y() - y;
-	ppogl::UIManager::getInstance().mouseEvent(ppogl::Vec2i(x,y));
+    position.y() = GameMode::resolution.y() - position.y();
+	ppogl::UIManager::getInstance().mouseEvent(position);
 }
 
 void

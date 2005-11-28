@@ -1,5 +1,5 @@
 /* 
- * Tux Racer 
+ * PlanetPenguin Racer 
  * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
  *
  * This program is free software; you can redistribute it and/or
@@ -34,16 +34,16 @@ public:
 	struct Element{
 		Element();
 		int type;
-		int x,y;
+		ppogl::Vec2i position;
 		ppogl::FontRef font;
 		ppogl::TextureRef texture;
-		int width,height,size;
+		int width, height, size;
 		std::string string;
 		wchar_t u_string[16];
 		int angle;
 	};	
 
-	void draw(const Player& plyr, int width, int height);
+	void draw(const Player& plyr, const ppogl::Vec2i& resolution);
 	void reset();
 	bool add(const Element& newElement);			
 	bool update(const int i, const Element& newElement);
@@ -66,15 +66,14 @@ private:
 	ppogl::Vec2d calc_new_fan_pt(const double angle);
 	void start_tri_fan();
 
-	void fix_xy(int &x, int &y, const int asc=0, const int width=0);
+	ppogl::Vec2i fixXY(const ppogl::Vec2i& position, const int asc=0, const int width=0);
 	void initGauge();
 	
 	ppogl::TextureRef m_energymaskTex;
 	ppogl::TextureRef m_speedmaskTex;
 	ppogl::TextureRef m_outlineTex;	
 	
-	int m_width;
-	int m_height;
+	ppogl::Vec2i m_resolution;
 };
 
 extern HUD HUD1;

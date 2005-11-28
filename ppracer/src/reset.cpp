@@ -125,7 +125,7 @@ Reset::loop(float timeStep)
 		tux_visible_count = 0;
     }
 
-    HUD1.draw(players[0], resolution.x(), resolution.x());
+    HUD1.draw(players[0], resolution);
 
     reshape(resolution);
 
