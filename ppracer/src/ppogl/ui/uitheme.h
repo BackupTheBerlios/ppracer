@@ -20,6 +20,7 @@
 #ifndef _PPOGL_UITHEME_H_
 #define _PPOGL_UITHEME_H_
 
+#include "../base/vec2i.h"
 #include "../base/singleton.h"
 #include "../base/signal.h"
 #include "../font.h"
@@ -61,7 +62,7 @@ public:
 	ppogl::TextureRef hScaleTex;
 
 	///draw the background for the ui
-	void drawDecoration(int width, int height);
+	void drawDecoration(const ppogl::Vec2i& resolution);
 };	
 
 } //namepsace ppogl

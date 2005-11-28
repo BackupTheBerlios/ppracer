@@ -468,7 +468,7 @@ Racing::keyPressEvent(SDLKey key)
 				setMode(PAUSED);
 				return true;
 			}else if(key==PPConfig.getInt("screenshot_key")){
-				reshape(resolutionX, resolutionY);
+				reshape(resolution);
 				screenshot();
 				return true;
 			}

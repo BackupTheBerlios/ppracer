@@ -91,8 +91,7 @@ public:
 	
 	static Joystick joystick;
 	
-	static int resolutionX;
-	static int resolutionY; 	
+	static ppogl::Vec2i resolution;
 	
 	static void setMode(GameMode::Mode mode);
 	static void mainLoop();

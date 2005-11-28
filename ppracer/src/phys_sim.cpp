@@ -310,9 +310,9 @@ get_indices_for_point(double x, double z,
 
 void
 find_barycentric_coords(float x, float z, 
-			      ppogl::Vec2i *idx0, 
-			      ppogl::Vec2i *idx1, 
-			      ppogl::Vec2i *idx2,
+			      ppogl::Vec2i& idx0, 
+			      ppogl::Vec2i& idx1, 
+			      ppogl::Vec2i& idx2,
 			      float &u, float &v)
 {
     float dx, ex, dz, ez, qx, qz; // to calc. barycentric coords 
@@ -352,32 +352,32 @@ find_barycentric_coords(float x, float z,
 
     if ( (i0.x() + i0.y()) % 2 == 0 ) {
 	if ( yidx - i0.y() < xidx - i0.x() ) {
-	    *idx0 = ppogl::Vec2i(i0.x(), i0.y()); 
-	    *idx1 = ppogl::Vec2i(i1.x(), i0.y()); 
-	    *idx2 = ppogl::Vec2i(i1.x(), i1.y()); 
+	    idx0 = ppogl::Vec2i(i0.x(), i0.y()); 
+	    idx1 = ppogl::Vec2i(i1.x(), i0.y()); 
+	    idx2 = ppogl::Vec2i(i1.x(), i1.y()); 
 	} else {
-	    *idx0 = ppogl::Vec2i(i1.x(), i1.y()); 
-	    *idx1 = ppogl::Vec2i(i0.x(), i1.y()); 
-	    *idx2 = ppogl::Vec2i(i0.x(), i0.y()); 
+	    idx0 = ppogl::Vec2i(i1.x(), i1.y()); 
+	    idx1 = ppogl::Vec2i(i0.x(), i1.y()); 
+	    idx2 = ppogl::Vec2i(i0.x(), i0.y()); 
 	} 
     } else {
 	if ( yidx - i0.y() + xidx - i0.x() < 1 ) {
-	    *idx0 = ppogl::Vec2i(i0.x(), i0.y()); 
-	    *idx1 = ppogl::Vec2i(i1.x(), i0.y()); 
-	    *idx2 = ppogl::Vec2i(i0.x(), i1.y()); 
+	    idx0 = ppogl::Vec2i(i0.x(), i0.y()); 
+	    idx1 = ppogl::Vec2i(i1.x(), i0.y()); 
+	    idx2 = ppogl::Vec2i(i0.x(), i1.y()); 
 	} else {
-	    *idx0 = ppogl::Vec2i(i1.x(), i1.y()); 
-	    *idx1 = ppogl::Vec2i(i0.x(), i1.y()); 
-	    *idx2 = ppogl::Vec2i(i1.x(), i0.y()); 
+	    idx0 = ppogl::Vec2i(i1.x(), i1.y()); 
+	    idx1 = ppogl::Vec2i(i0.x(), i1.y()); 
+	    idx2 = ppogl::Vec2i(i1.x(), i0.y()); 
 	} 
     }
 
-    dx = idx0->x() - idx2->x();
-    dz = idx0->y() - idx2->y();
-    ex = idx1->x() - idx2->x();
-    ez = idx1->y() - idx2->y();
-    qx = xidx - idx2->x();
-    qz = yidx - idx2->y();
+    dx = idx0.x() - idx2.x();
+    dz = idx0.y() - idx2.y();
+    ex = idx1.x() - idx2.x();
+    ez = idx1.y() - idx2.y();
+    qx = xidx - idx2.x();
+    qz = yidx - idx2.y();
 
     const float invdet = 1./(dx * ez - dz * ex);
     u = (qx * ez - qz * ex) * invdet;
@@ -392,7 +392,7 @@ find_course_normal(const float x, const float z)
 	    
 	ppogl::Vec2i idx0, idx1, idx2;
 	float u, v;
-    find_barycentric_coords( x, z, &idx0, &idx1, &idx2, u, v );
+    find_barycentric_coords(x, z, idx0, idx1, idx2, u, v);
 
     const ppogl::Vec3d n0 = course_nmls[ idx0.x() + Course::nx * idx0.y() ];
     const ppogl::Vec3d n1 = course_nmls[ idx1.x() + Course::nx * idx1.y() ];
@@ -430,7 +430,7 @@ find_y_coord(float x, float z)
 	
     ppogl::Vec2i idx0, idx1, idx2;
 	float u, v;
-    find_barycentric_coords( x, z, &idx0, &idx1, &idx2, u, v );
+    find_barycentric_coords(x, z, idx0, idx1, idx2, u, v);
 
     const ppogl::Vec3d p0 = Course::getVertex(idx0.x(), idx0.y());
     const ppogl::Vec3d p1 = Course::getVertex(idx1.x(), idx1.y());
@@ -452,7 +452,7 @@ get_surface_type(float x, float z, float weights[])
     ppogl::Vec2i idx0, idx1, idx2;
     float u, v;
 
-    find_barycentric_coords( x, z, &idx0, &idx1, &idx2, u, v );
+    find_barycentric_coords(x, z, idx0, idx1, idx2, u, v);
 
     int* terrain = Course::getTerrainData();
 
@@ -716,7 +716,7 @@ get_compression_depth(const int terrain)
  */
 static void
 adjust_for_model_collision(Player& plyr, 
-				       const ppogl::Vec3d& pos, ppogl::Vec3d *vel)
+				       const ppogl::Vec3d& pos, ppogl::Vec3d &vel)
 {
     ppogl::Vec3d modelLoc;
     float modelDiam;
@@ -735,29 +735,27 @@ adjust_for_model_collision(Player& plyr,
         modelNml.normalize();
 
 	/* Reduce speed by a minimum of 30% */
-        float speed = vel->normalize();
+        float speed = vel.normalize();
         speed *= 0.7;
 
 	/* 
 	 * If Tux is moving into the tree, reduce the speed further, 
 	 * and reflect the velocity vector off of the tree
 	 */
-        float costheta = *vel*modelNml;
+        float costheta = vel*modelNml;
         if (costheta < 0 ) {
-	    /* Reduce speed */
+	    	/* Reduce speed */
 	    
             speed *= 1 + costheta;
             speed *= 1 + costheta; 
 
-	    /* Do the reflection */
-            *vel = ((-2. * ( *vel* modelNml ))*modelNml)+*vel;
-
-	    vel->normalize();
-
+	    	/* Do the reflection */
+            vel = ((-2. * ( vel* modelNml ))*modelNml)+vel;
+	    	vel.normalize();
         } 
 
 		speed = MAX(speed, MIN_TUX_SPEED);
-        *vel = speed*(*vel);
+        vel = speed*vel;
     } 
 }
 
@@ -1512,7 +1510,7 @@ solve_ode_system(Player& plyr, float timestep)
 	// Important: to make trees "solid", we must manipulate the 
 	// velocity here; if we don't and Tux is moving very quickly,
 	// he can pass through trees
-	adjust_for_model_collision( plyr, new_pos, &new_vel );
+	adjust_for_model_collision(plyr, new_pos, new_vel);
 
 	// Try to collect items here
 	check_item_collection( plyr, new_pos );

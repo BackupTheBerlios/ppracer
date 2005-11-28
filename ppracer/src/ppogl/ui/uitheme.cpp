@@ -41,7 +41,7 @@ UITheme::UITheme()
 }
 
 void
-UITheme::drawDecoration(int width, int height)
+UITheme::drawDecoration(const ppogl::Vec2i& resolution)
 {
 	ppogl::Vec2d size(255,255);
 	ppogl::TextureRef texture;
@@ -50,16 +50,16 @@ UITheme::drawDecoration(int width, int height)
 	ppogl::drawRectangle(ppogl::Vec2d(0,0),
 						 size, texture);
 	texture = ppogl::TextureMgr::getInstance().get("menu_bottom_right");
-	ppogl::drawRectangle(ppogl::Vec2d(width-256,0),
+	ppogl::drawRectangle(ppogl::Vec2d(resolution.x()-256,0),
 						 size, texture);
 	texture = ppogl::TextureMgr::getInstance().get("menu_top_left");
-	ppogl::drawRectangle(ppogl::Vec2d(0,height-256),
+	ppogl::drawRectangle(ppogl::Vec2d(0,resolution.y()-256),
 						 size, texture);
 	texture = ppogl::TextureMgr::getInstance().get("menu_top_right");
-	ppogl::drawRectangle(ppogl::Vec2d(width-256,height-256),
+	ppogl::drawRectangle(ppogl::Vec2d(resolution-256),
 						 size, texture);
 	texture = ppogl::TextureMgr::getInstance().get("menu_title");
-	ppogl::drawRectangle(ppogl::Vec2d(width/2-256, height-128),
+	ppogl::drawRectangle(ppogl::Vec2d(resolution.x()/2-256, resolution.y()-128),
 						 ppogl::Vec2d(512,128), texture);
 }
 

@@ -79,8 +79,8 @@ setup_sdl_video_mode()
 	
     height = PPConfig.getInt("y_resolution");
 
-	GameMode::resolutionX = width;
-	GameMode::resolutionY = height;
+	GameMode::resolution.x() = width;
+	GameMode::resolution.y() = height;
 	
 	PP_MESSAGE("Init video: " << width << "x" << height << " bpp:" << bpp);  
 	
@@ -118,8 +118,8 @@ setup_sdl_video_mode()
 			PP_ERROR("Unable to find any useable video mode :(\n" <<
 				     "Please check your driver settings.");
 		}else{
-			GameMode::resolutionX = width;
-			GameMode::resolutionY = height;
+			GameMode::resolution.x() = width;
+			GameMode::resolution.y() = height;
 			PP_WARNING("Please check your video configuration");
 			return;
 		}		
@@ -147,8 +147,6 @@ void
 winsys_process_events()
 {
 	SDL_Event event; 
-    int x, y;
-
     while(true){
 		SDL_LockAudio();
 		SDL_UnlockAudio();
@@ -183,7 +181,7 @@ winsys_process_events()
 					PPConfig.setInt("x_resolution",event.resize.w);
 					PPConfig.setInt("y_resolution",event.resize.h);
 					setup_sdl_video_mode();
-		    		reshape(event.resize.w, event.resize.h);
+		    		reshape(ppogl::Vec2i(event.resize.w, event.resize.h));
 					break;
 				case SDL_QUIT:
 					winsys_exit(0);		

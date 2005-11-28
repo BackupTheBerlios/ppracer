@@ -42,8 +42,8 @@ setup_view_frustum(const Player& plyr,
 			double near_dist, double far_dist,
 			int multiscreen)
 {
-    double aspect = double(GameMode::resolutionX) /
-					double(GameMode::resolutionY);
+    double aspect = double(GameMode::resolution.x()) /
+					double(GameMode::resolution.y());
 
 	ppogl::Vec3d pt;
     ppogl::Vec3d origin;

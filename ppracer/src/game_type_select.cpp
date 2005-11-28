@@ -75,9 +75,8 @@ GameTypeSelect::loop(float timeStep)
 
 	drawSnow(timeStep);
 
-	ppogl::UIManager::getInstance().draw(resolutionX,
-										 resolutionY);	
-	reshape(resolutionX, resolutionY);
+	ppogl::UIManager::getInstance().draw(resolution);	
+	reshape(resolution);
 }
 
 bool

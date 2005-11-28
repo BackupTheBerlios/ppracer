@@ -125,9 +125,9 @@ Reset::loop(float timeStep)
 		tux_visible_count = 0;
     }
 
-    HUD1.draw(players[0], resolutionX, resolutionY);
+    HUD1.draw(players[0], resolution.x(), resolution.x());
 
-    reshape(resolutionX, resolutionY);
+    reshape(resolution);
 
     GameMgr::getInstance().time += timeStep;
 

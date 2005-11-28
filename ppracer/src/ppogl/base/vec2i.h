@@ -17,80 +17,87 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef _PPOGL_VEC2D_H_
-#define _PPOGL_VEC2D_H_
+#ifndef _PPOGL_VEC2I_H_
+#define _PPOGL_VEC2I_H_
 
-#include "vec2i.h"
 #include "assert.h"
-#include "defs.h"
 
 ///
 namespace ppogl {
 	
 ///
-class Vec2d
+class Vec2i
 {
 public:
-	double values[2];
+	int values[2];
 	
-	Vec2d()
+	Vec2i()
 	{	
-		values[0]=0.0;
-		values[1]=0.0;
+		values[0]=0;
+		values[1]=0;
 	}
 
-	Vec2d(const double x, const double y)
+	Vec2i(const int x, const int y)
 	{
 		values[0]=x;
 		values[1]=y;
-	}
+	}	
 
-	Vec2d(const ppogl::Vec2i& vec)
-	{
-		values[0]=vec.values[0];
-		values[1]=vec.values[1];		
-	}
-
-	double& x(){return values[0];}
-	double& y(){return values[1];}
+	int& x(){return values[0];}
+	int& y(){return values[1];}
 	
-	double x() const {return values[0];}
-	double y() const {return values[1];}	
+	int x() const {return values[0];}
+	int y() const {return values[1];}	
 
-	double& operator[](const int position)
+	int& operator[](const int position)
 	{
 		PP_REQUIRE(position>=0 && position<=1,"Position exceeds size of array: " << position);
 		return values[position];
 	}	
 	
-	double operator[](const int position) const 
+	int operator[](const int position) const 
 	{
 		PP_REQUIRE(position>=0 && position<=1,"Position exceeds size of array: " << position);
 		return values[position];
 	}
 		
-	friend Vec2d operator+(const Vec2d& vec1,const Vec2d& vec2)
+	friend Vec2i operator+(const Vec2i& vec1,const Vec2i& vec2)
 	{
-		return Vec2d(vec1.x()+vec2.x(),vec1.y()+vec2.y());
+		return Vec2i(vec1.x()+vec2.x(),vec1.y()+vec2.y());
 	}
 	
-	friend Vec2d operator+(const Vec2d& vec,const double value)
+	friend Vec2i operator+(const Vec2i& vec,const int value)
 	{
-		return Vec2d(vec.x()+value, vec.y()+value);
+		return Vec2i(vec.x()+value, vec.y()+value);
 	}
 		
-	friend Vec2d operator-(const Vec2d& vec1,const Vec2d& vec2)
+	friend Vec2i operator-(const Vec2i& vec1,const Vec2i& vec2)
 	{
-		return Vec2d(vec1.x()-vec2.x(),vec1.y()-vec2.y());
+		return Vec2i(vec1.x()-vec2.x(),vec1.y()-vec2.y());
 	}
 	
-	friend Vec2d operator-(const Vec2d& vec,const double value)
+	friend Vec2i operator-(const Vec2i& vec,const int value)
 	{
-		return Vec2d(vec.x()-value, vec.y()-value);
+		return Vec2i(vec.x()-value, vec.y()-value);
+	}
+	
+	friend Vec2i operator*(const Vec2i& vec,const int value)
+	{
+		return Vec2i(vec.x()*value, vec.y()*value);
+	}
+		
+	friend Vec2i operator/(const Vec2i& vec,const int value)
+	{
+		return Vec2i(vec.x()/value, vec.y()/value);
+	}
+	
+	friend Vec2i operator/(const int value, const Vec2i& vec)
+	{
+		return Vec2i(value/vec.x(), value/vec.y());
 	}
 	
 	/// print formated values to an std::ostream
-	friend std::ostream& operator << (std::ostream& output, const Vec2d& vec);	
+	friend std::ostream& operator << (std::ostream& output, const Vec2i& vec);	
 };
 
 } //namespace ppogl

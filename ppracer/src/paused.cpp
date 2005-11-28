@@ -87,7 +87,7 @@ Paused::preDisplay(float timeStep)
 void
 Paused::postDisplay(float timestep)
 {
-    reshape(resolutionX, resolutionY);
+    reshape(resolution);
 	set_gl_options(GUI);
 	
    	if(Benchmark::getMode()!=Benchmark::PAUSED){
@@ -95,7 +95,7 @@ Paused::postDisplay(float timestep)
 		{
 		gl::MatrixMode(GL_PROJECTION);
 	    gl::LoadIdentity();
-	    gl::Ortho(0.0, resolutionX, 0.0, resolutionY, -1.0, 1.0);
+	    gl::Ortho(0.0, resolution.x(), 0.0, resolution.y(), -1.0, 1.0);
 	    gl::MatrixMode(GL_MODELVIEW);
 	    gl::LoadIdentity();
 	    gl::Translate(0.0, 0.0, -1.0);
@@ -103,12 +103,12 @@ Paused::postDisplay(float timestep)
 		
 		gl::Disable(GL_TEXTURE_2D);
 	    gl::Color(0.0,0.0,0.0,0.5);
-    	gl::Rect(0,0,resolutionX, resolutionY);
+    	gl::Rect(0,0,resolution.x(), resolution.y());
     	gl::Enable(GL_TEXTURE_2D);
 		}
 		gl::PopMatrix();
 		
-		ppogl::UIManager::getInstance().draw(resolutionX, resolutionY,
+		ppogl::UIManager::getInstance().draw(resolution,
 											 false); // no decoration
 	}    	
 }

@@ -28,7 +28,15 @@ class VideoConfig
 {
 	struct Resolution
 	{
-		Resolution(int x, int y);
+		Resolution(int _x, int _y)
+		 : x(_x),
+   		   y(_y)
+		{}
+		Resolution(const ppogl::Vec2i& vec)
+		 : x(vec.values[0]),
+		   y(vec.values[1])
+		{}
+			
 		int x;
 		int y;
 	};

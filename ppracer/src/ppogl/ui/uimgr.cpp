@@ -42,7 +42,7 @@ UIManager::~UIManager()
 }
 	
 void
-UIManager::draw(int width, int height, bool decoration)
+UIManager::draw(const ppogl::Vec2i& resolution, bool decoration)
 /// Initializes the screen and draw widget, mouse cursor and decoration
 {
 	
@@ -50,29 +50,29 @@ UIManager::draw(int width, int height, bool decoration)
 	{
 	gl::MatrixMode(GL_PROJECTION);
     gl::LoadIdentity();
-    gl::Ortho(0.0, width, 0.0, height, -1.0, 1.0);
+    gl::Ortho(0.0, resolution.x(), 0.0, resolution.y(), -1.0, 1.0);
     gl::MatrixMode(GL_MODELVIEW);
     gl::LoadIdentity();
     gl::Translate(0.0, 0.0, -1.0);
     gl::Color(ppogl::Color::white);
 			
 	if(decoration){
-		ppogl::UITheme::getInstance().drawDecoration(width, height);
+		ppogl::UITheme::getInstance().drawDecoration(resolution);
 	}
 	
 	if(m_boxDimension.x()<=0.0){
-		m_boxStart.x() =0;
-		m_boxEnd.x()   =width;
+		m_boxStart.x() = 0;
+		m_boxEnd.x()   = resolution.x();
 	}else{
-		m_boxStart.x() = (width-m_boxDimension.x())/2;
+		m_boxStart.x() = (resolution.x()-m_boxDimension.x())/2;
 		m_boxEnd.x()   = m_boxStart.x() + m_boxDimension.x();
 	}
 	
 	if(m_boxDimension.y()<=0.0){
-		m_boxStart.y() =0;
-		m_boxEnd.y()   =height;
+		m_boxStart.y() = 0;
+		m_boxEnd.y()   = resolution.y();
 	}else{
-		m_boxStart.y() = (height-m_boxDimension.y())/2;
+		m_boxStart.y() = (resolution.y()-m_boxDimension.y())/2;
 		m_boxEnd.y()   = m_boxStart.y() + m_boxDimension.y();
 	}
 		
@@ -108,11 +108,10 @@ UIManager::remove(ppogl::Widget *widget)
 }
 
 void
-UIManager::mouseEvent(int x, int y)
+UIManager::mouseEvent(const ppogl::Vec2i& position)
 /// update mouse position and the focus state of the widgets
 {
-	m_cursorPosition.x()=x;
-	m_cursorPosition.y()=y;
+	m_cursorPosition = position;
 	
 	std::list<ppogl::Widget*>::iterator it;
 	for(it=m_widgets.begin();it!=m_widgets.end();it++){

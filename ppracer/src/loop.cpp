@@ -62,8 +62,7 @@ GameMode* GameMode::currentMode = NULL;
 GameMode::Mode GameMode::mode;
 GameMode::Mode GameMode::prevmode;
 
-int GameMode::resolutionX=0;
-int GameMode::resolutionY=0;
+ppogl::Vec2i GameMode::resolution;
 
 /// the joystick
 Joystick GameMode::joystick;
@@ -273,8 +272,8 @@ loop_mouse_motion_func(int x, int y)
 	cursorPos.y()=y;
 	
 	// Reverse y coordinate
-    y = GameMode::resolutionY - y;
-	ppogl::UIManager::getInstance().mouseEvent(x,y);
+    y = GameMode::resolution.y() - y;
+	ppogl::UIManager::getInstance().mouseEvent(ppogl::Vec2i(x,y));
 }
 
 void

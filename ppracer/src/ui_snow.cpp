@@ -217,7 +217,7 @@ draw_ui_snow()
 	{
 	gl::MatrixMode(GL_PROJECTION);
     gl::LoadIdentity();
-    gl::Ortho(0.0, GameMode::resolutionX, 0.0, GameMode::resolutionY, -1.0, 1.0);
+    gl::Ortho(0.0, GameMode::resolution.x(), 0.0, GameMode::resolution.y(), -1.0, 1.0);
     gl::MatrixMode(GL_MODELVIEW);
     gl::LoadIdentity();
     gl::Translate(0.0, 0.0, -1.0);
@@ -242,7 +242,7 @@ draw_ui_snow()
 	    tex_max = &particles[i].tex_max;
 	    gl::PushMatrix();
 	    {
-		gl::Translate(pt->x()*GameMode::resolutionX, pt->y()*GameMode::resolutionY);
+		gl::Translate(pt->x()*GameMode::resolution.x(), pt->y()*GameMode::resolution.y());
 		gl::Begin(GL_QUADS);
 		{
 		    gl::TexCoord(tex_min->x(), tex_min->y());
@@ -268,8 +268,8 @@ draw_ui_snow()
 void
 reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos ) 
 {
-    push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolutionX),
-				  (double(GameMode::resolutionY)-pos.y())/double(GameMode::resolutionY) );
+    push_position = ppogl::Vec2d( pos.x()/double(GameMode::resolution.x()),
+				  (double(GameMode::resolution.y())-pos.y())/double(GameMode::resolution.y()) );
     last_push_position = push_position;
     push_position_initialized = true;
 }
@@ -277,8 +277,8 @@ reset_ui_snow_cursor_pos(const ppogl::Vec2d& pos )
 void 
 push_ui_snow(const ppogl::Vec2d& pos)
 {
-    push_position = ppogl::Vec2d(pos.x()/double(GameMode::resolutionX),
-				  (double(GameMode::resolutionY)-pos.y())/double(GameMode::resolutionY) );
+    push_position = ppogl::Vec2d(pos.x()/double(GameMode::resolution.x()),
+				  (double(GameMode::resolution.y())-pos.y())/double(GameMode::resolution.y()) );
     if ( !push_position_initialized ) {
 		last_push_position = push_position;
     }
@@ -289,8 +289,8 @@ void
 make_ui_snow(const ppogl::Vec2d& pos)
 {
     if(num_particles < MAX_NUM_PARTICLES){
-		make_particle( num_particles, pos.x()/GameMode::resolutionX,
-				(double(GameMode::resolutionY)-pos.y())/GameMode::resolutionY);
+		make_particle( num_particles, pos.x()/GameMode::resolution.x(),
+				(double(GameMode::resolution.y())-pos.y())/GameMode::resolution.y());
 		num_particles++;
     }
 }

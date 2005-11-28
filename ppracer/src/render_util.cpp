@@ -37,31 +37,31 @@
 #define FAR_CLIP_FUDGE_AMOUNT 5
 
 void
-reshape(int w, int h, int multiscreen)
+reshape(const ppogl::Vec2i& resolution, int multiscreen)
 {
 	if(multiscreen<0){
 		//not in multiscreen mode
-    	gl::Viewport(0, 0, w, h);
+    	gl::Viewport(0, 0, resolution.x(), resolution.y());
     	gl::MatrixMode( GL_PROJECTION );
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	glu::Perspective( GameConfig::fov, double(w)/h, NEAR_CLIP_DIST, far_clip_dist );
+    	glu::Perspective( GameConfig::fov, double(resolution.x())/resolution.y(), NEAR_CLIP_DIST, far_clip_dist );
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==0){
 		// multiscreen 0 (top)
-		gl::Viewport(0, h/2, w, h/2);
+		gl::Viewport(0, resolution.y()/2, resolution.x(), resolution.y()/2);
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	glu::Perspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	glu::Perspective( GameConfig::fov, double(resolution.x()/2)/(resolution.y()/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==1){
 		// multiscreen 1 (bottom)
-		gl::Viewport(0, 0, w, h/2);
+		gl::Viewport(0, 0, resolution.x(), resolution.y()/2);
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
     	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
-    	glu::Perspective( GameConfig::fov, double(w/2)/(h/4), NEAR_CLIP_DIST, far_clip_dist);
+    	glu::Perspective( GameConfig::fov, double(resolution.x()/2)/(resolution.y()/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
 	}else{
 		PP_ERROR("Screen " << multiscreen << " is not supported in multiscreen mode");

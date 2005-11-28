@@ -56,8 +56,7 @@ Loading::loop(float timeStep)
 
 	drawSnow(timeStep, GameMgr::getInstance().getCurrentRace().windy);
 	
-	ppogl::UIManager::getInstance().draw(resolutionX,
-										 resolutionY);
+	ppogl::UIManager::getInstance().draw(resolution);
 
 	updateDisplay();
 	
@@ -65,7 +64,7 @@ Loading::loop(float timeStep)
 	if(Course::load(GameMgr::getInstance().getCurrentRace().course)){
 		set_course_mirroring( GameMgr::getInstance().getCurrentRace().mirrored );
 
-		reshape(resolutionX, resolutionY);
+		reshape(resolution);
 
     	// We're done here, enter INTRO mode
     	setMode( INTRO );

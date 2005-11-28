@@ -38,16 +38,8 @@
 
 #include <sstream>
 
-#include <iostream>
-
 #define RES_MIN_WIDTH 600
 #define RES_MIN_HEIGHT 400
-
-VideoConfig::Resolution::Resolution(int _x, int _y)
- : x(_x),
-   y(_y)
-{
-}
 
 VideoConfig::VideoConfig()
  : ConfigMode(_("Video Configuration")),
@@ -78,12 +70,12 @@ VideoConfig::VideoConfig()
 	
 	{
 		std::stringstream temp(std::ios::in| std::ios::out | std::ios::trunc);
-		temp << resolutionX 
+		temp << resolution.x() 
 		     << " x "
-		     << resolutionY;
+		     << resolution.y();
 
 		if(!m_resolutionListBox.setSelected(temp.str())){
-			m_resolutionListBox.addElement(temp.str(), Resolution(resolutionX,resolutionY));
+			m_resolutionListBox.addElement(temp.str(), Resolution(resolution));
 			m_resolutionListBox.setSelected(temp.str());	
 		}		
 	}
@@ -148,7 +140,7 @@ VideoConfig::apply()
 	ppogl::ListBox<int>::Iterator bppit = m_bppListBox.getSelected();
 	ppogl::ListBox<int>::Iterator multiit = m_multisampleListBox.getSelected();
 		
-	if ( (*resit).data.x != resolutionX ){
+	if ( (*resit).data.x != resolution.x() ){
 		PPConfig.setInt("x_resolution",(*resit).data.x);
 		PPConfig.setInt("y_resolution",(*resit).data.y);
 		updatevideo=true;	

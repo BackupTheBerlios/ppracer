@@ -24,6 +24,7 @@
 
 #include "ppogl/base/color.h"
 #include "ppogl/base/vec2d.h"
+#include "ppogl/base/vec2i.h"
 #include "ppogl/base/vec3d.h"
 
 //#include "player.h"
@@ -32,7 +33,7 @@ class Player;
 
 #define NEAR_CLIP_DIST 0.1
 
-void reshape(int w, int h, int multiscreen=-1);
+void reshape(const ppogl::Vec2i& resolution, int multiscreen=-1);
 
 void clear_rendering_context();
 

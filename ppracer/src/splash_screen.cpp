@@ -32,12 +32,12 @@ SplashScreen::SplashScreen()
  : m_anykeyLbl(_("PRESS ANY KEY TO START"),"event_and_cup_label"),
    m_versionLbl(PP_RELEASE_NAME, "race_requirements_label")
 {
-	ppogl::Vec2d pos(resolutionX/2,resolutionY/2);
+	ppogl::Vec2d pos = (resolution/2);
 	
 	m_anykeyLbl.setPosition(pos);
 	m_anykeyLbl.alignment.set(0.5,0.0);
 	
-	m_versionLbl.setPosition(ppogl::Vec2d(resolutionX-5,5));
+	m_versionLbl.setPosition(ppogl::Vec2d(resolution.x()-5,5));
 	m_versionLbl.alignment.right();
 	
     ppogl::AudioMgr::getInstance().playMusic("splash_screen");
@@ -58,7 +58,7 @@ SplashScreen::loop(float timeStep)
 	drawSnow(timeStep);
 
 	{
-		ppogl::Vec2d pos(resolutionX/2 -256,resolutionY/2);
+		ppogl::Vec2d pos(resolution.x()/2 -256,resolution.y()/2);
 		ppogl::Vec2d size(512, 256);
 		ppogl::TextureRef texture =
 			ppogl::TextureMgr::getInstance().get("splash_screen");
@@ -66,11 +66,10 @@ SplashScreen::loop(float timeStep)
 		ppogl::drawRectangle(pos, size, texture);
 	}	
 
-	ppogl::UIManager::getInstance().draw(resolutionX,
-										 resolutionY,
+	ppogl::UIManager::getInstance().draw(resolution,
 										 false); // don't draw decorations	
 		
-    reshape(resolutionX, resolutionY);
+    reshape(resolution);
 }
 
 

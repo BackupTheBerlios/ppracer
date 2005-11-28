@@ -22,6 +22,7 @@
 
 #include "../base/singleton.h"
 #include "../base/vec2d.h"
+#include "../base/vec2i.h"
 
 #include <SDL.h>
 #include <list>
@@ -51,12 +52,12 @@ public:
 	UIManager();
 	~UIManager();
 
-	void draw(int width, int height, bool decoration=true);	
+	void draw(const ppogl::Vec2i& resolution, bool decoration=true);	
 
 	void add(ppogl::Widget *widget);
 	void remove(ppogl::Widget *widget);
 
-	void mouseEvent(int x, int y);
+	void mouseEvent(const ppogl::Vec2i& position);
 	void mouseButtonEvent(int button, int state);
 	bool keyboardEvent(SDLKey key, SDLMod mod, bool release);
 

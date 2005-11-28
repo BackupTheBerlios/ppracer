@@ -51,7 +51,7 @@ RacingMode::loop(float timestep)
 		
 		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
 				GameConfig::forwardClipDistance);
-		reshape(resolutionX, resolutionY);
+		reshape(resolution);
 		
 		renderCourse(0, timestep);
 		postPlayer(0,timestep);
@@ -67,13 +67,13 @@ RacingMode::loop(float timestep)
 				
 		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
-		reshape(resolutionX, resolutionY, 0);
+		reshape(resolution, 0);
 		renderCourse(0, timestep);
 				
 		// player 1 (second player)
 		setup_view_frustum( players[1], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
-		reshape(resolutionX, resolutionY, 1);
+		reshape(resolution, 1);
 		renderCourse(1, timestep);	
 					
 		postPlayer(0,timestep);
@@ -123,9 +123,9 @@ RacingMode::renderCourse(int player, float timestep)
 	}
 	
 	if(player==0){
-    	HUD1.draw(players[0], resolutionX, resolutionY);
+    	HUD1.draw(players[0], resolution.x(), resolution.y());
 	}else if(player==1){
-		HUD2.draw(players[1], resolutionX, resolutionY);
+		HUD2.draw(players[1], resolution.x(), resolution.y());
 	}else{
 		PP_WARNING("Player " << player << " is not supported");		
 	}
