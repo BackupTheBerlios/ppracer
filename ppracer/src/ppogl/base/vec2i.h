@@ -96,6 +96,16 @@ public:
 		return Vec2i(value/vec.x(), value/vec.y());
 	}
 	
+	friend bool operator==(const Vec2i& vec1, const Vec2i& vec2)
+	{
+		return (vec1.x() == vec2.x()) && (vec1.y() == vec2.y());
+	}
+	
+	friend bool operator!=(const Vec2i& vec1, const Vec2i& vec2)
+	{
+		return (vec1.x() != vec2.x()) || (vec1.y() != vec2.y());
+	}
+	
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec2i& vec);	
 };

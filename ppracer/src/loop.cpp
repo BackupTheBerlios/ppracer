@@ -69,7 +69,7 @@ Joystick GameMode::joystick;
 
 static GameMode::Mode new_mode = GameMode::NO_MODE;
 	
-static ppogl::Vec2d cursorPos;
+static ppogl::Vec2i cursorPos;
 static bool rightMouseButtonDown  = false;
 static bool middleMouseButtonDown = false;
 
@@ -254,7 +254,7 @@ loop_mouse_func(int button, int state,const ppogl::Vec2i& position)
 void
 loop_mouse_motion_func(ppogl::Vec2i position)
 {
-	if(cursorPos.x() != position.x() || cursorPos.y() != position.y()){
+	if(cursorPos != position){
 		// Update UI snow 
 		if(PPConfig.getBool("ui_snow")){
 			if(rightMouseButtonDown){

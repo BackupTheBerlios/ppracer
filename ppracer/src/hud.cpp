@@ -276,7 +276,7 @@ HUD::speed(const int i, const double speed)
 		const int width = int(m_element[i].font->advance(m_element[i].u_string));
 		
 		const ppogl::Vec2i position =
-			fixXY(m_element[i].position,m_element[i].height, width);
+			fixXY(m_element[i].position,m_element[i].height, width/2);
 		m_element[i].font->draw(m_element[i].u_string, position);
 	}	
 }

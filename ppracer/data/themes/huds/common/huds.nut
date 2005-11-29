@@ -91,7 +91,7 @@ pptheme.hud({
 pptheme.hud({
 	hud = 1,
 	element_type = "speed",
-	position = [-36, 52],
+	position = [-56, 52],
 	font = "speed_digits",
 	string = "H|%.0f"
 });

@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-11-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/hud.*
+	fixed drawing if resolution changes
+
 2005-11-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	changed some code to use ppogl::Vec2i
