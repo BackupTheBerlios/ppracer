@@ -66,7 +66,7 @@ Font::draw(const std::string& string, float x, float y)
 }
 
 void
-Font::draw(const std::string& string, ppogl::Vec2d position)
+Font::draw(const std::string& string, const ppogl::Vec2d& position)
 {
 	const wchar_t* u_string;
 	u_string = Font::utf8ToUnicode(string);	
@@ -91,7 +91,7 @@ Font::draw(const wchar_t *string, float x, float y)
 }
 
 void
-Font::draw(const wchar_t *string, ppogl::Vec2d position)
+Font::draw(const wchar_t *string, const ppogl::Vec2d& position)
 {
 	gl::PushMatrix();
 	{

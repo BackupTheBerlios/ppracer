@@ -4,6 +4,9 @@
 2005-11-29  Volker Stroebel <volker@planetpenguin.de>
 	* src/hud.*
 	fixed drawing if resolution changes
+	
+	* src/ppogl/font.*
+	use const ppogl::Vec2d&
 
 2005-11-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/*

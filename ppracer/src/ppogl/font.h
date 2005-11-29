@@ -55,13 +55,13 @@ public:
 	void draw(const std::string& , float x, float y);
 
 	///draws the utf8 string at the specified position 
-	void draw(const std::string& , ppogl::Vec2d position);
+	void draw(const std::string& , const ppogl::Vec2d& position);
 
 	///draws the unicode string at position x,y 
 	void draw(const wchar_t *string, float x, float y);
 
 	///draws the unicode string at the specified position
-	void draw(const wchar_t *string, ppogl::Vec2d position);
+	void draw(const wchar_t *string, const ppogl::Vec2d& position);
 
 	float ascender();
 	float descender();
