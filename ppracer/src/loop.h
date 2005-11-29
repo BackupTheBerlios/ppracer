@@ -81,9 +81,9 @@ public:
 	virtual bool keyPressEvent(SDLKey key){return false;};
 	virtual bool keyReleaseEvent(SDLKey key){return false;};
 	
-	virtual bool mouseButtonEvent(int button, int x, int y, bool pressed){return false;};
-	virtual bool mouseButtonPressEvent(int button, int x, int y){return false;};
-	virtual bool mouseButtonReleaseEvent(int button, int x, int y){return false;};
+	virtual bool mouseButtonEvent(int button, const ppogl::Vec2i& position, bool pressed){return false;};
+	virtual bool mouseButtonPressEvent(int button, const ppogl::Vec2i& position){return false;};
+	virtual bool mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position){return false;};
 	
 	static GameMode* currentMode;
 	static GameMode::Mode mode;

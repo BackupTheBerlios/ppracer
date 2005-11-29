@@ -74,7 +74,7 @@ SplashScreen::loop(float timeStep)
 
 
 bool
-SplashScreen::mouseButtonReleaseEvent(int button, int x, int y)
+SplashScreen::mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position)
 {
 	setMode( GAME_TYPE_SELECT );
 	return true;

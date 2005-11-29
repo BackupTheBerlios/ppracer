@@ -37,7 +37,7 @@ public:
 	~SplashScreen();
 
 	void loop(float timeStep);	
-	bool mouseButtonReleaseEvent(int button, int x, int y);
+	bool mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position);
 	bool keyReleaseEvent(SDLKey key);
 };
 

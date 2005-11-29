@@ -206,7 +206,7 @@ Credits::drawText(float timeStep)
 }
 
 bool
-Credits::mouseButtonReleaseEvent(int button, int x, int y)
+Credits::mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position)
 {
 	setMode(GAME_TYPE_SELECT);
 	return true;

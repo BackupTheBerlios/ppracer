@@ -240,11 +240,11 @@ loop_mouse_func(int button, int state,const ppogl::Vec2i& position)
 	
 	if(GameMode::currentMode!=NULL){
 		bool pressed = state && SDL_PRESSED;
-		if(GameMode::currentMode->mouseButtonEvent(button,position.x(), position.y(),pressed)) return;
+		if(GameMode::currentMode->mouseButtonEvent(button,position,pressed)) return;
 		else if(pressed){
-			if(GameMode::currentMode->mouseButtonPressEvent(button,position.x(),position.y())) return;
+			if(GameMode::currentMode->mouseButtonPressEvent(button,position)) return;
 		}else{
-			if(GameMode::currentMode->mouseButtonReleaseEvent(button,position.x(),position.y())) return;
+			if(GameMode::currentMode->mouseButtonReleaseEvent(button,position)) return;
 		}	
 		ppogl::UIManager::getInstance().mouseButtonEvent(button,state);
 	}	

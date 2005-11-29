@@ -7,6 +7,9 @@
 	
 	* src/ppogl/font.*
 	use const ppogl::Vec2d&
+	
+	* src/loop.* src/credits.* src/splash_screen.*
+	changed code to use ppogl::Vec2i
 
 2005-11-28  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
