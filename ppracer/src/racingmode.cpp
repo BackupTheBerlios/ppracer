@@ -33,6 +33,7 @@
 #include "tux.h"
 #include "tux_shadow.h"
 #include "fps.h"
+#include "snow.h"
 
 RacingMode::RacingMode()
  : m_paused(false)
@@ -106,6 +107,8 @@ RacingMode::renderCourse(int player, float timestep)
 	//draw course
 	courseRenderer.render(players[player].view.pos);
 
+	std::cout << players[player].view.pos << std::endl;
+	
 	// draw trackmarks for all players
 	TrackMarks::drawAllPlayers();
 		
@@ -116,12 +119,12 @@ RacingMode::renderCourse(int player, float timestep)
 		}
 		draw_particles(players[player]);
     }
-
+	
 	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
 		tux[i].draw();
 		draw_tux_shadow(i);
 	}
-	
+			
 	if(player==0){
     	HUD1.draw(players[0], resolution);
 	}else if(player==1){

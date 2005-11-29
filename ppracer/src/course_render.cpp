@@ -248,8 +248,8 @@ CourseRenderer::calcNormals()
 void
 CourseRenderer::setupTexGen()
 {
-    static ppogl::Vec4f xplane(1.0 / TEX_SCALE, 0.0, 0.0, 0.0);
-    static ppogl::Vec4f zplane(0.0, 0.0, 1.0 / TEX_SCALE, 0.0);
+    static const ppogl::Vec4f xplane(1.0 / TEX_SCALE, 0.0, 0.0, 0.0);
+    static const ppogl::Vec4f zplane(0.0, 0.0, 1.0 / TEX_SCALE, 0.0);
     gl::TexGen( GL_S, GL_OBJECT_PLANE, xplane );
     gl::TexGen( GL_T, GL_OBJECT_PLANE, zplane );
 }

@@ -43,10 +43,10 @@
 #include "course_mgr.h"
 #include "lights.h"
 
-
 #include "game_mgr.h"
 
 #include "bench.h"
+#include "snow.h"
 
 Intro::Intro()
 {
@@ -67,7 +67,7 @@ Intro::Intro()
 		}
 	}
     init_physical_simulation();
-
+	
 	clear_particles();
 	
 	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
