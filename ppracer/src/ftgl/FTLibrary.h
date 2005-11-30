@@ -7,6 +7,7 @@
 
 #include "FTGL.h"
 
+#include <memory>
 
 /**
  * FTLibrary class is the global accessor for the Freetype library.
@@ -91,7 +92,8 @@ class FTGL_EXPORT FTLibrary
          * Current error code. Zero means no error.
          */
         FT_Error err;
-        
+		
+		static std::auto_ptr<FTLibrary> instance;
 };
 
 #endif  //  __FTLibrary__

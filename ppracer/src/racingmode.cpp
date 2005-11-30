@@ -106,8 +106,6 @@ RacingMode::renderCourse(int player, float timestep)
 	
 	//draw course
 	courseRenderer.render(players[player].view.pos);
-
-	std::cout << players[player].view.pos << std::endl;
 	
 	// draw trackmarks for all players
 	TrackMarks::drawAllPlayers();

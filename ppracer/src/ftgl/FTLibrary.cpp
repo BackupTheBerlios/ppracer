@@ -1,10 +1,20 @@
 #include    "FTLibrary.h"
 
 
+std::auto_ptr<FTLibrary> FTLibrary::instance;
+
+
 const FTLibrary&  FTLibrary::Instance()
 {
-    static FTLibrary ftlib;
-    return ftlib;
+    //static FTLibrary ftlib;
+    //return ftlib;
+	
+	FTLibrary* temp = instance.get();
+    if(temp == NULL){
+		temp = new FTLibrary();
+        instance.reset(temp);
+	}
+	return *temp;	
 }
 
 
