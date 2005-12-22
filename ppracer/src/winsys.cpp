@@ -24,7 +24,8 @@
 #include "render_util.h"
 #include "stuff.h"
 #include "course_load.h"
-#include "quadtree.h"
+#include "course_render.h"
+#include "hier.h"
 
 #include "ppogl/base/glwrappers.h"
 
@@ -204,12 +205,19 @@ winsys_process_events()
 void
 winsys_exit(int code)
 {
-    write_config_file();
+	courseRenderer.cleanup();
+	Course::cleanup();
+	
+	if(GameMode::currentMode!=NULL){
+		//delete GameMode::currentMode;
+		GameMode::currentMode=NULL;
+	}
+	
+	write_config_file();
+	cleanup_scene_node();
+	
 	PP_MESSAGE("Quit SDL");
 	SDL_Quit();
-			
-	Course::cleanup();
-	quadsquare::cleanup();
 	
 	exit(code);
 }

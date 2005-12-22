@@ -58,12 +58,6 @@ Font::~Font()
 		//delete mp_font;
 	}
 }
-	
-void
-Font::draw(const std::string& string, float x, float y)
-{
-	draw(string, ppogl::Vec2d(x, y));
-}
 
 void
 Font::draw(const std::string& string, const ppogl::Vec2d& position)
@@ -85,12 +79,6 @@ Font::draw(const std::string& string, const ppogl::Vec2d& position)
 }
 
 void
-Font::draw(const wchar_t *string, float x, float y)
-{
-	draw(string, ppogl::Vec2d(x, y));
-}
-
-void
 Font::draw(const wchar_t *string, const ppogl::Vec2d& position)
 {
 	gl::PushMatrix();
@@ -104,48 +92,6 @@ Font::draw(const wchar_t *string, const ppogl::Vec2d& position)
 	gl::PopMatrix();	
 }
 
-float
-Font::ascender()
-{
-	return mp_font->Ascender();
-}
-
-float
-Font::descender()
-{
-	return mp_font->Descender();
-}
-
-float
-Font::advance(const std::string& string)
-{
-	const wchar_t* u_string;
-	u_string = Font::utf8ToUnicode(string);	
-	
-	float adv = mp_font->Advance(u_string);
-	
-	delete [] u_string;
-	return adv;	
-}
-
-float
-Font::advance(const wchar_t* string)
-{
-	return mp_font->Advance(string);	
-}
-
-ppogl::Color&
-Font::getColor()
-{
-	return m_color;
-}
-
-FTFont*
-Font::getFTFont()
-{
-	return mp_font;
-}
-	
 const wchar_t*
 Font::utf8ToUnicode(const std::string& string)
 {

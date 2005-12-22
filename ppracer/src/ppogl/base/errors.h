@@ -23,6 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 ///PlanetPenguin Open Game Library
 namespace ppogl {
@@ -84,7 +85,7 @@ private:
 	bool checkLevel(int mode);
 
 	/// the pointer to the one and only instance (singleton)
-	static Log* sm_instance;
+	static std::auto_ptr<Log> sm_instance;
 		
 	/// the current logging level
 	int m_level;

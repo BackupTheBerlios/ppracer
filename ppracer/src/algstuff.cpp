@@ -148,16 +148,6 @@ Matrix::Matrix(const Quat& quat)
 }
 
 void
-Matrix::makeIdentity(void)
-{
-	for(int i=0; i<4; i++){
-		for(int j=0; j<4; j++){
-			data[i][j]=(i==j);	
-		}
-	}
-}	
-
-void
 Matrix::makeRotation(const double angle, const char axis)
 {
 	double sinv = sin( ANGLES_TO_RADIANS( angle ) );
@@ -192,24 +182,6 @@ Matrix::makeRotation(const double angle, const char axis)
         //code_not_reached();  // shouldn't get here
 		}
     }
-}
-
-void
-Matrix::makeTranslation(const double x, const double y, const double z)
-{
-	makeIdentity();
-    data[3][0] = x;
-    data[3][1] = y;
-    data[3][2] = z;
-}
-
-void
-Matrix::makeScaling(const double x, const double y, const double z )
-{
-	makeIdentity();
-    data[0][0] = x;
-    data[1][1] = y;
-    data[2][2] = z;
 }
 
 void
@@ -261,17 +233,6 @@ Matrix::makeRotationAboutVector(const ppogl::Vec3d& u, const double angle )
     *this=(*this)*rx;
     *this=iry*(*this);
     *this=irx*(*this);
-}
-
-
-void
-Matrix::transpose(const Matrix& matrix)
-{
-	for( int i= 0 ; i< 4 ; i++ ){
-		for( int j= 0 ; j< 4 ; j++ ){
-	    	data[j][i] = matrix.data[i][j];
-		}
-	}
 }
 
 Matrix
@@ -341,22 +302,6 @@ Matrix::makeChangeOfBasisMatrix(Matrix& mat,
     invMat.data[2][2] = w3.z();
 }
 
-Plane::Plane(const double x, const double y, const double z, const double _d)
- : nml(x, y ,z),
-   d(_d)
-{
-}
-
-double
-Plane::distance(const ppogl::Vec3d& point) const
-{
-	return 	nml.x() * point.x() +
-			nml.y() * point.y() +
-			nml.z() * point.z() +
-			d;	
-}
-
-
 bool
 Plane::intersect( const Plane& s1, const Plane& s2, const Plane& s3, ppogl::Vec3d *p )
 {
@@ -393,11 +338,6 @@ Plane::intersect( const Plane& s1, const Plane& s2, const Plane& s3, ppogl::Vec3
     }
 }
 
-Quat::Quat(const double _x, const double _y, const double _z, const double _w)
- : x(_x), y(_y), z(_z), w(_w)
-{
-}	
-	
 Quat::Quat(const ppogl::Vec3d& s, const ppogl::Vec3d& t)
 {
     ppogl::Vec3d u = s^t;
@@ -460,33 +400,6 @@ Quat::Quat(const Matrix& matrix)
 	}
 }
 
-
-
-void
-Quat::set(const double _x, const double _y, const double _z, const double _w)
-{
-	x=_x;
-	y=_y;
-	z=_z;
-	w=_w;
-}
-
-
-Quat
-Quat::conjugate() const
-{
-	return Quat(-x, -y, -z, w);	
-}
-
-ppogl::Vec3d
-Quat::rotate(const ppogl::Vec3d& v) const
-{
-    Quat p(v.x(),v.y(),v.z(),1.0);
-    Quat res_q = (*this)*(p*conjugate());
-    
-	return ppogl::Vec3d(res_q.x,res_q.y,res_q.z);
-}
-
 Quat
 Quat::operator*(const Quat& quat) const{
 	return Quat(
@@ -496,8 +409,6 @@ Quat::operator*(const Quat& quat) const{
 		w * quat.w - x * quat.x - y * quat.y - z * quat.z
 	);
 }
-
-
 
 Quat 
 Quat::interpolate(const Quat& q, Quat r, double t )

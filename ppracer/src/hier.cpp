@@ -344,3 +344,13 @@ update_scene_nodes()
 	    	));	
 	}
 }
+
+void
+cleanup_scene_node()
+{
+	std::map<std::string, SceneNode *>::iterator it;
+	for(it=nodes.begin(); it!=nodes.end();it++){	
+		delete (*it).second;
+	}
+	nodes.clear();
+}

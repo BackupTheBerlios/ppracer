@@ -60,7 +60,7 @@ GameOver::GameOver()
 	
 	if( Benchmark::getMode() != Benchmark::NONE ){
 		Benchmark::displayState();
-		winsys_exit( 0 );
+		winsys_exit(0);
 	}
 	
     ppogl::AudioMgr::getInstance().playMusic("game_over");

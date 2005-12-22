@@ -75,8 +75,8 @@ static bool course_loaded = false;
 
 float Course::angle;
 
-float* Course::elevation;
-int* Course::terrain;
+float* Course::elevation = NULL;
+int* Course::terrain = NULL;
 
 ppogl::Vec2d Course::dimension;
 ppogl::Vec2d Course::playDimension;
@@ -298,9 +298,17 @@ Course::cleanup()
 		delete sm_vncArray;
 		sm_vncArray=NULL;		
 	}
+	
+	if(elevation){
+		delete [] elevation;
+		elevation=NULL;
+	}
+	
+	if(terrain){
+		delete [] terrain;
+		terrain=NULL;	
+	}
 }
-
-
 
 static inline int
 intensity_to_terrain(const int intensity)

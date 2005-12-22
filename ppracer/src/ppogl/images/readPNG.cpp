@@ -88,7 +88,7 @@ ReadPNG::ReadPNG(const std::string& filename)
 		
 	this->width=width;
 	this->height=height;
-			
+	
 	if(color_type==PNG_COLOR_TYPE_RGB){
 		depth=3;
 		loadData(png_ptr, 3);
@@ -109,10 +109,14 @@ ReadPNG::loadData(png_structp png_ptr, unsigned char depth)
 /// loads rgb or rgba into the data buffer 
 {
 	png_bytep *row_pointers = new png_bytep[height];
-	data = new unsigned char[width*height*depth];
-		
-	for(unsigned int i=0; i<height; i++)
+
+	// geht lager array to ensure nothing strange happens if 
+	// image has invalid boundaries for textures
+	data = new unsigned char[width*height*depth + 4*depth];
+	
+	for(unsigned int i=0; i<height; i++){
 		row_pointers[height-1-i]=data + i*width*depth;
+	}
 	
 	png_read_image(png_ptr, row_pointers);
 	delete [] row_pointers;

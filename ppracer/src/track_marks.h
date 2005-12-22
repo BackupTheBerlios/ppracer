@@ -69,6 +69,7 @@ public:
 // end old stuff
 
 	TrackMarks();
+	~TrackMarks();
 			
 // static stuff
 

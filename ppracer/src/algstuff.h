@@ -46,16 +46,47 @@ public:
 
 	Matrix operator*(const Matrix& matrix) const;
 		
-	void makeIdentity(void);
-	void makeRotation(const double angle, const char axis);
-	void makeTranslation(const double x, const double y, const double z);
-	void makeScaling(const double x, const double y, const double z );
-	void makeRotationAboutVector(const ppogl::Vec3d& u, const double angle );
-
-	void transpose(const Matrix& mat);
+	void makeIdentity(void)
+	{
+		for(int i=0; i<4; i++){
+			for(int j=0; j<4; j++){
+				data[i][j]=(i==j);	
+			}
+		}
+	}
 		
-	ppogl::Vec3d  transformVector(const ppogl::Vec3d& v) const;
-	ppogl::Vec3d  transformPoint(const ppogl::Vec3d& p) const;
+	void makeRotation(const double angle, const char axis);
+	
+	
+	void makeTranslation(const double x, const double y, const double z)
+	{
+		makeIdentity();
+	    data[3][0] = x;
+	    data[3][1] = y;
+	    data[3][2] = z;
+	}
+	
+	void makeScaling(const double x, const double y, const double z )
+	{
+		makeIdentity();
+	    data[0][0] = x;
+	    data[1][1] = y;
+	    data[2][2] = z;
+	}	
+	
+	void transpose(const Matrix& matrix)
+	{
+		for( int i= 0 ; i< 4 ; i++ ){
+			for( int j= 0 ; j< 4 ; j++ ){
+		    	data[j][i] = matrix.data[i][j];
+			}
+		}
+	}
+
+	void makeRotationAboutVector(const ppogl::Vec3d& u, const double angle );
+	
+	ppogl::Vec3d transformVector(const ppogl::Vec3d& v) const;
+	ppogl::Vec3d transformPoint(const ppogl::Vec3d& p) const;
 		
 	static void makeChangeOfBasisMatrix(Matrix& mat,
 				Matrix& invMat,
@@ -68,10 +99,21 @@ public:
 class Plane
 {
 public:
-	Plane(){};
-	Plane(const double x, const double y, const double z, const double _d);
+	Plane(){}
+	Plane(const double x, const double y, const double z, const double _d)
+	 : nml(x, y ,z),
+	   d(_d)
+	{
+	}
+		
+	double distance(const ppogl::Vec3d& point) const
+	{
+		return 	nml.x() * point.x() +
+				nml.y() * point.y() +
+				nml.z() * point.z() +
+				d;	
+	}
 	
-	double distance(const ppogl::Vec3d& point) const;
 	static bool intersect( const Plane& s1, const Plane& s2, const Plane& s3, ppogl::Vec3d *p );
 		
 	ppogl::Vec3d nml;
@@ -85,16 +127,35 @@ public:
 	double x, y ,z, w;
 
 	Quat(){};
-	Quat(const double x, const double y, const double z, const double w);	
+	Quat(const double _x, const double _y, const double _z, const double _w)
+	 : x(_x), y(_y), z(_z), w(_w)
+	{
+	}	
+	
 	Quat(const ppogl::Vec3d& s, const ppogl::Vec3d& t);
 	Quat(const Matrix& matrix);
+		
+	void set(const double _x, const double _y, const double _z, const double _w)
+	{
+		x=_x;
+		y=_y;
+		z=_z;
+		w=_w;
+	}
+		
+	Quat conjugate() const
+	{
+		return Quat(-x, -y, -z, w);	
+	}
 	
-	
-	void set(const double x, const double y, const double z, const double w);	
-
-	Quat conjugate(void) const;
-	ppogl::Vec3d rotate( const ppogl::Vec3d& v ) const;
-	
+	ppogl::Vec3d rotate(const ppogl::Vec3d& v) const
+	{
+	    Quat p(v.x(),v.y(),v.z(),1.0);
+	    Quat res_q = (*this)*(p*conjugate());
+    
+		return ppogl::Vec3d(res_q.x,res_q.y,res_q.z);
+	}
+		
 	Quat operator*(const Quat& quat) const;
 
 	static Quat interpolate(const Quat& q, Quat r,double t );		

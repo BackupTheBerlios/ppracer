@@ -19,8 +19,8 @@ FTFont::unreference()
 }
 
 FTFont::FTFont(const std::string& fontFilePath)
- : face( fontFilePath),
-   m_references(0), 
+ : face(fontFilePath),
+   m_references(0),
    glyphList(0),
    useDisplayLists(true)
 {

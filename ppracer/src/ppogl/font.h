@@ -38,39 +38,73 @@
 
 namespace ppogl{
 		
-class Font : public RefObject
+class Font
+ : public RefObject
 {
 private:
+	Font(const Font& font);
 	FTFont *mp_font;
 	ppogl::Color m_color;
 
 public:	
 	Font(const std::string& filename, unsigned int size, const ppogl::Color &color);
-
 	Font(FTFont *font, const ppogl::Color &color);
 
 	~Font();
 
-	///draws the utf8 string at position x,y
-	void draw(const std::string& , float x, float y);
-
 	///draws the utf8 string at the specified position 
 	void draw(const std::string& , const ppogl::Vec2d& position);
 
-	///draws the unicode string at position x,y 
-	void draw(const wchar_t *string, float x, float y);
-
+	///draws the utf8 string at position x,y
+	void draw(const std::string& string, const float x, const float y)
+	{
+		draw(string, ppogl::Vec2d(x, y));
+	}
+	
 	///draws the unicode string at the specified position
 	void draw(const wchar_t *string, const ppogl::Vec2d& position);
-
-	float ascender();
-	float descender();
-	float advance(const std::string& string);
-	float advance(const wchar_t* string);
-
-	ppogl::Color& getColor();
-	FTFont* getFTFont();
 	
+	///draws the unicode string at position x,y 
+	void draw(const wchar_t *string, const float x, const float y)
+	{
+		draw(string, ppogl::Vec2d(x, y));
+	}
+
+	float ascender()
+	{
+		return mp_font->Ascender();
+	}
+	
+	float descender()
+	{
+		return mp_font->Descender();
+	}
+	
+	float advance(const std::string& string)
+	{
+		const wchar_t* u_string
+			= Font::utf8ToUnicode(string);	
+	
+		const float adv = mp_font->Advance(u_string);
+		delete [] u_string;
+		return adv;	
+	}
+	
+	float advance(const wchar_t* string)
+	{
+		return mp_font->Advance(string);	
+	}
+
+	const ppogl::Color& getColor()
+	{
+		return m_color;
+	}
+		
+	FTFont* getFTFont()
+	{
+		return mp_font;
+	}
+		
 //static stuff	
 public:
 	/// returns the unicode of the utf8 string.

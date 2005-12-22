@@ -116,7 +116,7 @@ quadsquare::~quadsquare()
 {
     // Recursively delete sub-trees.
     for(int i=0; i<4; i++){
-		if(Child[i]) delete Child[i];
+		if(Child[i]!=NULL) delete Child[i];
     }
 }
 
@@ -391,7 +391,7 @@ quadsquare::resetTree()
 			Child[i]->resetTree();
 			if(Child[i]->Static == false){
 				delete Child[i];
-				Child[i] = 0;
+				Child[i] = NULL;
 	    	}
 		}
     }
@@ -502,7 +502,7 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 	    size *= 1.414213562;	// sqrt(2), because diagonal is longer than side.
 	    if (cd.parent->square->Error[2 + cd.childIndex] * ThresholdDetail < size) {
 		delete cd.parent->square->Child[cd.childIndex];	// Delete this.
-		cd.parent->square->Child[cd.childIndex] = 0;	// Clear the pointer.
+		cd.parent->square->Child[cd.childIndex] = NULL;	// Clear the pointer.
 	    }
 	}
     }
@@ -1451,7 +1451,7 @@ quadsquare::cleanup()
 	if(VertexArrayIndices[0]!= NULL){
 		for(int i=0; i<NUM_TERRAIN_TYPES; i++){
 			if(VertexArrayIndices[i]!=NULL)
-				delete VertexArrayIndices[i];
+				delete [] VertexArrayIndices[i];
 				VertexArrayIndices[i]=NULL;
 		}
 	}

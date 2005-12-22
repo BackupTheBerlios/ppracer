@@ -55,8 +55,10 @@ protected:
 
 public:
 	CourseRenderer();
+	~CourseRenderer();
 
 	void init();
+	void cleanup();
 
 	void render(const ppogl::Vec3d& pos);
 

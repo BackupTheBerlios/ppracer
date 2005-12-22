@@ -59,6 +59,20 @@ CourseRenderer::CourseRenderer()
 {
 }
 
+CourseRenderer::~CourseRenderer()
+{
+	if(mp_nmls!=NULL) delete[] mp_nmls;
+}
+
+void
+CourseRenderer::cleanup()
+{
+	//todo: investigate why this results in a segfault
+	//if(mp_root!=NULL) delete[] mp_root;
+		
+	quadsquare::cleanup();
+}
+
 void
 CourseRenderer::calcNormals()
 {
@@ -569,7 +583,7 @@ void
 CourseRenderer::resetQuadtree()
 {
     PP_REQUIRE(mp_root!=NULL,"root of quadtree is NULL pointer");
-	delete mp_root;
+	delete [] mp_root;
     mp_root = NULL;
 }
 

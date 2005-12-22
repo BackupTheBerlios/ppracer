@@ -51,4 +51,6 @@ bool collide(const std::string& node, const ppogl::Polyhedron& ph);
 
 void update_scene_nodes();
 
+void cleanup_scene_node();
+
 #endif // _HIER_H_

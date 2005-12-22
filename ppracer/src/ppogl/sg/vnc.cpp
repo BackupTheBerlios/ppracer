@@ -30,6 +30,8 @@ VNCArray::VNCArray(int size)
 	
 VNCArray::~VNCArray()
 {
+	disable();
+	
 	if(mp_vertices){
 		delete [] mp_vertices;
 	}

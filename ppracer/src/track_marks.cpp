@@ -345,6 +345,7 @@ TrackMarks::init()
 	int maxMarks = PPConfig.getInt("max_track_marks");
 	if(maxNumQuads!=maxMarks){
 		for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
+			if(trackMarks[i].quads) delete [] trackMarks[i].quads;
 	    	trackMarks[i].quads = new TrackQuad[maxMarks];
 		}	
 		maxNumQuads=maxMarks;
@@ -357,6 +358,11 @@ TrackMarks::TrackMarks()
  : player(NULL),
    quads(NULL)
 {
+}
+
+TrackMarks::~TrackMarks()
+{
+	if(quads!=NULL) delete [] quads;
 }
 
 void

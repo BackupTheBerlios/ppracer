@@ -49,8 +49,7 @@ Error::printMessage()
 }
 
 // the pointer to the one and only instance (singleton)
-Log* Log::sm_instance = NULL;
-
+std::auto_ptr<Log> Log::sm_instance;
 	
 /// Returns the one and only instance
 Log*
@@ -58,10 +57,13 @@ Log::Instance()
 {
 	/// check whether there is an instance
 	/// and create a new one if it fails.
-	if(sm_instance==NULL){
-		sm_instance = new Log();
-	}	
-	return sm_instance;
+	
+	Log* temp = sm_instance.get();
+    if(temp == NULL){
+		temp = new Log;
+        sm_instance.reset(temp);
+	}
+	return temp;
 }
 
 Log::Log()
