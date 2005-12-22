@@ -90,8 +90,14 @@ SQInteger _stream_readn(HSQUIRRELVM v)
 	SQInteger format;
 	sq_getinteger(v, 2, &format);
 	switch(format) {
-	case 'i': {
+	case 'l': {
 		SQInteger i;
+		SAFE_READN(&i, sizeof(i));
+		sq_pushinteger(v, i);
+			  }
+		break;
+	case 'i': {
+		SQInt32 i;
 		SAFE_READN(&i, sizeof(i));
 		sq_pushinteger(v, i);
 			  }
@@ -195,11 +201,18 @@ SQInteger _stream_writen(HSQUIRRELVM v)
 	SQFloat tf;
 	sq_getinteger(v, 3, &format);
 	switch(format) {
-	case 'i': {
+	case 'l': {
 		SQInteger i;
 		sq_getinteger(v, 2, &ti);
 		i = ti;
 		self->Write(&i, sizeof(SQInteger));
+			  }
+		break;
+	case 'i': {
+		SQInt32 i;
+		sq_getinteger(v, 2, &ti);
+		i = ti;
+		self->Write(&i, sizeof(SQInt32));
 			  }
 		break;
 	case 's': {

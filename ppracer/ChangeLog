@@ -4,6 +4,9 @@
 2005-12-22  Volker Stroebel <volker@planetpenguin.de>
 	* src/ftgl/FTList.h
 	removed unsued files
+	
+	* src/squirrel/* src/sqstdlib/*
+	updated squirrel to 2.1_w3
 
 2005-12-13  Nix  <nix@esperi.org.uk>
         * configure.in (ppdatadir): Expand at make time; dereference

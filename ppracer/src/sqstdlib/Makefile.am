@@ -10,7 +10,7 @@ libsqstdlib_a_SOURCES = \
 		sqstdsystem.cpp \
 		sqstdstring.cpp \
 		sqstdaux.cpp \
-		sqstdrex.c	\
+		sqstdrex.cpp	\
 		sqstdaux.h	\
 		sqstdblob.h	\
 		sqstdblobimpl.h	\

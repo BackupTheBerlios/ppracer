@@ -116,8 +116,7 @@ static SQInteger _string_format(HSQUIRRELVM v)
 				return sq_throwerror(v,_SC("invalid format"));
 			}
 			n++;
-			if((allocated-i) < addlen)
-				allocated += addlen;
+			allocated += addlen;
 			dest = sq_getscratchpad(v,allocated);
 			switch(valtype) {
 			case 's': i += scsprintf(&dest[i],fmt,ts); break;

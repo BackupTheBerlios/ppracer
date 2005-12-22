@@ -228,20 +228,20 @@ SQInteger SQFuncState::GetConstant(const SQObject &cons)
 
 void SQFuncState::SetIntructionParams(SQInteger pos,SQInteger arg0,SQInteger arg1,SQInteger arg2,SQInteger arg3)
 {
-	_instructions[pos]._arg0=*((SQUnsignedInteger *)&arg0);
-	_instructions[pos]._arg1=*((SQUnsignedInteger *)&arg1);
-	_instructions[pos]._arg2=*((SQUnsignedInteger *)&arg2);
-	_instructions[pos]._arg3=*((SQUnsignedInteger *)&arg3);
+	_instructions[pos]._arg0=(SQChar)*((SQUnsignedInteger *)&arg0);
+	_instructions[pos]._arg1=(SQInt32)*((SQUnsignedInteger *)&arg1);
+	_instructions[pos]._arg2=(SQChar)*((SQUnsignedInteger *)&arg2);
+	_instructions[pos]._arg3=(SQChar)*((SQUnsignedInteger *)&arg3);
 }
 
 void SQFuncState::SetIntructionParam(SQInteger pos,SQInteger arg,SQInteger val)
 {
 	switch(arg){
-		case 0:_instructions[pos]._arg0=*((SQUnsignedInteger *)&val);break;
-		case 1:_instructions[pos]._arg1=*((SQUnsignedInteger *)&val);break;
-		case 2:_instructions[pos]._arg2=*((SQUnsignedInteger *)&val);break;
-		case 3:_instructions[pos]._arg3=*((SQUnsignedInteger *)&val);break;
-		case 4:_instructions[pos]._arg1=*((SQUnsignedInteger *)&val);break;
+		case 0:_instructions[pos]._arg0=(SQChar)*((SQUnsignedInteger *)&val);break;
+		case 1:case 4:_instructions[pos]._arg1=(SQInt32)*((SQUnsignedInteger *)&val);break;
+		case 2:_instructions[pos]._arg2=(SQChar)*((SQUnsignedInteger *)&val);break;
+		case 3:_instructions[pos]._arg3=(SQChar)*((SQUnsignedInteger *)&val);break;
+		//case 4:_instructions[pos]._arg1=(SQInt32)*((SQUnsignedInteger *)&val);break;
 	};
 }
 
@@ -482,7 +482,7 @@ void SQFuncState::AddInstruction(SQInstruction &i)
 SQObject SQFuncState::CreateString(const SQChar *s,SQInteger len)
 {
 	SQObjectPtr ns(SQString::Create(_sharedstate,s,len));
-	_table(_strings)->NewSlot(ns,1);
+	_table(_strings)->NewSlot(ns,(SQInteger)1);
 	return ns;
 }
 

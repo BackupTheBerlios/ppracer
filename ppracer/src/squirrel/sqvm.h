@@ -42,6 +42,7 @@ struct SQVM : public CHAINABLE_OBJ
 		SQObjectPtrVec *_literals;
 		SQObject _closure;
 		SQObject _generator;
+		SQInteger _parenttraps;
 		SQInteger _etraps;
 		SQInteger _prevstkbase;
 		SQInteger _prevtop;
@@ -59,9 +60,9 @@ public:
 	~SQVM();
 	bool Init(SQVM *friendvm, SQInteger stacksize);
 	bool Execute(SQObjectPtr &func, SQInteger target, SQInteger nargs, SQInteger stackbase, SQObjectPtr &outres, ExecutionType et = ET_CALL);
-	//start a native call return when the NATIVE closure returns(returns true if the vm has been suspended)
+	//starts a native call return when the NATIVE closure returns
 	bool CallNative(SQNativeClosure *nclosure, SQInteger nargs, SQInteger stackbase, bool tailcall, SQObjectPtr &retval,bool &suspend);
-	//start a SQUIRREL call in the same "Execution loop"
+	//starts a SQUIRREL call in the same "Execution loop"
 	bool StartCall(SQClosure *closure, SQInteger target, SQInteger nargs, SQInteger stackbase, bool tailcall);
 	bool CreateClassInstance(SQClass *theclass, SQInteger nargs, SQInteger stackbase, SQObjectPtr &retval);
 	//call a generic closure pure SQUIRREL or NATIVE
@@ -73,7 +74,7 @@ public:
 	bool Get(const SQObjectPtr &self, const SQObjectPtr &key, SQObjectPtr &dest, bool raw, bool fetchroot);
 	bool FallBackGet(const SQObjectPtr &self,const SQObjectPtr &key,SQObjectPtr &dest,bool raw);
 	bool Set(const SQObjectPtr &self, const SQObjectPtr &key, const SQObjectPtr &val, bool fetchroot);
-	bool NewSlot(const SQObjectPtr &self, const SQObjectPtr &key, const SQObjectPtr &val);
+	bool NewSlot(const SQObjectPtr &self, const SQObjectPtr &key, const SQObjectPtr &val,bool bstatic);
 	bool DeleteSlot(const SQObjectPtr &self, const SQObjectPtr &key, SQObjectPtr &res);
 	bool Clone(const SQObjectPtr &self, SQObjectPtr &target);
 	bool ObjCmp(const SQObjectPtr &o1, const SQObjectPtr &o2,SQInteger &res);
