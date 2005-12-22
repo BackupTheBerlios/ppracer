@@ -317,7 +317,6 @@ find_barycentric_coords(float x, float z,
 {
     float dx, ex, dz, ez, qx, qz; // to calc. barycentric coords 
 
-    float* elevation = Course::getElevData();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
 
 	ppogl::Vec2i i0, i1;	

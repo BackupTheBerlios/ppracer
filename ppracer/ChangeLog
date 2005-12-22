@@ -7,6 +7,9 @@
 	
 	* src/squirrel/* src/sqstdlib/*
 	updated squirrel to 2.1_w3
+	
+	* src/phys_sim.cpp
+	removed unused code
 
 2005-12-13  Nix  <nix@esperi.org.uk>
         * configure.in (ppdatadir): Expand at make time; dereference
