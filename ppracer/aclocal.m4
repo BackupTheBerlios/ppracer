@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.9.5 -*- Autoconf -*-
+# generated automatically by aclocal 1.9.6 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 # 2005  Free Software Foundation, Inc.
@@ -13,6 +13,15 @@
 
 # Configure paths for FreeType2
 # Marcelo Magallon 2001-10-26, based on gtk.m4 by Owen Taylor
+#
+# Copyright 2001, 2003 by
+# David Turner, Robert Wilhelm, and Werner Lemberg.
+#
+# This file is part of the FreeType project, and may only be used, modified,
+# and distributed under the terms of the FreeType project license,
+# LICENSE.TXT.  By continuing to use, modify, or distribute this file you
+# indicate that you have read the license and understand and accept it
+# fully.
 #
 # serial 2
 
@@ -244,8 +253,10 @@ AC_ARG_ENABLE(sdltest, [  --disable-sdltest       Do not try to compile and run 
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
     if test "x$enable_sdltest" = "xyes" ; then
       ac_save_CFLAGS="$CFLAGS"
+      ac_save_CXXFLAGS="$CXXFLAGS"
       ac_save_LIBS="$LIBS"
       CFLAGS="$CFLAGS $SDL_CFLAGS"
+      CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
       LIBS="$LIBS $SDL_LIBS"
 dnl
 dnl Now check if the installed SDL is sufficiently new. (Also sanity
@@ -330,6 +341,7 @@ int main (int argc, char *argv[])
        else
           echo "*** Could not run SDL test program, checking why..."
           CFLAGS="$CFLAGS $SDL_CFLAGS"
+          CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
           LIBS="$LIBS $SDL_LIBS"
           AC_TRY_LINK([
 #include <stdio.h>
@@ -354,10 +366,12 @@ int main(int argc, char *argv[])
           echo "*** or that you have moved SDL since it was installed. In the latter case, you"
           echo "*** may want to edit the sdl-config script: $SDL_CONFIG" ])
           CFLAGS="$ac_save_CFLAGS"
+          CXXFLAGS="$ac_save_CXXFLAGS"
           LIBS="$ac_save_LIBS"
        fi
      fi
      SDL_CFLAGS=""
+     SDL_CXXFLAGS=""
      SDL_LIBS=""
      ifelse([$3], , :, [$3])
   fi
@@ -383,7 +397,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version="1.9"])
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.9.5])])
+	 [AM_AUTOMAKE_VERSION([1.9.6])])
 
 # AM_AUX_DIR_EXPAND                                         -*- Autoconf -*-
 

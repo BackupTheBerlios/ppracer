@@ -1,9 +1,9 @@
 
 === ppracer 0.5 alpha2 ===
 
-
-
-
+2005-12-13  Nix  <nix@esperi.org.uk>
+        * configure.in (ppdatadir): Expand at make time; dereference
+        if a symlink.
 
 2005-11-30  Volker Stroebel <volker@planetpenguin.de>
 	* src/quadtree.cpp src/trackmarks.*

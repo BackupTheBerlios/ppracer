@@ -434,7 +434,9 @@ dnl --------------------------------------------------------------------------
 
 dnl Specify data directory
 
-ppdatadir="$datadir/ppracer"
+dnl (The trailing slash is essential: if this ends up a symlink, we want the
+dnl sanity-checking code in src/main.cpp to dereference it.)
+ppdatadir='${datadir}/ppracer/'
 
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
