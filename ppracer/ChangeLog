@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2005-12-22  Volker Stroebel <volker@planetpenguin.de>
+	* src/ftgl/FTList.h
+	removed unsued files
+
 2005-12-13  Nix  <nix@esperi.org.uk>
         * configure.in (ppdatadir): Expand at make time; dereference
         if a symlink.
