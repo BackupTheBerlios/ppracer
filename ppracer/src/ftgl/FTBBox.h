@@ -65,12 +65,6 @@ class FTGL_EXPORT FTBBox
             upperZ = 0.0f;
             
         }       
-
-        /**
-         * Destructor
-         */
-        ~FTBBox()
-        {}
            
         void SetDepth( float depth)
         {

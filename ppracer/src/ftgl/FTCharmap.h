@@ -37,7 +37,10 @@ class FTGL_EXPORT FTCharmap
         /**
          * Destructor
          */
-        virtual ~FTCharmap();
+        virtual ~FTCharmap()
+		{
+    		charMap.clear();
+		};
 
         /**
          * Queries for the current character map code.

@@ -4,8 +4,7 @@
 #include FT_TRUETYPE_TABLES_H
 
 FTFace::FTFace(const std::string& fontFilePath)
-:   ftFace(0),
-	charSize(),
+:   charSize(),
 	numGlyphs(0),
     fontEncodingList(0),
 	err(0),

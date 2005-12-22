@@ -13,7 +13,6 @@ libftgl_a_SOURCES = 	\
 	FTGlyph.h		\
 	FTGlyphContainer.h	\
 	FTLibrary.h		\
-	FTList.h		\
 	FTPoint.h		\
 	FTSize.h		\
 	FTVector.h		\

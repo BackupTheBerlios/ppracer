@@ -39,8 +39,8 @@ class FTGL_EXPORT FTCharToGlyphIndexMap
         };
 
         FTCharToGlyphIndexMap()
+		 : Indices(0)
         {
-            this->Indices = 0;
         }
 
         virtual ~FTCharToGlyphIndexMap()

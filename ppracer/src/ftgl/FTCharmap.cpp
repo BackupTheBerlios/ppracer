@@ -15,11 +15,12 @@ FTCharmap::FTCharmap(FTFace* face)
     ftEncoding = ftFace->charmap->encoding;
 }
 
-
+/*
 FTCharmap::~FTCharmap()
 {
     charMap.clear();
 }
+*/
 
 
 bool FTCharmap::CharMap( FT_Encoding encoding)

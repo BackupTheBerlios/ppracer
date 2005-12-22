@@ -18,11 +18,11 @@ class FTGL_EXPORT FTVector
         typedef size_t size_type;
         
         FTVector()
+		 : Capacity(0),
+		   Size(0),
+           Items(0)
         {
-            Capacity = Size = 0;
-            Items = 0;
         }
-
         
         virtual ~FTVector()
         {
