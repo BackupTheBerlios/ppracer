@@ -75,7 +75,7 @@ am_ppracer_OBJECTS = course_load.$(OBJEXT) course_mgr.$(OBJEXT) \
 ppracer_OBJECTS = $(am_ppracer_OBJECTS)
 ppracer_LDADD = $(LDADD)
 ppracer_DEPENDENCIES = ppogl/libppogl.a sqstdlib/libsqstdlib.a \
-	squirrel/libsquirrel.a ftgl/libftgl.a
+	squirrel/libsquirrel.a
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -209,13 +209,12 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = squirrel sqstdlib ftgl ppogl
+SUBDIRS = squirrel sqstdlib ppogl
 AM_CPPFLAGS = -DPP_DATADIR=\"$(ppdatadir)\"
 LDADD = \
 		ppogl/libppogl.a	\
 		sqstdlib/libsqstdlib.a	\
-		squirrel/libsquirrel.a	\
-		ftgl/libftgl.a	
+		squirrel/libsquirrel.a	
 
 ppracer_SOURCES = \
 	course_load.cpp				\

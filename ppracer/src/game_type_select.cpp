@@ -85,8 +85,8 @@ GameTypeSelect::keyPressEvent(SDLKey key)
 	switch (key){
 		case 'q':
 		case 27: // Esc 
-			winsys_exit(0);
-	    	return true;;
+			setMode( QUIT );
+	    	return true;
 		case 'e':
 		case 13: // Enter
 			eventSelect();
@@ -131,5 +131,5 @@ GameTypeSelect::configuration()
 void
 GameTypeSelect::quit()
 {
-	winsys_exit( 0 );
+	setMode( QUIT );
 }

@@ -129,15 +129,15 @@ private:
     void createChild(int index, const quadcornerdata& cd);
     void setupCornerData(quadcornerdata* q, const quadcornerdata& pd, const int ChildIndex);
 
-    void updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis);
-    void renderAux(const quadcornerdata& cd, ClipResult vi);
-    void renderAuxSpezial(const quadcornerdata& cd, ClipResult vis);
+    void updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ViewFrustum::ClipResult vis);
+    void renderAux(const quadcornerdata& cd, ViewFrustum::ClipResult vi);
+    void renderAuxSpezial(const quadcornerdata& cd, ViewFrustum::ClipResult vis);
     void setStatic(const quadcornerdata& cd);
 	int	initVert(const int i, const int x, const int z);
 
     bool vertexTest(int x, float y, int z, float error, const float Viewer[3], VertexLoc vertex_loc );
     bool boxTest(int x, int z, float size, float miny, float maxy, float error, const float Viewer[3]);
-    ClipResult clipSquare(const quadcornerdata& cd);
+    ViewFrustum::ClipResult clipSquare(const quadcornerdata& cd);
 };
 
 #endif // _QUADTREE_H_

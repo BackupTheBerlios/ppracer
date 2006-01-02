@@ -40,6 +40,10 @@ UITheme::UITheme()
 	hScaleTex = ppogl::TextureMgr::getInstance().get("hscale_arrows");	
 }
 
+UITheme::~UITheme()
+{
+}
+
 void
 UITheme::drawDecoration(const ppogl::Vec2i& resolution)
 {

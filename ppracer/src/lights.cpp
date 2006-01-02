@@ -24,29 +24,22 @@
 
 #include "ppogl/base/glwrappers.h"
 
-
-static Light course_lights[NUM_COURSE_LIGHTS];
-
-Light*
-get_course_lights()
-{ 
-    return course_lights; 
-}
+Light Light::lights[NUM_COURSE_LIGHTS];
 
 void
-reset_lights()
+Light::reset()
 {
     for(int i=0; i<NUM_COURSE_LIGHTS; i++){
 		// Note: we initialize the lights to default OpenGL values
         // EXCEPT that light 0 isn't treated differently than the
         // others 
-		course_lights[i].enabled = false;
-		course_lights[i].spot_direction.z()=-1.0;
-		course_lights[i].spot_exponent = 0.0;
-		course_lights[i].spot_cutoff = 180.0;
-		course_lights[i].constant_attenuation = 1.0;
-		course_lights[i].linear_attenuation = 0.0;
-		course_lights[i].quadratic_attenuation = 0.0;
+		lights[i].enabled = false;
+		lights[i].spot_direction.z()=-1.0;
+		lights[i].spot_exponent = 0.0;
+		lights[i].spot_cutoff = 180.0;
+		lights[i].constant_attenuation = 1.0;
+		lights[i].linear_attenuation = 0.0;
+		lights[i].quadratic_attenuation = 0.0;
     }
 
     // Turn off global ambient light
@@ -54,32 +47,25 @@ reset_lights()
 }
 
 void
-setup_course_lighting()
+Light::setup()
 {
-    Light* course_lights = get_course_lights();
-
     for(int i=0; i<NUM_COURSE_LIGHTS; i++){
-		if(!course_lights[i].enabled){
+		if(!lights[i].enabled){
 			gl::Disable(GL_LIGHT0 + i);
 			continue;
 		}
 		gl::Enable(GL_LIGHT0 + i);
 
-		gl::Light( GL_LIGHT0 + i, GL_AMBIENT, course_lights[i].ambient );
-		gl::Light( GL_LIGHT0 + i, GL_DIFFUSE, course_lights[i].diffuse );
-		gl::Light( GL_LIGHT0 + i, GL_SPECULAR, course_lights[i].specular );
-		gl::Light( GL_LIGHT0 + i, GL_POSITION, course_lights[i].position );
-		gl::Light( GL_LIGHT0 + i, GL_SPOT_DIRECTION, course_lights[i].spot_direction );
-		gl::Light( GL_LIGHT0 + i, GL_SPOT_EXPONENT, 
-			  course_lights[i].spot_exponent );
-		gl::Light( GL_LIGHT0 + i, GL_SPOT_CUTOFF, 
-			  course_lights[i].spot_cutoff );
-		gl::Light( GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, 
-			  course_lights[i].constant_attenuation );
-		gl::Light( GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, 
-			  course_lights[i].linear_attenuation );
-		gl::Light( GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, 
-			  course_lights[i].quadratic_attenuation );
+		gl::Light( GL_LIGHT0 + i, GL_AMBIENT, lights[i].ambient );
+		gl::Light( GL_LIGHT0 + i, GL_DIFFUSE, lights[i].diffuse );
+		gl::Light( GL_LIGHT0 + i, GL_SPECULAR, lights[i].specular );
+		gl::Light( GL_LIGHT0 + i, GL_POSITION, lights[i].position );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_DIRECTION, lights[i].spot_direction );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_EXPONENT, lights[i].spot_exponent );
+		gl::Light( GL_LIGHT0 + i, GL_SPOT_CUTOFF, lights[i].spot_cutoff );
+		gl::Light( GL_LIGHT0 + i, GL_CONSTANT_ATTENUATION, lights[i].constant_attenuation );
+		gl::Light( GL_LIGHT0 + i, GL_LINEAR_ATTENUATION, lights[i].linear_attenuation );
+		gl::Light( GL_LIGHT0 + i, GL_QUADRATIC_ATTENUATION, lights[i].quadratic_attenuation );
 	}
 }
 
@@ -102,7 +88,7 @@ course_light_cb(ppogl::Script *vm)
 
 	// activated
 	if(num_args>=2){
-		course_lights[light_num].enabled = vm->getBool(2);		
+		Light::lights[light_num].enabled = vm->getBool(2);		
 	}
 	
 	// position
@@ -110,7 +96,7 @@ course_light_cb(ppogl::Script *vm)
 		vm->pushNull();
 		for(int i=0; i<4; i++){
 			vm->next(3);
-			course_lights[light_num].position.values[i]=vm->getFloat();
+			Light::lights[light_num].position.values[i]=vm->getFloat();
 			vm->pop(2);
 		}	
 	}
@@ -120,7 +106,7 @@ course_light_cb(ppogl::Script *vm)
 		vm->pushNull();
 		for(int i=0; i<4; i++){
 			vm->next(4);
-			course_lights[light_num].diffuse.values[i]=vm->getFloat();
+			Light::lights[light_num].diffuse.values[i]=vm->getFloat();
 			vm->pop(2);
 		}
 	}
@@ -130,7 +116,7 @@ course_light_cb(ppogl::Script *vm)
 		vm->pushNull();
 		for(int i=0; i<4; i++){
 			vm->next(5);
-			course_lights[light_num].specular.values[i]=vm->getFloat();
+			Light::lights[light_num].specular.values[i]=vm->getFloat();
 			vm->pop(2);
 		}	
 	}
@@ -140,7 +126,7 @@ course_light_cb(ppogl::Script *vm)
 		vm->pushNull();
 		for(int i=0; i<4; i++){
 			vm->next(6);
-			course_lights[light_num].ambient.values[i]=vm->getFloat();
+			Light::lights[light_num].ambient.values[i]=vm->getFloat();
 			vm->pop(2);
 		}
 	}

@@ -216,10 +216,10 @@ GameOver::postDisplay(float timestep)
 }
 
 bool
-GameOver::mouseButtonEvent(int button, int x, int y, bool pressed)
+GameOver::mouseButtonEvent(int button, const ppogl::Vec2i& position, bool pressed)
 
 {
-	if ( GameMgr::getInstance().gametype!=GameMgr::PRACTICING ) {
+	if(GameMgr::getInstance().gametype!=GameMgr::PRACTICING ) {
 		setMode(EVENT_RACE_SELECT);
 	}else{
 		setMode(RACE_SELECT);

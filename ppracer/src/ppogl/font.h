@@ -27,7 +27,7 @@
 	#include <WTypes.h>
 #endif
 
-#include "ftgl/FTFont.h"
+#include "font/FTFont.h"
 #include "base/color.h"
 #include "base/vec2d.h"
 #include "base/refptr.h"
@@ -43,12 +43,12 @@ class Font
 {
 private:
 	Font(const Font& font);
-	FTFont *mp_font;
+	ppogl::RefPtr<ppogl::FTFont> mp_font;
 	ppogl::Color m_color;
 
 public:	
 	Font(const std::string& filename, unsigned int size, const ppogl::Color &color);
-	Font(FTFont *font, const ppogl::Color &color);
+	Font(ppogl::RefPtr<ppogl::FTFont> font, const ppogl::Color &color);
 
 	~Font();
 
@@ -70,12 +70,12 @@ public:
 		draw(string, ppogl::Vec2d(x, y));
 	}
 
-	float ascender()
+	float ascender() const 
 	{
 		return mp_font->Ascender();
 	}
 	
-	float descender()
+	float descender() const 
 	{
 		return mp_font->Descender();
 	}
@@ -95,12 +95,12 @@ public:
 		return mp_font->Advance(string);	
 	}
 
-	const ppogl::Color& getColor()
+	const ppogl::Color& getColor() const
 	{
 		return m_color;
 	}
 		
-	FTFont* getFTFont()
+	ppogl::RefPtr<ppogl::FTFont> getFTFont()
 	{
 		return mp_font;
 	}

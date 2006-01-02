@@ -4878,9 +4878,10 @@ TR_LIBS=""
 case "$host" in
 i*86-*-*) TR_CFLAGS="$TR_CFLAGS";
           TR_CXXFLAGS="$TR_CXXFLAGS";;
-alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";;
+alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";
+		  TR_CXXFLAGS="$TR_CXXFLAGS -mieee";;
 powerpc-*-*) TR_CFLAGS="$TR_CFLAGS -fsigned-char";
-             R_CXXFLAGS="$TR_CXXFLAGS -fsigned-char";;
+             TR_CXXFLAGS="$TR_CXXFLAGS -fsigned-char";;
 esac
 
 
@@ -4891,8 +4892,8 @@ if test "${enable_debug+set}" = set; then
 fi;
 
 if test "x$enable_debug" = "xyes" ; then
-	TR_CFLAGS="-g -Wall -DPPOGL_ENABLE_ASSERT"
-	TR_CXXFLAGS="-g -Wall -DPPOGL_ENABLE_ASSERT"
+	TR_CFLAGS="$TR_CFLAGS -g -Wall -DPPOGL_ENABLE_ASSERT"
+	TR_CXXFLAGS="$TR_CXXFLAGS -g -Wall -DPPOGL_ENABLE_ASSERT"
 fi
 
 # Check whether --enable-pedantic or --disable-pedantic was given.
@@ -8719,7 +8720,7 @@ CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS $PNG_CXXFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $TR_LIBS $PNG_LIBS $FT2_LIBS"
 
 
-                                                                                ac_config_files="$ac_config_files Makefile src/Makefile src/squirrel/Makefile src/sqstdlib/Makefile src/ftgl/Makefile src/ppogl/Makefile data/Makefile data/config.nut"
+                                                                      ac_config_files="$ac_config_files Makefile src/Makefile src/squirrel/Makefile src/sqstdlib/Makefile src/ppogl/Makefile data/Makefile data/config.nut"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -9287,7 +9288,6 @@ do
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "src/squirrel/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/squirrel/Makefile" ;;
   "src/sqstdlib/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/sqstdlib/Makefile" ;;
-  "src/ftgl/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/ftgl/Makefile" ;;
   "src/ppogl/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/ppogl/Makefile" ;;
   "data/Makefile" ) CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
   "data/config.nut" ) CONFIG_FILES="$CONFIG_FILES data/config.nut" ;;

@@ -116,7 +116,9 @@ quadsquare::~quadsquare()
 {
     // Recursively delete sub-trees.
     for(int i=0; i<4; i++){
-		if(Child[i]!=NULL) delete Child[i];
+		if(Child[i]!=NULL){
+			delete Child[i];
+		}
     }
 }
 
@@ -501,7 +503,7 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 	if (!NecessaryEdges) {
 	    size *= 1.414213562;	// sqrt(2), because diagonal is longer than side.
 	    if (cd.parent->square->Error[2 + cd.childIndex] * ThresholdDetail < size) {
-		delete cd.parent->square->Child[cd.childIndex];	// Delete this.
+		delete cd.parent->square->Child[cd.childIndex];	// Delete this.			
 		cd.parent->square->Child[cd.childIndex] = NULL;	// Clear the pointer.
 	    }
 	}
@@ -731,21 +733,21 @@ quadsquare::update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation)
     Viewer[1] = viewerLocation[1];
     Viewer[2] = viewerLocation[2] / ScaleZ;
 	
-    updateAux(cd, Viewer, 0, SomeClip);
+    updateAux(cd, Viewer, 0, ViewFrustum::SomeClip);
 }
 
 
 void
-quadsquare::updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ClipResult vis )
+quadsquare::updateAux(const quadcornerdata& cd, const float ViewerLocation[3], const float CenterError, ViewFrustum::ClipResult vis )
 /// Does the actual work of updating enabled states and tree growing/shrinking.
 {    
-	PP_REQUIRE( vis != NotVisible, "Invalid visibility value" );
+	PP_REQUIRE( vis != ViewFrustum::NotVisible, "Invalid visibility value" );
     
 	BlockUpdateCount++;	//xxxxx
 
-    if ( vis != NoClip ) {
+    if ( vis != ViewFrustum::NoClip ) {
 		vis = clipSquare( cd );
-		if ( vis == NotVisible ) {
+		if ( vis == ViewFrustum::NotVisible ) {
 	    	return;
 		}
     }
@@ -913,8 +915,9 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
     //Draw the "normal" blended triangles
 
 	initArrayCounters();
-	renderAux(cd, SomeClip);
-	
+		
+	renderAux(cd, ViewFrustum::SomeClip);
+		
 	std::list<int>::iterator it;
 	for (it=usedTerrains.begin(); it!=usedTerrains.end(); it++) {
 		
@@ -950,7 +953,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 	 * Get the "special" three-terrain triangles
 	 */
 	initArrayCounters();
-	renderAuxSpezial( cd, SomeClip);
+	renderAuxSpezial(cd, ViewFrustum::SomeClip);
 	
 	if ( VertexArrayCounter[0] != 0 ) {
 	    /* Render black triangles */
@@ -1019,15 +1022,15 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
     gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-ClipResult
+ViewFrustum::ClipResult
 quadsquare::clipSquare( const quadcornerdata& cd )
 {
     if ( cd.xorg >= RowSize-1 ) {
-		return NotVisible;
+		return ViewFrustum::NotVisible;
     } 
 
     if ( cd.zorg >= NumRows-1 ) {
-		return NotVisible;
+		return ViewFrustum::NotVisible;
     }
 	
     const int whole = 2 << cd.level;
@@ -1035,17 +1038,17 @@ quadsquare::clipSquare( const quadcornerdata& cd )
 	const ppogl::Vec3d Min(cd.xorg*ScaleX, MinY, (cd.zorg + whole) * ScaleZ);
     const ppogl::Vec3d Max((cd.xorg + whole) * ScaleX, MaxY,cd.zorg*ScaleZ);
 
-    const ClipResult clip_result = clip_aabb_to_view_frustum(Min, Max);
+    const ViewFrustum::ClipResult clip_result = viewFrustum.clip(Min, Max);
 
-    if ( clip_result == NotVisible || clip_result == SomeClip ) {
+    if ( clip_result == ViewFrustum::NotVisible || clip_result == ViewFrustum::SomeClip ) {
 		return clip_result;
     }
 
     if ( cd.xorg + whole >= RowSize ) {
-		return SomeClip;
+		return ViewFrustum::SomeClip;
     }
     if ( cd.zorg + whole >= NumRows ) {
-		return SomeClip;
+		return ViewFrustum::SomeClip;
     }
 
     return clip_result;
@@ -1096,7 +1099,7 @@ quadsquare::makeSpecialTri( int a, int b, int c)
 static bool terraintest[NUM_TERRAIN_TYPES];
 
 void
-quadsquare::renderAux(const quadcornerdata& cd, ClipResult vis)
+quadsquare::renderAux(const quadcornerdata& cd, ViewFrustum::ClipResult vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
 /// Recurses as necessary.
 {
@@ -1107,8 +1110,8 @@ quadsquare::renderAux(const quadcornerdata& cd, ClipResult vis)
     for (int i = 0; i < 4; i++, mask <<= 1) {
 		if (EnabledFlags & (16 << i)) {
 			setupCornerData(&q, cd, i);
-			if (vis != NoClip) {
-				if ((vis = clipSquare( q ))!= NotVisible ) {
+			if (vis != ViewFrustum::NoClip) {
+				if ((vis = clipSquare( q ))!= ViewFrustum::NotVisible ) {
 		 		   Child[i]->renderAux(q, vis);
 				}
    		 	}else{		
@@ -1191,7 +1194,7 @@ quadsquare::renderAux(const quadcornerdata& cd, ClipResult vis)
 }
 
 void
-quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
+quadsquare::renderAuxSpezial(const quadcornerdata& cd, ViewFrustum::ClipResult vis)
 /// Does the work of rendering this square.  Uses the enabled vertices only.
 /// Recurses as necessary.
 {
@@ -1202,8 +1205,8 @@ quadsquare::renderAuxSpezial(const quadcornerdata& cd, ClipResult vis)
     for(int i = 0; i < 4; i++, mask <<= 1){
 		if(EnabledFlags & (16 << i)){
 			setupCornerData(&q, cd, i);
-			if (vis != NoClip) {
-				if ((vis = clipSquare( q ))!= NotVisible ) {
+			if (vis != ViewFrustum::NoClip) {
+				if ((vis = clipSquare( q ))!= ViewFrustum::NotVisible ) {
 		 		   Child[i]->renderAuxSpezial(q, vis);
 				}
    		 	}else{		

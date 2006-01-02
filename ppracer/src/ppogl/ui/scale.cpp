@@ -178,20 +178,20 @@ HScale::draw(const ppogl::Vec2d& position)
 	ppogl::Vec2d temp = position;
 	ppogl::Vec2d size = m_size;
 	
-	temp.x()+=14;
-	temp.y()+=m_size.y()/2;
+	temp.x()+=14.0;
+	temp.y()+=m_size.y()/2.0;
 
-	size.x()-=24;
-	size.y()=2;
+	size.x()-=24.0;
+	size.y()=2.0;
 	
 	ppogl::drawRectangle(temp,size,ppogl::Color(1.0,1.0,1.0,0.8));
 
 	temp.y()-=7;
 	
-	float slider = size.x()-28;
-	temp.x()+= 4 + slider*m_value;
+	double slider = size.x()-28.0;
+	temp.x()+= 4.0 + slider*m_value;
 	
-	ppogl::drawRectangle(temp,ppogl::Vec2d(16,16),ppogl::Color::white);	
+	ppogl::drawRectangle(temp,ppogl::Vec2d(16.0,16.0),ppogl::Color::white);	
 }
 
 } //namepsace ppogl

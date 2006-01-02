@@ -61,15 +61,17 @@ CourseRenderer::CourseRenderer()
 
 CourseRenderer::~CourseRenderer()
 {
-	if(mp_nmls!=NULL) delete[] mp_nmls;
+	if(mp_nmls) delete[] mp_nmls;
+	if(mp_root) delete mp_root;
 }
 
 void
 CourseRenderer::cleanup()
 {
-	//todo: investigate why this results in a segfault
-	//if(mp_root!=NULL) delete[] mp_root;
-		
+	if(mp_root){
+		delete mp_root;
+		mp_root=NULL;
+	}
 	quadsquare::cleanup();
 }
 
@@ -397,10 +399,10 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     const double course_angle = Course::getAngle();
     const double slope = tan( ANGLES_TO_RADIANS( course_angle ) );
 
-    const pp::Plane& far_clip_plane = get_far_clip_plane();
-    const pp::Plane& left_clip_plane = get_left_clip_plane();
-    const pp::Plane& right_clip_plane = get_right_clip_plane();
-    const pp::Plane& bottom_clip_plane = get_bottom_clip_plane();
+    const pp::Plane& far_clip_plane = viewFrustum.getFarClipPlane();
+    const pp::Plane& left_clip_plane = viewFrustum.getLeftClipPlane();
+    const pp::Plane& right_clip_plane = viewFrustum.getRightClipPlane();
+    const pp::Plane& bottom_clip_plane = viewFrustum.getBottomClipPlane();
 
     // Find the bottom plane 
 	pp::Plane bottom_plane;
@@ -577,14 +579,12 @@ CourseRenderer::getNormals()
 	return mp_nmls;
 } 
 
-
-
 void
 CourseRenderer::resetQuadtree()
 {
     PP_REQUIRE(mp_root!=NULL,"root of quadtree is NULL pointer");
-	delete [] mp_root;
-    mp_root = NULL;
+	delete mp_root;
+	mp_root = NULL;
 }
 
 void
@@ -604,7 +604,7 @@ CourseRenderer::initQuadtree(const float *elevation, int nx, int nz,
 
     m_rootCornerData.square = NULL;
     m_rootCornerData.childIndex = 0;
-    m_rootCornerData.level = getRootLevel( nx, nz );
+    m_rootCornerData.level = getRootLevel(nx, nz);
     m_rootCornerData.xorg = 0;
     m_rootCornerData.zorg = 0;
 
@@ -612,15 +612,14 @@ CourseRenderer::initQuadtree(const float *elevation, int nx, int nz,
 		m_rootCornerData.verts[i] = 0;
 		m_rootCornerData.verts[i] = 0;
     }
-
-	mp_root = new quadsquare( &m_rootCornerData );
-
-    mp_root->addHeightMap( m_rootCornerData, hm );
-    mp_root->setScale( scalex, scalez );
-    mp_root->setTerrain(Course::getTerrainData() );
-
+	
+	mp_root = new quadsquare(&m_rootCornerData);		
+    mp_root->addHeightMap(m_rootCornerData, hm);
+    mp_root->setScale(scalex, scalez);
+    mp_root->setTerrain(Course::getTerrainData());
+		
 	//update static configuration
-	GameConfig::update();	
+	GameConfig::update();
 	
     // Debug info.
     PP_LOG( DEBUG_QUADTREE, "max error = " <<
@@ -646,13 +645,17 @@ CourseRenderer::initQuadtree(const float *elevation, int nx, int nz,
 void
 CourseRenderer::updateQuadtree(const ppogl::Vec3d& view_pos)
 {
+	//PP_PERFTEST_BEGIN(update_quadtree);
 	mp_root->update(m_rootCornerData, view_pos);
+	//PP_PERFTEST_END(update_quadtree);
 }
 
 void
 CourseRenderer::renderQuadtree()
 {
+	//PP_PERFTEST_BEGIN(render_quadtree);
     mp_root->render(m_rootCornerData, Course::getGLArrays());
+	//PP_PERFTEST_END(render_quadtree);
 }
 
 int

@@ -48,7 +48,7 @@ public:
 	void postDisplay(float timestep);
 
 	bool keyPressEvent(SDLKey key);
-	bool mouseButtonEvent(int button, int x, int y, bool pressed);
+	bool mouseButtonEvent(int button, const ppogl::Vec2i& position, bool pressed);
 
 	bool useDefaultDisplay(){return false;};
 };

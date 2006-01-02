@@ -134,7 +134,7 @@ Tux::draw()
     set_gl_options( TUX );
 
     // Turn on lights
-    setup_course_lighting();
+    Light::setup();
 	
     draw_scene_graph( rootNode );	
 } 

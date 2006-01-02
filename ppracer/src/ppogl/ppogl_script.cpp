@@ -248,7 +248,7 @@ Script::registerLib(const std::string& name, const Script::Lib *callbacks)
 		sq_pushuserpointer(m_vm,*(reinterpret_cast<const SQUserPointer *>(&(callbacks[i].function))));
 				
     	sq_newclosure(m_vm,Script::defaultCb,2);
-    	sq_createslot(m_vm,-3); 
+		sq_newslot(m_vm,-3,SQFalse);
 	}
 	sq_rawset(m_vm,-3);	
 }

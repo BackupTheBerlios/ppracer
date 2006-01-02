@@ -45,13 +45,13 @@ struct Light
     float quadratic_attenuation;
 	
 	bool enabled;
+	
+// static stuff
+	static Light lights[NUM_COURSE_LIGHTS];
+	
+	static void setup();
+	static void reset();	
 };
-
-Light* get_course_lights();
-
-void reset_lights();
-
-void setup_course_lighting();
 
 void register_course_light_callbacks();
 

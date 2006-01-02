@@ -91,6 +91,14 @@ public:
 		return Vec3d(vec1.x()+vec2.x(),vec1.y()+vec2.y(),vec1.z()+vec2.z());
 	}
 	
+	Vec3d& operator+=(const Vec3d& vec)
+    {
+		values[0] += vec.values[0];
+		values[1] += vec.values[1];
+ 		values[2] += vec.values[2];
+		return *this;
+	}
+	
 	friend Vec3d operator-(const Vec3d& vec1,const Vec3d& vec2)
 	{
 		return Vec3d(vec1.x()-vec2.x(),vec1.y()-vec2.y(),vec1.z()-vec2.z());
@@ -122,8 +130,9 @@ public:
 	
 	/// print formated values to an std::ostream
 	friend std::ostream& operator << (std::ostream& output, const Vec3d& vec);
+	
+	static inline const Vec3d origin(){return Vec3d();}
 };
-
 
 } //namespace ppogl
 

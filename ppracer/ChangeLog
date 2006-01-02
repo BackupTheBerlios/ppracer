@@ -1,6 +1,28 @@
 
 === ppracer 0.5 alpha2 ===
 
+2006-01-02  Volker Stroebel <volker@planetpenguin.de>
+	* src/game_over.*
+	fixed mouseButtonEvent()
+	
+	* src/paused.cpp
+	resume if escape is pressed
+
+2006-01-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/viewfrustum.*
+	added class ViewFrustum and global instance
+
+2005-12-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/ftgl/ src/ppogl/font/*
+	moved ftgl code to ppogl
+	merged class FTTextureFont with class FTFont
+	merged class FTTextureGlyph with class FTGlyph
+	replaced FTPoint with ppogl::Vec2d
+	use ppogl::Singleton for FTLibrary
+	use ppogl::RefObject for FTFont
+	removed unused code and files
+	code cleanups and minor changes
+
 2005-12-22  Volker Stroebel <volker@planetpenguin.de>
 	* src/ftgl/FTList.h
 	removed unsued files

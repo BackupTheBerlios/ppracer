@@ -74,7 +74,7 @@ TrackMarks::draw()
 
     gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
-    setup_course_lighting();
+    Light::setup();
 
     num_quads = MIN( current_mark, maxNumQuads -
 		     next_mark + current_mark );

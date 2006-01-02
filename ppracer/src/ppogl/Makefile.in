@@ -57,17 +57,20 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	ppogl_script.$(OBJEXT) textures.$(OBJEXT) \
 	translation.$(OBJEXT) assert.$(OBJEXT) color.$(OBJEXT) \
 	errors.$(OBJEXT) glwrappers.$(OBJEXT) glextensions.$(OBJEXT) \
-	glstuff.$(OBJEXT) os.$(OBJEXT) refptr.$(OBJEXT) \
-	signal.$(OBJEXT) vec2d.$(OBJEXT) vec2i.$(OBJEXT) \
-	vec3d.$(OBJEXT) vec3f.$(OBJEXT) vec4f.$(OBJEXT) \
-	image.$(OBJEXT) readPNG.$(OBJEXT) writePPM.$(OBJEXT) \
-	widget.$(OBJEXT) button.$(OBJEXT) label.$(OBJEXT) \
-	uimgr.$(OBJEXT) uitheme.$(OBJEXT) alignment.$(OBJEXT) \
-	checkbox.$(OBJEXT) listbox.$(OBJEXT) imagebutton.$(OBJEXT) \
-	entry.$(OBJEXT) textarea.$(OBJEXT) scale.$(OBJEXT) \
-	sound.$(OBJEXT) music.$(OBJEXT) audiomgr.$(OBJEXT) \
-	geoms.$(OBJEXT) materials.$(OBJEXT) vnc.$(OBJEXT) \
-	model.$(OBJEXT) model_ac.$(OBJEXT)
+	glstuff.$(OBJEXT) os.$(OBJEXT) perftest.$(OBJEXT) \
+	refptr.$(OBJEXT) signal.$(OBJEXT) vec2d.$(OBJEXT) \
+	vec2i.$(OBJEXT) vec3d.$(OBJEXT) vec3f.$(OBJEXT) \
+	vec4f.$(OBJEXT) image.$(OBJEXT) readPNG.$(OBJEXT) \
+	writePPM.$(OBJEXT) widget.$(OBJEXT) button.$(OBJEXT) \
+	label.$(OBJEXT) uimgr.$(OBJEXT) uitheme.$(OBJEXT) \
+	alignment.$(OBJEXT) checkbox.$(OBJEXT) listbox.$(OBJEXT) \
+	imagebutton.$(OBJEXT) entry.$(OBJEXT) textarea.$(OBJEXT) \
+	scale.$(OBJEXT) sound.$(OBJEXT) music.$(OBJEXT) \
+	audiomgr.$(OBJEXT) geoms.$(OBJEXT) materials.$(OBJEXT) \
+	vnc.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT) \
+	FTCharmap.$(OBJEXT) FTFace.$(OBJEXT) FTFont.$(OBJEXT) \
+	FTGlyph.$(OBJEXT) FTGlyphContainer.$(OBJEXT) \
+	FTLibrary.$(OBJEXT) FTSize.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -226,6 +229,8 @@ libppogl_a_SOURCES = \
 	base/glstuff.h		\
 	base/os.cpp		\
 	base/os.h		\
+	base/perftest.cpp	\
+	base/perftest.h		\
 	base/refptr.cpp		\
 	base/refptr.h		\
 	base/resourcemgr.h	\
@@ -298,9 +303,33 @@ libppogl_a_SOURCES = \
 	models/model.cpp	\
 	models/model.h		\
 	models/model_ac.cpp	\
-	models/model_ac.h
+	models/model_ac.h	\
+	\
+	\
+	font/FTCharToGlyphIndexMap.h\
+	font/FTCharmap.h	\
+	font/FTFace.h		\
+	font/FTFont.h		\
+	font/FTGL.h		\
+	font/FTGlyph.h		\
+	font/FTGlyphContainer.h	\
+	font/FTLibrary.h	\
+	font/FTSize.h		\
+	font/FTVector.h		\
+	font/FTCharmap.cpp	\
+	font/FTFace.cpp		\
+	font/FTFont.cpp		\
+	font/FTGlyph.cpp	\
+	font/FTGlyphContainer.cpp\
+	font/FTLibrary.cpp	\
+	font/FTSize.cpp	
 
 INCLUDES = -I../ -I../squirrel/ -I../sqstdlib/
+EXTRA_DIST = \
+	font/COPYING.txt \
+	font/README.txt \
+	font/license.txt
+
 all: all-am
 
 .SUFFIXES:
@@ -348,6 +377,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTCharmap.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTFace.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTFont.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTGlyph.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTGlyphContainer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTLibrary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FTSize.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alignment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audiomgr.Po@am__quote@
@@ -371,6 +407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/model_ac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/music.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/os.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/perftest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ppogl_script.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readPNG.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/refptr.Po@am__quote@
@@ -502,6 +539,20 @@ os.obj: base/os.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/os.cpp' object='os.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o os.obj `if test -f 'base/os.cpp'; then $(CYGPATH_W) 'base/os.cpp'; else $(CYGPATH_W) '$(srcdir)/base/os.cpp'; fi`
+
+perftest.o: base/perftest.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT perftest.o -MD -MP -MF "$(DEPDIR)/perftest.Tpo" -c -o perftest.o `test -f 'base/perftest.cpp' || echo '$(srcdir)/'`base/perftest.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/perftest.Tpo" "$(DEPDIR)/perftest.Po"; else rm -f "$(DEPDIR)/perftest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/perftest.cpp' object='perftest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o perftest.o `test -f 'base/perftest.cpp' || echo '$(srcdir)/'`base/perftest.cpp
+
+perftest.obj: base/perftest.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT perftest.obj -MD -MP -MF "$(DEPDIR)/perftest.Tpo" -c -o perftest.obj `if test -f 'base/perftest.cpp'; then $(CYGPATH_W) 'base/perftest.cpp'; else $(CYGPATH_W) '$(srcdir)/base/perftest.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/perftest.Tpo" "$(DEPDIR)/perftest.Po"; else rm -f "$(DEPDIR)/perftest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='base/perftest.cpp' object='perftest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o perftest.obj `if test -f 'base/perftest.cpp'; then $(CYGPATH_W) 'base/perftest.cpp'; else $(CYGPATH_W) '$(srcdir)/base/perftest.cpp'; fi`
 
 refptr.o: base/refptr.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT refptr.o -MD -MP -MF "$(DEPDIR)/refptr.Tpo" -c -o refptr.o `test -f 'base/refptr.cpp' || echo '$(srcdir)/'`base/refptr.cpp; \
@@ -922,6 +973,104 @@ model_ac.obj: models/model_ac.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='models/model_ac.cpp' object='model_ac.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o model_ac.obj `if test -f 'models/model_ac.cpp'; then $(CYGPATH_W) 'models/model_ac.cpp'; else $(CYGPATH_W) '$(srcdir)/models/model_ac.cpp'; fi`
+
+FTCharmap.o: font/FTCharmap.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTCharmap.o -MD -MP -MF "$(DEPDIR)/FTCharmap.Tpo" -c -o FTCharmap.o `test -f 'font/FTCharmap.cpp' || echo '$(srcdir)/'`font/FTCharmap.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTCharmap.Tpo" "$(DEPDIR)/FTCharmap.Po"; else rm -f "$(DEPDIR)/FTCharmap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTCharmap.cpp' object='FTCharmap.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTCharmap.o `test -f 'font/FTCharmap.cpp' || echo '$(srcdir)/'`font/FTCharmap.cpp
+
+FTCharmap.obj: font/FTCharmap.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTCharmap.obj -MD -MP -MF "$(DEPDIR)/FTCharmap.Tpo" -c -o FTCharmap.obj `if test -f 'font/FTCharmap.cpp'; then $(CYGPATH_W) 'font/FTCharmap.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTCharmap.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTCharmap.Tpo" "$(DEPDIR)/FTCharmap.Po"; else rm -f "$(DEPDIR)/FTCharmap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTCharmap.cpp' object='FTCharmap.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTCharmap.obj `if test -f 'font/FTCharmap.cpp'; then $(CYGPATH_W) 'font/FTCharmap.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTCharmap.cpp'; fi`
+
+FTFace.o: font/FTFace.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTFace.o -MD -MP -MF "$(DEPDIR)/FTFace.Tpo" -c -o FTFace.o `test -f 'font/FTFace.cpp' || echo '$(srcdir)/'`font/FTFace.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTFace.Tpo" "$(DEPDIR)/FTFace.Po"; else rm -f "$(DEPDIR)/FTFace.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTFace.cpp' object='FTFace.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTFace.o `test -f 'font/FTFace.cpp' || echo '$(srcdir)/'`font/FTFace.cpp
+
+FTFace.obj: font/FTFace.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTFace.obj -MD -MP -MF "$(DEPDIR)/FTFace.Tpo" -c -o FTFace.obj `if test -f 'font/FTFace.cpp'; then $(CYGPATH_W) 'font/FTFace.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTFace.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTFace.Tpo" "$(DEPDIR)/FTFace.Po"; else rm -f "$(DEPDIR)/FTFace.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTFace.cpp' object='FTFace.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTFace.obj `if test -f 'font/FTFace.cpp'; then $(CYGPATH_W) 'font/FTFace.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTFace.cpp'; fi`
+
+FTFont.o: font/FTFont.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTFont.o -MD -MP -MF "$(DEPDIR)/FTFont.Tpo" -c -o FTFont.o `test -f 'font/FTFont.cpp' || echo '$(srcdir)/'`font/FTFont.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTFont.Tpo" "$(DEPDIR)/FTFont.Po"; else rm -f "$(DEPDIR)/FTFont.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTFont.cpp' object='FTFont.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTFont.o `test -f 'font/FTFont.cpp' || echo '$(srcdir)/'`font/FTFont.cpp
+
+FTFont.obj: font/FTFont.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTFont.obj -MD -MP -MF "$(DEPDIR)/FTFont.Tpo" -c -o FTFont.obj `if test -f 'font/FTFont.cpp'; then $(CYGPATH_W) 'font/FTFont.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTFont.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTFont.Tpo" "$(DEPDIR)/FTFont.Po"; else rm -f "$(DEPDIR)/FTFont.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTFont.cpp' object='FTFont.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTFont.obj `if test -f 'font/FTFont.cpp'; then $(CYGPATH_W) 'font/FTFont.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTFont.cpp'; fi`
+
+FTGlyph.o: font/FTGlyph.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTGlyph.o -MD -MP -MF "$(DEPDIR)/FTGlyph.Tpo" -c -o FTGlyph.o `test -f 'font/FTGlyph.cpp' || echo '$(srcdir)/'`font/FTGlyph.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTGlyph.Tpo" "$(DEPDIR)/FTGlyph.Po"; else rm -f "$(DEPDIR)/FTGlyph.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTGlyph.cpp' object='FTGlyph.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTGlyph.o `test -f 'font/FTGlyph.cpp' || echo '$(srcdir)/'`font/FTGlyph.cpp
+
+FTGlyph.obj: font/FTGlyph.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTGlyph.obj -MD -MP -MF "$(DEPDIR)/FTGlyph.Tpo" -c -o FTGlyph.obj `if test -f 'font/FTGlyph.cpp'; then $(CYGPATH_W) 'font/FTGlyph.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTGlyph.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTGlyph.Tpo" "$(DEPDIR)/FTGlyph.Po"; else rm -f "$(DEPDIR)/FTGlyph.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTGlyph.cpp' object='FTGlyph.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTGlyph.obj `if test -f 'font/FTGlyph.cpp'; then $(CYGPATH_W) 'font/FTGlyph.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTGlyph.cpp'; fi`
+
+FTGlyphContainer.o: font/FTGlyphContainer.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTGlyphContainer.o -MD -MP -MF "$(DEPDIR)/FTGlyphContainer.Tpo" -c -o FTGlyphContainer.o `test -f 'font/FTGlyphContainer.cpp' || echo '$(srcdir)/'`font/FTGlyphContainer.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTGlyphContainer.Tpo" "$(DEPDIR)/FTGlyphContainer.Po"; else rm -f "$(DEPDIR)/FTGlyphContainer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTGlyphContainer.cpp' object='FTGlyphContainer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTGlyphContainer.o `test -f 'font/FTGlyphContainer.cpp' || echo '$(srcdir)/'`font/FTGlyphContainer.cpp
+
+FTGlyphContainer.obj: font/FTGlyphContainer.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTGlyphContainer.obj -MD -MP -MF "$(DEPDIR)/FTGlyphContainer.Tpo" -c -o FTGlyphContainer.obj `if test -f 'font/FTGlyphContainer.cpp'; then $(CYGPATH_W) 'font/FTGlyphContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTGlyphContainer.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTGlyphContainer.Tpo" "$(DEPDIR)/FTGlyphContainer.Po"; else rm -f "$(DEPDIR)/FTGlyphContainer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTGlyphContainer.cpp' object='FTGlyphContainer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTGlyphContainer.obj `if test -f 'font/FTGlyphContainer.cpp'; then $(CYGPATH_W) 'font/FTGlyphContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTGlyphContainer.cpp'; fi`
+
+FTLibrary.o: font/FTLibrary.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTLibrary.o -MD -MP -MF "$(DEPDIR)/FTLibrary.Tpo" -c -o FTLibrary.o `test -f 'font/FTLibrary.cpp' || echo '$(srcdir)/'`font/FTLibrary.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTLibrary.Tpo" "$(DEPDIR)/FTLibrary.Po"; else rm -f "$(DEPDIR)/FTLibrary.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTLibrary.cpp' object='FTLibrary.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTLibrary.o `test -f 'font/FTLibrary.cpp' || echo '$(srcdir)/'`font/FTLibrary.cpp
+
+FTLibrary.obj: font/FTLibrary.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTLibrary.obj -MD -MP -MF "$(DEPDIR)/FTLibrary.Tpo" -c -o FTLibrary.obj `if test -f 'font/FTLibrary.cpp'; then $(CYGPATH_W) 'font/FTLibrary.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTLibrary.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTLibrary.Tpo" "$(DEPDIR)/FTLibrary.Po"; else rm -f "$(DEPDIR)/FTLibrary.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTLibrary.cpp' object='FTLibrary.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTLibrary.obj `if test -f 'font/FTLibrary.cpp'; then $(CYGPATH_W) 'font/FTLibrary.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTLibrary.cpp'; fi`
+
+FTSize.o: font/FTSize.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTSize.o -MD -MP -MF "$(DEPDIR)/FTSize.Tpo" -c -o FTSize.o `test -f 'font/FTSize.cpp' || echo '$(srcdir)/'`font/FTSize.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTSize.Tpo" "$(DEPDIR)/FTSize.Po"; else rm -f "$(DEPDIR)/FTSize.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTSize.cpp' object='FTSize.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTSize.o `test -f 'font/FTSize.cpp' || echo '$(srcdir)/'`font/FTSize.cpp
+
+FTSize.obj: font/FTSize.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FTSize.obj -MD -MP -MF "$(DEPDIR)/FTSize.Tpo" -c -o FTSize.obj `if test -f 'font/FTSize.cpp'; then $(CYGPATH_W) 'font/FTSize.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTSize.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FTSize.Tpo" "$(DEPDIR)/FTSize.Po"; else rm -f "$(DEPDIR)/FTSize.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='font/FTSize.cpp' object='FTSize.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FTSize.obj `if test -f 'font/FTSize.cpp'; then $(CYGPATH_W) 'font/FTSize.cpp'; else $(CYGPATH_W) '$(srcdir)/font/FTSize.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -973,6 +1122,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/font
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

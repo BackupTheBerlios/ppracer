@@ -50,7 +50,7 @@ RacingMode::loop(float timestep)
 		//things to do before displaying
 		preDisplay(timestep);
 		
-		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
+		viewFrustum.setup( players[0], NEAR_CLIP_DIST, 
 				GameConfig::forwardClipDistance);
 		reshape(resolution);
 		
@@ -66,13 +66,13 @@ RacingMode::loop(float timestep)
 				
 		// player 0 (first player)
 				
-		setup_view_frustum( players[0], NEAR_CLIP_DIST, 
+		viewFrustum.setup( players[0], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
 		reshape(resolution, 0);
 		renderCourse(0, timestep);
 				
 		// player 1 (second player)
-		setup_view_frustum( players[1], NEAR_CLIP_DIST, 
+		viewFrustum.setup( players[1], NEAR_CLIP_DIST, 
 							GameConfig::forwardClipDistance,0);
 		reshape(resolution, 1);
 		renderCourse(1, timestep);	
@@ -102,7 +102,8 @@ RacingMode::renderCourse(int player, float timestep)
 	setup_view_matrix(players[player]);
 	
     courseRenderer.setClipping(true);
-    setup_course_lighting();
+    
+	Light::setup();
 	
 	//draw course
 	courseRenderer.render(players[player].view.pos);

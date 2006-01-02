@@ -74,6 +74,13 @@ public:
 		return Vec2d(vec1.x()+vec2.x(),vec1.y()+vec2.y());
 	}
 	
+	Vec2d& operator+=(const Vec2d& vec)
+    {
+		values[0] += vec.values[0];
+		values[1] += vec.values[1];
+		return *this;
+	}
+	
 	friend Vec2d operator+(const Vec2d& vec,const double value)
 	{
 		return Vec2d(vec.x()+value, vec.y()+value);

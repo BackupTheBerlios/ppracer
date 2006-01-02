@@ -184,6 +184,9 @@ GameMode::mainLoop()
 			case BENCHMARK:
 				GameMode::currentMode = new Benchmark();
 				break;
+			case QUIT:
+				winsys_exit(0);
+				break;
 			default:
 				PP_NOT_REACHED();
 		}

@@ -32,6 +32,8 @@ libppogl_a_SOURCES = 		\
 	base/glstuff.h		\
 	base/os.cpp		\
 	base/os.h		\
+	base/perftest.cpp	\
+	base/perftest.h		\
 	base/refptr.cpp		\
 	base/refptr.h		\
 	base/resourcemgr.h	\
@@ -104,8 +106,31 @@ libppogl_a_SOURCES = 		\
 	models/model.cpp	\
 	models/model.h		\
 	models/model_ac.cpp	\
-	models/model_ac.h
-
-
+	models/model_ac.h	\
+	\
+	\
+	font/FTCharToGlyphIndexMap.h\
+	font/FTCharmap.h	\
+	font/FTFace.h		\
+	font/FTFont.h		\
+	font/FTGL.h		\
+	font/FTGlyph.h		\
+	font/FTGlyphContainer.h	\
+	font/FTLibrary.h	\
+	font/FTSize.h		\
+	font/FTVector.h		\
+	font/FTCharmap.cpp	\
+	font/FTFace.cpp		\
+	font/FTFont.cpp		\
+	font/FTGlyph.cpp	\
+	font/FTGlyphContainer.cpp\
+	font/FTLibrary.cpp	\
+	font/FTSize.cpp	
 
 INCLUDES = -I../ -I../squirrel/ -I../sqstdlib/
+
+EXTRA_DIST = \
+	font/COPYING.txt \
+	font/README.txt \
+	font/license.txt
+

@@ -117,7 +117,9 @@ bool
 Paused::keyPressEvent(SDLKey key)
 {
 	// continue race if pause key is pressed	
-	if(key==PPConfig.getInt("pause_key")){
+	if(key==PPConfig.getInt("pause_key")
+		|| key==SDLK_ESCAPE)
+	{
 		if(Benchmark::getMode() == Benchmark::PAUSED){
 			quit();
 		}else{

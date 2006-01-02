@@ -24,7 +24,7 @@
 #endif // HAVE_SDL_MIXER
 
 namespace ppogl{
-		
+
 PPOGL_SINGLETON(AudioMgr);
 	
 #ifdef HAVE_SDL_MIXER

@@ -33,6 +33,7 @@ class UITheme
 {
 public:
 	UITheme();
+	~UITheme();
 
 	///default font for text labels
 	ppogl::FontRef labelFont;

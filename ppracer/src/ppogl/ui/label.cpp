@@ -71,8 +71,8 @@ Label::setText(const std::string& text)
 {
 	m_text = text;
 	if(m_font){
-		m_size.x() = m_font->advance(text);
-		m_size.y() = m_font->ascender();	
+		m_size.x() = m_font->advance(m_text);
+		m_size.y() = m_font->ascender();
 	}
 }
 

@@ -36,7 +36,8 @@ public:
     ppogl::Vec3d normal;
 };
 	
-class Surface : public ppogl::Polygon
+class Surface
+ : public ppogl::Polygon
 {
 public:
 	Surface();

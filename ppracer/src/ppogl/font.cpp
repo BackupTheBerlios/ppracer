@@ -21,7 +21,6 @@
 
 #include <iostream>
 
-#include "ftgl/FTGLTextureFont.h"
 #include "base/glwrappers.h"
 #include "config.h"
 
@@ -29,34 +28,26 @@ namespace ppogl{
 	
 Font::Font(const std::string& filename, unsigned int size, const ppogl::Color &color)
  : RefObject(),
-   mp_font(NULL),
    m_color(color)
 {
-	mp_font = new FTGLTextureFont(filename.c_str());
+	mp_font = new ppogl::FTFont(filename.c_str());
 	
-	if (mp_font->Error()){
+	if(mp_font->Error()){
 		PP_ERROR("Unable to load font: " << filename);		
 	}else{
-		mp_font->reference();
 		mp_font->FaceSize(size);
-		mp_font->CharMap(ft_encoding_unicode);
 	}
 }
 
-Font::Font(FTFont *font, const ppogl::Color &color)
+Font::Font(ppogl::RefPtr<ppogl::FTFont> font, const ppogl::Color &color)
  : RefObject(),
    mp_font(font),
    m_color(color)
 {
-	mp_font->reference();	
 }
 
 Font::~Font()
 {
-	if(mp_font!=NULL){
-		mp_font->unreference();
-		//delete mp_font;
-	}
 }
 
 void

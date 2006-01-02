@@ -24,21 +24,41 @@
 
 #include "player.h"
 
-enum ClipResult{
-    NoClip,
-    SomeClip,
-    NotVisible
+class ViewFrustum
+{
+private:
+	static bool p_vertex_code_x[6];
+	static bool p_vertex_code_y[6];
+	static bool p_vertex_code_z[6];	
+
+	pp::Plane planes[6];
+
+public:
+	enum ClipResult{
+    	NoClip,
+    	SomeClip,
+    	NotVisible
+	};	
+
+	void setup(	const Player& plyr,
+				const double near_dist, const double far_dist,
+				const int multiscreen=-1);
+
+	ClipResult clip(const ppogl::Vec3d& min, const ppogl::Vec3d& max);
+		
+	inline const pp::Plane&
+	getFarClipPlane(){return planes[1];}
+
+	inline const pp::Plane&
+	getLeftClipPlane(){return planes[2];}
+
+	inline const pp::Plane&
+	getRightClipPlane(){return planes[3];}
+
+	inline const pp::Plane&
+	getBottomClipPlane(){return planes[5];}	
 };
 
-void setup_view_frustum(const Player& plyr,
-			double near_dist, double far_dist,
-			int multiscreen=-1);
+extern ViewFrustum viewFrustum;
 
-ClipResult clip_aabb_to_view_frustum(const ppogl::Vec3d& min, const ppogl::Vec3d& max);
-
-const pp::Plane& get_far_clip_plane();
-const pp::Plane& get_left_clip_plane();
-const pp::Plane& get_right_clip_plane();
-const pp::Plane& get_bottom_clip_plane();
- 
 #endif // _VIEWFRUSTUM_H_

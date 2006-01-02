@@ -48,6 +48,12 @@ namespace gl{
 	inline void Enable(GLenum cap){glEnable(cap);}
 	inline void Disable(GLenum cap){glDisable(cap);}
 	
+	inline void PushAttrib(GLbitfield mask){glPushAttrib(mask);}
+	inline void PopAttrib(){glPopAttrib();}
+	
+	inline void PushClientAttrib(GLbitfield mask){glPushClientAttrib(mask);}
+	inline void PopClientAttrib(){glPopClientAttrib();}
+		
 	inline void PushMatrix(){glPushMatrix();}
 	inline void PopMatrix(){glPopMatrix();}
 	
@@ -76,9 +82,36 @@ namespace gl{
 	inline void TexCoord(const ppogl::Vec2d& st){glTexCoord2dv(st.values);}
 	inline void TexCoord(const ppogl::Vec3d& st){glTexCoord3dv(st.values);}
 
-	inline void TexParameter(GLenum target, GLenum pname, GLfloat param){glTexParameterf(target, pname, param );}
+	inline void TexParameter(GLenum target, GLenum pname, GLfloat param){glTexParameterf(target, pname, param);}
+	inline void TexParameter(GLenum target, GLenum pname, GLint param){glTexParameteri(target, pname, param);}
 	
 	inline void GetTexLevelParameter(GLenum target, GLint level, GLenum pname, GLint *params){glGetTexLevelParameteriv(target, level, pname, params);}
+	
+	inline void TexImage2D(GLenum target, GLint level,
+                           GLint internalFormat,
+                           GLsizei width, GLsizei height,
+                           GLint border, GLenum format, GLenum type,
+                           const GLvoid *pixels)
+	{
+		glTexImage2D(target, level,
+                     internalFormat,
+                     width, height,
+                     border, format, type,
+                     pixels);
+	}
+	
+	inline void TexSubImage2D(GLenum target, GLint level,
+                              GLint xoffset, GLint yoffset,
+                              GLsizei width, GLsizei height,
+                              GLenum format, GLenum type,
+                              const GLvoid *pixels)
+	{
+		glTexSubImage2D(target, level,
+                        xoffset, yoffset,
+                        width, height,
+                        format, type,
+                        pixels);
+	}
 	
 	inline void Vertex(GLdouble x, GLdouble y){glVertex2d(x, y);}
 	inline void Vertex(const ppogl::Vec2d& pos){glVertex2dv(pos.values);}

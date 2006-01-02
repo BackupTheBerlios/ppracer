@@ -68,17 +68,15 @@ Reset::loop(float timeStep)
 	
     update_view( players[0], EPS );
 
-    setup_view_frustum( players[0], NEAR_CLIP_DIST, 
+    viewFrustum.setup( players[0], NEAR_CLIP_DIST, 
 			PPConfig.getInt("forward_clip_distance") );
 
     courseRenderer.setClipping(true);
 
-	setup_course_lighting();
+	Light::setup();
 	
-
 	courseRenderer.render(players[0].view.pos);
 	
-
     if((elapsed_time > BLINK_IN_PLACE_TIME) && (!m_positionReset)){
 			
 		std::list<ppogl::Vec2d>::iterator bestit = resetLocs.end();

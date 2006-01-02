@@ -169,7 +169,7 @@ reset_course()
     base_height_value = 127;
 	
     reset_course_mirroring();
-    reset_lights();
+    Light::reset();
     fogPlane.reset();
     reset_particles();
 

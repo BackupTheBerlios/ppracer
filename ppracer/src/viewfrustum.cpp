@@ -22,31 +22,25 @@
 #include "viewfrustum.h"
 
 #include "loop.h"
-
 #include "ppogl/base/defs.h"
 
-#define DOT_PRODUCT(v1, v2) (double(v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()))
-
-static pp::Plane frustum_planes[6];
+ViewFrustum viewFrustum;
 
 /* This will be used as a bitfield to select the "n" and "p" vertices
 of the bounding boxes wrt to each plane.  
 */
-
-static bool p_vertex_code_x[6];
-static bool p_vertex_code_y[6];
-static bool p_vertex_code_z[6];
+bool ViewFrustum::p_vertex_code_x[6];
+bool ViewFrustum::p_vertex_code_y[6];
+bool ViewFrustum::p_vertex_code_z[6];
 
 void
-setup_view_frustum(const Player& plyr,
-			double near_dist, double far_dist,
-			int multiscreen)
+ViewFrustum::setup(const Player& plyr,
+			const double near_dist, const double far_dist,
+			const int multiscreen)
 {
-    double aspect = double(GameMode::resolution.x()) /
+    const double aspect = double(GameMode::resolution.x()) /
 					double(GameMode::resolution.y());
 
-	ppogl::Vec3d pt;
-    ppogl::Vec3d origin;
     double half_fov = ANGLES_TO_RADIANS( GameConfig::fov * 0.5 );
     double half_fov_horiz = atan(tan(half_fov) * aspect); 
 	
@@ -58,65 +52,60 @@ setup_view_frustum(const Player& plyr,
     // create frustum in viewing coordinates
 
     // near
-    frustum_planes[0] = pp::Plane(0, 0, 1, near_dist);
+    planes[0] = pp::Plane(0, 0, 1, near_dist);
     
     // far
-    frustum_planes[1] = pp::Plane(0, 0, -1, -far_dist);
+    planes[1] = pp::Plane(0, 0, -1, -far_dist);
 
     // left
-    frustum_planes[2] = pp::Plane( -cos(half_fov_horiz), 0, 
+    planes[2] = pp::Plane( -cos(half_fov_horiz), 0, 
 				    sin(half_fov_horiz), 0 );
 
     // right
-    frustum_planes[3] = pp::Plane( cos(half_fov_horiz), 0, 
+    planes[3] = pp::Plane( cos(half_fov_horiz), 0, 
 				    sin(half_fov_horiz), 0 );
 
     // top
-    frustum_planes[4] = pp::Plane( 0, cos(half_fov),  
+    planes[4] = pp::Plane( 0, cos(half_fov),  
 				    sin(half_fov), 0 );
 
     // bottom
-    frustum_planes[5] = pp::Plane( 0, -cos(half_fov),  
+    planes[5] = pp::Plane( 0, -cos(half_fov),  
 				    sin(half_fov), 0 );
 
-
     // We now transform frustum to world coordinates
-    for (int i=0; i<6; i++) {
-	pt = plyr.view.inv_view_mat.transformPoint(
-	    origin + (-frustum_planes[i].d*frustum_planes[i].nml) );
+    for(int i=0; i<6; i++){
+		const ppogl::Vec3d pt = plyr.view.inv_view_mat.transformPoint(
+	    	ppogl::Vec3d::origin() + (-planes[i].d*planes[i].nml) );
 
-	frustum_planes[i].nml = plyr.view.inv_view_mat.transformVector( frustum_planes[i].nml );
+		planes[i].nml = plyr.view.inv_view_mat.transformVector(planes[i].nml );
 
-	frustum_planes[i].d = -( 
-	    frustum_planes[i].nml*
-	    (pt-origin));
+		planes[i].d = -(planes[i].nml*(pt-ppogl::Vec3d::origin()));
     }
 
-    for(int i=0; i<6; i++) {
+    for(int i=0; i<6; i++){
 		p_vertex_code_x[i] = false;
 		p_vertex_code_y[i] = false;
 		p_vertex_code_z[i] = false;
 		
 		
-	if ( frustum_planes[i].nml.x() > 0 ) {
-		p_vertex_code_x[i] = true;
-	}
-	if ( frustum_planes[i].nml.y() > 0 ) {
-		p_vertex_code_y[i] = true;
-	}
-	if ( frustum_planes[i].nml.z() > 0 ) {
-		p_vertex_code_z[i] = true;
-	}
-
-	
+		if(planes[i].nml.x() > 0){
+			p_vertex_code_x[i] = true;
+		}
+		if(planes[i].nml.y() > 0){
+			p_vertex_code_y[i] = true;
+		}
+		if(planes[i].nml.z() > 0){
+			p_vertex_code_z[i] = true;
+		}
     }
 }
 
 /** View frustum clipping for AABB (axis-aligned bounding box). See
    Assarsson, Ulf and Tomas M\"oller, "Optimized View Frustum Culling
    Algorithms", unpublished, http://www.ce.chalmers.se/staff/uffe/ .  */
-ClipResult
-clip_aabb_to_view_frustum(const ppogl::Vec3d& min, const ppogl::Vec3d& max)
+ViewFrustum::ClipResult
+ViewFrustum::clip(const ppogl::Vec3d& min, const ppogl::Vec3d& max)
 {
     ppogl::Vec3d n, p;
     ClipResult intersect = NoClip;
@@ -125,53 +114,32 @@ clip_aabb_to_view_frustum(const ppogl::Vec3d& min, const ppogl::Vec3d& max)
 		p = min;
 		n = max;
 		
-		if ( p_vertex_code_x[i]) {
+		if(p_vertex_code_x[i]){
 		    p.x() = max.x();
 		    n.x() = min.x();
 		}
 
-		if ( p_vertex_code_y[i]) {
+		if(p_vertex_code_y[i]){
 		    p.y() = max.y();
 		    n.y() = min.y();
 		}
 
-		if ( p_vertex_code_z[i]) {
+		if(p_vertex_code_z[i]){
 		    p.z() = max.z();
 		    n.z() = min.z();
 		}
 
-		if ( DOT_PRODUCT( n, frustum_planes[i].nml ) +
-		     frustum_planes[i].d > 0 )
+		if(n*planes[i].nml +
+		     planes[i].d > 0)
 		{
 		    return NotVisible;
 		}
 
-		if ( DOT_PRODUCT( p, frustum_planes[i].nml ) +
-		     frustum_planes[i].d > 0 )
+		if(p*planes[i].nml +
+		     planes[i].d > 0)
 		{
 			intersect = SomeClip;
 		}
-
     }	
     return intersect;
-}
-
-const pp::Plane& get_far_clip_plane()
-{
-    return frustum_planes[1];
-}
-
-const pp::Plane& get_left_clip_plane()
-{
-    return frustum_planes[2];
-}
-
-const pp::Plane& get_right_clip_plane()
-{
-    return frustum_planes[3];
-}
-
-const pp::Plane& get_bottom_clip_plane()
-{
-    return frustum_planes[5];
 }

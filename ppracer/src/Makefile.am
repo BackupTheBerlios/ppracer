@@ -1,5 +1,5 @@
 
-SUBDIRS = squirrel sqstdlib ftgl ppogl
+SUBDIRS = squirrel sqstdlib ppogl
 
 AM_CPPFLAGS = -DPP_DATADIR=\"$(ppdatadir)\"
 
@@ -8,8 +8,7 @@ bin_PROGRAMS = ppracer
 LDADD = \
 		ppogl/libppogl.a	\
 		sqstdlib/libsqstdlib.a	\
-		squirrel/libsquirrel.a	\
-		ftgl/libftgl.a	
+		squirrel/libsquirrel.a	
 
 
 ppracer_SOURCES =				\
