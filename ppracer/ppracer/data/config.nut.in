@@ -1,0 +1,429 @@
+
+// this are the default options that will be
+// overwritten by the user's config script.
+
+PPConfigDefaults <- {
+	
+data_dir_description= @"
+The location of the PlanetPenguin Racer data files
+",
+data_dir = "@ppdatadir@",
+
+x_resolution_description = @"
+The horizontal size of the window
+",
+x_resolution = 800,
+
+y_resolution_description = @"
+The vertical size of the window
+",
+y_resolution = 600,
+
+x_resolution_half_width_description = @"
+Set this to true to use only half of the resolution width
+",
+x_resolution_half_width = false,
+
+bpp_mode_description = @"
+Controls how many bits per pixel are used in the game.
+Valid values are:
+
+  0: Use current bpp setting of operating system
+  1: 16 bpp
+  2: 32 bpp
+Note that some cards (e.g., Voodoo1, Voodoo2, Voodoo3) only support
+16 bits per pixel.
+",
+bpp_mode = 0,
+
+fullscreen_description = @"
+If true then the game will run in full-screen mode.
+",
+fullscreen = false,
+
+stencil_buffer_description = @"
+Set this to true to activate the stencil buffer
+",
+stencil_buffer = true,
+
+enable_fsaa_description = @"
+Set this to true to activate FSAA
+",
+enable_fsaa = false,
+
+multisamples_description = @"
+Set multisamples for FSAA
+",
+multisamples = 2,
+
+disable_videomode_autodetection_description = @"
+Set this to true disable the autodetection
+for available video modes.
+",
+disable_videomode_autodetection = false,
+
+forward_clip_distance_description = @"
+Controls how far ahead of the camera the course
+is rendered. Larger values mean that more of the course is
+rendered, resulting in slower performance. Decreasing this
+value is an effective way to improve framerates.
+",
+forward_clip_distance = 75,
+
+backward_clip_distance_description = @"
+Some objects aren't yet clipped to the view frustum, 
+so this value is used to control how far up the course these 
+objects are drawn.
+",
+backward_clip_distance = 10,
+
+fov_description = @"
+Sets the camera field-of-view
+",
+fov = 60,
+
+view_mode_description = @"
+Default view mode.
+Possible values:
+ 0: Behind
+ 1: Follow
+ 2: Above
+",
+view_mode = 1,
+
+view_mode2_description = @"
+Default view mode for player 2.
+Possible values:
+ 0: Behind
+ 1: Follow
+ 2: Above
+",
+view_mode2 = 1,
+
+texture_filter_description = @"
+Allows you to control which type of texture
+interpolation/mipmapping is used when rendering textures. The
+values correspond to the following OpenGL settings:
+
+0: GL_NEAREST
+1: GL_LINEAR
+2: GL_NEAREST_MIPMAP_NEAREST
+3: GL_LINEAR_MIPMAP_NEAREST
+4: GL_NEAREST_MIPMAP_LINEAR
+5: GL_LINEAR_MIPMAP_LINEAR
+
+On some cards, you may be able to improve performance by
+decreasing this number, at the cost of lower image quality.
+",
+texture_filter = 5,
+
+ui_language_description = @"
+Sets the language for the ui
+",
+ui_language = "en_GB",
+
+always_save_event_race_data_description = @"
+only for cheating purpose
+",
+always_save_event_race_data = false,
+
+disable_collision_detection_description = @"
+If true, collision detection with models is disabled
+",
+disable_collision_detection = false,
+
+disable_joystick_description = @"
+If true, joystick support is disabled
+",
+disable_joystick = false,
+
+draw_particles_description = @"
+Controls the drawing of snow particles that are kicked up as Tux
+turns and brakes.  Setting this to false should help improve 
+performance.
+",
+draw_particles = true,
+
+tux_sphere_divisions_description = @"
+Higher values result in a more finely subdivided mesh 
+for Tux, and vice versa. If you're experiencing low framerates,
+try lowering this value.
+",
+tux_sphere_divisions = 15,
+
+display_course_percentage_description = @"
+Set this to true to display a progressbar of 
+the course percentage.
+",
+display_course_percentage = true,
+
+display_fps_description = @"
+Set this to true to display the current framerate in Hz.
+",
+display_fps = false,
+
+draw_tux_shadow_description = @"
+Set this to true to display Tux's shadow.
+",
+draw_tux_shadow = true,
+
+tux_shadow_sphere_divisions_description = @"
+The level of subdivision of Tux's shadow.
+",
+tux_shadow_sphere_divisions = 3,
+
+course_detail_level_description = @"
+This controls how accurately the course terrain is 
+rendered. A high value results in greater accuracy at the cost of 
+performance, and vice versa.
+",
+course_detail_level = 70,
+
+disable_fog_description = @"
+If true, then fog will be turned off.
+",
+disable_fog = false,
+
+use_cva_description = @"
+If true, then compiled vertex arrays will be used when
+drawing the terrain.  Whether or not this helps performance
+is driver- and card-dependent.
+",
+use_cva = true,
+
+terrain_envmap_description = @"
+If true, then the ice will be drawn with an environment map,
+which gives the ice a shiny appearance.  Setting this to false
+will help improve performance.
+",
+terrain_envmap = true,
+
+disable_audio_description = @"
+If true, then audio in the game is completely disabled.
+",
+disable_audio = false,
+
+sound_enabled_description = @"
+Use this to turn sound effects on and off.
+",
+sound_enabled = true,
+
+music_enabled_description = @"
+Use this to turn music on and off.
+",
+music_enabled = true,
+
+audio_stereo_description = @"
+Audio will be played in stereo of true, and mono if false
+",
+audio_stereo = true,
+
+audio_freq_mode_description = @"
+The controls the frequency of the audio.
+Valid values are:
+ 0: 11025 Hz
+ 1: 22050 Hz
+ 2: 44100 Hz
+",
+audio_freq_mode = 2,
+
+audio_format_mode_description = @"
+This controls the number of bits per sample for the audio.
+Valid values are:
+ 0: 8 bits
+ 1: 16 bits
+",
+audio_format_mode = 1,
+
+sound_volume_description = @"
+This controls the volume of sounds.
+",
+sound_volume = 80,
+
+music_volume_description = @"
+This controls the volume of music.
+",
+music_volume = 80,
+
+do_intro_animation_description = @"
+If false, then the introductory animation sequence will be skipped.
+",
+do_intro_animation = true,
+
+ui_snow_description = @"
+If true, then the ui screens will have falling snow.
+",
+ui_snow = true,
+
+track_marks_description = @"
+If true, then the players will leave track marks in the snow.
+",
+track_marks = true,
+
+max_track_marks_description = @"
+The maximum number of track mark quads.
+",
+max_track_marks = 2000,
+
+turn_left_key_description = @"
+Key binding for turning left
+",
+turn_left_key = 276,
+
+turn_right_key_description = @"
+Key binding for turning right
+",
+turn_right_key = 275,
+
+paddle_key_description = @"
+Key binding for paddling (on the ground) and flapping (in the air)
+",
+paddle_key = 273,
+
+brake_key_description = @"
+Key binding for braking
+",
+brake_key = 274,
+
+trick_modifier_key_description = @"
+Key binding for doing tricks
+",
+trick_modifier_key = 116,
+
+jump_key_description = @"
+Key binding for jumping
+",
+jump_key = 101,
+
+reset_key_description = @"
+Key binding for resetting the player position
+",
+reset_key = 114,
+
+turn_left_key2_description = @"
+Key binding for turning left
+",
+turn_left_key2 = 97,
+
+turn_right_key2_description = @"
+Key binding for turning right
+",
+turn_right_key2 = 100,
+
+paddle_key2_description = @"
+Key binding for paddling (on the ground) and flapping (in the air)
+",
+paddle_key2 = 119,
+
+brake_key2_description = @"
+Key binding for braking
+",
+brake_key2 = 115,
+
+trick_modifier_key2_description = @"
+Key binding for doing tricks
+",
+trick_modifier_key2 = 120,
+
+jump_key2_description = @"
+Key binding for jumping
+",
+jump_key2 = 99,
+
+reset_key2_description = @"
+Key binding for resetting the player position
+",
+reset_key2 = 118,
+
+pause_key_description = @"
+Key binding to pause the race
+",
+pause_key = 112,
+
+screenshot_key_description = @"
+Key binding to make a screenshot
+",
+screenshot_key = 105,
+
+joystick_x_axis_description = @"
+Joystick axis to use for turning (numbering starts at 0)
+",
+joystick_x_axis = 0,
+
+joystick_y_axis_description = @"
+Joystick axis to use for paddling/braking (numbering starts at 0)
+",
+joystick_y_axis = 1,
+
+joystick_brake_button_description = @"
+Joystick button for braking (numbering starts at 0).
+",
+joystick_brake_button = 2,
+
+joystick_paddle_button_description = @"
+Joystick button for paddling (numbering starts at 0).
+",
+joystick_paddle_button = 0,
+
+joystick_jump_button_description = @"
+Joystick button for jumping (numbering starts at 0)
+",
+joystick_jump_button = 3,
+
+joystick_trick_button_description = @"
+Joystick button for doing tricks (numbering starts at 0)
+",
+joystick_trick_button = 1,
+
+joystick_continue_button_description = @"
+Joystick button for continueing
+",
+joystick_continue_button = 0,
+
+max_fps_description = @"
+Maximum number of frames per second (use 0 to diable)
+",
+max_fps = 0,
+
+gui_max_fps_description = @"
+Maximum number of frames per second (use 0 to diable)
+",
+gui_max_fps = 30,
+}
+
+if(rawin("ppconfig")){	
+	ppconfig = delegate PPConfigDefaults : ppconfig;
+}else{
+	ppconfig <- PPConfigDefaults;
+}
+
+function write_config_to_file(filename)
+{	
+	local file = file(filename, "w");
+	
+	file.writestr("/*\nPlanetPenguin Racer Configuration file\nVersion: @VERSION@\n*/\n\n");
+	file.writestr("ppconfig <- {\n");
+	
+	foreach(index, value in PPConfigDefaults){
+		if(index.slice(-11) != "description"){
+			file.writestr("/*\n"+index+"\n");
+			file.writestr(ppconfig[index+"_description"]);
+			file.writestr("*/\n"+index+" = ");
+			if(type(ppconfig[index]) == "boolean"){
+				if(ppconfig[index]==true){
+					file.writestr("true");
+				}else{
+					file.writestr("false");
+				}
+			}else if(type(ppconfig[index]) == "string"){
+				file.writestr("\""+ppconfig[index]+"\"");
+			}else{			
+				file.writestr(ppconfig[index].tostring());
+			}
+			file.writestr(",\n\n");
+		}
+	
+	}
+	
+	file.writestr("\n};\n");	
+}

@@ -1,0 +1,514 @@
+
+=== ppracer 0.5 alpha2 ===
+
+2006-01-02  Volker Stroebel <volker@planetpenguin.de>
+	* src/game_over.*
+	fixed mouseButtonEvent()
+	
+	* src/paused.cpp
+	resume if escape is pressed
+
+2006-01-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/viewfrustum.*
+	added class ViewFrustum and global instance
+
+2005-12-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/ftgl/ src/ppogl/font/*
+	moved ftgl code to ppogl
+	merged class FTTextureFont with class FTFont
+	merged class FTTextureGlyph with class FTGlyph
+	replaced FTPoint with ppogl::Vec2d
+	use ppogl::Singleton for FTLibrary
+	use ppogl::RefObject for FTFont
+	removed unused code and files
+	code cleanups and minor changes
+
+2005-12-22  Volker Stroebel <volker@planetpenguin.de>
+	* src/ftgl/FTList.h
+	removed unsued files
+	
+	* src/squirrel/* src/sqstdlib/*
+	updated squirrel to 2.1_w3
+	
+	* src/phys_sim.cpp
+	removed unused code
+
+2005-12-13  Nix  <nix@esperi.org.uk>
+        * configure.in (ppdatadir): Expand at make time; dereference
+        if a symlink.
+
+2005-11-30  Volker Stroebel <volker@planetpenguin.de>
+	* src/quadtree.cpp src/trackmarks.*
+	  src/course_renderer.* src/course_load.cpp
+	  src/winsys.cpp src/hier.*
+	fixed memory deallocation
+
+2005-11-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/hud.*
+	fixed drawing if resolution changes
+	
+	* src/ppogl/font.*
+	use const ppogl::Vec2d&
+	
+	* src/loop.* src/credits.* src/splash_screen.*
+	changed code to use ppogl::Vec2i
+
+2005-11-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	changed some code to use ppogl::Vec2i
+
+2005-11-27  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/base/vec2i.*
+	added ppogl::Vec2i
+	
+	* src/phys_sim.cpp
+	used ppogl::Vec2i
+
+2005-11-26  Volker Stroebel <volker@planetpenguin.de>
+	* src/tux_shadow.cpp
+	changed some code to use ppogl::Vec3d
+	
+	* src/ppogl/base/vec* src/ppogl/base/color.*
+	  src/ppogl/sg/materials.*
+	moved several functions into the header files
+
+2005-11-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	fixes
+	
+	* src/ppogl/ui/listbox.h
+	fixed up/down button states
+
+2005-11-23  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	cleanups
+	
+	* data/translations/en_GB.nut 
+	  data/translations/nn_NO.nut
+	updated translations (Karl Ove Hufthammer)
+	
+	* data/models/tux2/model.nut
+	changed color (Sergej Kotliar)
+
+2005-11-21  Volker Stroebel <volker@planetpenguin.de>
+	* src/joystick.* data/config.nut.in
+	fixed joystick support
+	added class Joystick
+	
+	* src/*
+	changed code to use new Joystick class
+
+2005-11-06  Volker Stroebel <volker@planetpenguin.de>
+	* src/course_load.cpp
+	fixed crash
+
+2005-11-04  Volker Stroebel <volker@planetpenguin.de>
+	* src/fog.cpp src/gameconfig.*
+	cached disable_fog
+	
+	* src/ui_snow.cpp
+	fixed positions for modifications
+	
+	* src/hier.*
+	added update_scene_nodes
+
+2005-11-03  Volker Stroebel <volker@planetpenguin.de>
+	* src/fps.* src/* data/config.nut.in
+	added max fps for gui and racing
+
+2005-11-02  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	replaced several macros with inline functions
+	removed several unused macros
+	code cleanups
+
+2005-11-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/elements.* src/course_load.cpp
+	added simple scale and rotation support for models
+
+2005-10-31  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	some scary cleanups
+
+	* src/ppogl/ui/frame.*
+	removed scary frame widget
+	
+	* src/paused.*
+	replaced scary frame widget with dark scary background
+	
+	* src/*
+	fixed scary build errors
+	fixed scary build problems w/o SDL_mixer
+	fixed scary build problems w/ gcc 2.95
+
+2005-10-30  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/audio/audiomgr.cpp
+	fix memleak in destructor
+	
+	* src/track_marks.*
+	fixed uninitialized values
+	fixed possible gpf
+	cleanups
+	
+	* src/ppogl/base/errors.cpp
+	don't use rdbuf to set logfile
+	
+	* src/ppogl/base/signal.*
+	added sinal.cpp
+	moved some code to signal.cpp
+
+2005-10-28  Volker Stroebel <volker@planetpenguin.de>
+	* src/quadtree.* src/gameconfig.* data/config.nut.in
+	removed settings for terrain blending
+	
+	* src/quadtree.cpp course_render.cpp
+	cleanups
+
+2005-10-27  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/sg/vnc.* src/course_load.* src/quadtree.*
+	added class VNCArray
+	changed code to use the new class
+	
+	* src/ppogl/base/vec* src/ppogl/base/color.*
+	removed unused code
+	
+	* src/tux_shadow.*
+	cleanups
+	
+	* src/ppogl/base/glwrappers.h
+	use vector/array ops where possible
+	
+	* src/phys_sim.cpp
+	removed unused code
+	cleanups
+
+2005-10-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/credits.cpp
+	cleanups
+
+2005-10-24  Volker Stroebel <volker@planetpenguin.de>
+	* src/hier_utils.* src/hier.cpp data/models/*/model.nut
+	removed unused eye values from struct SceneNode
+
+2005-10-22  Volker Stroebel <volker@planetpenguin.de>
+	* (*)
+	some cleanups
+	
+	* src/ftgl/*
+	removed unused code
+
+2005-10-21  Volker Stroebel <volker@planetpenguin.de>
+	* src/course_load.cpp
+	reset item states if course is not reloaded
+
+	* data/config.nut.in * src/trackmarks.*
+	added max_track_marks
+	
+	* src/track_marks.* src/course_mirror.cpp
+	mirror track marks
+	
+	* src/track_marks.cpp src/racing.cpp
+	use chached config values
+	
+	* src/nmrcl.cpp
+	remove unused code
+
+2005-10-20  Volker Stroebel <volker@planetpenguin.de>
+	* src/hier*
+	replaced Material with ppogl::Material
+	
+	* src/pp_types.h src/*
+	moved code to other locations
+	removed pp_types.h
+	
+	* src/ppogl/base/glwrappers.h src/hier_util.cpp
+	added glu::Quadric
+	
+	* src/hier_util.cpp
+	use glu::Quadric to draw sphere
+	
+	* src/course_load.cpp
+	clear location for reset points
+	
+	* src/loading.cpp src/course_load.*
+	return to course selection if loading fails
+	
+	* src/ppogl/ppogl_script.*
+	added error handling
+	
+	* src/course_load.*
+	reload course only if necessary
+
+2005-10-19  Volker Stroebel <volker@planetpenguin.de>
+	* src/quadtree.cpp
+	removed unneeded checks
+	
+	* src/ppogl/models/model_ac.cpp
+	fixed uninitialized values
+	fixed deletion of not allocated pointers
+
+2005-10-18  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/sg/geoms.*
+	improoved Polyhedron and Polygon class
+	
+	* src/hier_utils.cpp src/phys_sim.cpp src/elements.cpp
+	fixed memleaks
+	
+	* src/ppogl/models/model_ac.*
+	fixed memleak
+	use PP_WARNING instead of printf
+	
+	* src/render_utils.* src/gl_utils.* src/loop.*
+	  src/nmrcl.* src/quadtree.* src/view.*
+	removed unused functions
+
+2005-10-17  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/images/readPNG.cpp
+	fixed memleak
+	
+	* src/ppogl/base/singleton.h
+	use std::auto_ptr
+	
+	* src/ppogl/font.cpp src/ftgl/FTFont.*
+	added reference counter to FTFont
+
+2005-10-16  Volker Stroebel <volker@planetpenguin.de>
+	* src/racing.cpp
+	fixed braking in multiplayer mode
+	fixed updating time in multiplayer mode
+
+	* data/models/tux2/model.nut
+	changed material names
+	
+	* src/gameover.cpp
+	removed unneeded drawing of hud
+	
+	* src/view.cpp src/racingmode.cpp
+	fixed paused and gameover views in multiplayer mode
+
+2005-10-13  Volker Stroebel <volker@planetpenguin.de>
+	* src/lights.cpp
+	fixed registration of light colors
+
+	* data/themes/conditions/common/*.nut
+	fixed lighting
+
+2005-10-12  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/base/glextensions.cpp
+	fixed compilation on g++-2.95
+
+2005-10-10  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/base/os.* src/main.cpp src/stuff.cpp
+	implemented handling of home and user directory in ppogl
+	
+	* src/course_load.cpp data/init.nut
+	added support courses in the users home dir
+	
+	* src/ppogl/base/glextensions.*
+	added glextension system
+	
+	* src/ppogl/ui/scale.*
+	added changed signal
+	
+	* src/audioconfig.* src/ppogl/audio/audiomgr.cpp
+	added realtime change of music volume in audio configuration
+
+2005-10-09  Volker Stroebel <volker@planetpenguin.de>
+	* (*)
+	added background image for fps counter
+	improved hud to support backgrounds for fps and course percentage
+	fixed bug in percentagebar
+
+	* src/squirrel/* src/sqstdlib/*
+	updated squirrel to 2.0.5
+
+2005-10-08  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/audio/audiomgr.* src/paused.cpp
+	added AudioMgr::pauseMusic()
+	pause music in PAUSED mode
+	
+	* src/ppogl/audio/audiomgr.cpp
+	added fallback if Mix_OpenAudio fails
+	
+	* src/winsys.cpp
+	added fallbacks if SDL_SetVideoMode fails
+
+2005-10-07  Volker Stroebel <volker@planetpenguin.de>
+	* src/course_quad.*
+	removed files
+	
+	* src/*
+	several code cleanups and fixes
+
+2005-10-05  Volker Stroebel <volker@planetpenguin.de>
+	* src/graphicsconfig.*
+	added graphics configuration
+	terrain detail level
+	texture detail level
+	player detail level
+
+2005-10-04  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/ui/scale.*
+	added hscale widget (horizontal slider)
+	
+	* src/audioconfig.*
+	replaced enable sound/music checkboxes with volume controls
+
+2005-10-03  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	fixed several memleaks
+	code cleanups
+	
+	* src/ppogl/base/error.* src/main.cpp src/gl_utils.cpp
+	improved log system
+	added commandline options
+	
+	* src/*
+	add log messages to several files
+	
+	* src/ppogl/audio/audiomgr.* src/main.cpp data/config.nut.in
+	added music and sound volume control
+
+2005-09-27  Volker Stroebel <volker@planetpenguin.de>
+	* data/config.nut.in
+	fixed several default settings
+	
+	* src/ppogl/audio/audiomgr.cpp/h
+	check if audiomgr is initialized
+	added possibility to disable sound and music
+	
+	* src/main.cpp
+	fixed initialisation of AudioMgr
+	
+	* src/audioconfig.cpp
+	fixed most problems in audioconfig (still needs some work)
+	
+	* src/paused.cpp
+	only continue if configured pause key is pressed
+	stop music playback (pausing the music is not implemented yet)
+	
+	* src/ppogl//audio/sound.cpp
+	partially fixed handling of non endless playback
+
+2005-09-26  Volker Stroebel <volker@planetpenguin.de>
+	* data/translations/de_DE.nut
+	fixed translations
+	
+=== ppracer 0.5 alpha ===
+
+2005-09-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/videoconfig.cpp
+	fixed fullscreen checkbox
+	check resolution for min width/height
+	check duplication of resolutions 
+
+	* configure.in src/ppracer.h
+	changed version to 0.5alpha
+	
+	* src/main.cpp
+	fixed custom data_dir
+
+2005-09-24  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/ui/uimgr.cpp
+	fixed handling of mousewheel
+		
+	* src/screenshot.cpp
+	save files in the right directory
+
+2005-09-23  Volker Stroebel <volker@planetpenguin.de>
+	* src/phys_sim.cpp/h src/nmrcl.cpp/
+	cleanups in physical simulation and ODESolver
+	removed unused solver
+
+2005-09-22  Volker Stroebel <volker@planetpenguin.de>
+	* src/tux.cpp/h src/keyframe.cpp/h
+	add support for multiple models
+
+	* src/racingmode.cpp
+	draw all players in multiplayer mode
+
+2005-09-21  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	several small fixes and code cleanups
+
+2005-09-20  Volker Stroebel <volker@planetpenguin.de>
+	* data/translations/sv_SE.nut
+	updated swedish translation
+	
+	* src/ppogl/audio/*
+	fixed compilation without SDL_mixer
+
+2005-09-18  Volker Stroebel <volker@planetpenguin.de>
+	* data/courses/* data/events/*
+	updated color palettes for element images
+	
+	* src/track_marks.* src/*
+	added multiplayer support to trackmarks
+	
+	* src/mirror_course.* src/load_course.cpp
+	fixed crash in course mirroring
+
+2005-09-17  Volker Stroebel <volker@planetpenguin.de>
+	* data/courses/* data/events/*
+	fixed reset points in element images
+
+2005-09-14  Volker Stroebel <volker@planetpenguin.de>
+	* data/translations/*
+	added swedish translations
+	updated language files
+
+2005-09-13  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	added experimental (hidden) multiplayer support
+
+2005-09-12  Volker Stroebel <volker@planetpenguin.de>
+	* src/racingmode.*
+	added class RacingMode as subclass for all Modes during a race
+	
+	* src/*
+	added splitscreen support
+	several preparations for multiplayer	
+
+2005-09-11  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	replaced several C Style strings with std::strings
+	code cleanups
+
+2005-09-10  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	updated assertion and log system
+	
+	* data/translations/*
+	added ukrainian translation 
+	added hungarian translation
+
+2005-09-09  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	fixed compilation with gcc 2.95	
+
+2005-09-08  Volker Stroebel <volker@planetpenguin.de>
+	* src/data/config.nut.in
+	fixed loading without user configuration
+	
+	* src/*
+	improve documentation/comments in several files
+
+2005-09-07  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/ui/*
+	added mousewheel support based on patch #598 from ovresmot
+	
+	* src/squirrel/* src/sqstdlib/*
+	updated squirrel to 2.0.4
+
+2005-09-06  Volker Stroebel <volker@planetpenguin.de>
+	merged privat development tree
+	replaced ppgltk with ppogl
+		- rewrites of huge parts of ppgltk
+		- moved functionality from core to ppogl
+	replaced TCL with squirrel
+	changed data layout:
+		- scripts are now written in squirrel
+		- courses,events,cups can be translated
+		- moved events and themes directory to data/
+	changed layout of the configuration file and removed unused setting
+	huge amount of code changes and rewrites i don't know anymore
