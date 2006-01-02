@@ -1,0 +1,13 @@
+GIMP Palette
+Name: PPRacer-Elements - common
+Columns: 4
+#
+ 28 185 204	Herring
+194  40  40	Flag
+128 128   0	Start
+255 255   0	Finish
+255 255 255	Tree
+  0 255  48	Shrub
+255  96   0	Tree Barren
+  0   0   0	None
+255 128 255	Reset point
