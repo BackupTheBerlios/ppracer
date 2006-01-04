@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2006-01-04  Volker Stroebel <volker@planetpenguin.de>
+	* configure.in
+	added extra checks for X libraries (Simon80)
+
 2006-01-02  Volker Stroebel <volker@planetpenguin.de>
 	* src/game_over.*
 	fixed mouseButtonEvent()
