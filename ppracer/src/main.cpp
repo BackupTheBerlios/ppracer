@@ -68,6 +68,7 @@ showHelpMessage()
 		"\n"
 		"  -c <config-file>         use custom config file\n"
 		"  -d <data-directory>      use custom data directory\n"
+		"  --keep-config            don't save configuration\n"
 		"\n"
 		"Benchmark/autoplay\n"
 		"  -a                       automatic playing mode\n"
@@ -90,6 +91,8 @@ std::string data_dir;
 
 static unsigned char verbose=0;
 
+extern bool saveConfigFile;
+
 static void
 getopts( int argc, char *argv[] )
 {
@@ -103,6 +106,8 @@ getopts( int argc, char *argv[] )
 		}else if( !strcmp(argv[i],"-d") ){
 			i++;
 			data_dir = argv[i];
+		}else if( !strcmp(argv[i],"--keep-config") ){
+			saveConfigFile = false;
 		}else if( !strcmp( argv[i],"-f") ){
 			i++;
 			if(argv[i] != NULL){			

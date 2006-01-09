@@ -70,19 +70,25 @@ get_config_file_name()
 // defined in main.cpp <- Todo: move this somewhere else
 extern std::string cfile;
 
+bool saveConfigFile = true;
+
 void
 write_config_file()
 {
 	PP_REQUIRE(cfile.empty()!=true, "Filename for configuration file is empty");
 
-	PP_MESSAGE("Writing config file: " <<cfile); 
+	if(saveConfigFile){	
+		PP_MESSAGE("Writing config file: " <<cfile); 
 	
-	//call script function "write_config_to_file" with argument "cfile"
-	script.pushRootTable();
-	script.pushString("write_config_to_file");
-	script.get(-2);
-	script.pushRootTable();
-	script.pushString(cfile);
-	script.call(2,false);
-	script.pop(2);
+		//call script function "write_config_to_file" with argument "cfile"
+		script.pushRootTable();
+		script.pushString("write_config_to_file");
+		script.get(-2);
+		script.pushRootTable();
+		script.pushString(cfile);
+		script.call(2,false);
+		script.pop(2);
+	}else{
+		PP_MESSAGE("Writing config file is disabled"); 
+	}
 }

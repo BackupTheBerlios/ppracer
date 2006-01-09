@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2006-01-09  Volker Stroebel <volker@planetpenguin.de>
+	* src/main.cpp src/stuff.cpp
+	added --keep-config command line option
+
 2006-01-04  Volker Stroebel <volker@planetpenguin.de>
 	* configure.in
 	added extra checks for X libraries (Simon80)
