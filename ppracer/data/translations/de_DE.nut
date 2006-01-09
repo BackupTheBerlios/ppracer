@@ -13,6 +13,7 @@ Translation.set("Quit","Beenden");
 
 //configuration
 Translation.set("General","Allgemein");
+Translation.set("Graphics","Grafik");
 //Translation.set("Video","Video");
 Translation.set("Audio","Toneinstellungen");
 Translation.set("Keyboard","Tastatur");
