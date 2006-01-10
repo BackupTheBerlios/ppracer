@@ -9,8 +9,8 @@ Translation.set("PRESS ANY KEY TO START", "Trykk en tast for å starte");
 //game_type_select
 Translation.set("Enter an event", "Kjør et renn");
 Translation.set("Practice", "Øvelsesrenn");
-Translation.set("Configuration", "Konfigurasjon");
-Translation.set("Credits", "Kreditering");
+Translation.set("Configuration", "Oppsett");
+Translation.set("Credits", "Bidragsytere");
 Translation.set("Quit", "Avslutt");
 
 //configuration 
