@@ -1,6 +1,11 @@
 
 === ppracer 0.5 alpha2 ===
 
+2006-01-10  Volker Stroebel <volker@planetpenguin.de>
+	* src/squirrel/squirrel.h
+	added check for config.h
+	use inttypes.h if available
+
 2006-01-09  Volker Stroebel <volker@planetpenguin.de>
 	* src/main.cpp src/stuff.cpp
 	added --keep-config command line option

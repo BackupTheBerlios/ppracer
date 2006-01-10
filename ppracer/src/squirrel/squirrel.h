@@ -28,6 +28,7 @@ to the following restrictions:
 		altered from any source distribution.
 
 */
+
 #ifndef _SQUIRREL_H_
 #define _SQUIRREL_H_
 
@@ -38,23 +39,40 @@ extern "C" {
 #ifndef SQUIRREL_API
 #define SQUIRREL_API extern
 #endif
+	
+/*
+ * added check for config.h and use inttypes.h if available
+ * Volker Ströbel <volker@planetpenguin.de>
+ */
 
-#ifdef _SQ64
-#ifdef _MSC_VER
-typedef __int64 SQInteger;
-typedef unsigned __int64 SQUnsignedInteger;
-typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
-#else
-typedef long SQInteger;
-typedef unsigned long SQUnsignedInteger;
-typedef unsigned long SQHash; /*should be the same size of a pointer*/
+#ifdef HAVE_CONFIG_H
+	#include "config.h"
 #endif
-typedef int SQInt32; 
-#else 
-typedef int SQInteger;
-typedef int SQInt32; /*must be 32 bits(also on 64bits processors)*/
-typedef unsigned int SQUnsignedInteger;
-typedef unsigned int SQHash; /*should be the same size of a pointer*/
+
+#ifdef HAVE_INTTYPES_H
+  #include <inttypes.h>
+  typedef int SQInteger;
+  typedef unsigned int SQUnsignedInteger;
+  typedef int32_t SQInt32; /*must be 32 bits(also on 64bits processors)*/
+  typedef uintptr_t SQHash; /*should be the same size of a pointer*/
+#else
+  #ifdef _SQ64
+    #ifdef _MSC_VER
+      typedef __int64 SQInteger;
+      typedef unsigned __int64 SQUnsignedInteger;
+      typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
+	#else
+      typedef long SQInteger;
+      typedef unsigned long SQUnsignedInteger;
+      typedef unsigned long SQHash; /*should be the same size of a pointer*/
+    #endif
+    typedef int SQInt32; 
+  #else 
+   typedef int SQInteger;
+   typedef int SQInt32; /*must be 32 bits(also on 64bits processors)*/
+   typedef unsigned int SQUnsignedInteger;
+   typedef unsigned int SQHash; /*should be the same size of a pointer*/
+  #endif
 #endif
 
 typedef float SQFloat;

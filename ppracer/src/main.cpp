@@ -96,7 +96,7 @@ extern bool saveConfigFile;
 static void
 getopts( int argc, char *argv[] )
 {
-	for(int i=0; i<argc; i++){
+	for(int i=1; i<argc; i++){
 		if( !strcmp(argv[i],"--help") ){
 			showHelpMessage();
 			exit(0);
@@ -151,6 +151,8 @@ getopts( int argc, char *argv[] )
 			}
 		}else if( !strcmp( argv[i],"-v") ){
 			verbose++;
+		}else{
+			PP_WARNING("Unknown option: " << argv[i] <<"\n Use " << argv[0] << " --help for available options");
 		}
 	}	
 }
