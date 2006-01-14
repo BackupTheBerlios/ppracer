@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE RANLIB ac_ct_RANLIB CPP EGREP X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS SDL_CONFIG SDL_CFLAGS SDL_LIBS FT2_CONFIG FT2_CFLAGS FT2_LIBS ppdatadir TR_CPPFLAGS TR_CFLAGS TR_CXXFLAGS TR_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE RANLIB ac_ct_RANLIB CPP EGREP X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS SDL_CONFIG SDL_CFLAGS SDL_LIBS FT2_CONFIG FT2_CFLAGS FT2_LIBS ppdatadir conf_ppdatadir TR_CPPFLAGS TR_CFLAGS TR_CXXFLAGS TR_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -8738,6 +8738,8 @@ echo "$as_me: WARNING:
 
 ppdatadir='${datadir}/ppracer/'
 
+conf_ppdatadir="$datadir/ppracer/"
+
 
 
 
@@ -8752,6 +8754,16 @@ ppdatadir='${datadir}/ppracer/'
   test "$exec_prefix_NONE" && exec_prefix=NONE
 
 
+  prefix_NONE=
+  exec_prefix_NONE=
+  test "x$prefix" = xNONE && prefix_NONE=yes && prefix=$ac_default_prefix
+  test "x$exec_prefix" = xNONE && exec_prefix_NONE=yes && exec_prefix=$prefix
+  eval ac_define_dir="\"$conf_ppdatadir\""
+  conf_ppdatadir="$ac_define_dir"
+
+  test "$prefix_NONE" && prefix=NONE
+  test "$exec_prefix_NONE" && exec_prefix=NONE
+
 
 
 # Check whether --with-data-dir or --without-data-dir was given.
@@ -8759,6 +8771,7 @@ if test "${with_data_dir+set}" = set; then
   withval="$with_data_dir"
   ppdatadir=$withval
 fi;
+
 
 
 
@@ -9505,6 +9518,7 @@ s,@FT2_CONFIG@,$FT2_CONFIG,;t t
 s,@FT2_CFLAGS@,$FT2_CFLAGS,;t t
 s,@FT2_LIBS@,$FT2_LIBS,;t t
 s,@ppdatadir@,$ppdatadir,;t t
+s,@conf_ppdatadir@,$conf_ppdatadir,;t t
 s,@TR_CPPFLAGS@,$TR_CPPFLAGS,;t t
 s,@TR_CFLAGS@,$TR_CFLAGS,;t t
 s,@TR_CXXFLAGS@,$TR_CXXFLAGS,;t t
@@ -10251,7 +10265,7 @@ echo GLU support ........ $GLU_LIB_NAME
 
 echo
 echo The binary will be installed in $prefix/bin
-echo The data files will be installed in $ppdatadir
+echo The data files will be installed in $conf_ppdatadir
 echo
 echo configure complete, now type \'make\' and pray.
 echo

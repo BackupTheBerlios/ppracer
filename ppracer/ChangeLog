@@ -5,6 +5,9 @@
 	* src/sqstdlib/Makefile.am src/ppogl/Makefile.am
 	changes to allow building the project from other directories
 
+	* configure.in data/config.nut.in
+	fixed creation of config.nut	
+
 2006-01-10  Volker Stroebel <volker@planetpenguin.de>
 	* src/squirrel/squirrel.h
 	added check for config.h

@@ -448,6 +448,8 @@ dnl (The trailing slash is essential: if this ends up a symlink, we want the
 dnl sanity-checking code in src/main.cpp to dereference it.)
 ppdatadir='${datadir}/ppracer/'
 
+conf_ppdatadir="$datadir/ppracer/"
+
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
   exec_prefix_NONE=
@@ -460,11 +462,12 @@ AC_DEFUN([AC_DEFINE_DIR], [
 ])
 
 AC_DEFINE_DIR(ppdatadir,ppdatadir)
-
+AC_DEFINE_DIR(conf_ppdatadir,conf_ppdatadir)
 
 AC_ARG_WITH(data-dir,[  --with-data-dir=PATH    Default ppracer data directory], ppdatadir=$withval)
 
 AC_SUBST(ppdatadir)
+AC_SUBST(conf_ppdatadir)
 
 AC_SUBST(TR_CPPFLAGS)
 AC_SUBST(TR_CFLAGS)
@@ -502,7 +505,7 @@ echo GLU support ........ $GLU_LIB_NAME
 
 echo
 echo The binary will be installed in $prefix/bin
-echo The data files will be installed in $ppdatadir
+echo The data files will be installed in $conf_ppdatadir
 echo
 echo configure complete, now type \'make\' and pray.
 echo

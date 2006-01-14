@@ -7,7 +7,7 @@ PPConfigDefaults <- {
 data_dir_description= @"
 The location of the PlanetPenguin Racer data files
 ",
-data_dir = "@ppdatadir@",
+data_dir = "@conf_ppdatadir@",
 
 x_resolution_description = @"
 The horizontal size of the window
