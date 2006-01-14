@@ -20,7 +20,7 @@ libsqstdlib_a_SOURCES = \
 		sqstdstring.h	\
 		sqstdsystem.h
 
-INCLUDES = -I../squirrel/
+INCLUDES = -I$(top_srcdir)/src/squirrel/
 
 EXTRA_DIST = \
 	COPYRIGHT

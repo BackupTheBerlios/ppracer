@@ -21,7 +21,7 @@
 
 #include "model_ac.h"
 
-#include "ppogl/base/glwrappers.h"
+#include "../base/glwrappers.h"
 
 #include <iostream>
 

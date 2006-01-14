@@ -127,10 +127,11 @@ libppogl_a_SOURCES = 		\
 	font/FTLibrary.cpp	\
 	font/FTSize.cpp	
 
-INCLUDES = -I../ -I../squirrel/ -I../sqstdlib/
+INCLUDES = \
+	-I$(top_srcdir)/src/squirrel/ \
+	-I$(top_srcdir)/src/sqstdlib/
 
 EXTRA_DIST = \
 	font/COPYING.txt \
 	font/README.txt \
 	font/license.txt
-
