@@ -1,6 +1,6 @@
 /* 
- * PPRacer 
- * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
+ * PlanetPenguin Racer 
+ * Copyright (C) 2004-2006 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
  * 
@@ -23,6 +23,5 @@
 #define _SCREENSHOT_H_
 
 void screenshot();
-bool take_screenshot ( char* filename );
 
-#endif /* _SCREENSHOT_H_ */
+#endif // _SCREENSHOT_H_

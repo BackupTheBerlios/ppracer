@@ -1,7 +1,7 @@
 
 SUBDIRS = squirrel sqstdlib ppogl
 
-AM_CPPFLAGS = -DPP_DATADIR="$(ppdatadir)"
+AM_CPPFLAGS = -DPP_DATADIR=\"$(ppdatadir)\"
 
 bin_PROGRAMS = ppracer
 

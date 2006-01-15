@@ -1,6 +1,6 @@
 /* 
  * PlanetPenguin Racer 
- * Copyright (C) 2004-2005 Volker Stroebel <volker@planetpenguin.de>
+ * Copyright (C) 2004-2006 Volker Stroebel <volker@planetpenguin.de>
  *
  * Copyright (C) 1999-2001 Jasmin F. Patry
  * 
@@ -185,7 +185,7 @@ main(int argc, char *argv[])
     try{ // used to catch all unhandled Errors and Assertions		
 		// print copyright notice 
     	std::cout << "PlanetPenguin Racer " VERSION " -- http://racer.planetpenguin.de\n"
-	    	<< "(c) 2004-2005 PlanetPenguin Racer team\n"
+	    	<< "(c) 2004-2006 PlanetPenguin Racer team\n"
 	    	<< "(c) 1999-2001 Jasmin F. Patry\n"
 	    	<< "<jfpatry@sunspirestudios.com>\n"
 	    	<< "PlanetPenguin Racer comes with ABSOLUTELY NO WARRANTY.\n"

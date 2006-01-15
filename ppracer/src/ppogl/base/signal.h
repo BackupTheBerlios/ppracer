@@ -1,6 +1,6 @@
 /* 
  * PPOGL - PlanetPenguin Open Game Library
- * Copyright (C) 2004-2005 Peter Reichel <peter@apps4linux.org>
+ * Copyright (C) 2004-2006 Peter Reichel <peter@apps4linux.org>
  *                         Volker Stroebel <volker@planetpenguin.de>
  * 						
  * This program is free software; you can redistribute it and/or
