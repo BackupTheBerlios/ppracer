@@ -1727,7 +1727,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=ppracer
- VERSION="0.5alpha2"
+ VERSION="0.5beta"
 
 
 cat >>confdefs.h <<_ACEOF

@@ -44,7 +44,7 @@
 #if defined( NATIVE_WIN32_COMPILER )
 /* Need to manually define some things that autoconf defines for
    us in config.h */
-#   define VERSION "0.5alpha2"
+#   define VERSION "0.5beta"
 #   define HAVE_SDL_MIXER 1
 #   define HAVE_SDL_JOYSTICKOPEN 1
 
@@ -148,6 +148,6 @@ enum DebugMode{
 extern ppogl::Script script;
 
 ///release name
-#define PP_RELEASE_NAME "0.5alpha2 (Scho a weng bessä)"
+#define PP_RELEASE_NAME "0.5beta (Des is mir a scho afgfalln)"
 
 #endif // _PPRACER_H_
