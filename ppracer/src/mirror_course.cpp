@@ -39,7 +39,6 @@ mirror_course()
     float tmp;
     int tmp_terrain;
     ppogl::Vec3d tmp_vec;
-    ppogl::Vec2d start_pt;
 
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
     float* elevation = Course::getElevData();
@@ -110,7 +109,7 @@ mirror_course()
 			      players[0].view.pos);
     }
 
-    start_pt = Course::getStartPt();
+	ppogl::Vec2d start_pt = Course::getStartPt();
     start_pt.x() = courseDim.x() - start_pt.x();
     Course::setStartPt( start_pt );
 }
@@ -123,8 +122,9 @@ mirror_key_frame()
 	const ppogl::Vec2d& courseDim = Course::getDimensions();
 
 	for(int player=0; player<GameMgr::getInstance().numPlayers; player++){
-		keyFrames[player].getData(&frames, &num_frames);
-
+		num_frames = keyFrames[player].getNumFrames();
+		frames = keyFrames[player].getFrames();
+		
    		for(int i=0; i<num_frames; i++){	
 			frames[i].yaw = - frames[i].yaw;
 			frames[i].pos.x() = courseDim.x() - frames[i].pos.x();

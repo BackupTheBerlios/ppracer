@@ -36,17 +36,15 @@
 static bool
 append_to_buff(char **buff, int *size, char *string)
 {
-    int len;
-
-    if ( *size < 0 ) {
-	return false;
+    if ( *size < 0 ){
+		return false;
     }
 
-    len = snprintf( *buff, *size, "%s", string );
+    const int len = snprintf( *buff, *size, "%s", string );
 
-    check_assertion( len >= 0, "buff too small" );
-    if ( len < 0 ) {
-	return false;
+    PP_ASSERT( len >= 0, "buff too small" );
+    if( len < 0 ) {
+		return false;
     }
     
     *buff += len;

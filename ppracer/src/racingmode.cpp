@@ -123,12 +123,15 @@ RacingMode::renderCourse(int player, float timestep)
 		tux[i].draw();
 		draw_tux_shadow(i);
 	}
-			
-	if(player==0){
-    	HUD1.draw(players[0], resolution);
-	}else if(player==1){
-		HUD2.draw(players[1], resolution);
-	}else{
-		PP_WARNING("Player " << player << " is not supported");		
+
+	switch(player){
+		case 0:
+			HUD1.draw(players[0], resolution);
+			break;
+		case 1:
+			HUD2.draw(players[1], resolution);
+			break;
+		default:
+			PP_WARNING("Player " << player << " is not supported");		
 	}
 }

@@ -150,22 +150,18 @@ quadsquare::getNeighbor(const int dir, const quadcornerdata& cd) const
     if (cd.parent == 0) return 0;
 	
     // Find the parent and the child-index of the square we want to locate or create.
-    quadsquare*	p = 0;
-	
-    int	index = cd.childIndex ^ 1 ^ ((dir & 1) << 1);
-    bool	SameParent = ((dir - cd.childIndex) & 2) ? true : false;
-	
+    const int index = cd.childIndex ^ 1 ^ ((dir & 1) << 1);
+    const bool	SameParent = ((dir - cd.childIndex) & 2) ? true : false;
+	   
+	quadsquare* p;
     if (SameParent) {
 		p = cd.parent->square;
     } else {
 		p = cd.parent->square->getNeighbor(dir, *cd.parent);
-		
 		if (p == 0) return 0;
     }
-	
-    quadsquare*	n = p->Child[index];
-	
-    return n;
+		
+    return p->Child[index];
 }
 
 float
@@ -183,7 +179,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     float maxerror = 0;
 
     // Compute error of center vert.
-    float	e;
+    float e;
     if (cd.childIndex & 1) {
 		e = fabs(Vertex[0] - (cd.verts[1] + cd.verts[3]) * 0.5);
     } else {
@@ -197,7 +193,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 
     // Check min/max of corners.
     for(int i=0; i<4; i++){
-		float y = cd.verts[i];
+		const float y = cd.verts[i];
 		if (y < MinY) MinY = y;
 		if (y > MaxY) MaxY = y;
     }
@@ -430,12 +426,12 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 /// Check this node and its descendents, and remove nodes which don't contain
 /// necessary detail.
 {
-    int	i;
-    quadcornerdata	q;
+	quadcornerdata	q;
 
     if(cd.level>TargetLevel){
 		// Just recurse to child nodes.
 		for(int j= 0; j<4; j++){
+			int i;
 			if (j < 2) i = 1 - j;
 			else i = j;
 
@@ -480,19 +476,19 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 	}
     }
 
-    // See if we have child nodes.
-    bool	StaticChildren = false;
-    for (i = 0; i < 4; i++) {
-	if (Child[i]) {
-	    StaticChildren = true;
-	    if (Child[i]->Dirty) Dirty = true;
+	// See if we have child nodes.
+	bool	StaticChildren = false;
+	for (int i = 0; i < 4; i++) {
+		if (Child[i]) {
+			StaticChildren = true;
+			if (Child[i]->Dirty) Dirty = true;
+		}
 	}
-    }
 
     // If we have no children and no necessary edges, then see if we can delete ourself.
     if (StaticChildren == false && cd.parent != NULL) {
 	bool	NecessaryEdges = false;
-	for (i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 	    // See if vertex deviates from edge between corners.
 	    float	diff = fabs(Vertex[i+1] - (cd.verts[i] + cd.verts[(i+3)&3]) * 0.5);
 	    if (diff > 0.00001) {
@@ -509,8 +505,6 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 	}
     }
 }
-
-//static int MaxCreateDepth = 0;
 
 void
 quadsquare::enableEdgeVertex(int index, const bool IncrementCount, const quadcornerdata& cd)
@@ -541,7 +535,7 @@ quadsquare::enableEdgeVertex(int index, const bool IncrementCount, const quadcor
 
     // Travel upwards through the tree, looking for the parent in common with our desired neighbor.
     // Remember the path through the tree, so we can travel down the complementary path to get to the neighbor.
-    quadsquare*	p = this;
+    quadsquare* p;
     const quadcornerdata* pcd = &cd;
     int	ct = 0;
     int	stack[32];
@@ -585,7 +579,7 @@ quadsquare::enableDescendant(int count, int path[], const quadcornerdata& cd)
 /// Creates the node if necessary, and returns a pointer to it.
 {
     count--;
-    int	ChildIndex = path[count];
+    const int	ChildIndex = path[count];
 
     if ((EnabledFlags & (16 << ChildIndex)) == 0) {
 		enableChild(ChildIndex, cd);
@@ -650,15 +644,6 @@ quadsquare::notifyChildDisable(const quadcornerdata& cd, int index)
     if (s) {
 		s->SubEnabledCount[0]--;
     }
-	
-    /* We don't really want to delete nodes when they're disabled, do we?     
-	if (Child[index]->Static == false) {
-       delete Child[index];
-       Child[index] = 0;
-
-       BlockDeleteCount++;//xxxxx
-       }
-     */
 }
 
 bool
@@ -667,21 +652,16 @@ quadsquare::vertexTest(int x, float y, int z, float error, const float Viewer[3]
 /// its interpolated location and its true location, should be enabled, given that
 /// the viewpoint is located at Viewer[].
 {
-    float	dx = fabs(x - Viewer[0]) * fabs( ScaleX );
-    float	dy = fabs(y - Viewer[1]);
-    float	dz = fabs(z - Viewer[2]) * fabs( ScaleZ );
-    float	d = MAX( dx, MAX( dy, dz ) );
+    const float dx = fabs(x - Viewer[0]) * fabs( ScaleX );
+    const float dy = fabs(y - Viewer[1]);
+    const float dz = fabs(z - Viewer[2]) * fabs( ScaleZ );
+    const float d = MAX( dx, MAX( dy, dz ) );
 
-
-    if ( vertex_loc == South && ForceSouthVert && d < VERTEX_FORCE_THRESHOLD ) 
-    {
+    if( vertex_loc == South && ForceSouthVert && d < VERTEX_FORCE_THRESHOLD ){
 		return true;
-    }
-    if ( vertex_loc == East && ForceEastVert && d < VERTEX_FORCE_THRESHOLD ) 
-    {
+    }else if( vertex_loc == East && ForceEastVert && d < VERTEX_FORCE_THRESHOLD ){
 		return true;
-    }
-    if ( d < ERROR_MAGNIFICATION_THRESHOLD ) {
+    }else if( d < ERROR_MAGNIFICATION_THRESHOLD ){
 		error *= ERROR_MAGNIFICATION_AMOUNT;
     }
 	
@@ -696,11 +676,11 @@ quadsquare::boxTest(int x, int z, float size, float miny, float maxy, float erro
 /// based on the given viewer location.
 {
     // Find the minimum distance to the box.
-    float	half = size * 0.5;
-    float	dx = ( fabs(x + half - Viewer[0]) - half ) * fabs(ScaleX);
-    float	dy = fabs((miny + maxy) * 0.5 - Viewer[1]) - (maxy - miny) * 0.5;
-    float	dz = ( fabs(z + half - Viewer[2]) - half ) * fabs(ScaleZ);
-    float	d = MAX( dx, MAX( dy , dz ) );
+	const float half = size * 0.5;
+	const float dx = ( fabs(x + half - Viewer[0]) - half ) * fabs(ScaleX);
+	const  float dy = fabs((miny + maxy) * 0.5 - Viewer[1]) - (maxy - miny) * 0.5;
+	const float dz = ( fabs(z + half - Viewer[2]) - half ) * fabs(ScaleZ);
+	const  float d = MAX( dx, MAX( dy , dz ) );
 
     if ( d < ERROR_MAGNIFICATION_THRESHOLD ) {
 		error *= ERROR_MAGNIFICATION_AMOUNT;
@@ -715,9 +695,9 @@ quadsquare::boxTest(int x, int z, float size, float miny, float maxy, float erro
 	 ( z < NumRows-1 && z+size >= NumRows ) ) 
     {
 		return true;
-    }
-
-    return false;
+    }else{
+    	return false;
+	}
 }
 
 void
@@ -726,7 +706,6 @@ quadsquare::update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation)
 /// location of the viewer.  May force creation or deletion of qsquares
 /// in areas which need to be interpolated.
 {
-
     float Viewer[3];
 
     Viewer[0] = viewerLocation[0] / ScaleX;
@@ -910,7 +889,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 {
     s_VNCArray = vnc_array;
     const bool fog_on=fogPlane.isEnabled();
-    int i,idx;
+    int idx;
 
     //Draw the "normal" blended triangles
 
@@ -925,7 +904,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 			continue;
 		} 
 
-		for (i=0; i<int(VertexArrayCounter[(*it)]);i++){
+		for (int i=0; i<int(VertexArrayCounter[(*it)]);i++){
 			idx = VertexArrayIndices[(*it)][i];
 			s_VNCArray->colorValue(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
@@ -960,7 +939,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 	    gl::Disable( GL_FOG );
 	    
 	    /* Set triangle vertices to black */
-	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
+	    for (int i=0; i<int(VertexArrayCounter[0]); i++) {
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 0) = 0;
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 1) = 0;
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 2) = 0;
@@ -980,7 +959,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 	    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	    /* First set triangle colors to white */
-	    for (i=0; i<int(VertexArrayCounter[0]); i++) {
+	    for (int i=0; i<int(VertexArrayCounter[0]); i++) {
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 0 )=255;
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 1 )=255;
 			s_VNCArray->colorValue(VertexArrayIndices[0][i], 2 )=255;
@@ -992,7 +971,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
 
 			/* Set alpha values */
-			for (i=0; i<int(VertexArrayCounter[0]); i++) {
+			for (int i=0; i<int(VertexArrayCounter[0]); i++) {
 				s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 
 				(Terrain[VertexArrayIndices[0][i]] == int(*it) ) ? 
 				255 : 0;
@@ -1009,7 +988,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 		/* Need to set alpha values for ice */
 		
 		//the ice stuff should be rewritten...
-		for (i=0; i<int(VertexArrayCounter[0]); i++) {
+		for (int i=0; i<int(VertexArrayCounter[0]); i++) {
 		    s_VNCArray->colorValue(VertexArrayIndices[0][i], 3) = 
 			(Terrain[VertexArrayIndices[0][i]] == 0) ? 
 			ENV_MAP_ALPHA : 0;
@@ -1396,24 +1375,22 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
 	cd.parent->square->enableChild(cd.childIndex, *cd.parent);	// causes parent edge verts to be enabled, possibly causing neighbor blocks to be created.
     }
 	
-    int	i;
-	
-    int	half = 1 << cd.level;
+    int half = 1 << cd.level;
 
     // Create and update child nodes.
-    for (i = 0; i < 4; i++) {
-	quadcornerdata	q;
-	setupCornerData(&q, cd, i);
+    for (int i = 0; i < 4; i++) {
+		quadcornerdata	q;
+		setupCornerData(&q, cd, i);
 				
-	if (Child[i] == NULL && cd.level > hm.scale) {
-	    // Create child node w/ current (unmodified) values for corner verts.
-	    Child[i] = new quadsquare(&q);
-	}
+		if (Child[i] == NULL && cd.level > hm.scale) {
+	    	// Create child node w/ current (unmodified) values for corner verts.
+	    	Child[i] = new quadsquare(&q);
+		}
 		
-	// Recurse.
-	if (Child[i]) {
-	    Child[i]->addHeightMap(q, hm);
-	}
+		// Recurse.
+		if (Child[i]) {
+	    	Child[i]->addHeightMap(q, hm);
+		}
     }
 	
     // Deviate vertex heights based on data sampled from heightmap.
@@ -1427,7 +1404,7 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
     // Modify the vertex heights if necessary, and set the dirty
     // flag if any modifications occur, so that we know we need to
     // recompute error data later.
-    for(i = 0; i < 5; i++){
+    for(int i = 0; i < 5; i++){
 		if (s[i] != 0) {
 		    Dirty = true;
 		    Vertex[i] += s[i];
@@ -1436,7 +1413,7 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
 
     if(!Dirty){
 		// Check to see if any child nodes are dirty, and set the dirty flag if so.
-		for(i = 0; i < 4; i++){
+		for(int i = 0; i < 4; i++){
 	    	if(Child[i] && Child[i]->Dirty){
 				Dirty = true;
 				break;

@@ -174,7 +174,7 @@ VideoConfig::apply()
 	
  	if (updatevideo==true){
 		printf("Set new videomode:%dx%d bpp:%d \n", (*resit).data.x, (*resit).data.y, (*bppit).data);
-		setup_sdl_video_mode();
+		setup_video_mode();
 	}	
 	
 	write_config_file();

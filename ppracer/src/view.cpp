@@ -72,22 +72,21 @@
 #define NO_INTERPOLATION_SPEED 2.0
 
 static ppogl::Vec3d tux_eye_pts[2];
-//static ppogl::Vec3d tux_view_pt;
 static ppogl::Vec3d tux_view_pt[2];
 
 void
-set_view_mode(Player& plyr, ViewMode mode)
+set_view_mode(Player& plyr, const ViewMode mode)
 {
     plyr.view.mode = mode;
     PP_LOG( DEBUG_VIEW, "View mode: " << plyr.view.mode );
 } 
 
-ppogl::Vec3d
+static ppogl::Vec3d
 interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos2,
-			      double max_vec_angle,
+			      const double max_vec_angle,
 			      const ppogl::Vec3d& pos1, const ppogl::Vec3d& pos2,
-			      double dist, double dt,
-			      double time_constant )
+			      const double dist, const double dt,
+			      const double time_constant )
 {
     static ppogl::Vec3d y_vec(0.0, 1.0, 0.0);
 
@@ -97,18 +96,18 @@ interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos
     vec1.normalize();
     vec2.normalize();
 
-    pp::Quat q1(y_vec, vec1);
+    const pp::Quat q1(y_vec, vec1);
     pp::Quat q2(y_vec, vec2);
 
-    double alpha = MIN( MAX_INTERPOLATION_VALUE,
+    const double alpha = MIN( MAX_INTERPOLATION_VALUE,
 		 1.0 - exp ( -dt / time_constant ) );
 
     q2 = pp::Quat::interpolate( q1, q2, alpha );
 
     vec2 = q2.rotate( y_vec );
 
-    /* Constrain angle with x-z plane */
-    double theta = RADIANS_TO_ANGLES( M_PI/2 - acos(vec2*y_vec) );
+    // Constrain angle with x-z plane 
+    const double theta = RADIANS_TO_ANGLES( M_PI/2 - acos(vec2*y_vec) );
 
     if(theta > max_vec_angle){
 		ppogl::Vec3d axis = y_vec^vec2;
@@ -121,7 +120,6 @@ interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos
     }
 
     return plyr_pos2+dist*vec2;
-
 }
 
 
@@ -143,12 +141,13 @@ interpolate_view_pos(const ppogl::Vec3d& plyr_pos1, const ppogl::Vec3d& plyr_pos
   \date    Created:  2000-08-26
   \date    Modified: 2000-08-26
 */
-void
-interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
-			     ppogl::Vec3d *p_up2, ppogl::Vec3d *p_dir2,
-			     double dt, double time_constant )
+
+static void
+interpolate_view_frame( const ppogl::Vec3d& up1, const ppogl::Vec3d& dir1,
+			     ppogl::Vec3d& p_up2, ppogl::Vec3d& p_dir2,
+			     const double dt, const double time_constant )
 {
-    /* Now interpolate between camera orientations */
+    // Now interpolate between camera orientations 
     ppogl::Vec3d z1 = -1.0*dir1;
     z1.normalize();
 
@@ -161,15 +160,15 @@ interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
     pp::Matrix::makeChangeOfBasisMatrix( cob_mat1, inv_cob_mat1,
 				 x1, y1, z1 );
 
-    pp::Quat q1(cob_mat1);
+    const pp::Quat q1(cob_mat1);
 
-    ppogl::Vec3d z2 = -1.0*(*p_dir2);
+    ppogl::Vec3d z2 = -1.0*(p_dir2);
     z2.normalize();
 
-    ppogl::Vec3d y2 = projectIntoPlane( z2, *p_up2 );
+    ppogl::Vec3d y2 = projectIntoPlane( z2, p_up2 );
     y2.normalize();
 
-    ppogl::Vec3d x2 = y2^z2;
+    const ppogl::Vec3d x2 = y2^z2;
 	pp::Matrix cob_mat2;
 	pp::Matrix inv_cob_mat2;
 
@@ -178,21 +177,22 @@ interpolate_view_frame( ppogl::Vec3d up1, ppogl::Vec3d dir1,
 
     pp::Quat q2(cob_mat2);
 	
-    double alpha = MIN( MAX_INTERPOLATION_VALUE, 
+    const double alpha = MIN( MAX_INTERPOLATION_VALUE, 
 		 1.0 - exp( -dt / time_constant ) );
 
     q2 = pp::Quat::interpolate( q1, q2, alpha );
 
     cob_mat2 = q2;
 
-    p_up2->x() = cob_mat2.data[1][0];
-    p_up2->y() = cob_mat2.data[1][1];
-    p_up2->z() = cob_mat2.data[1][2];
+    p_up2.x() = cob_mat2.data[1][0];
+    p_up2.y() = cob_mat2.data[1][1];
+    p_up2.z() = cob_mat2.data[1][2];
 
-    p_dir2->x() = -cob_mat2.data[2][0];
-    p_dir2->y() = -cob_mat2.data[2][1];
-    p_dir2->z() = -cob_mat2.data[2][2];
+    p_dir2.x() = -cob_mat2.data[2][0];
+    p_dir2.y() = -cob_mat2.data[2][1];
+    p_dir2.z() = -cob_mat2.data[2][2];
 }
+
 
 void
 setup_view_matrix(Player& plyr) 
@@ -230,7 +230,7 @@ setup_view_matrix(Player& plyr)
     view_mat.data[1][3] = 0;
     view_mat.data[2][3] = 0;
     
-    ppogl::Vec3d viewpt_in_view_frame = 
+    const ppogl::Vec3d viewpt_in_view_frame = 
 			view_mat.transformPoint( plyr.view.pos );
     
     view_mat.data[3][0] = -viewpt_in_view_frame.x();
@@ -238,7 +238,7 @@ setup_view_matrix(Player& plyr)
     view_mat.data[3][2] = -viewpt_in_view_frame.z();
     
     gl::LoadIdentity();
-    gl::MultMatrix( reinterpret_cast<double *>(view_mat.data) );
+	gl::MultMatrix(view_mat);
 }
 
 /*! 
@@ -254,30 +254,22 @@ setup_view_matrix(Player& plyr)
   \date    Modified: 2000-08-26
 */
 void
-update_view(Player& plyr, float dt)
+update_view(Player& plyr, const float dt)
 {
     ppogl::Vec3d view_pt;
     ppogl::Vec3d view_dir;
-    //ppogl::Vec3d vel_proj;
-
-	
-	
 	
     ppogl::Vec3d vel_cpy = plyr.vel;
-    float speed = vel_cpy.normalize();
-
-    float time_constant_mult = 1.0 /
-	MIN( 1.0, 
-	     MAX( 0.0, 
-		  ( speed - NO_INTERPOLATION_SPEED ) /
-		  ( BASELINE_INTERPOLATION_SPEED - NO_INTERPOLATION_SPEED )));
+    const float speed = vel_cpy.normalize();
+	const float time_constant_mult = 1.0 / 	MIN( 1.0, 
+		MAX( 0.0,  ( speed - NO_INTERPOLATION_SPEED ) /  ( BASELINE_INTERPOLATION_SPEED - NO_INTERPOLATION_SPEED )));
 
     ppogl::Vec3d up_dir = ppogl::Vec3d( 0, 1, 0 );
 
     ppogl::Vec3d vel_dir = plyr.vel;
     vel_dir.normalize();
 
-    float course_angle = Course::getAngle();
+    const float course_angle = Course::getAngle();
 
     switch(plyr.view.mode){
 
@@ -356,7 +348,7 @@ update_view(Player& plyr, float dt)
 			/* Interpolate twice to get a second-order filter */
 			for (int i=0; i<2; i++) {
 				interpolate_view_frame( plyr.view.up, plyr.view.dir,
-					&up_dir, &view_dir, dt,
+					up_dir, view_dir, dt,
 					BEHIND_ORIENT_TIME_CONSTANT );
 			up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
 	    	}
@@ -440,7 +432,7 @@ update_view(Player& plyr, float dt)
 	    	/* Interpolate twice to get a second-order filter */
 	    	for (int i=0; i<2; i++ ) {
 			interpolate_view_frame( plyr.view.up, plyr.view.dir,
-					&up_dir, &view_dir, dt,
+					up_dir, view_dir, dt,
 					FOLLOW_ORIENT_TIME_CONSTANT );
 			up_dir = ppogl::Vec3d( 0.0, 1.0, 0.0 );
 	    	}

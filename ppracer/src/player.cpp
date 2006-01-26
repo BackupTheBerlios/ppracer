@@ -269,24 +269,6 @@ Player::clearCupData(std::string event, std::string cup)
 }
 
 void
-Player::resetLives()
-{
-	m_lives = INIT_NUM_LIVES;
-}
-	
-int
-Player::getLives()
-{
-	return m_lives;
-}
-	
-void
-Player::decLives()
-{
-	m_lives--;
-}
-
-void
 Player::incLives()
 {
 	// todo:

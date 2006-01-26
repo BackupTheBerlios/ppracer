@@ -45,8 +45,8 @@ HUD::Element::Element()
 }
 
 HUD::HUD()
+ : m_numElements(0)
 {
-	m_numElements=0;	
 }
 
 void
@@ -57,7 +57,8 @@ HUD::reset()
 }
 
 bool
-HUD::add(const Element& newElement){
+HUD::add(const Element& newElement)
+{
 	if( m_numElements < HUD_MAX_ITEMS){
 		m_element[m_numElements] = newElement;
 		m_numElements++;
@@ -68,7 +69,8 @@ HUD::add(const Element& newElement){
 }
 
 bool
-HUD::update(const int i, const Element& newElement){
+HUD::update(const int i, const Element& newElement)
+{
 	if( m_numElements > i ){
 		m_element[i] = newElement;
 		return true;	
@@ -170,8 +172,7 @@ HUD::text(const int i)
 			fixXY(m_element[i].position,
 			   m_element[i].height, m_element[i].width);
 		
-		m_element[i].font->draw(m_element[i].string,
-				   position);		
+		m_element[i].font->draw(m_element[i].string, position);		
 	}
 }
 
@@ -359,10 +360,8 @@ HUD::initGauge()
 void
 HUD::gauge(const int i, const double speed, const double energy)
 {
-	GLfloat xplane[4] = { 1.0/m_element[i].size, 0.0, 0.0, 0.0 };
-    GLfloat yplane[4] = { 0.0, 1.0/m_element[i].size, 0.0, 0.0 };
-    double y;
-    double speedbar_frac;
+	const GLfloat xplane[4] = { 1.0/m_element[i].size, 0.0, 0.0, 0.0 };
+    const GLfloat yplane[4] = { 0.0, 1.0/m_element[i].size, 0.0, 0.0 };
 
 	//the gauge bar needs it's own mode
 	//we reset the mode at the end of the function
@@ -379,7 +378,7 @@ HUD::gauge(const int i, const double speed, const double energy)
 
 	gl::BindTexture(GL_TEXTURE_2D, m_energymaskTex);
 
-	y = ENERGY_GAUGE_BOTTOM + energy * m_element[i].height;
+	const double y = ENERGY_GAUGE_BOTTOM + energy * m_element[i].height;
 
 	gl::Begin( GL_QUADS );
 	{
@@ -401,8 +400,8 @@ HUD::gauge(const int i, const double speed, const double energy)
 	}
 	gl::End();
 
-	/* Calculate the fraction of the speed bar to fill */
-	speedbar_frac = 0.0;
+	// Calculate the fraction of the speed bar to fill
+	double speedbar_frac = 0.0;
 
 	if ( speed > SPEEDBAR_GREEN_MAX_SPEED ) {
 	    speedbar_frac = SPEEDBAR_GREEN_FRACTION;
@@ -466,44 +465,30 @@ HUD::gauge(const int i, const double speed, const double energy)
 void 
 HUD::draw_partial_tri_fan(const double fraction)
 {
-    int divs;
-    double angle, angle_incr, cur_angle;
-    int i;
-    bool trifan = false;
-    ppogl::Vec2d pt;
-
-    angle = SPEEDBAR_BASE_ANGLE + 
+    const double angle = SPEEDBAR_BASE_ANGLE + 
 	( SPEEDBAR_MAX_ANGLE - SPEEDBAR_BASE_ANGLE ) * fraction;
 
-    divs = int(( SPEEDBAR_BASE_ANGLE - angle ) * CIRCLE_DIVISIONS / 360.0);
-
-    cur_angle = SPEEDBAR_BASE_ANGLE;
-
-    angle_incr = 360.0 / CIRCLE_DIVISIONS;
-
-    for (i=0; i<divs; i++) {
-	if ( !trifan ) {
-	    start_tri_fan();
-	    trifan = true;
-	}
-
-	cur_angle -= angle_incr;
-
-	pt = calc_new_fan_pt( cur_angle );
-
-	gl::Vertex(pt.x(), pt.y());
+    const int divs = int(( SPEEDBAR_BASE_ANGLE - angle ) * CIRCLE_DIVISIONS / 360.0);
+    double cur_angle = SPEEDBAR_BASE_ANGLE;
+    const double angle_incr = 360.0 / CIRCLE_DIVISIONS;
+	
+	bool trifan = false;
+    for(int i=0; i<divs; i++){
+		if( !trifan ){
+			start_tri_fan();
+			trifan = true;
+		}
+		cur_angle -= angle_incr;
+		gl::Vertex(calc_new_fan_pt(cur_angle));
     }
 
-    if ( cur_angle > angle + EPS ) {
-	cur_angle = angle;
-	if ( !trifan ) {
-	    start_tri_fan();
-	    trifan = true;
-	}
-
-	pt = calc_new_fan_pt( cur_angle );
-
-	gl::Vertex(pt.x(), pt.y());
+    if(cur_angle > angle + EPS ){
+		cur_angle = angle;
+		if ( !trifan ) {
+			start_tri_fan();
+			trifan = true;
+		}
+		gl::Vertex(calc_new_fan_pt(cur_angle));
     }
 
     if ( trifan ) {
@@ -515,26 +500,20 @@ HUD::draw_partial_tri_fan(const double fraction)
 ppogl::Vec2d
 HUD::calc_new_fan_pt(const double angle )
 {
-    ppogl::Vec2d pt;
-    pt.x() = ENERGY_GAUGE_CENTER_X + cos( ANGLES_TO_RADIANS( angle ) ) *
-	SPEEDBAR_OUTER_RADIUS;
-    pt.y() = ENERGY_GAUGE_CENTER_Y + sin( ANGLES_TO_RADIANS( angle ) ) *
-	SPEEDBAR_OUTER_RADIUS;
-
-    return pt;
+    return ppogl::Vec2d(
+    	ENERGY_GAUGE_CENTER_X + cos( ANGLES_TO_RADIANS( angle ) ) * 
+				SPEEDBAR_OUTER_RADIUS,
+    	ENERGY_GAUGE_CENTER_Y + sin( ANGLES_TO_RADIANS( angle ) ) *
+				SPEEDBAR_OUTER_RADIUS
+	);
 }
 
 void
-HUD::start_tri_fan(void)
+HUD::start_tri_fan()
 {
-    ppogl::Vec2d pt;
-
-    gl::Begin(GL_TRIANGLE_FAN);
-    gl::Vertex(ENERGY_GAUGE_CENTER_X, ENERGY_GAUGE_CENTER_Y);
-
-    pt = calc_new_fan_pt( SPEEDBAR_BASE_ANGLE ); 
-
-    gl::Vertex(pt);
+	gl::Begin(GL_TRIANGLE_FAN);
+	gl::Vertex(ENERGY_GAUGE_CENTER_X, ENERGY_GAUGE_CENTER_Y);
+	gl::Vertex(calc_new_fan_pt(SPEEDBAR_BASE_ANGLE));
 }
 
 ppogl::Vec2i

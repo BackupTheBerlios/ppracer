@@ -24,8 +24,8 @@
 
 #include "player.h"
 
-void set_view_mode(Player& plyr, ViewMode mode);
-void update_view(Player& plyr, float dt);
+void set_view_mode(Player& plyr, const ViewMode mode);
 void setup_view_matrix(Player& plyr);
+void update_view(Player& plyr, const float dt);
 
 #endif // _VIEWMODE_H_

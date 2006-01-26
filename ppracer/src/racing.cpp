@@ -79,7 +79,7 @@ Racing::States::States()
 Racing::Racing()
 {
     // Initialize view
-    int viewmode = PPConfig.getInt("view_mode");
+    const int viewmode = PPConfig.getInt("view_mode");
 		
 	if( viewmode<0 || viewmode>=NUM_VIEW_MODES ) 
     {

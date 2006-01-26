@@ -29,17 +29,17 @@
 #include <map>
 #include <string>
 
-std::map<std::string, SceneNode *> nodes;
-std::map<std::string, ppogl::Material> materials;
+static std::map<std::string, SceneNode *> nodes;
+static std::map<std::string, ppogl::Material> materials;
 
 // Default Material
-ppogl::Material g_hier_default_material;
+static ppogl::Material g_hier_default_material;
 
 /*
  * Functions used to access and update the name-to-pointer hash tables
  */
 
-/* Add a new node name to the node name hash table.
+/** Add a new node name to the node name hash table.
    node_name contains the child's name only. */
 static bool
 add_scene_node( const std::string& parent_name, const std::string& node_name, SceneNode *node ) 
@@ -58,7 +58,7 @@ add_scene_node( const std::string& parent_name, const std::string& node_name, Sc
     return true;
 }
 
-/* Get node pointer from node name */
+/** Get node pointer from node name */
 bool
 get_scene_node(const std::string& node_name, SceneNode **node ) 
 {
@@ -77,7 +77,7 @@ get_scene_node(const std::string& node_name, SceneNode **node )
 	return true;
 }
 
-/* Get material pointer from material name */
+/** Get material pointer from material name */
 bool 
 get_material(const std::string& mat_name, ppogl::Material **mat ) 
 {
@@ -319,14 +319,14 @@ bool
 collide(const std::string& node, const ppogl::Polyhedron& ph)
 {
     SceneNode *nodePtr;
-    pp::Matrix mat, invmat;
-
-    mat.makeIdentity();
-    invmat.makeIdentity();
 
     if(get_scene_node(node, &nodePtr) != true){
         PP_ERROR( "draw_scene_graph: No such node: " << node );
     } 
+	
+	pp::Matrix mat, invmat;
+    mat.makeIdentity();
+    invmat.makeIdentity();
 
     return check_polyhedron_collision_with_dag( nodePtr, mat, invmat, ph );
 }

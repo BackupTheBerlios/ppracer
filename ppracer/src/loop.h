@@ -107,6 +107,6 @@ public:
 	
 };
 
-void updateDisplay();
+inline void updateDisplay(){SDL_GL_SwapBuffers();}
 
 #endif // _LOOP_H_

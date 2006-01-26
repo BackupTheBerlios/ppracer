@@ -73,12 +73,6 @@ static ppogl::Vec2i cursorPos;
 static bool rightMouseButtonDown  = false;
 static bool middleMouseButtonDown = false;
 
-void
-updateDisplay()
-{
-	SDL_GL_SwapBuffers();
-}
-
 GameMode::~GameMode()
 {
 }

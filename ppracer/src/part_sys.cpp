@@ -43,10 +43,51 @@
 #define PARTICLE_SHADOW_HEIGHT 0.05
 #define PARTICLE_SHADOW_ALPHA 0.1
 
-struct Particle
+inline double
+frand()
 {
-    ppogl::Vec3d pt;
-    short type;
+    return double(rand())/RAND_MAX;
+}
+
+class Particle
+{
+public:
+	static Particle* head;
+	static int numParticles;
+	
+	enum Types{
+		PARTICLE_TYPE_1=0,
+		PARTICLE_TYPE_2,
+		PARTICLE_TYPE_3,
+		PARTICLE_TYPE_4,
+		NUM_PARTICLE_TYPES
+	};
+
+	Particle(const ppogl::Vec3d& _pt,
+				GLuint _binding,
+				const ppogl::Vec3d& _vel)
+     : pt(_pt),
+	   binding(_binding),
+	   vel(_vel),
+	   next(head)
+	{
+		// attach ourself to the head
+		head = this;	
+		numParticles++;
+		
+		type = Types(frand() * (double(NUM_PARTICLE_TYPES) - EPS));
+		
+		base_size = ( frand() + 0.5 ) * OLD_PART_SIZE;
+		cur_size = NEW_PART_SIZE;
+
+        age = frand() * MIN_AGE;
+        death = frand() * MAX_AGE;
+	}
+	
+	ppogl::Vec3d pt;
+
+	Types type;
+
     double base_size;
     double cur_size;
     double terrain_height;
@@ -54,60 +95,40 @@ struct Particle
     double death;
     double alpha;
     ppogl::Vec3d vel;
-	GLuint particle_binding;
+	GLuint binding;
     Particle *next;
+	
 };
 
 static ppogl::Color particleColor;
 
-static Particle* head = NULL;
-static int num_particles = 0;
-
-
-inline double
-frand()
-{
-    return double(rand())/RAND_MAX;
-}
+Particle* Particle::head = NULL;
+int Particle::numParticles = 0;
 
 void
 create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint particle_binding) 
 {
-    double speed = vel.normalize();
-
     // debug check to track down infinite particle bug 
-    if(num_particles + num > MAX_PARTICLES){
-		PP_ERROR("maximum number of particles exceeded");
-    }
-
-    for(int i=0; i<num; i++){
-        Particle* newp = new Particle;
-
-        num_particles += 1;
-
-        newp->next = head;
-        head = newp;
-
-        newp->pt.x() = loc.x() + 2.*(frand() - 0.5) * START_RADIUS;
-        newp->pt.y() = loc.y();
-        newp->pt.z() = loc.z() + 2.*(frand() - 0.5) * START_RADIUS;
-
-		newp->type = int(frand() * (4.0 - EPS));
-		
-		newp->particle_binding = particle_binding;	
+    //if(Particle::numParticles + num > MAX_PARTICLES){
+	//	PP_ERROR("maximum number of particles exceeded");
+    //}	
+	PP_REQUIRE(Particle::numParticles + num < MAX_PARTICLES, "Maximum number of particles exceeded");
 	
-		newp->base_size = ( frand() + 0.5 ) * OLD_PART_SIZE;
-		newp->cur_size = NEW_PART_SIZE;
-
-        newp->age = frand() * MIN_AGE;
-        newp->death = frand() * MAX_AGE;
-
-        newp->vel=(speed*vel)+
-			ppogl::Vec3d(
-				VARIANCE_FACTOR * (frand() - 0.5) * speed, 
-				VARIANCE_FACTOR * (frand() - 0.5) * speed,
-				VARIANCE_FACTOR * (frand() - 0.5) * speed
-			);
+	const double speed = vel.normalize();
+    for(int i=0; i<num; i++){      
+		Particle* newp = new Particle(
+				ppogl::Vec3d(
+					loc.x() + 2.*(frand() - 0.5) * START_RADIUS,
+        			loc.y(),
+        			loc.z() + 2.*(frand() - 0.5) * START_RADIUS
+				),
+				particle_binding,
+				(speed*vel)+ppogl::Vec3d(
+						VARIANCE_FACTOR * (frand() - 0.5) * speed, 
+						VARIANCE_FACTOR * (frand() - 0.5) * speed,
+						VARIANCE_FACTOR * (frand() - 0.5) * speed
+				)
+		);
     }
 } 
 
@@ -117,7 +138,7 @@ update_particles(double time_step)
     Particle **p, *q;
     double ycoord;
 
-    for (p = &head; *p != NULL; ) {
+    for (p = &Particle::head; *p != NULL; ) {
         (**p).age += time_step;
 
         if ( (**p).age < 0 ) continue;
@@ -134,7 +155,7 @@ update_particles(double time_step)
             q = *p;
             *p = q->next;
             delete q;
-            num_particles -= 1;
+            Particle::numParticles--;
             continue;
         } 
 
@@ -156,9 +177,9 @@ draw_particles(const Player& plyr)
     set_gl_options( PARTICLES );
     gl::TexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	
-    for(Particle *p=head; p!=NULL; p = p->next){
+    for(Particle *p=Particle::head; p!=NULL; p = p->next){
         if(p->age < 0) continue;
-		gl::BindTexture(GL_TEXTURE_2D, p->particle_binding);
+		gl::BindTexture(GL_TEXTURE_2D, p->binding);
 		if(p->type == 0 || p->type == 1){
 	    	min_tex_coord.y() = 0;
 	    	max_tex_coord.y() = 0.5;
@@ -186,15 +207,15 @@ void
 clear_particles()
 {
     Particle* q;
-    Particle* p=head;
+    Particle* p=Particle::head;
     for(;;){
         if(p==NULL) break;
         q=p;
         p=p->next;
         delete q;
     } 
-    head = NULL;
-    num_particles = 0;
+	Particle::head = NULL;
+    Particle::numParticles = 0;
 }
 
 void

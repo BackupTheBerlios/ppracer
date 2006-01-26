@@ -46,7 +46,7 @@
 
 ppogl::Vec3d projectIntoPlane(const ppogl::Vec3d& nml, const ppogl::Vec3d& v);
 
-void getTimeComponents(	float time,
+void getTimeComponents(float time,
 						int& minutes,
 						int& seconds,
 			  			int& hundredths );

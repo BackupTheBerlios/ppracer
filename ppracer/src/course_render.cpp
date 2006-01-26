@@ -407,15 +407,12 @@ CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
     // Find the bottom plane 
 	pp::Plane bottom_plane;
     bottom_plane.nml = ppogl::Vec3d( 0.0, 1, -slope );
-    double height = Course::getTerrainBaseHeight( 0 );
-
-    bottom_plane.d = -height * bottom_plane.nml.y();
+    bottom_plane.d = -Course::getTerrainBaseHeight(0) * bottom_plane.nml.y();
 
     // Find the top plane
 	pp::Plane  top_plane;
     top_plane.nml = bottom_plane.nml;
-    height = Course::getTerrainMaxHeight( 0 );
-    top_plane.d = -height * top_plane.nml.y();
+    top_plane.d = -Course::getTerrainMaxHeight(0) * top_plane.nml.y();
 
 	ppogl::Vec3d left_pt, right_pt, pt;
     ppogl::Vec3d top_left_pt, top_right_pt;

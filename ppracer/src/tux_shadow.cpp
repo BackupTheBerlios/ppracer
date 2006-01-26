@@ -37,7 +37,7 @@ static void draw_shadow_vertex(const ppogl::Vec3d& point,
 
 
 void
-draw_tux_shadow(int player)
+draw_tux_shadow(const int player)
 {
     if(!GameConfig::drawTuxShadow){
 		return;
@@ -70,7 +70,7 @@ traverse_dag_for_shadow(SceneNode *node, const pp::Matrix& model_matrix)
 {
     PP_CHECK_POINTER( node );
 	
-	pp::Matrix new_model_matrix = model_matrix*node->trans;
+	const pp::Matrix new_model_matrix = model_matrix*node->trans;
 
     if(node->isSphere == true && node->renderShadow){
 		draw_shadow_sphere( new_model_matrix );

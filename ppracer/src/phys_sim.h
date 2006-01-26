@@ -49,8 +49,6 @@ void get_surface_type(float x, float z, float weights[]);
 
 pp::Plane get_local_course_plane(const ppogl::Vec3d& pt);
 
-float get_compression_depth(const int terrain); 
-
 void set_tux_pos(Player& plyr, ppogl::Vec3d newPos);
 
 void update_player_pos(float timestep);

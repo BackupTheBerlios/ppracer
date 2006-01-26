@@ -37,20 +37,6 @@ interp(const double frac, const double v1, const double v2 )
 }
 
 void
-PlayerKeyFrames::getData(KeyFrame **fp, int *n)
-{
-    *fp = frames;
-    *n = numFrames;
-}
-
-void
-PlayerKeyFrames::reset()
-{
-    keyTime = 0;
-    numFrames = 0;
-} 
-
-void
 PlayerKeyFrames::init(int plyr)
 {
     keyTime = frames[0].time;
@@ -112,10 +98,11 @@ PlayerKeyFrames::update(Player& plyr, double dt)
 	    		/ ( frames[idx-1].time - frames[idx].time );
     }
 		    
-	ppogl::Vec3d pos;
-    pos.x() = interp( frac, frames[idx-1].pos.x(), frames[idx].pos.x() );
-    pos.z() = interp( frac, frames[idx-1].pos.z(), frames[idx].pos.z() );
-    pos.y() = interp( frac, frames[idx-1].pos.y(), frames[idx].pos.y() );
+	ppogl::Vec3d pos(
+		interp( frac, frames[idx-1].pos.x(), frames[idx].pos.x() ),
+		interp( frac, frames[idx-1].pos.y(), frames[idx].pos.y() ),
+		interp( frac, frames[idx-1].pos.z(), frames[idx].pos.z() )
+	);
     pos.y() += find_y_coord( pos.x(), pos.z() );
 
 	set_tux_pos( plyr, pos );
@@ -160,12 +147,11 @@ key_frame_cb(ppogl::Script *vm)
 		return 0;
     } 
 	
-	int player = vm->getInt(1);
-	if(player!=1 && player !=2){
+	const int player = vm->getInt(1) - 1;
+	if(player!=0 && player !=1){
 		PP_WARNING("tux.key_frame: Player " << player << " not supported");
 		return 0;
 	}
-	player--;
 	
 	if(keyFrames[player].numFrames == MAX_NUM_KEY_FRAMES ){
         PP_WARNING("tux.key_frame: max. num. of frames reached");

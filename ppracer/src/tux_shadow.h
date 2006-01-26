@@ -24,6 +24,6 @@
 
 #include "hier_util.h"
 
-void draw_tux_shadow(int player);
+void draw_tux_shadow(const int player);
 
 #endif // _TUX_SHADOW_H_

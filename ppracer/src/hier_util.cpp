@@ -29,7 +29,8 @@
 #include "ppogl/base/glwrappers.h"
 
 /// Ray (half-line)
-struct Ray{ 
+struct Ray
+{ 
     ppogl::Vec3d pt;
     ppogl::Vec3d vec;
 };
@@ -94,8 +95,7 @@ traverse_dag(const SceneNode *node, ppogl::Material *mat)
     if ( node->isSphere == true ) {
         set_material( mat->diffuse, mat->specular, mat->getSpecularExponent() );
 
-	    gl::CallList( get_sphere_display_list( 
-		node->sphere.divisions ) );
+	    gl::CallList(get_sphere_display_list(node->sphere.divisions));
     } 
 
     SceneNode *child = node->child;
@@ -155,35 +155,33 @@ intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
         return false;
 
     /* check distances of edges from origin */
-	int i;
-    for ( i=0; i < p.numVertices; i++ ) {
+    for(int i=0; i < p.numVertices; i++ ) {
+		ppogl::Vec3d* v0 = &v[p.vertices[i]];
+		ppogl::Vec3d* v1 = &v[p.vertices[ (i+1) % p.numVertices ]]; 
 
-	ppogl::Vec3d* v0 = &v[p.vertices[i]];
-	ppogl::Vec3d* v1 = &v[p.vertices[ (i+1) % p.numVertices ]]; 
+		ppogl::Vec3d edge_vec = (*v1) - (*v0) ;
+		const double edge_len = edge_vec.normalize();
 
-	ppogl::Vec3d edge_vec = (*v1) - (*v0) ;
-	const double edge_len = edge_vec.normalize();
-
-	/* t is the distance from v0 of the closest point on the line
+		/* t is the distance from v0 of the closest point on the line
            to the origin */
-	const double t = - ( *(reinterpret_cast<ppogl::Vec3d *>(v0))* edge_vec );
- 	double distsq;
+		const double t = - ( *(reinterpret_cast<ppogl::Vec3d *>(v0))* edge_vec );
+ 		double distsq;
 		
-	if ( t < 0 ) {
-	    /* use distance from v0 */
-	    distsq = v0->length2();
-	} else if ( t > edge_len ) {
-	    /* use distance from v1 */
-	    distsq = v1->length2();
-	} else {
-	    /* closest point to origin is on the line segment */
-	    *v0 = (*v0)+(t*edge_vec);
-	    distsq = v0->length2();
-	}
+		if ( t < 0 ) {
+	    	/* use distance from v0 */
+	    	distsq = v0->length2();
+		} else if ( t > edge_len ) {
+	    	/* use distance from v1 */
+	    	distsq = v1->length2();
+		} else {
+	    	/* closest point to origin is on the line segment */
+	    	*v0 = (*v0)+(t*edge_vec);
+			distsq = v0->length2();
+		}
 
-	if ( distsq <= 1 ) {
-	    return true;
-	}
+		if ( distsq <= 1 ) {
+			return true;
+		}
     }
 
     /* find intersection point of ray and plane */
@@ -194,7 +192,7 @@ intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
 
     /* test if intersection point is in polygon by clipping against it 
      * (we are assuming that polygon is convex) */
-    for (i=0; i < p.numVertices; i++ ) {
+    for (int i=0; i < p.numVertices; i++ ) {
         const ppogl::Vec3d edge_nml = nml^( (v[p.vertices[ (i+1) % p.numVertices ]]) - v[p.vertices[i]] );
         const double wec = (pt - v[p.vertices[i]] )*edge_nml;
         if (wec < 0)
@@ -206,19 +204,17 @@ intersect_polygon(const ppogl::Polygon& p, ppogl::Vec3d *v)
 
 /*--------------------------------------------------------------------------*/
 
-/* returns true iff polyhedron intersects unit-radius sphere centered
+/* returns true if polyhedron intersects unit-radius sphere centered
    at origin */
 bool
 intersect_polyhedron(const ppogl::Polyhedron& p)
 {
-    bool hit = false;
-		
-    for(int i=0; i<p.numPolygons; i++){
-		hit = intersect_polygon( p.polygons[i], p.vertices );
-		if ( hit == true ) 
-            break;
+	for(int i=0; i<p.numPolygons; i++){
+		if(intersect_polygon(p.polygons[i], p.vertices)){
+			return true;
+		}
     } 
-    return hit;
+    return false;
 } 
 
 void

@@ -413,32 +413,29 @@ Quat::operator*(const Quat& quat) const{
 Quat 
 Quat::interpolate(const Quat& q, Quat r, double t )
 {
-    double cosphi;
-    double sinphi;
-    double phi;
-    double scale0, scale1;
-
-    cosphi = q.x * r.x + q.y * r.y + q.z * r.z + q.w * r.w;
+    double cosphi = q.x * r.x + q.y * r.y + q.z * r.z + q.w * r.w;
 
     // adjust signs (if necessary) 
-    if ( cosphi < 0.0 ) {
-	cosphi = -cosphi;
-	r.x = -r.x;
-	r.y = -r.y;
-	r.z = -r.z;
-	r.w = -r.w;
+    if(cosphi < 0.0){
+		cosphi = -cosphi;
+		r.x = -r.x;
+		r.y = -r.y;
+		r.z = -r.z;
+		r.w = -r.w;
     }
+	
+	double scale0, scale1;
 
     if ( 1.0 - cosphi > EPS ) {
-	// standard case -- slerp 
-	phi = acos( cosphi );
-	sinphi = sin( phi );
-	scale0 = sin( phi * ( 1.0 - t ) ) / sinphi;
-	scale1 = sin( phi * t ) / sinphi;
+		// standard case -- slerp 
+		const double phi = acos( cosphi );
+		const double sinphi = sin( phi );
+		scale0 = sin( phi * ( 1.0 - t ) ) / sinphi;
+		scale1 = sin( phi * t ) / sinphi;
     } else {
-	// use linear interpolation to avoid division by zero
-	scale0 = 1.0 - t;
-	scale1 = t;
+		// use linear interpolation to avoid division by zero
+		scale0 = 1.0 - t;
+		scale1 = t;
     }
 
 	return Quat(

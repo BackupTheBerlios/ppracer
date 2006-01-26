@@ -22,10 +22,10 @@
 #include "ppracer.h"
 #include "nmrcl.h"
 
-const double ode45_time_step_mat[] = 
+static const double ode45_time_step_mat[] = 
 { 0., 1./5., 3./10., 4./5., 8./9., 1., 1. };
 
-const double ode45_coeff_mat[][7] = {
+static const double ode45_coeff_mat[][7] = {
     { 0, 1./5., 3./40.,  44./45.,  19372./6561.,   9017./3168.,     35./384. },
     { 0, 0.,    9./40., -56./15., -25360./2187.,     -355./33.,           0. },
     { 0, 0.,         0,   32./9.,  64448./6561.,  46732./5247.,   500./1113. },
@@ -35,7 +35,7 @@ const double ode45_coeff_mat[][7] = {
     { 0, 0.,         0,        0,             0,             0,           0. }
 };
 
-const double ode45_error_mat[] = 
+static const double ode45_error_mat[] = 
 { 71./57600., 0., -71./16695., 71./1920., -17253./339200., 22./525., -1./40.};
 
 void

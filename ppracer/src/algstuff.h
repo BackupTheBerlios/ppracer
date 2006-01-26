@@ -105,6 +105,12 @@ public:
 	   d(_d)
 	{
 	}
+	
+	Plane(const ppogl::Vec3d& _nml, const double _d)
+	 : nml(_nml),
+	   d(_d)
+	{
+	}
 		
 	double distance(const ppogl::Vec3d& point) const
 	{

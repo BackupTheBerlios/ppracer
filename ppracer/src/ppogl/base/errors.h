@@ -97,6 +97,8 @@ private:
 	bool m_verbose;
 };
 
+//#define PPOGL_NO_LOGGIN
+
 #ifndef PPOGL_NO_LOGGIN
 
 /// Logs custom messages.

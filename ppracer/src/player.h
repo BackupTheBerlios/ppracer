@@ -210,15 +210,13 @@ public:
 								int herring,
 								int score);
 
-	void resetLives();
-	int getLives();
-	void decLives();
+	void resetLives(){m_lives = INIT_NUM_LIVES;}
+	int getLives(){return m_lives;}
+	void decLives(){m_lives--;}
 	void incLives();
-	
 	
 	bool saveData();
 	bool loadData();
-	
 	
 	/// name of player 
 	std::string name;
@@ -232,9 +230,7 @@ public:
 	
 	int max_speed;
 
-		
-
-    /// current position
+	/// current position
 	ppogl::Vec3d pos;   
 	
     /// current velocity

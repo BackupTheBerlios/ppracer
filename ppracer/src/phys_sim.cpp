@@ -472,7 +472,7 @@ get_surface_type(float x, float z, float weights[])
 pp::Plane
 get_local_course_plane(const ppogl::Vec3d& pt)
 {
-    pp::Plane plane;
+   pp::Plane plane;
 
     plane.nml = find_course_normal( pt.x(), pt.z() );
     plane.d = -( plane.nml.x() * pt.x() + 
@@ -499,7 +499,6 @@ set_tux_pos(Player& plyr, ppogl::Vec3d newPos)
   	const ppogl::Vec2d& playDim = Course::getPlayDimensions();
     const ppogl::Vec2d& courseDim = Course::getDimensions();
     const float boundaryWidth = ( courseDim.x() - playDim.x() ) / 2; 
-
 
     if(newPos.x() < boundaryWidth){
         newPos.x() = boundaryWidth;
@@ -704,12 +703,6 @@ check_item_collection(Player& plyr, const ppogl::Vec3d& pos)
     }
 } 
 
-float
-get_compression_depth(const int terrain) 
-{
-	return terrain_texture[terrain].compression;
-}
-
 /*
  * Check for tree collisions and adjust position and velocity appropriately.
  */
@@ -765,7 +758,7 @@ adjust_for_model_collision(Player& plyr,
 double
 adjust_velocity(ppogl::Vec3d *vel, const pp::Plane& surf_plane)
 {
-    ppogl::Vec3d surf_nml = surf_plane.nml;
+    const ppogl::Vec3d& surf_nml = surf_plane.nml;
     float speed = vel->normalize();
 
     if(speed < EPS){
@@ -1139,19 +1132,15 @@ calc_net_force(Player& plyr, const ppogl::Vec3d& pos,
 
     surf_fric_coeff = 0;
     for (i=0; i<num_terrains; i++) {
-	/*
-	surf_fric_coeff += surf_weights[i] * fricCoeff[terrain_texture[i].type];
-	*/
-	surf_fric_coeff += surf_weights[i] * terrain_texture[i].friction;
+		surf_fric_coeff += surf_weights[i] * terrain_texture[i].friction;
     }
     surf_nml = adjust_surf_nml_for_roll( plyr, vel, surf_fric_coeff,
 					 orig_surf_nml );
     
     comp_depth = 0;
     for (i=0; i<num_terrains; i++) {
-	comp_depth += surf_weights[i] * get_compression_depth(i);
+		comp_depth += surf_weights[i] * terrain_texture[i].compression;
     }
-
 
     grav_f = ppogl::Vec3d( 0, -EARTH_GRAV * TUX_MASS, 0 );
 
@@ -1317,38 +1306,29 @@ adjust_time_step_size(float h, const ppogl::Vec3d& vel)
 void
 solve_ode_system(Player& plyr, float timestep) 
 {
-    float t0, t, tfinal;
     ODESolver x, y, z, vx, vy, vz; // estimates of derivs
 
-    float h;
     bool done = false;
-    bool failed = false;
-    ppogl::Vec3d new_pos;
-    ppogl::Vec3d new_vel, tmp_vel;
     float speed;
-    ppogl::Vec3d new_f;
-    ppogl::Vec3d saved_pos;
-    ppogl::Vec3d saved_vel, saved_f;
     float pos_err[3], vel_err[3], tot_pos_err, tot_vel_err;
     float err=0, tol=0;
     int i;
 	
     // Select an initial time step
-    h = ode_time_step;
+    float h = ode_time_step;
 
     if(h < 0){
 		h = adjust_time_step_size( timestep, plyr.vel );
     }
 
-    t0 = 0;
-    tfinal = timestep;
-
-    t = t0;
+    float t0 = 0;
+    float tfinal = timestep;
+    float t = t0;
 
 	// initialize state
-    new_pos = plyr.pos;
-    new_vel = plyr.vel;
-    new_f   = plyr.net_force;
+    ppogl::Vec3d new_pos = plyr.pos;
+    ppogl::Vec3d new_vel = plyr.vel;
+    ppogl::Vec3d new_f = plyr.net_force;
 
     // loop until we've integrated from t0 to tfinal
     while (!done) {
@@ -1367,12 +1347,12 @@ solve_ode_system(Player& plyr, float timestep)
 
     PP_LOG( DEBUG_ODE, "h: " << h );
 
-	saved_pos = new_pos;
-	saved_vel = new_vel;
-	saved_f = new_f;
+	ppogl::Vec3d saved_pos = new_pos;
+	ppogl::Vec3d saved_vel = new_vel;
+	ppogl::Vec3d saved_f = new_f;
 
 	// Loop until error is acceptable
-	failed = false;
+	bool failed = false;
 
 	for(;;){
 	    // Store initial conditions
@@ -1482,7 +1462,7 @@ solve_ode_system(Player& plyr, float timestep)
 	// Update time
 	t = t + h;
 
-	tmp_vel = new_vel;
+	ppogl::Vec3d tmp_vel = new_vel;
 	speed = tmp_vel.normalize();
 
 	// only generate particles if we're drawing them

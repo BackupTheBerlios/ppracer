@@ -35,16 +35,12 @@
 
 #include "game_mgr.h"
 
-
 TrackQuad::TrackQuad()
  : trackType(TYPE_NONE),
    terrain(0),
    alpha(1.0f)
 {
 }
-
-
-#undef TRACK_TRIANGLES
 
 #define TRACK_WIDTH  0.7
 #define MAX_CONTINUE_TRACK_DIST TRACK_WIDTH*4
@@ -63,10 +59,8 @@ int TrackMarks::maxNumQuads=-1;
 void
 TrackMarks::draw()
 {
-	int current_quad, num_quads;
-    int first_quad;
     TrackQuad *q, *qnext;
-    ppogl::Color trackColor = ppogl::Color::white;
+	ppogl::Color trackColor = ppogl::Color::white;
 
     set_gl_options( TRACK_MARKS ); 
 
@@ -76,11 +70,11 @@ TrackMarks::draw()
     set_material( ppogl::Color::white, ppogl::Color::black, 1.0 );
     Light::setup();
 
-    num_quads = MIN( current_mark, maxNumQuads -
+    const int num_quads = MIN( current_mark, maxNumQuads -
 		     next_mark + current_mark );
-    first_quad = current_mark - num_quads;
-
-    for ( current_quad = 0;
+    const int first_quad = current_mark - num_quads;
+	
+    for (int current_quad = 0;
 	  current_quad < num_quads;
 	  current_quad++ ) 
     {
@@ -189,9 +183,8 @@ TrackMarks::draw()
 void
 TrackMarks::discontinue()
 {
-    TrackQuad *qprev, *qprevprev;
-    qprev = &quads[(current_mark-1)%maxNumQuads];
-    qprevprev = &quads[(current_mark-2)%maxNumQuads];
+    TrackQuad *qprev = &quads[(current_mark-1)%maxNumQuads];
+    TrackQuad *qprevprev = &quads[(current_mark-2)%maxNumQuads];
 
     if(current_mark > 0){
 		qprev->trackType = TrackQuad::TYPE_TAIL;
@@ -218,7 +211,6 @@ TrackMarks::update()
     float tex_end;
 	float terrain_compression=0;
 	float old_terrain_weight=0;
-	unsigned int i;
 
     TrackQuad* q = &quads[current_mark%maxNumQuads];
     TrackQuad* qprev = &quads[(current_mark-1)%maxNumQuads];
@@ -230,12 +222,12 @@ TrackMarks::update()
     get_surface_type(player->pos.x(), player->pos.z(), terrain_weights);
     
 	bool break_marks=true;
-	for (i=0;i<num_terrains;i++){
+	for (int i=0;i<num_terrains;i++){
 		if (terrain_texture[i].trackmark.mark){	
 			if (terrain_weights[i] >= 0.5) {
 				if (old_terrain_weight < terrain_weights[i]) {
 					break_marks=false;
-					terrain_compression = get_compression_depth(i);
+					terrain_compression = terrain_texture[i].compression;
 					q->terrain=i;
 					old_terrain_weight = terrain_weights[i];
 				}
@@ -342,7 +334,7 @@ TrackMarks::init()
 		trackMarks[i].player = &(players[i]);		
 	}
 	
-	int maxMarks = PPConfig.getInt("max_track_marks");
+	const int maxMarks = PPConfig.getInt("max_track_marks");
 	if(maxNumQuads!=maxMarks){
 		for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
 			if(trackMarks[i].quads) delete [] trackMarks[i].quads;

@@ -70,31 +70,33 @@ frand()
 } 
 
 static void
-make_particle(int i, float x, float y)
+make_particle(const int i, const float x, const float y)
 {
-    float p_dist;
-    int type;
-
     particles[i].pt.x() = x;
     particles[i].pt.y() = y;
-    p_dist = frand();
+    const float p_dist = frand();
     particles[i].size = PARTICLE_MIN_SIZE + (1.0 - p_dist)*PARTICLE_SIZE_RANGE;
     particles[i].vel.x() = 0;
     particles[i].vel.y() = -BASE_VELOCITY-p_dist*VELOCITY_RANGE;
-    type = int(frand() * (4.0 - EPS));
-    if (type == 0) {
-		particles[i].tex_min = ppogl::Vec2d( 0.0, 0.0 );
-		particles[i].tex_max = ppogl::Vec2d( 0.5, 0.5 );
-    } else if (type == 1) {
-		particles[i].tex_min = ppogl::Vec2d( 0.5, 0.0 );
-		particles[i].tex_max = ppogl::Vec2d( 1.0, 0.5 );
-    } else if (type == 2) {
-		particles[i].tex_min = ppogl::Vec2d( 0.5, 0.5 );
-		particles[i].tex_max = ppogl::Vec2d( 1.0, 1.0 );
-    } else {
-		particles[i].tex_min = ppogl::Vec2d( 0.0, 0.5 );
-		particles[i].tex_max = ppogl::Vec2d( 0.5, 1.0 );
-    }
+    const int type = int(frand() * (4.0 - EPS));
+    
+	switch(type){
+		case 0:
+			particles[i].tex_min = ppogl::Vec2d( 0.0, 0.0 );
+			particles[i].tex_max = ppogl::Vec2d( 0.5, 0.5 );
+			break;
+		case 1:
+			particles[i].tex_min = ppogl::Vec2d( 0.5, 0.0 );
+			particles[i].tex_max = ppogl::Vec2d( 1.0, 0.5 );
+			break;
+		case 2:
+			particles[i].tex_min = ppogl::Vec2d( 0.5, 0.5 );
+			particles[i].tex_max = ppogl::Vec2d( 1.0, 1.0 );
+			break;
+		default:
+			particles[i].tex_min = ppogl::Vec2d( 0.0, 0.5 );
+			particles[i].tex_max = ppogl::Vec2d( 0.5, 1.0 );
+	}
 }
 
 void
@@ -107,9 +109,9 @@ init_ui_snow()
 }
 
 void
-update_ui_snow(float time_step, bool windy)
+update_ui_snow(const float time_step, const bool windy)
 {
-    ppogl::Vec2d *v, f;
+    ppogl::Vec2d *v;
     ppogl::Vec2d *pt;
     float size;
     float dist_from_push, p_dist;
@@ -134,11 +136,10 @@ update_ui_snow(float time_step, bool windy)
 	pt = &particles[i].pt;
 	v = &particles[i].vel;
 	size = particles[i].size;
+		
+	ppogl::Vec2d f;
 
-	f.x() = 0;
-	f.y() = 0;
-
-	/* Mouse push and gravity */
+	// Mouse push and gravity
 	dist_from_push = (pow((pt->x() - push_position.x()), 2) +
 			  pow((pt->y() - push_position.y()), 2));
 	if ( push_timestep > 0 ) {

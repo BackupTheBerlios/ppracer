@@ -1,6 +1,10 @@
 
 === ppracer 0.5 alpha2 ===
 
+2006-01-25  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	cleanups
+
 2006-01-14  Volker Stroebel <volker@planetpenguin.de>
 	* src/sqstdlib/Makefile.am src/ppogl/Makefile.am
 	changes to allow building the project from other directories

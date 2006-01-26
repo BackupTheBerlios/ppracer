@@ -30,11 +30,10 @@
 #include "ppogl/base/glwrappers.h"
 
 void
-setup_sdl_video_mode()
+setup_video_mode()
 {
     Uint32 video_flags = SDL_OPENGL; 
     int bpp = 0;
-    int width, height;
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	
@@ -71,15 +70,14 @@ setup_sdl_video_mode()
 			bpp = 0;
 			break;
     }
-
-    width = PPConfig.getInt("x_resolution");
+	
+	int height = PPConfig.getInt("y_resolution");
+    int width = PPConfig.getInt("x_resolution");
 	
 	if(PPConfig.getBool("x_resolution_half_width")){
 		width /=2;		
 	}
 	
-    height = PPConfig.getInt("y_resolution");
-
 	GameMode::resolution.x() = width;
 	GameMode::resolution.y() = height;
 	
@@ -137,7 +135,7 @@ winsys_init(const char *window_title, const char *icon_title)
 	}
 
 	// init video 
-	setup_sdl_video_mode();
+	setup_video_mode();
 
 	SDL_WM_SetCaption(window_title, icon_title);
 	
@@ -181,7 +179,7 @@ winsys_process_events()
 	    		case SDL_VIDEORESIZE:
 					PPConfig.setInt("x_resolution",event.resize.w);
 					PPConfig.setInt("y_resolution",event.resize.h);
-					setup_sdl_video_mode();
+					setup_video_mode();
 		    		reshape(ppogl::Vec2i(event.resize.w, event.resize.h));
 					break;
 				case SDL_QUIT:
@@ -203,7 +201,7 @@ winsys_process_events()
 }
 
 void
-winsys_exit(int code)
+winsys_exit(const int code)
 {
 	courseRenderer.cleanup();
 	Course::cleanup();

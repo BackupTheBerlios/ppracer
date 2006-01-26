@@ -25,7 +25,7 @@
 #include "ppogl/base/vec2d.h"
 
 void init_ui_snow();
-void update_ui_snow(float time_step, bool windy);
+void update_ui_snow(const float time_step, const bool windy);
 void push_ui_snow(const ppogl::Vec2d& pos);
 void draw_ui_snow();
 void make_ui_snow(const ppogl::Vec2d& pos);

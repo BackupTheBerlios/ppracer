@@ -39,12 +39,14 @@
 void
 reshape(const ppogl::Vec2i& resolution, int multiscreen)
 {
+	PP_REQUIRE(multiscreen <= 1,  "Screen " << multiscreen << " is not supported in multiscreen mode");
+	
 	if(multiscreen<0){
 		//not in multiscreen mode
     	gl::Viewport(0, 0, resolution.x(), resolution.y());
     	gl::MatrixMode( GL_PROJECTION );
     	gl::LoadIdentity();
-    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	const double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
     	glu::Perspective( GameConfig::fov, double(resolution.x())/resolution.y(), NEAR_CLIP_DIST, far_clip_dist );
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==0){
@@ -52,7 +54,7 @@ reshape(const ppogl::Vec2i& resolution, int multiscreen)
 		gl::Viewport(0, resolution.y()/2, resolution.x(), resolution.y()/2);
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
-    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	const double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
     	glu::Perspective( GameConfig::fov, double(resolution.x()/2)/(resolution.y()/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
 	}else if(multiscreen==1){
@@ -60,11 +62,9 @@ reshape(const ppogl::Vec2i& resolution, int multiscreen)
 		gl::Viewport(0, 0, resolution.x(), resolution.y()/2);
     	gl::MatrixMode(GL_PROJECTION);
     	gl::LoadIdentity();
-    	double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
+    	const double far_clip_dist = GameConfig::forwardClipDistance + FAR_CLIP_FUDGE_AMOUNT;
     	glu::Perspective( GameConfig::fov, double(resolution.x()/2)/(resolution.y()/4), NEAR_CLIP_DIST, far_clip_dist);
     	gl::MatrixMode( GL_MODELVIEW );
-	}else{
-		PP_ERROR("Screen " << multiscreen << " is not supported in multiscreen mode");
 	}
 } 
 
@@ -97,17 +97,17 @@ draw_billboard(const Player& plyr,
 		     const ppogl::Vec3d& center_pt, float width, float height, 
 		     const ppogl::Vec2d& min_tex_coord, const ppogl::Vec2d& max_tex_coord )
 {
-	ppogl::Vec3d x_vec(plyr.view.inv_view_mat.data[0][0],
+	const ppogl::Vec3d x_vec(plyr.view.inv_view_mat.data[0][0],
     		plyr.view.inv_view_mat.data[0][1],
     		plyr.view.inv_view_mat.data[0][2]
 	);
 
-	ppogl::Vec3d y_vec(plyr.view.inv_view_mat.data[1][0],
+	const ppogl::Vec3d y_vec(plyr.view.inv_view_mat.data[1][0],
 			plyr.view.inv_view_mat.data[1][1],
 			plyr.view.inv_view_mat.data[1][2]
 	);
 	
-	ppogl::Vec3d z_vec(plyr.view.inv_view_mat.data[2][0],
+	const ppogl::Vec3d z_vec(plyr.view.inv_view_mat.data[2][0],
 			plyr.view.inv_view_mat.data[2][1],
 			plyr.view.inv_view_mat.data[2][2]
 	);

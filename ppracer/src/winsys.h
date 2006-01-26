@@ -24,10 +24,10 @@
 
 #include "ppogl/base/defs.h"
 
-void setup_sdl_video_mode();
+void setup_video_mode();
 void winsys_init(const char *window_title, const char *icon_title);
 void winsys_process_events();
 
-void winsys_exit(int code);
+void winsys_exit(const int code);
 
 #endif // _WINSYS_H_

@@ -56,8 +56,15 @@ public:
 	PlayerKeyFrames():numFrames(0){}
 
 	void init(int plyr);
-	void getData(KeyFrame **fp, int *n);
-	void reset();
+
+	int getNumFrames(){return numFrames;}
+	KeyFrame* getFrames(){return frames;}
+		
+	void reset(){
+    	keyTime = 0.0;
+    	numFrames = 0;
+	} 
+	
 	void update(Player& plyr, double dt);
 	void mirror();
 };
