@@ -68,9 +68,7 @@ Intro::Intro()
 	}
     init_physical_simulation();
 	
-	clear_particles();
-	
-	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){		
+	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
 		keyFrames[i].init(i);	    
 		players[i].vel = ppogl::Vec3d(0,0,0);
 		players[i].herring = 0;

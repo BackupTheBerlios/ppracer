@@ -18,17 +18,58 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- 
+
 #ifndef _PART_SYS_H_
 #define _PART_SYS_H_
 
 #include "player.h"
+#include "ppogl/base/color.h"
+#include <list>
 
-void create_new_particles(const ppogl::Vec3d& loc, ppogl::Vec3d vel, int num, GLuint particle_binding);
-void update_particles(double time_step );
-void clear_particles();
-void reset_particles();
-void draw_particles(const Player& plyr);
-void register_particle_callbacks();
+class Particle
+{
+public:
+	Particle(const ppogl::Vec3d& _pt, GLuint _binding, const ppogl::Vec3d& _vel);
+	
+	ppogl::Vec3d pt;
+
+	enum Types{
+		PARTICLE_TYPE_1=0,
+		PARTICLE_TYPE_2,
+		PARTICLE_TYPE_3,
+		PARTICLE_TYPE_4,
+		NUM_PARTICLE_TYPES
+	}type;
+
+    double base_size;
+    double cur_size;
+    double terrain_height;
+    double age;
+    double death;
+    double alpha;
+    ppogl::Vec3d vel;
+	GLuint binding;
+};
+
+class PartSys
+{
+	std::list<Particle> m_particles;	
+	
+public:
+	void draw(const Player& plyr);
+	void update(double timestep);
+
+	void createParticles(const ppogl::Vec3d& loc, const ppogl::Vec3d& vel, int num, GLuint particle_binding);
+
+protected:
+	static ppogl::Color sm_color;
+		
+public:
+	static void reset();
+	static int sqParticleColor(ppogl::Script *vm);
+	static void registerCallbacks();
+};
+
+extern PartSys partsys[2];
 
 #endif // _PART_SYS_H_

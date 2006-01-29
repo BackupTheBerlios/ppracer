@@ -994,9 +994,9 @@ generate_particles(const Player& plyr, float dtime,
 					    speed * PARTICLE_SPEED_MULTIPLIER )*
 				       right_part_vel;
 
-        create_new_particles( left_part_pt, left_part_vel, 
+        partsys[plyr.num].createParticles( left_part_pt, left_part_vel, 
 			      int(left_particles), particle_binding );
-        create_new_particles( right_part_pt, right_part_vel, 
+        partsys[plyr.num].createParticles( right_part_pt, right_part_vel, 
 			      int(right_particles), particle_binding );
     } 
 }

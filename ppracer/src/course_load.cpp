@@ -171,7 +171,7 @@ reset_course()
     reset_course_mirroring();
     Light::reset();
     fogPlane.reset();
-    reset_particles();
+    PartSys::reset();
 
 
 	courseAuthor.erase();

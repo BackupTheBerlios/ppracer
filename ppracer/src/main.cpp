@@ -288,7 +288,7 @@ main(int argc, char *argv[])
 
 	register_course_light_callbacks();
 	
-    register_particle_callbacks();
+    PartSys::registerCallbacks();
     register_course_manager_callbacks();
 	register_hier_callbacks();
     register_tux_callbacks();

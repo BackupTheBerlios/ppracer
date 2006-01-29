@@ -1,6 +1,14 @@
 
 === ppracer 0.5 beta ===
 
+2006-01-29  Volker Stroebel <volker@planetpenguin.de>
+	* src/render_utils.cpp
+	fix draw billboard
+	
+	* src/part_sys.*
+	added class PartSys
+	changed code to use new class
+
 2006-01-25  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	cleanups

@@ -115,20 +115,21 @@ draw_billboard(const Player& plyr,
     gl::Begin(GL_QUADS);
     {
 		ppogl::Vec3d pt = center_pt+((-width/2.0)*x_vec);
-		pt = pt+((-height/2.0)*y_vec);
+		
+		pt += (-height/2.0)*y_vec;
 		gl::Normal(z_vec);
 		gl::TexCoord(min_tex_coord);
 		gl::Vertex(pt);
 
-		pt = pt + (width*x_vec);
+		pt += width*x_vec;
 		gl::TexCoord(max_tex_coord.x(), min_tex_coord.y());
 		gl::Vertex(pt);
 
-		pt = pt - (height*y_vec);
+		pt += height*y_vec;
 		gl::TexCoord(max_tex_coord);
 		gl::Vertex(pt);
 
-		pt = pt - (-width *x_vec);
+		pt +=-width *x_vec;
 		gl::TexCoord(min_tex_coord.x(), max_tex_coord.y());
 		gl::Vertex(pt);
 	}

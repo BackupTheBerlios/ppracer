@@ -114,9 +114,9 @@ RacingMode::renderCourse(int player, float timestep)
     if(GameConfig::drawParticles){
 		if(m_paused==false){
 			//update particles if game is not paused
-			update_particles(timestep);
+			partsys[player].update(timestep);
 		}
-		draw_particles(players[player]);
+		partsys[player].draw(players[player]);
     }
 	
 	for(int i=0; i<GameMgr::getInstance().numPlayers; i++){
