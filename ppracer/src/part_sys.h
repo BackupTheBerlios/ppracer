@@ -25,7 +25,6 @@
 #include "player.h"
 #include "ppogl/base/color.h"
 #include <list>
-#include "ppogl/base/list.h"
 
 class Particle
 {
@@ -56,7 +55,6 @@ public:
 class PartSys
 {
 	std::list<Particle> m_particles;	
-	//ppogl::list<Particle> m_particles;	
 	
 public:
 	void draw(const Player& plyr);

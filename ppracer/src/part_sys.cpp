@@ -29,50 +29,6 @@
 #include "ppogl/base/defs.h"
 #include "ppogl/base/glwrappers.h"
 
-#include "ppogl/base/list.h"
-
-
-#include "ppogl/base/perftest.h"
-
-/*
-void test_list()
-{
-	ppogl::list<Particle> list;	
-	ppogl::list<Particle>::iterator it;	
-		
-	PP_PERFTEST_BEGIN(push_back);
-	for(int i=0; i<1000000; i++){
-		list.push_back(Particle());
-	}
-	PP_PERFTEST_END(push_back);
-
-	PP_PERFTEST_BEGIN(clear);	
-	list.clear();
-	PP_PERFTEST_END(clear);
-	
-	PP_WARNING("PP: " << sizeof(list));	
-}
-
-void test_list2()
-{
-	std::list<Particle> list;	
-	std::list<Particle>::iterator it;	
-	
-	PP_PERFTEST_BEGIN(push_back2);
-	for(int i=0; i<1000000; i++){
-		list.push_back(Particle());
-	}
-	PP_PERFTEST_END(push_back2);
-
-	PP_PERFTEST_BEGIN(clear2);	
-	list.clear();
-	PP_PERFTEST_END(clear2);
-	
-	PP_WARNING("STL: " << sizeof(list));
-}
-*/
-
-
 /** This constant is here as part of a debugging check to prevent an infinite 
    number of particles from being created */
 #define MAX_PARTICLES 500000

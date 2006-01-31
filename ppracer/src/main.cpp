@@ -179,11 +179,6 @@ init_log()
     }  
 }
 
-/*
-extern void test_list();
-extern void test_list2();
-*/
-
 int
 main(int argc, char *argv[])
 {
@@ -199,25 +194,7 @@ main(int argc, char *argv[])
 
 		// initialize performance test if activated		
 		ppogl::initPerftest();
-		/*
-	test_list();
-	std::cout << std::endl;
 
-	test_list2();
-	std::cout << std::endl;
-	test_list();
-		std::cout << std::endl;
-
-	test_list2();	std::cout << std::endl;
-
-	test_list();	std::cout << std::endl;
-
-	test_list2();	std::cout << std::endl;
-	
-	    test_list();	std::cout << std::endl;
-
-	test_list2();
-*/
 		// set current directory to be used as base
 		ppogl::os::setBaseDir();
 				
