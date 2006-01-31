@@ -47,9 +47,6 @@
 /** Environment map alpha value, integer from 0-255 */ 
 #define ENV_MAP_ALPHA 50
 
-extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
-extern unsigned int num_terrains;
-
 int terrain_count[NUM_TERRAIN_TYPES];
 
 //
@@ -97,7 +94,7 @@ quadsquare::quadsquare(quadcornerdata* pcd)
     // Compute MinY/MaxY based on corner verts.
     MinY = MaxY = pcd->verts[0];
     for(int i=1; i<4; i++){
-		float y = pcd->verts[i];
+		const float y = pcd->verts[i];
 		if(y<MinY) MinY=y;
 		if(y>MaxY)MaxY=y;
     }
@@ -171,8 +168,8 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 /// Also updates MinY & MaxY.
 {
     unsigned int t;
-    int	half = 1 << cd.level;
-    int	whole = half << 1;
+    const int half = 1 << cd.level;
+    const int whole = half << 1;
     float terrain_error;
 	
     // Measure error of center and edge vertices.
@@ -311,7 +308,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     //
     int terrain;
 
-    for(t=0; t<num_terrains; t++){
+    for(t=0; t<Course::numTerrains; t++){
 		terrain_count[t] = 0;
     }
 	
@@ -338,7 +335,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
     int max_count = 0;
     int max_type = 0;
     int total = 0;
-    for (t=0; t<num_terrains; t++) {
+    for (t=0; t<Course::numTerrains; t++) {
 	if ( terrain_count[t] > max_count ) {
 	    max_count = terrain_count[t];
 	    max_type = t;
@@ -348,12 +345,12 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 
     // Calculate a terrain error that varies between 0 and 1
     if ( total > 0 ) {
-	terrain_error = (1.0 - max_count / total);  
-	if ( num_terrains > 1 ) {
-	    terrain_error *= num_terrains / ( num_terrains - 1.0 );
-	}
+		terrain_error = (1.0 - max_count / total);  
+		if ( Course::numTerrains > 1 ) {
+	    	terrain_error *= Course::numTerrains / ( Course::numTerrains - 1.0 );
+		}
     } else {
-	terrain_error = 0;
+		terrain_error = 0;
     }
 
     /* and scale it by the square area */
@@ -452,7 +449,7 @@ quadsquare::staticCullAux(const quadcornerdata& cd, const float ThresholdDetail,
 		if (s == NULL || (s->Child[1] == NULL && s->Child[2] == NULL)){
 
 			// Force vertex height to the edge value.
-			float	y = (cd.verts[0] + cd.verts[3]) * 0.5;
+			const float	y = (cd.verts[0] + cd.verts[3]) * 0.5;
 			Vertex[1] = y;
 			Error[0] = 0;
 			
@@ -549,7 +546,7 @@ quadsquare::enableEdgeVertex(int index, const bool IncrementCount, const quadcor
 		p = pcd->parent->square;
 		pcd = pcd->parent;
 
-		bool SameParent = ((index - ci) & 2) ? true : false;
+		const bool SameParent = ((index - ci) & 2) ? true : false;
 		
 		ci = ci ^ 1 ^ ((index & 1) << 1);	// Child index of neighbor node.
 
@@ -706,13 +703,12 @@ quadsquare::update(const quadcornerdata& cd, const ppogl::Vec3d& viewerLocation)
 /// location of the viewer.  May force creation or deletion of qsquares
 /// in areas which need to be interpolated.
 {
-    float Viewer[3];
-
-    Viewer[0] = viewerLocation[0] / ScaleX;
-    Viewer[1] = viewerLocation[1];
-    Viewer[2] = viewerLocation[2] / ScaleZ;
-	
-    updateAux(cd, Viewer, 0, ViewFrustum::SomeClip);
+    const float viewer[3] = {
+		viewerLocation[0] / ScaleX,
+		viewerLocation[1],
+		viewerLocation[2] / ScaleZ	
+	};
+	updateAux(cd, viewer, 0, ViewFrustum::SomeClip);
 }
 
 
@@ -876,7 +872,7 @@ quadsquare::drawEnvmapTris(GLuint MapTexId, int terrain)
 void
 quadsquare::initArrayCounters()
 {
-    for (unsigned int i=0; i<num_terrains ; i++){
+    for (unsigned int i=0; i<Course::numTerrains ; i++){
 		VertexArrayCounter[i] = 0;
 		VertexArrayMinIdx[i] = INT_MAX;
 		VertexArrayMaxIdx[i] = 0;
@@ -906,18 +902,18 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 
 		for (int i=0; i<int(VertexArrayCounter[(*it)]);i++){
 			idx = VertexArrayIndices[(*it)][i];
-			s_VNCArray->colorValue(idx, 3) =  ( terrain_texture[(*it)].wheight<= terrain_texture[Terrain[idx]].wheight ) ? 255 : 0;
+			s_VNCArray->colorValue(idx, 3) =  ( Course::terrainTexture[(*it)].wheight<= Course::terrainTexture[Terrain[idx]].wheight ) ? 255 : 0;
 		}
 
-		gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
+		gl::BindTexture(GL_TEXTURE_2D, Course::terrainTexture[(*it)].texture);
 		drawTris((*it));
 
-		if ( terrain_texture[(*it)].envmap  && GameConfig::useTerrainEnvmap) {
+		if(Course::terrainTexture[(*it)].envmap  && GameConfig::useTerrainEnvmap) {
 		    /* Render Ice with environment map */
 		    gl::DisableClientState(GL_COLOR_ARRAY);
 		    gl::Color(1.0f, 1.0f, 1.0f, ENV_MAP_ALPHA / 255.0f );
 
-		    drawEnvmapTris(terrain_texture[(*it)].envmap->getID(), (*it));	
+		    drawEnvmapTris(Course::terrainTexture[(*it)].envmap->getID(), (*it));	
 
 		    gl::EnableClientState(GL_COLOR_ARRAY);
 		}
@@ -947,7 +943,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 	    }
 	    
 	    /* Draw the black triangles */
-	    gl::BindTexture(GL_TEXTURE_2D, terrain_texture[0].texture);
+	    gl::BindTexture(GL_TEXTURE_2D, Course::terrainTexture[0].texture);
 		drawTris(0);
 	    
 	    /* Now we draw the triangle once for each texture */
@@ -968,7 +964,7 @@ quadsquare::render(const quadcornerdata& cd, ppogl::VNCArray* vnc_array)
 		//for (int j=0; j<(int)num_terrains; j++) {
 		for(it=usedTerrains.begin(); it != usedTerrains.end(); it++){
 			
-			gl::BindTexture(GL_TEXTURE_2D, terrain_texture[(*it)].texture);
+			gl::BindTexture(GL_TEXTURE_2D, Course::terrainTexture[(*it)].texture);
 
 			/* Set alpha values */
 			for (int i=0; i<int(VertexArrayCounter[0]); i++) {
@@ -1125,7 +1121,7 @@ quadsquare::renderAux(const quadcornerdata& cd, ViewFrustum::ClipResult vis)
 
 	{
 		//bool terraintest[num_terrains];
-		for (unsigned int i=0; i<num_terrains; i++) terraintest[i]=false;
+		for (unsigned int i=0; i<Course::numTerrains; i++) terraintest[i]=false;
 		
 		const int	half = 1 << cd.level;
     	const int	whole = 2 << cd.level;
@@ -1140,7 +1136,7 @@ quadsquare::renderAux(const quadcornerdata& cd, ViewFrustum::ClipResult vis)
 	    terraintest[ initVert(7, cd.xorg + half, cd.zorg + whole) ] = true;
 	    terraintest[ initVert(8, cd.xorg + whole, cd.zorg + whole) ] = true;
 	
-		for(unsigned int j=0; j<num_terrains; j++){
+		for(unsigned int j=0; j<Course::numTerrains; j++){
 			if(terraintest[j]==true){			 
 				// Make the list of triangles to draw
 				if ((EnabledFlags & 1) == 0 ) {
@@ -1355,13 +1351,13 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
 	/* Maximum number of triangles is 2 * RowSize * NumRows 
 	   This uses up a lot of space but it is a *big* performance gain.
 	*/
-		for (unsigned int i=0; i<num_terrains; i++){	
+		for (unsigned int i=0; i<Course::numTerrains; i++){	
 			VertexArrayIndices[i] = new GLuint[6 * RowSize * NumRows];
 		}
     }
 
     // If block is outside rectangle, then don't bother.
-    int	BlockSize = 2 << cd.level;
+    const int	BlockSize = 2 << cd.level;
     if (cd.xorg > hm.xOrigin + ((hm.xSize + 2) << hm.scale) ||
 	cd.xorg + BlockSize < hm.xOrigin - (1 << hm.scale) ||
 	cd.zorg > hm.zOrigin + ((hm.zSize + 2) << hm.scale) ||
@@ -1375,7 +1371,7 @@ quadsquare::addHeightMap(const quadcornerdata& cd, const HeightMapInfo& hm)
 	cd.parent->square->enableChild(cd.childIndex, *cd.parent);	// causes parent edge verts to be enabled, possibly causing neighbor blocks to be created.
     }
 	
-    int half = 1 << cd.level;
+    const int half = 1 << cd.level;
 
     // Create and update child nodes.
     for (int i = 0; i < 4; i++) {

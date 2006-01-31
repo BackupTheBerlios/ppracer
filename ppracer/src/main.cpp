@@ -179,10 +179,15 @@ init_log()
     }  
 }
 
+/*
+extern void test_list();
+extern void test_list2();
+*/
+
 int
 main(int argc, char *argv[])
 {
-    try{ // used to catch all unhandled Errors and Assertions		
+	try{ // used to catch all unhandled Errors and Assertions		
 		// print copyright notice 
     	std::cout << "PlanetPenguin Racer " VERSION " -- http://racer.planetpenguin.de\n"
 	    	<< "(c) 2004-2006 PlanetPenguin Racer team\n"
@@ -194,7 +199,25 @@ main(int argc, char *argv[])
 
 		// initialize performance test if activated		
 		ppogl::initPerftest();
+		/*
+	test_list();
+	std::cout << std::endl;
 
+	test_list2();
+	std::cout << std::endl;
+	test_list();
+		std::cout << std::endl;
+
+	test_list2();	std::cout << std::endl;
+
+	test_list();	std::cout << std::endl;
+
+	test_list2();	std::cout << std::endl;
+	
+	    test_list();	std::cout << std::endl;
+
+	test_list2();
+*/
 		// set current directory to be used as base
 		ppogl::os::setBaseDir();
 				

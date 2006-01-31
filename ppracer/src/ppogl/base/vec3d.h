@@ -104,6 +104,14 @@ public:
 		return Vec3d(vec1.x()-vec2.x(),vec1.y()-vec2.y(),vec1.z()-vec2.z());
 	}
 	
+	Vec3d& operator-=(const Vec3d& vec)
+    {
+		values[0] -= vec.values[0];
+		values[1] -= vec.values[1];
+ 		values[2] -= vec.values[2];
+		return *this;
+	}
+	
 	friend Vec3d operator*(const Vec3d& vec, const double scalar)
 	{
 		return Vec3d(vec.x()*scalar,vec.y()*scalar,vec.z()*scalar);
@@ -114,11 +122,19 @@ public:
 		return Vec3d(vec.x()*scalar,vec.y()*scalar,vec.z()*scalar);
 	}	
 	
+	Vec3d& operator*=(const double scalar)
+    {
+		values[0] *= scalar;
+		values[1] *= scalar;
+ 		values[2] *= scalar;
+		return *this;
+	}
+		
 	friend double operator*(const Vec3d& vec1,const Vec3d& vec2)
 	{
 		return vec1.x()*vec2.x()+vec1.y()*vec2.y()+vec1.z()*vec2.z();
 	}
-	
+
 	friend Vec3d operator^(const Vec3d& vec1,const Vec3d& vec2)
 	{
 		return Vec3d(

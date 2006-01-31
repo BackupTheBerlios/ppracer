@@ -103,7 +103,7 @@ PlayerKeyFrames::update(Player& plyr, double dt)
 		interp( frac, frames[idx-1].pos.y(), frames[idx].pos.y() ),
 		interp( frac, frames[idx-1].pos.z(), frames[idx].pos.z() )
 	);
-    pos.y() += find_y_coord( pos.x(), pos.z() );
+    pos.y() += find_y_coord( pos );
 
 	set_tux_pos( plyr, pos );
 

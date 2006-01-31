@@ -67,9 +67,8 @@ TerrainTex::TerrainTex()
 {
 }
 
-TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
-
-unsigned int num_terrains=0;
+TerrainTex Course::terrainTexture[NUM_TERRAIN_TYPES];
+unsigned int Course::numTerrains = 0;
 
 static bool course_loaded = false;
 
@@ -158,7 +157,7 @@ Course::getTerrainMaxHeight(float distance)
 static void
 reset_course()
 {
-	num_terrains = 0;
+	Course::numTerrains = 0;
 	Course::angle = 20;
 	Course::dimension = ppogl::Vec2d(50,130);
 	Course::playDimension = ppogl::Vec2d(50,130);
@@ -313,13 +312,13 @@ Course::cleanup()
 static inline int
 intensity_to_terrain(const int intensity)
 {
-	for(unsigned int i=0; i<num_terrains; i++) {
-		if (terrain_texture[i].value == intensity){
-			terrain_texture[i].count++;
+	for(unsigned int i=0; i<Course::numTerrains; i++) {
+		if (Course::terrainTexture[i].value == intensity){
+			Course::terrainTexture[i].count++;
 			return i;
 		}
 	}
-	terrain_texture[0].count++;
+	Course::terrainTexture[0].count++;
 	return 0;
 }
 
@@ -433,7 +432,7 @@ elev_cb(ppogl::Script *vm)
 static bool
 sort_terrain(const int x, const int y)
 {
-	if(terrain_texture[x].wheight < terrain_texture[y].wheight){
+	if(Course::terrainTexture[x].wheight < Course::terrainTexture[y].wheight){
 		return true;
 	}else{
 		return false;
@@ -484,9 +483,9 @@ terrain_cb(ppogl::Script *vm)
 
 	//build sorted list with used terrains for quadtree
 	usedTerrains.clear();
-	for(unsigned int i=0; i<num_terrains; i++){
+	for(unsigned int i=0; i<Course::numTerrains; i++){
 		//check if the terraintype is used in the course
-		if(terrain_texture[i].count>0){
+		if(Course::terrainTexture[i].count>0){
 			usedTerrains.push_back(i);
 		}
 	}
@@ -499,19 +498,19 @@ terrain_cb(ppogl::Script *vm)
 static int
 terrain_tex_cb(ppogl::Script *vm)
 {
-	if(num_terrains>=NUM_TERRAIN_TYPES){
+	if(Course::numTerrains>=NUM_TERRAIN_TYPES){
 		PP_WARNING("pptheme.terrain_tex: Max number of terrains reached");
 		return vm->defaultError();
 	}
 	
 	// fill in values not specified with defaults
-	terrain_texture[num_terrains].type=1;
-	terrain_texture[num_terrains].value=0;
-	terrain_texture[num_terrains].friction=0.5;
-	terrain_texture[num_terrains].compression=0.1;
-	terrain_texture[num_terrains].soundactive=false;
-	terrain_texture[num_terrains].wheight=150;
-	terrain_texture[num_terrains].count=0;
+	Course::terrainTexture[Course::numTerrains].type=1;
+	Course::terrainTexture[Course::numTerrains].value=0;
+	Course::terrainTexture[Course::numTerrains].friction=0.5;
+	Course::terrainTexture[Course::numTerrains].compression=0.1;
+	Course::terrainTexture[Course::numTerrains].soundactive=false;
+	Course::terrainTexture[Course::numTerrains].wheight=150;
+	Course::terrainTexture[Course::numTerrains].count=0;
 	
 	std::string name = vm->getStringFromTable("name");
 	std::string filename = vm->getStringFromTable("filename");
@@ -523,8 +522,8 @@ terrain_tex_cb(ppogl::Script *vm)
 	
 	ppogl::TextureRef texture =
 		ppogl::TextureMgr::getInstance().load(name, filename);
-			terrain_texture[num_terrains].texture = texture;
-	if(!terrain_texture[num_terrains].texture){
+			Course::terrainTexture[Course::numTerrains].texture = texture;
+	if(!Course::terrainTexture[Course::numTerrains].texture){
 		PP_WARNING("pptheme.terrain_tex: Unable to load texture " << filename << " for terrain " << name);
 		return vm->defaultError();
 	}	
@@ -540,7 +539,7 @@ terrain_tex_cb(ppogl::Script *vm)
 				temp_value += (vm->getInt() << (8*i));
 				vm->pop(2);
 			}
-			terrain_texture[num_terrains].value=temp_value;	
+			Course::terrainTexture[Course::numTerrains].value=temp_value;	
 			vm->pop(2);
 		}else{
 			PP_WARNING("pptheme.terrain_tex: Invalid color in terrain type " << name);
@@ -550,52 +549,52 @@ terrain_tex_cb(ppogl::Script *vm)
 	}
 
 	if(vm->isKeyInTable("friction")){
-		terrain_texture[num_terrains].friction=vm->getFloatFromTable("friction");
+		Course::terrainTexture[Course::numTerrains].friction=vm->getFloatFromTable("friction");
 	}
 
 	if(vm->isKeyInTable("compression")){
-		terrain_texture[num_terrains].compression=vm->getFloatFromTable("compression");
+		Course::terrainTexture[Course::numTerrains].compression=vm->getFloatFromTable("compression");
 	}
 		
 	if(vm->isKeyInTable("wheight")){
-		terrain_texture[num_terrains].wheight=vm->getIntFromTable("wheight");
+		Course::terrainTexture[Course::numTerrains].wheight=vm->getIntFromTable("wheight");
 	}	
 	
 	if(vm->isKeyInTable("sound")){
-		terrain_texture[num_terrains].sound=vm->getStringFromTable("sound");
+		Course::terrainTexture[Course::numTerrains].sound=vm->getStringFromTable("sound");
 	}
 		
 	if(vm->isKeyInTable("particle")){
-		terrain_texture[num_terrains].particles = 
+		Course::terrainTexture[Course::numTerrains].particles = 
 			ppogl::TextureMgr::getInstance().get(
 						vm->getStringFromTable("particle"));
 	}
 			
 	if(vm->isKeyInTable("track_head")){
-		terrain_texture[num_terrains].trackmark.head = 
+		Course::terrainTexture[Course::numTerrains].trackmark.head = 
 			ppogl::TextureMgr::getInstance().get(
 					vm->getStringFromTable("track_head"));
 	}
 	
 	if(vm->isKeyInTable("track_mark")){
-		terrain_texture[num_terrains].trackmark.mark = 
+		Course::terrainTexture[Course::numTerrains].trackmark.mark = 
 			ppogl::TextureMgr::getInstance().get(
 					vm->getStringFromTable("track_mark"));		
 	}
 		
 	if(vm->isKeyInTable("track_tail")){
-		terrain_texture[num_terrains].trackmark.tail = 
+		Course::terrainTexture[Course::numTerrains].trackmark.tail = 
 			ppogl::TextureMgr::getInstance().get(
 					vm->getStringFromTable("track_tail"));
 	}
 
 	if(vm->isKeyInTable("envmap_texture")){
-		terrain_texture[num_terrains].envmap = 
+		Course::terrainTexture[Course::numTerrains].envmap = 
 			ppogl::TextureMgr::getInstance().get(
 					vm->getStringFromTable("envmap_texture"));
 	}
 
-    num_terrains++;
+	Course::numTerrains++;
     return 0;
 } 
 
@@ -703,7 +702,7 @@ elements_cb(ppogl::Script *vm)
 				
 					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*Course::dimension.x();
 					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*Course::dimension.y();
-					double y = find_y_coord(x,z) + (*modelit).second->height;
+					double y = find_y_coord(ppogl::Vec3d(x,0.0,z)) + (*modelit).second->height;
 					
 					Model model((*modelit).second, ppogl::Vec3d(x,y,z));
 															
@@ -720,7 +719,7 @@ elements_cb(ppogl::Script *vm)
 					// yes, that's the right item
 					double x = (elementsImg->width-it.getX())/double(elementsImg->width-1.0)*Course::dimension.x();
 					double z =-(elementsImg->height-it.getY())/double(elementsImg->height-1.0)*Course::dimension.y();
-					double y = find_y_coord(x,z) + (*itemit).second->above_ground;
+					double y = find_y_coord(ppogl::Vec3d(x,0.0,z)) + (*itemit).second->above_ground;
 					
 					if( (*itemit).second->reset_point ){
 						resetLocs.push_back(ppogl::Vec2d(x,z));					
@@ -1166,7 +1165,7 @@ add_model_cb(ppogl::Script *vm)
 		aboveGround += vm->getFloatFromTable("above_ground");
 	}
 	
-	position.y() = find_y_coord(position.x(),position.z()) + aboveGround;
+	position.y() = find_y_coord(position) + aboveGround;
 	
 	Model model((*it).second, position);
 	
@@ -1274,7 +1273,7 @@ add_item_cb(ppogl::Script *vm)
 		aboveGround = vm->getFloatFromTable("above_ground");
 	}
 		
-	position.y() = find_y_coord(position.x(),position.z()) + aboveGround;
+	position.y() = find_y_coord(position) + aboveGround;
 	
 	Item item((*it).second, position);
 	

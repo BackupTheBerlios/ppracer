@@ -73,8 +73,7 @@ mirror_course()
 	for(it=modelLocs.begin();it!=modelLocs.end();it++) {
 		(*it).getPosition().x() = courseDim.x() - (*it).getPosition().x(); 
 		(*it).getPosition().y() = 
-	    find_y_coord((*it).getPosition().x(),
-			  (*it).getPosition().z() ) + (*it).getType()->height;
+	    find_y_coord((*it).getPosition()) + (*it).getType()->height;
 		(*it).mirror();		
     }
 	}
@@ -84,8 +83,7 @@ mirror_course()
 	for(it=itemLocs.begin();it!=itemLocs.end();it++){
 		(*it).getPosition().x() = courseDim.x() - (*it).getPosition().x(); 
 		(*it).getPosition().y() = 
-	    find_y_coord((*it).getPosition().x(),
-			  (*it).getPosition().z() ) + (*it).getItemType()->above_ground;
+	    find_y_coord((*it).getPosition() ) + (*it).getItemType()->above_ground;
     }
 	}
 	

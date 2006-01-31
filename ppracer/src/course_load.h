@@ -30,6 +30,25 @@
 #include <list>
 #include <string>
 
+class TerrainTex
+{
+public:
+	TerrainTex();
+	   
+    int type;
+	int value;
+	double friction;
+	double compression;
+	ppogl::TextureRef texture;
+	ppogl::TextureRef particles;
+	ppogl::TextureRef envmap;
+	std::string sound;
+	struct { ppogl::TextureRef head,mark,tail; }trackmark;
+	int wheight;
+	int count;
+	bool soundactive;
+};
+
 class Course
 {
 private:
@@ -46,6 +65,9 @@ public:
 	static float* elevation;
 	static int* terrain;
 	static int nx, ny;
+
+	static TerrainTex terrainTexture[NUM_TERRAIN_TYPES];
+	static unsigned int numTerrains;
 
 	static bool load(const std::string& course);
 
@@ -86,25 +108,6 @@ public:
 	}
 	
 	static void cleanup();
-};
-
-class TerrainTex
-{
-public:
-	TerrainTex();
-	   
-    int type;
-	int value;
-	double friction;
-	double compression;
-	ppogl::TextureRef texture;
-	ppogl::TextureRef particles;
-	ppogl::TextureRef envmap;
-	std::string sound;
-	struct { ppogl::TextureRef head,mark,tail; }trackmark;
-	int wheight;
-	int count;
-	bool soundactive;
 };
 
 extern std::list<int> usedTerrains;

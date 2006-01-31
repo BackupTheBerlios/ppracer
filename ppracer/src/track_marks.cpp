@@ -51,9 +51,6 @@ TrackQuad::TrackQuad()
 #define TRACK_HEIGHT 0.08
 #define MAX_TRACK_DEPTH 0.7
 
-extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
-extern unsigned int num_terrains;
-
 int TrackMarks::maxNumQuads=-1;
 
 void
@@ -85,16 +82,16 @@ TrackMarks::draw()
 
 	switch (q->trackType){
 		case TrackQuad::TYPE_HEAD:
-			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.head);
+			gl::BindTexture( GL_TEXTURE_2D, Course::terrainTexture[q->terrain].trackmark.head);
 			break;
-		case TrackQuad::TYPE_MARK:
-			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
-			break;
+		/*case TrackQuad::TYPE_MARK:
+			gl::BindTexture( GL_TEXTURE_2D, Course::terrainTexture[q->terrain].trackmark.mark);
+			break;*/
 		case TrackQuad::TYPE_TAIL:
-			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.tail);
+			gl::BindTexture( GL_TEXTURE_2D, Course::terrainTexture[q->terrain].trackmark.tail);
 			break;		
 		default:
-			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[q->terrain].trackmark.mark);
+			gl::BindTexture( GL_TEXTURE_2D, Course::terrainTexture[q->terrain].trackmark.mark);
 			break;	
 	}
 
@@ -147,7 +144,7 @@ TrackMarks::draw()
 		
 		if (q->terrain != qnext->terrain){
 			gl::End();
-			gl::BindTexture( GL_TEXTURE_2D, terrain_texture[qnext->terrain].trackmark.mark);
+			gl::BindTexture( GL_TEXTURE_2D,Course::terrainTexture[qnext->terrain].trackmark.mark);
 			gl::Begin(GL_QUADS);		
 		}
 				
@@ -219,15 +216,15 @@ TrackMarks::update()
     vector_from_last_mark.normalize();
 		    
 	float terrain_weights[NUM_TERRAIN_TYPES];
-    get_surface_type(player->pos.x(), player->pos.z(), terrain_weights);
+    get_surface_type(player->pos, terrain_weights);
     
 	bool break_marks=true;
-	for (int i=0;i<num_terrains;i++){
-		if (terrain_texture[i].trackmark.mark){	
+	for (int i=0;i<Course::numTerrains;i++){
+		if (Course::terrainTexture[i].trackmark.mark){	
 			if (terrain_weights[i] >= 0.5) {
 				if (old_terrain_weight < terrain_weights[i]) {
 					break_marks=false;
-					terrain_compression = terrain_texture[i].compression;
+					terrain_compression = Course::terrainTexture[i].compression;
 					q->terrain=i;
 					old_terrain_weight = terrain_weights[i];
 				}
@@ -258,8 +255,8 @@ TrackMarks::update()
     ppogl::Vec3d right_vector = (-TRACK_WIDTH/2.0)*width_vector;
     ppogl::Vec3d left_wing =  player->pos - left_vector;
     ppogl::Vec3d right_wing = player->pos - right_vector;
-    float left_y = find_y_coord( left_wing.x(), left_wing.z() );
-    float right_y = find_y_coord( right_wing.x(), right_wing.z() );
+    float left_y = find_y_coord( left_wing );
+    float right_y = find_y_coord( right_wing );
     if (fabs(left_y-right_y) > MAX_TRACK_DEPTH) {
 		discontinue();
 		return;
@@ -278,8 +275,8 @@ TrackMarks::update()
 	q->trackType = TrackQuad::TYPE_HEAD;
 	q->v1 = ppogl::Vec3d( left_wing.x(), left_y + TRACK_HEIGHT, left_wing.z() );
 	q->v2 = ppogl::Vec3d( right_wing.x(), right_y + TRACK_HEIGHT, right_wing.z() );
-	q->n1 = find_course_normal( q->v1.x(), q->v1.z());
-	q->n2 = find_course_normal( q->v2.x(), q->v2.z());
+	q->n1 = find_course_normal( q->v1 );
+	q->n2 = find_course_normal( q->v2 );
 	q->t1 = ppogl::Vec2d(0.0, 0.0);
 	q->t2 = ppogl::Vec2d(1.0, 0.0);
 	next_mark = current_mark + 1;
@@ -298,8 +295,8 @@ TrackMarks::update()
 	}
 	q->v3 = ppogl::Vec3d( left_wing.x(), left_y + TRACK_HEIGHT, left_wing.z() );
 	q->v4 = ppogl::Vec3d( right_wing.x(), right_y + TRACK_HEIGHT, right_wing.z() );
-	q->n3 = find_course_normal( q->v3.x(), q->v3.z());
-	q->n4 = find_course_normal( q->v4.x(), q->v4.z());
+	q->n3 = find_course_normal( q->v3 );
+	q->n4 = find_course_normal( q->v4 );
 	tex_end = speed*GameMgr::getInstance().getTimeStep()/TRACK_WIDTH;
 	if (q->trackType == TrackQuad::TYPE_HEAD) {
 	    q->t3= ppogl::Vec2d(0.0, 1.0);

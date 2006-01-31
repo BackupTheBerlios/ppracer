@@ -41,11 +41,11 @@
 
 void set_wind_velocity(const ppogl::Vec3d& velocity, float scale);
 
-ppogl::Vec3d find_course_normal(const float x, const float z);
+ppogl::Vec3d find_course_normal(const ppogl::Vec3d& pos);
 
-float find_y_coord(float x, float z);
+float find_y_coord(const ppogl::Vec3d& pos);
 
-void get_surface_type(float x, float z, float weights[]);
+void get_surface_type(const ppogl::Vec3d& pos, float weights[]);
 
 pp::Plane get_local_course_plane(const ppogl::Vec3d& pt);
 

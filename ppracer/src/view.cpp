@@ -306,7 +306,7 @@ update_view(Player& plyr, const float dt)
 		view_pt = plyr.pos - view_vec;
 
 		/* Make sure view point is above terrain */
-        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+        float ycoord = find_y_coord( view_pt );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
@@ -326,7 +326,7 @@ update_view(Player& plyr, const float dt)
 		}
 
 		/* Make sure interpolated view point is above terrain */
-        ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+        ycoord = find_y_coord( view_pt );
 
         if ( view_pt.y() < ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT;
@@ -391,7 +391,7 @@ update_view(Player& plyr, const float dt)
 
 
 		/* Make sure view point is above terrain */
-        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+        float ycoord = find_y_coord( view_pt );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
             view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;
@@ -411,7 +411,7 @@ update_view(Player& plyr, const float dt)
 		}
 
 		/* Make sure interpolate view point is above terrain */
-        	ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+        	ycoord = find_y_coord( view_pt );
 
         	if ( view_pt.y() < ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT ) {
             	view_pt.y() = ycoord + ABSOLUTE_MIN_CAMERA_HEIGHT;
@@ -465,7 +465,7 @@ update_view(Player& plyr, const float dt)
 
 
 		/* Make sure view point is above terrain */
-        float ycoord = find_y_coord( view_pt.x(), view_pt.z() );
+        float ycoord = find_y_coord( view_pt );
 
         if ( view_pt.y() < ycoord + MIN_CAMERA_HEIGHT ) {
 			view_pt.y() = ycoord + MIN_CAMERA_HEIGHT;

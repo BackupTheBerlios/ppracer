@@ -25,10 +25,12 @@
 #include "player.h"
 #include "ppogl/base/color.h"
 #include <list>
+#include "ppogl/base/list.h"
 
 class Particle
 {
 public:
+	Particle(){};
 	Particle(const ppogl::Vec3d& _pt, GLuint _binding, const ppogl::Vec3d& _vel);
 	
 	ppogl::Vec3d pt;
@@ -54,6 +56,7 @@ public:
 class PartSys
 {
 	std::list<Particle> m_particles;	
+	//ppogl::list<Particle> m_particles;	
 	
 public:
 	void draw(const Player& plyr);

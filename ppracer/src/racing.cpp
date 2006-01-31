@@ -61,9 +61,6 @@
 /// If too high off the ground, tux flaps instead of jumping
 #define JUMP_MAX_START_HEIGHT 0.30
 
-extern TerrainTex terrain_texture[NUM_TERRAIN_TYPES];
-extern unsigned int num_terrains;
-
 Racing::States::States()
  : chargeStartTime(0),
    lastTerrain(0),
@@ -146,8 +143,7 @@ Racing::prePlayer(int plyr, float timestep)
 	if (speed > player.max_speed) player.max_speed=int(speed);
 
 	
-    airborne = ( player.pos.y() > ( find_y_coord(player.pos.x(), 
-						       player.pos.z()) + 
+    airborne = ( player.pos.y() > ( find_y_coord(player.pos) + 
 					  JUMP_MAX_START_HEIGHT ) );
 
     // Joystick
@@ -215,16 +211,16 @@ Racing::prePlayer(int plyr, float timestep)
 	    }
 	}
 
-		for(i=0;i<num_terrains;i++){
-			if ( !terrain_texture[i].sound.empty() && terrain_texture[i].soundactive==true) {
-				ppogl::AudioMgr::getInstance().stopSound(terrain_texture[i].sound);
-				terrain_texture[i].soundactive=false;
+		for(i=0;i<Course::numTerrains;i++){
+			if ( !Course::terrainTexture[i].sound.empty() && Course::terrainTexture[i].soundactive==true) {
+				ppogl::AudioMgr::getInstance().stopSound(Course::terrainTexture[i].sound);
+				Course::terrainTexture[i].soundactive=false;
 			}
 		}
 		
     } else {
 
-		get_surface_type(player.pos.x(), player.pos.z(), terrain_weights);
+		get_surface_type(player.pos, terrain_weights);
 	
 
     	//Play sliding sound
@@ -235,17 +231,17 @@ Racing::prePlayer(int plyr, float timestep)
 			 20) *
 			(speed/10), 128 ));
 		
-		for(i=0;i<num_terrains;i++){
-			if ( !terrain_texture[i].sound.empty() ) {
+		for(i=0;i<Course::numTerrains;i++){
+			if ( !Course::terrainTexture[i].sound.empty() ) {
 				if (terrain_weights[i] > 0 ){
 					//set_sound_volume(terrain_texture[i].sound, int(slide_volume * terrain_weights[i]));
-					if (terrain_texture[i].soundactive==false){
-						ppogl::AudioMgr::getInstance().playSound(terrain_texture[i].sound);
-						terrain_texture[i].soundactive=true;
+					if (Course::terrainTexture[i].soundactive==false){
+						ppogl::AudioMgr::getInstance().playSound(Course::terrainTexture[i].sound);
+						Course::terrainTexture[i].soundactive=true;
 					}
-				} else if (terrain_texture[i].soundactive==true){
-					ppogl::AudioMgr::getInstance().stopSound(terrain_texture[i].sound);
-					terrain_texture[i].soundactive=false;
+				} else if (Course::terrainTexture[i].soundactive==true){
+					ppogl::AudioMgr::getInstance().stopSound(Course::terrainTexture[i].sound);
+					Course::terrainTexture[i].soundactive=false;
 				}
 			}
 		}

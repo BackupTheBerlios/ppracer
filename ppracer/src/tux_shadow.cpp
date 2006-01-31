@@ -178,9 +178,9 @@ draw_shadow_vertex(const ppogl::Vec3d& point,
     ppogl::Vec3d pt =
 		model_matrix.transformPoint(point);
     double old_y = pt.y();
-    ppogl::Vec3d nml = find_course_normal( pt.x(), pt.z() );
+    ppogl::Vec3d nml = find_course_normal( pt );
 	
-    pt.y() = find_y_coord( pt.x(), pt.z() ) + SHADOW_HEIGHT;
+    pt.y() = find_y_coord( pt ) + SHADOW_HEIGHT;
 
     if(pt.y() > old_y){
 		pt.y() = old_y;
