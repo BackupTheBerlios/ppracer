@@ -118,7 +118,6 @@ libppogl_a_SOURCES = 		\
 	font/FTGlyphContainer.h	\
 	font/FTLibrary.h	\
 	font/FTSize.h		\
-	font/FTVector.h		\
 	font/FTCharmap.cpp	\
 	font/FTFace.cpp		\
 	font/FTFont.cpp		\

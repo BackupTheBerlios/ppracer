@@ -1,6 +1,10 @@
 
 === ppracer 0.5 beta ===
 
+2006-01-31  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/font/*
+	replaced FTVector with std::vector
+
 2006-01-29  Volker Stroebel <volker@planetpenguin.de>
 	* src/render_utils.cpp
 	fix draw billboard

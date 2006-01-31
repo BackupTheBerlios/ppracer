@@ -2,11 +2,12 @@
 #ifndef __PPOGL_FTFONT_H_
 #define __PPOGL_FTFONT_H_
 
-#include "FTVector.h"
 #include "FTGL.h"
 #include "FTGlyph.h"
 #include "FTGlyphContainer.h"
 #include "FTFace.h"
+
+#include <vector>
 
 #include "../base/refptr.h"
 #include "../base/vec2d.h"
@@ -143,7 +144,7 @@ private:
 	/**
 	 *An array of texture ids
 	 */
-	FTVector<GLuint> textureIDList;
+	std::vector<GLuint> textureIDList;
         
 	/**
 	 * The max height for glyphs in the current font

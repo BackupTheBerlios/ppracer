@@ -6,7 +6,8 @@
 #include FT_GLYPH_H
 
 #include "FTGL.h"
-#include "FTVector.h"
+
+#include <vector>
 
 #include "../base/vec2d.h"
 
@@ -23,7 +24,7 @@ class FTCharmap;
  */
 class FTGlyphContainer
 {
-	typedef FTVector<FTGlyph*> GlyphVector;
+	typedef std::vector<FTGlyph*> GlyphVector;
 public:
 	/**
 	 * Constructor
