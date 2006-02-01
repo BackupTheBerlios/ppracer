@@ -1,6 +1,15 @@
 
 === ppracer 0.5 beta ===
 
+2006-02-01  Volker Stroebel <volker@planetpenguin.de>
+	* src/game_type_select.* src/event_select.*
+	src/event_race_select.* src/race_select.*
+	src/configmode.* src/configuration.*
+	fixed keyboard navigation
+	
+	*src/partsys.* src/quadtree.cpp
+	compilation fixes
+
 2006-01-31  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/font/*
 	replaced FTVector with std::vector

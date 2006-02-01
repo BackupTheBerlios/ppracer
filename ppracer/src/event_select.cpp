@@ -193,7 +193,7 @@ EventSelect::apply()
 }
 
 bool
-EventSelect::keyPressEvent(SDLKey key)
+EventSelect::keyReleaseEvent(SDLKey key)
 {
 	switch (key){
 		case SDLK_UP:

@@ -140,7 +140,7 @@ PartSys::update(double timestep)
 void
 PartSys::createParticles(const ppogl::Vec3d& loc, const ppogl::Vec3d& vel, int num, GLuint particle_binding) 
 {
-	PP_REQUIRE(m_particles.size + num < MAX_PARTICLES, "Maximum number of particles exceeded");
+	PP_REQUIRE(m_particles.size() + num < MAX_PARTICLES, "Maximum number of particles exceeded");
 	
 	const double speed = vel.length();
     for(int i=0; i<num; i++){      

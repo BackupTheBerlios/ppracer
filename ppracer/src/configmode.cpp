@@ -63,7 +63,7 @@ ConfigMode::loop(float timeStep)
 }
 
 bool
-ConfigMode::keyPressEvent(SDLKey key)
+ConfigMode::keyReleaseEvent(SDLKey key)
 {
 	switch (key){
 		case SDLK_ESCAPE:

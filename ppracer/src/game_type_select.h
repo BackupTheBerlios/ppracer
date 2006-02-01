@@ -36,7 +36,7 @@ public:
 	GameTypeSelect();
 
 	void loop(float timeStep);
-	bool keyPressEvent(SDLKey key);
+	bool keyReleaseEvent(SDLKey key);
 
 	void eventSelect();
 	void credits();

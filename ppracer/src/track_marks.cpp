@@ -219,7 +219,7 @@ TrackMarks::update()
     get_surface_type(player->pos, terrain_weights);
     
 	bool break_marks=true;
-	for (int i=0;i<Course::numTerrains;i++){
+	for (unsigned int i=0;i<Course::numTerrains;i++){
 		if (Course::terrainTexture[i].trackmark.mark){	
 			if (terrain_weights[i] >= 0.5) {
 				if (old_terrain_weight < terrain_weights[i]) {

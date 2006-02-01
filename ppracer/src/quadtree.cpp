@@ -326,7 +326,7 @@ quadsquare::recomputeError(const quadcornerdata& cd)
 
 	    terrain = int(Terrain[ i + RowSize*j ]);
 	    PP_ASSERT( terrain >= 0 && 
-			     terrain < int(num_terrains),
+			     terrain < int(Course::numTerrains),
 			     "Invalid terrain type" );
 	    terrain_count[ terrain ] += 1;
 	}

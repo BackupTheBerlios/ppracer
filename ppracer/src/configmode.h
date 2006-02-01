@@ -40,7 +40,7 @@ public:
 
 	void loop(float timeStep);
 
-	bool keyPressEvent(SDLKey key);
+	bool keyReleaseEvent(SDLKey key);
 
 	virtual void cancel();
 

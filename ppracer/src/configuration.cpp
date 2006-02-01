@@ -104,10 +104,10 @@ Configuration::loop(float timeStep)
 }
 
 bool
-Configuration::keyPressEvent(SDLKey key)
+Configuration::keyReleaseEvent(SDLKey key)
 {
 	switch (key){
-		case 27:
+		case SDLK_ESCAPE:
 		case 'q':
 			back();
 	    	return true;

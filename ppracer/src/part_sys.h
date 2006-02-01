@@ -48,8 +48,8 @@ public:
     double age;
     double death;
     double alpha;
-    ppogl::Vec3d vel;
 	GLuint binding;
+    ppogl::Vec3d vel;
 };
 
 class PartSys
