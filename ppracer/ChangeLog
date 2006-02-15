@@ -1,6 +1,10 @@
 
 === ppracer 0.5 beta ===
 
+2006-02-15  Volker Stroebel <volker@planetpenguin.de>
+	* src/main.cc
+	added --reset-config command line option
+
 2006-02-01  Volker Stroebel <volker@planetpenguin.de>
 	* src/game_type_select.* src/event_select.*
 	src/event_race_select.* src/race_select.*

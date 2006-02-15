@@ -69,6 +69,7 @@ showHelpMessage()
 		"  -c <config-file>         use custom config file\n"
 		"  -d <data-directory>      use custom data directory\n"
 		"  --keep-config            don't save configuration\n"
+		"  --reset-config           reset configuration to defaults\n"
 		"\n"
 		"Benchmark/autoplay\n"
 		"  -a                       automatic playing mode\n"
@@ -90,8 +91,10 @@ std::string cfile;
 std::string data_dir;
 
 static unsigned char verbose=0;
+static bool resetConfig = false;
 
 extern bool saveConfigFile;
+
 
 static void
 getopts( int argc, char *argv[] )
@@ -108,6 +111,8 @@ getopts( int argc, char *argv[] )
 			data_dir = argv[i];
 		}else if( !strcmp(argv[i],"--keep-config") ){
 			saveConfigFile = false;
+		}else if( !strcmp(argv[i],"--reset-config") ){
+			resetConfig = true;
 		}else if( !strcmp( argv[i],"-f") ){
 			i++;
 			if(argv[i] != NULL){			
@@ -232,7 +237,7 @@ main(int argc, char *argv[])
 		cfile=get_config_file_name();
 	}
 		
-	if(ppogl::os::isFile(cfile)){
+	if( !resetConfig && ppogl::os::isFile(cfile) ){
 		script.doFile(cfile);
 		// check whether the user set the data directory per commandline option
 		if(data_dir.empty()){
