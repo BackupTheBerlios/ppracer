@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2005 Alberto Demichelis
+Copyright (c) 2003-2006 Alberto Demichelis
 
 This software is provided 'as-is', without any 
 express or implied warranty. In no event will the 
@@ -28,7 +28,6 @@ to the following restrictions:
 		altered from any source distribution.
 
 */
-
 #ifndef _SQUIRREL_H_
 #define _SQUIRREL_H_
 
@@ -39,7 +38,7 @@ extern "C" {
 #ifndef SQUIRREL_API
 #define SQUIRREL_API extern
 #endif
-	
+
 /*
  * added check for config.h and use inttypes.h if available
  * Volker Ströbel <volker@planetpenguin.de>
@@ -147,8 +146,8 @@ typedef char SQChar;
 #define MAX_CHAR 0xFF
 #endif
 
-#define SQUIRREL_VERSION	_SC("Squirrel 2.1 work3")
-#define SQUIRREL_COPYRIGHT	_SC("Copyright (C) 2003-2005 Alberto Demichelis")
+#define SQUIRREL_VERSION	_SC("Squirrel 2.1 stable")
+#define SQUIRREL_COPYRIGHT	_SC("Copyright (C) 2003-2006 Alberto Demichelis")
 #define SQUIRREL_AUTHOR		_SC("Alberto Demichelis")
 
 #define SQ_VMSTATE_IDLE			0
@@ -272,7 +271,7 @@ SQUIRREL_API SQUserPointer sq_getforeignptr(HSQUIRRELVM v);
 SQUIRREL_API void sq_setprintfunc(HSQUIRRELVM v, SQPRINTFUNCTION printfunc);
 SQUIRREL_API SQPRINTFUNCTION sq_getprintfunc(HSQUIRRELVM v);
 SQUIRREL_API SQRESULT sq_suspendvm(HSQUIRRELVM v);
-SQUIRREL_API SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool resumedret,SQBool retval);
+SQUIRREL_API SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool resumedret,SQBool retval,SQBool raiseerror);
 SQUIRREL_API SQInteger sq_getvmstate(HSQUIRRELVM v);
 
 /*compiler*/
@@ -311,6 +310,7 @@ SQUIRREL_API SQInteger sq_getsize(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API SQRESULT sq_getbase(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API SQBool sq_instanceof(HSQUIRRELVM v);
 SQUIRREL_API void sq_tostring(HSQUIRRELVM v,SQInteger idx);
+SQUIRREL_API void sq_tobool(HSQUIRRELVM v, SQInteger idx, SQBool *b);
 SQUIRREL_API SQRESULT sq_getstring(HSQUIRRELVM v,SQInteger idx,const SQChar **c);
 SQUIRREL_API SQRESULT sq_getinteger(HSQUIRRELVM v,SQInteger idx,SQInteger *i);
 SQUIRREL_API SQRESULT sq_getfloat(HSQUIRRELVM v,SQInteger idx,SQFloat *f);
@@ -332,6 +332,7 @@ SQUIRREL_API SQRESULT sq_setattributes(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API SQRESULT sq_getattributes(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API SQRESULT sq_getclass(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API void sq_weakref(HSQUIRRELVM v,SQInteger idx);
+SQUIRREL_API SQRESULT sq_getdefaultdelegate(HSQUIRRELVM v,SQObjectType t);
 
 /*object manipulation*/
 SQUIRREL_API void sq_pushroottable(HSQUIRRELVM v);
@@ -357,8 +358,8 @@ SQUIRREL_API SQRESULT sq_next(HSQUIRRELVM v,SQInteger idx);
 SQUIRREL_API SQRESULT sq_getweakrefval(HSQUIRRELVM v,SQInteger idx);
 
 /*calls*/
-SQUIRREL_API SQRESULT sq_call(HSQUIRRELVM v,SQInteger params,SQBool retval);
-SQUIRREL_API SQRESULT sq_resume(HSQUIRRELVM v,SQBool retval);
+SQUIRREL_API SQRESULT sq_call(HSQUIRRELVM v,SQInteger params,SQBool retval,SQBool raiseerror);
+SQUIRREL_API SQRESULT sq_resume(HSQUIRRELVM v,SQBool retval,SQBool raiseerror);
 SQUIRREL_API const SQChar *sq_getlocal(HSQUIRRELVM v,SQUnsignedInteger level,SQUnsignedInteger idx);
 SQUIRREL_API const SQChar *sq_getfreevariable(HSQUIRRELVM v,SQInteger idx,SQUnsignedInteger nval);
 SQUIRREL_API SQRESULT sq_throwerror(HSQUIRRELVM v,const SQChar *err);

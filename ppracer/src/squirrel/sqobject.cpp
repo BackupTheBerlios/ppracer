@@ -43,8 +43,8 @@ SQUnsignedInteger TranslateIndex(const SQObjectPtr &idx)
 			return 0;
 		case OT_INTEGER:
 			return (SQUnsignedInteger)_integer(idx);
+		default: assert(0); break;
 	}
-	assert(0);
 	return 0;
 }
 

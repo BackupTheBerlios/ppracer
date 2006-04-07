@@ -27,6 +27,7 @@ extern "C"{
 typedef struct SQVM* HSQUIRRELVM;
 typedef int SQInteger;
 typedef SQInteger SQRESULT;
+typedef SQInteger (*SQFUNCTION)(HSQUIRRELVM);
 }
 
 namespace ppogl{
@@ -87,7 +88,13 @@ public:
 	void pushInt(int number);
 	void pushBool(bool boolean);
 	
+	void pushUserPointer();
+	void pushUserPointer(void* pointer);
+	void* getUserPointer(int index=-1);
+
 	void newArray(int size = 0);
+	void newClosure(SQFUNCTION func, unsigned int nfreevars);
+	bool newSlot(int idx, bool bstatic);
 
 	bool get(int index=-2);
 	void set(int index=-3);

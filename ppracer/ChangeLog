@@ -1,6 +1,16 @@
 
 === ppracer 0.5 beta ===
 
+2006-04-07  Volker Stroebel <volker@planetpenguin.de>
+	* src/squirrel/* src/sqstdlib/*
+	updated squirrel to 2.1
+	
+	* src/squirrel/squirrel.h
+	use inttypes.h if available
+	
+	* src/ppogl/poogl_script.* src/stuff.h data/config.nut.in
+	added workaround for writing config files
+
 2006-02-15  Volker Stroebel <volker@planetpenguin.de>
 	* src/main.cc
 	added --reset-config command line option

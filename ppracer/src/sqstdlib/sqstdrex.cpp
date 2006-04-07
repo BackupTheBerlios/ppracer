@@ -103,7 +103,7 @@ static void sqstd_rex_expect(SQRex *exp, SQInteger n){
 	exp->_p++;
 }
 
-static SQBool sqstd_rex_ischar(SQChar c)
+/*static SQBool sqstd_rex_ischar(SQChar c)
 {
 	switch(c) {
 	case SQREX_SYMBOL_BRANCH:case SQREX_SYMBOL_GREEDY_ZERO_OR_MORE:
@@ -113,7 +113,7 @@ static SQBool sqstd_rex_ischar(SQChar c)
 		return SQFalse;
     }
 	return SQTrue;
-}
+}*/
 
 static SQChar sqstd_rex_escapechar(SQRex *exp)
 {
@@ -182,10 +182,7 @@ static SQInteger sqstd_rex_class(SQRex *exp)
 		exp->_p++;
 	}else ret = sqstd_rex_newnode(exp,OP_CLASS);
 	
-	if(*exp->_p == ']' || *exp->_p == '-'){
-		first = *exp->_p;
-		exp->_p++;
-	}
+	if(*exp->_p == ']') sqstd_rex_error(exp,_SC("empty class"));
 	chain = ret;
 	while(*exp->_p != ']' && exp->_p != exp->_eol) {
 		if(*exp->_p == '-' && first != -1){ 
@@ -281,7 +278,7 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 		case '{':{
 			exp->_p++;
 			if(!isdigit(*exp->_p)) sqstd_rex_error(exp,_SC("number expected"));
-			p0 = sqstd_rex_parsenumber(exp);
+			p0 = (unsigned short)sqstd_rex_parsenumber(exp);
 			switch(*exp->_p) {
 			case '}':
 				p1 = p0; exp->_p++;
@@ -290,7 +287,7 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 				exp->_p++;
 				p1 = 0xFFFF;
 				if(isdigit(*exp->_p)){
-					p1 = sqstd_rex_parsenumber(exp);
+					p1 = (unsigned short)sqstd_rex_parsenumber(exp);
 				}
 				sqstd_rex_expect(exp,'}');
 				goto __end;
@@ -434,7 +431,7 @@ static const SQChar *sqstd_rex_matchnode(SQRex* exp,SQRexNode *node,const SQChar
 	case OP_OR: {
 			const SQChar *asd = str;
 			SQRexNode *temp=&exp->_nodes[node->left];
-			while(asd = sqstd_rex_matchnode(exp,temp,asd,NULL)) {
+			while( (asd = sqstd_rex_matchnode(exp,temp,asd,NULL)) ) {
 				if(temp->next != -1)
 					temp = &exp->_nodes[temp->next];
 				else
@@ -442,7 +439,7 @@ static const SQChar *sqstd_rex_matchnode(SQRex* exp,SQRexNode *node,const SQChar
 			}
 			asd = str;
 			temp = &exp->_nodes[node->right];
-			while(asd = sqstd_rex_matchnode(exp,temp,asd,NULL)) {
+			while( (asd = sqstd_rex_matchnode(exp,temp,asd,NULL)) ) {
 				if(temp->next != -1)
 					temp = &exp->_nodes[temp->next];
 				else

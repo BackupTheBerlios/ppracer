@@ -397,33 +397,31 @@ if(rawin("ppconfig")){
 	ppconfig <- PPConfigDefaults;
 }
 
-function write_config_to_file(filename)
+function write_config_to_file(file)
 {	
-	local file = file(filename, "w");
-	
-	file.writestr("/*\nPlanetPenguin Racer Configuration file\nVersion: @VERSION@\n*/\n\n");
-	file.writestr("ppconfig <- {\n");
+	cfile.write(file, "/*\nPlanetPenguin Racer Configuration file\nVersion: @VERSION@\n*/\n\n");
+	cfile.write(file, "ppconfig <- {\n");
 	
 	foreach(index, value in PPConfigDefaults){
 		if(index.slice(-11) != "description"){
-			file.writestr("/*\n"+index+"\n");
-			file.writestr(ppconfig[index+"_description"]);
-			file.writestr("*/\n"+index+" = ");
+			cfile.write(file, "/*\n"+index+"\n");
+			cfile.write(file, ppconfig[index+"_description"]);
+			cfile.write(file, "*/\n"+index+" = ");
 			if(type(ppconfig[index]) == "boolean"){
 				if(ppconfig[index]==true){
-					file.writestr("true");
+					cfile.write(file, "true");
 				}else{
-					file.writestr("false");
+					cfile.write(file, "false");
 				}
 			}else if(type(ppconfig[index]) == "string"){
-				file.writestr("\""+ppconfig[index]+"\"");
+				cfile.write(file, "\""+ppconfig[index]+"\"");
 			}else{			
-				file.writestr(ppconfig[index].tostring());
+				cfile.write(file, ppconfig[index].tostring());
 			}
-			file.writestr(",\n\n");
+			cfile.write(file, ",\n\n");
 		}
 	
 	}
 	
-	file.writestr("\n};\n");	
+	cfile.write(file, "\n};\n");	
 }

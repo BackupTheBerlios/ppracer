@@ -231,6 +231,8 @@ main(int argc, char *argv[])
 	
 	ppogl::Config::getInstance().init(&script,"ppconfig");
 	
+	register_cfile_callbacks();	
+	
 	bool create_cfile=true;
 	
 	if(cfile.empty()){

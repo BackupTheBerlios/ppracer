@@ -440,6 +440,12 @@ void sq_tostring(HSQUIRRELVM v,SQInteger idx)
 	v->Push(res);
 }
 
+void sq_tobool(HSQUIRRELVM v, SQInteger idx, SQBool *b)
+{
+	SQObjectPtr &o = stack_get(v, idx);
+	*b = v->IsFalse(o)?SQFalse:SQTrue;
+}
+
 SQRESULT sq_getinteger(HSQUIRRELVM v,SQInteger idx,SQInteger *i)
 {
 	SQObjectPtr &o = stack_get(v, idx);
@@ -759,15 +765,15 @@ SQRESULT sq_getdelegate(HSQUIRRELVM v,SQInteger idx)
 	case OT_TABLE:
 		if(!_table(self)->_delegate)break;
 		v->Push(SQObjectPtr(_table(self)->_delegate));
-		return SQ_OK;
 		break;
 	case OT_USERDATA:
 		if(!_userdata(self)->_delegate)break;
 		v->Push(SQObjectPtr(_userdata(self)->_delegate));
-		return SQ_OK;
 		break;
+	default: return sq_throwerror(v,_SC("wrong type")); break;
 	}
-	return sq_throwerror(v,_SC("wrong type"));
+	return SQ_OK;
+	
 }
 
 SQRESULT sq_get(HSQUIRRELVM v,SQInteger idx)
@@ -866,11 +872,11 @@ void sq_reservestack(HSQUIRRELVM v,SQInteger nsize)
 	}
 }
 
-SQRESULT sq_resume(HSQUIRRELVM v,SQBool retval)
+SQRESULT sq_resume(HSQUIRRELVM v,SQBool retval,SQBool raiseerror)
 {
 	if(type(v->GetUp(-1))==OT_GENERATOR){
 		v->Push(_null_); //retval
-		if(!v->Execute(v->GetUp(-2),v->_top,0,v->_top,v->GetUp(-1),SQVM::ET_RESUME_GENERATOR))
+		if(!v->Execute(v->GetUp(-2),v->_top,0,v->_top,v->GetUp(-1),raiseerror,SQVM::ET_RESUME_GENERATOR))
 		{v->Raise_Error(v->_lasterror); return SQ_ERROR;}
 		if(!retval)
 			v->Pop();
@@ -879,10 +885,10 @@ SQRESULT sq_resume(HSQUIRRELVM v,SQBool retval)
 	return sq_throwerror(v,_SC("only generators can be resumed"));
 }
 
-SQRESULT sq_call(HSQUIRRELVM v,SQInteger params,SQBool retval)
+SQRESULT sq_call(HSQUIRRELVM v,SQInteger params,SQBool retval,SQBool raiseerror)
 {
 	SQObjectPtr res;
-	if(v->Call(v->GetUp(-(params+1)),params,v->_top-params,res)){
+	if(v->Call(v->GetUp(-(params+1)),params,v->_top-params,res,raiseerror?true:false)){
 		v->Pop(params);//pop closure and args
 		if(retval){
 			v->Push(res); return SQ_OK;
@@ -903,7 +909,7 @@ SQRESULT sq_suspendvm(HSQUIRRELVM v)
 	return v->Suspend();
 }
 
-SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval)
+SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval,SQBool raiseerror)
 {
 	SQObjectPtr ret;
 	if(!v->_suspended)
@@ -912,7 +918,7 @@ SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval)
 		v->GetAt(v->_stackbase+v->_suspended_target)=v->GetUp(-1); //retval
 		v->Pop();
 	} else v->GetAt(v->_stackbase+v->_suspended_target)=_null_;
-	if(!v->Execute(_null_,v->_top,-1,-1,ret,SQVM::ET_RESUME_VM))
+	if(!v->Execute(_null_,v->_top,-1,-1,ret,raiseerror,SQVM::ET_RESUME_VM))
 		return SQ_ERROR;
 	if(sq_getvmstate(v) == SQ_VMSTATE_IDLE) {
 		while (v->_top > 1) v->_stack[--v->_top] = _null_;
@@ -930,6 +936,7 @@ void sq_setreleasehook(HSQUIRRELVM v,SQInteger idx,SQRELEASEHOOK hook)
 		case OT_USERDATA:	_userdata(ud)->_hook = hook;	break;
 		case OT_INSTANCE:	_instance(ud)->_hook = hook;	break;
 		case OT_CLASS:		_class(ud)->_hook = hook;		break;
+		default: break; //shutup compiler
 		}
 	}
 }
@@ -943,7 +950,6 @@ SQRESULT sq_writeclosure(HSQUIRRELVM v,SQWRITEFUNC w,SQUserPointer up)
 {
 	SQObjectPtr *o = NULL;
 	_GETSAFE_OBJ(v, -1, OT_CLOSURE,o);
-	SQClosure *c=_closure(*o);
 	unsigned short tag = SQ_BYTECODE_STREAM_TAG;
 	if(w(up,&tag,2) != 2)
 		return sq_throwerror(v,_SC("io error"));
@@ -1106,6 +1112,25 @@ SQRESULT sq_getweakrefval(HSQUIRRELVM v,SQInteger idx)
 		return sq_throwerror(v,_SC("the object must be a weakref"));
 	}
 	v->Push(_weakref(o)->_obj);
+	return SQ_OK;
+}
+
+SQRESULT sq_getdefaultdelegate(HSQUIRRELVM v,SQObjectType t)
+{
+	SQSharedState *ss = _ss(v);
+	switch(t) {
+	case OT_TABLE: v->Push(ss->_table_default_delegate); break;
+	case OT_ARRAY: v->Push(ss->_array_default_delegate); break;
+	case OT_STRING: v->Push(ss->_string_default_delegate); break;
+	case OT_INTEGER: case OT_FLOAT: v->Push(ss->_number_default_delegate); break;
+	case OT_GENERATOR: v->Push(ss->_generator_default_delegate); break;
+	case OT_CLOSURE: case OT_NATIVECLOSURE: v->Push(ss->_closure_default_delegate); break;
+	case OT_THREAD: v->Push(ss->_thread_default_delegate); break;
+	case OT_CLASS: v->Push(ss->_class_default_delegate); break;
+	case OT_INSTANCE: v->Push(ss->_instance_default_delegate); break;
+	case OT_WEAKREF: v->Push(ss->_weakref_default_delegate); break;
+	default: return sq_throwerror(v,_SC("the type doesn't have a default delegate"));
+	}
 	return SQ_OK;
 }
 

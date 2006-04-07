@@ -190,7 +190,7 @@ Script::Script()
 	}
 	
 	sq_pushroottable(m_vm);
-	sqstd_register_iolib(m_vm);
+	sqstd_register_iolib(m_vm); 
 	sqstd_register_stringlib(m_vm);
 	
 	registerLib("ppogl", ppogllib);
@@ -506,10 +506,45 @@ Script::pushRootTable()
 	sq_pushroottable(m_vm);
 }
 
+void
+Script::pushUserPointer()
+{
+	sq_pushuserpointer(m_vm,reinterpret_cast<SQUserPointer *>(this));
+}
+
+void
+Script::pushUserPointer(void* pointer)
+{
+	sq_pushuserpointer(m_vm, reinterpret_cast<SQUserPointer *>(pointer));
+}
+
+void*
+Script::getUserPointer(int index)
+{
+	SQUserPointer pointer=NULL;	
+	if(SQ_SUCCEEDED(sq_getuserpointer(m_vm, index, &pointer))){
+		return pointer;
+	}else{
+		return NULL;
+	}	
+}
+
+void
+Script::newClosure(SQFUNCTION func, unsigned int nfreevars)
+{
+	sq_newclosure(m_vm, func, nfreevars);
+}
+
+bool
+Script::newSlot(int idx, bool bstatic)
+{
+	return SQ_SUCCEEDED(sq_newslot(m_vm, idx, bstatic));	
+}
+
 bool
 Script::call(int arguments, bool retValue)
 {
-	return SQ_SUCCEEDED(sq_call(m_vm,arguments,retValue));
+	return SQ_SUCCEEDED(sq_call(m_vm, arguments, retValue, true));
 }
 
 SQRESULT

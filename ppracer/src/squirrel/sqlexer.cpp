@@ -85,7 +85,7 @@ void SQLexer::Next()
 	SQInteger t = _readf(_up);
 	if(t > MAX_CHAR) Error(_SC("Invalid character"));
 	if(t != 0) {
-		_currdata = (unsigned char)t;
+		_currdata = (LexChar)t;
 		return;
 	}
 	_currdata = SQUIRREL_EOB;
@@ -381,7 +381,6 @@ SQInteger SQLexer::ReadNumber()
 #define THEX 3
 #define TSCIENTIFIC 4
 	SQInteger type = TINT, firstchar = CUR_CHAR;
-	bool isfloat = false;
 	SQChar *sTemp;
 	INIT_TEMP_STRING();
 	NEXT();
@@ -432,7 +431,7 @@ SQInteger SQLexer::ReadNumber()
 
 SQInteger SQLexer::ReadID()
 {
-	SQInteger res, size = 0;
+	SQInteger res;
 	INIT_TEMP_STRING();
 	do {
 		APPEND_CHAR(CUR_CHAR);
@@ -440,7 +439,7 @@ SQInteger SQLexer::ReadID()
 	} while(scisalnum(CUR_CHAR) || CUR_CHAR == _SC('_'));
 	TERMINATE_BUFFER();
 	res = GetIDType(&_longstr[0]);
-	if(res == TK_IDENTIFIER) {
+	if(res == TK_IDENTIFIER || res == TK_CONSTRUCTOR) {
 		_svalue = &_longstr[0];
 	}
 	return res;

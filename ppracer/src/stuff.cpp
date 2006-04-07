@@ -25,6 +25,8 @@
 
 #include "ppogl/base/errors.h"
 #include "ppogl/base/os.h"
+
+#include <fstream>
  
 ppogl::Vec3d
 projectIntoPlane(const ppogl::Vec3d& nml, const ppogl::Vec3d& v)
@@ -72,6 +74,33 @@ extern std::string cfile;
 
 bool saveConfigFile = true;
 
+/*
+ * my_write_to_cfile and cfilelib is only a temporal sollution.
+ * Should be replaced with a more powerful and secure class for file io.
+ */
+static int
+my_write_to_cfile(ppogl::Script *vm)
+{
+	std::ofstream *stream = reinterpret_cast<std::ofstream*>(vm->getUserPointer(1));
+	std::string string = vm->getString(2);
+	
+	PP_CHECK_POINTER(stream);
+
+	*stream << string;
+
+	return 0;
+}
+
+static const struct ppogl::Script::Lib cfilelib[]={
+	{"write", my_write_to_cfile},
+	{NULL, NULL}
+};
+
+void register_cfile_callbacks()
+{
+	script.registerLib("cfile", cfilelib);
+}
+
 void
 write_config_file()
 {
@@ -79,15 +108,22 @@ write_config_file()
 
 	if(saveConfigFile){	
 		PP_MESSAGE("Writing config file: " <<cfile); 
-	
-		//call script function "write_config_to_file" with argument "cfile"
-		script.pushRootTable();
-		script.pushString("write_config_to_file");
-		script.get(-2);
-		script.pushRootTable();
-		script.pushString(cfile);
-		script.call(2,false);
-		script.pop(2);
+		
+		std::ofstream stream(cfile.c_str());
+		if(stream.is_open()){		
+			//call script function "write_config_to_file" with argument "stream"
+			script.pushRootTable();
+			script.pushString("write_config_to_file");
+			script.get(-2);
+			script.pushRootTable();
+		
+			script.pushUserPointer(&stream);
+		
+			script.call(2,false);
+			script.pop(2);
+		}else{
+			PP_WARNING("Unable to write config file: " << cfile);
+		}
 	}else{
 		PP_MESSAGE("Writing config file is disabled"); 
 	}

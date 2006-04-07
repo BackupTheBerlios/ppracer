@@ -303,7 +303,8 @@ public:
 		case TK_MULEQ: oper = '*'; break;
 		case TK_DIVEQ: oper = '/'; break;
 		case TK_MODEQ: oper = '%'; break;
-		default: assert(0); break;
+		default: oper = 0; //shut up compiler
+			assert(0); break;
 		};
 		if(deref) {
 			SQInteger val = _fs->PopTarget();
@@ -636,9 +637,15 @@ public:
 			_fs->AddInstruction(_OP_LOADNULLS, _fs->PushTarget(),1);
 			Lex();
 			break;
-		case TK_INTEGER: 
-			_fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetNumericConstant(_lex._nvalue));
+		case TK_INTEGER: {
+			if((_lex._nvalue & (~0x7FFFFFFF)) == 0) { //does it fit in 32 bits?
+				_fs->AddInstruction(_OP_LOADINT, _fs->PushTarget(),_lex._nvalue);
+			}
+			else {
+				_fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetNumericConstant(_lex._nvalue));
+			}
 			Lex();
+						 }
 			break;
 		case TK_FLOAT: 
 			_fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetNumericConstant(_lex._fvalue));
@@ -951,6 +958,7 @@ public:
 		SQInteger __nbreaks__ = _fs->_unresolvedbreaks.size();
 		_fs->_breaktargets.push_back(0);
 		while(_token == TK_CASE) {
+			//_fs->AddLineInfos(_lex._currentline, _lineinfo); think about this one
 			if(!bfirst) {
 				_fs->AddInstruction(_OP_JMP, 0, 0);
 				skipcondjmp = _fs->GetCurrentPos();
@@ -974,6 +982,7 @@ public:
 		if(tonextcondjmp != -1)
 			_fs->SetIntructionParam(tonextcondjmp, 1, _fs->GetCurrentPos() - tonextcondjmp);
 		if(_token == TK_DEFAULT) {
+		//	_fs->AddLineInfos(_lex._currentline, _lineinfo);
 			Lex(); Expect(_SC(':'));
 			SQInteger stacksize = _fs->GetStackSize();
 			Statements();

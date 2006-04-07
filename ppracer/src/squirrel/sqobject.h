@@ -29,7 +29,7 @@ enum SQMetaMethod{
 	MT_TOSTRING=15,
 	MT_NEWMEMBER=16,
 	MT_INHERITED=17,
-	MT_LAST = 18,
+	MT_LAST = 18
 };
 
 #define MM_ADD		_SC("_add")
@@ -56,7 +56,7 @@ enum SQMetaMethod{
 struct SQRefCounted
 {
 	SQRefCounted() { _uiRef = 0; _weakref = NULL; }
-	~SQRefCounted();
+	virtual ~SQRefCounted();
 	SQWeakRef *GetWeakRef(SQObjectType type);
 	SQUnsignedInteger _uiRef;
 	struct SQWeakRef *_weakref;

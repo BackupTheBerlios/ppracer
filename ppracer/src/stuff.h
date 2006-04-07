@@ -55,4 +55,6 @@ std::string get_config_dir_name();
 std::string get_config_file_name();
 void write_config_file();
 
+void register_cfile_callbacks();
+
 #endif // _STUFF_H_
