@@ -521,7 +521,7 @@ terrain_tex_cb(ppogl::Script *vm)
 	}
 	
 	ppogl::TextureRef texture =
-		ppogl::TextureMgr::getInstance().load(name, filename);
+		ppogl::TextureMgr::getInstance().load(name, filename, ppogl::Texture::REPEATABLE);
 			Course::terrainTexture[Course::numTerrains].texture = texture;
 	if(!Course::terrainTexture[Course::numTerrains].texture){
 		PP_WARNING("pptheme.terrain_tex: Unable to load texture " << filename << " for terrain " << name);

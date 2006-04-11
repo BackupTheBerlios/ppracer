@@ -109,8 +109,16 @@ public:
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+namespace gl{
+	inline void TexImage2D(GLenum target, const ppogl::Image& image){glTexImage2D(target, 0, image.depth, image.width, image.height, 0, (image.depth == 3)?(GL_RGB):(GL_RGBA), GL_UNSIGNED_BYTE, image.data);}		
+} // namespace gl
+
 namespace glu{
 	inline GLint Build2DMipmaps(GLenum target, const ppogl::Image& image){return gluBuild2DMipmaps(target, image.depth, image.width, image.height, (image.depth == 3)?(GL_RGB):(GL_RGBA), GL_UNSIGNED_BYTE, image.data);}
 } // namespace glu
+
+
+
+
 
 #endif // _PPOGL_IMAGE_H_

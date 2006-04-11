@@ -1,11 +1,11 @@
 
 // mud marks
-Textures.load("terrains/mud/mud_head", "mudstart.png", false);
-Textures.load("terrains/mud/mud_mark", "mudprint.png", true);
-Textures.load("terrains/mud/mud_tail", "mudstop.png", false);
+pptheme.load_texture("terrains/mud/mud_head", "mudstart.png", false);
+pptheme.load_texture("terrains/mud/mud_mark", "mudprint.png", true);
+pptheme.load_texture("terrains/mud/mud_tail", "mudstop.png", false);
 
 // mud particle
-Textures.load("terrains/mud/mud_particle", "mudparticles.png", false);
+pptheme.load_texture("terrains/mud/mud_particle", "mudparticles.png", false);
 
 // icy terrains
 

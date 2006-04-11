@@ -1,6 +1,12 @@
 
 === ppracer 0.5 beta ===
 
+2006-04-11  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/Textures.* src/data/*
+	added Texture modes
+	changed format for Texture.load()
+	changed squirrel files to new format
+	
 2006-04-07  Volker Stroebel <volker@planetpenguin.de>
 	* src/squirrel/* src/sqstdlib/*
 	updated squirrel to 2.1

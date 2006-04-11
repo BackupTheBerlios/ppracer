@@ -1,5 +1,5 @@
 
-Textures.load("items/stuff/life", "life.png", false);
+pptheme.load_texture("items/stuff/life", "life.png", false);
 
 pptheme.item({
 	name = "life",

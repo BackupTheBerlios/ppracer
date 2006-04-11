@@ -1,5 +1,5 @@
 
-Textures.load("items/herrings/fish2", "herring_red.png", false);
+pptheme.load_texture("items/herrings/fish2", "herring_red.png", false);
 
 pptheme.item({
 	name = "herringred",
@@ -11,7 +11,7 @@ pptheme.item({
 	above_ground = 0.2
 });
 
-Textures.load("items/herrings/fish3", "herring_green.png", false);
+pptheme.load_texture("items/herrings/fish3", "herring_green.png", false);
 
 pptheme.item({
 	name = "herringgreen",
@@ -23,7 +23,7 @@ pptheme.item({
 	above_ground = 0.2
 });
 
-Textures.load("items/herrings/star", "star.png", false);
+pptheme.load_texture("items/herrings/star", "star.png", false);
 
 pptheme.item({
 	name = "star", 
@@ -36,7 +36,7 @@ pptheme.item({
 	score = 5
 });
 
-Textures.load("items/herrings/deadfish", "herring_dead.png", false);
+pptheme.load_texture("items/herrings/deadfish", "herring_dead.png", false);
 
 pptheme.item({
 	name = "deadfish",

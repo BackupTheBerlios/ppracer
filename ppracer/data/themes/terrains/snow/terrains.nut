@@ -1,14 +1,14 @@
 
 // snow marks
-Textures.load("terrains/snow/snow_head", "buttstart.png", false);
-Textures.load("terrains/snow/snow_mark", "buttprint.png", true);
-Textures.load("terrains/snow/snow_tail", "buttstop.png", false);
+pptheme.load_texture("terrains/snow/snow_head", "buttstart.png", false);
+pptheme.load_texture("terrains/snow/snow_mark", "buttprint.png", true);
+pptheme.load_texture("terrains/snow/snow_tail", "buttstop.png", false);
 
 // snow Particle
-Textures.load("terrains/snow/snow_particle", "snowparticles.png", false);
+pptheme.load_texture("terrains/snow/snow_particle", "snowparticles.png", false);
 
 // dirtsnow Particle
-Textures.load("terrains/snow/dirtsnow_particle", "dirtsnowparticles.png", false);
+pptheme.load_texture("terrains/snow/dirtsnow_particle", "dirtsnowparticles.png", false);
 
 // icy terrains
 

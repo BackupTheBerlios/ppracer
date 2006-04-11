@@ -1,5 +1,5 @@
 
-Textures.load("items/flags/flag2", "flag2.png", false);
+pptheme.load_texture("items/flags/flag2", "flag2.png", false);
 
 pptheme.item({
 	name = "items/flags/flag2",

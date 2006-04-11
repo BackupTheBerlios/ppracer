@@ -31,16 +31,24 @@ namespace ppogl{
 ///A texture
 class Texture : public RefObject
 {
+public:
+	enum{
+		DEFAULT = 0,
+		NO_MIPMAP = 1<<0,
+		REPEATABLE = 1 << 1,
+		UNFILTERED = 1 << 2
+};
+
+private:
 	GLuint m_id;
 	int m_width, m_height;
-	bool m_repeatable;
-		
-	void load_texture(const std::string& filename, int filter);
+	
+	void load_texture(const std::string& filename, int filter, int mode);
 
 	static int translateFilter(int filter);
 	
 public:	
-	Texture(const std::string& filename, bool repeatable=true);
+	Texture(const std::string& filename, int mode = 0);
 	~Texture();
 
 	inline GLuint getID(){return m_id;};
@@ -58,9 +66,10 @@ class TextureMgr
    public ResourceMgr<Texture>
 {
 public:
-	TextureRef load(const std::string& binding, const std::string& filename, bool repeatable=true); 
+	TextureRef load(const std::string& binding, const std::string& filename, int mode=0); 
+
 	void bind(const std::string& binding, const std::string& name);
-			
+
 	static int sqLoad(ppogl::Script *vm);
 	static int sqBind(ppogl::Script *vm);	
 };

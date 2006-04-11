@@ -1,7 +1,7 @@
 
 pptheme.reset_point([255, 128, 255]);
 
-Textures.load("items/common/fish", "herring_standard.png", false);
+pptheme.load_texture("items/common/fish", "herring_standard.png", false);
 
 pptheme.item({
 	name = "items/common/herring",
@@ -13,7 +13,7 @@ pptheme.item({
 	above_ground = 0.2
 });
 
-Textures.load("items/common/flag1", "flag.png", false);
+pptheme.load_texture("items/common/flag1", "flag.png", false);
 
 pptheme.item({
 	name = "items/common/flag",
@@ -24,7 +24,7 @@ pptheme.item({
 	color = [194, 40, 40]
 });
 
-Textures.load("items/common/start", "start.png", false);
+pptheme.load_texture("items/common/start", "start.png", false);
 
 pptheme.item({
 	name = "items/common/start", 
@@ -37,7 +37,7 @@ pptheme.item({
 	above_ground = -0.1
 });
       
-Textures.load("items/common/finish", "finish.png", false);
+pptheme.load_texture("items/common/finish", "finish.png", false);
 
 pptheme.item({
 	name = "items/common/finish",

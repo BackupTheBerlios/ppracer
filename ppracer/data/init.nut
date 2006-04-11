@@ -130,94 +130,179 @@ Fonts.load("speed_units",
 // textures
 
 // splash screen
-Textures.load("splash_screen",
-			  "textures/splash.png");
+Textures.load({
+	name = "splash_screen",
+	file = "textures/splash.png",
+	scalable = false
+});
 
 // ui snow particle
-Textures.load("ui_snow_particle",
-			  "textures/snowparticles.png");
+Textures.load({
+	name = "ui_snow_particle",
+	file = "textures/snowparticles.png",
+	scalable = false
+});
 
 // mouse cursor
-Textures.load("mouse_cursor",
-			  "textures/mouse_cursor.png");
+Textures.load({
+	name = "mouse_cursor",
+	file = "textures/mouse_cursor.png"
+	scalable = false
+});
 
 // hud
-Textures.load("herring_icon",
-			  "textures/herringicon.png");
+Textures.load({
+	name = "herring_icon",
+	file = "textures/herringicon.png",
+	scalable = false
+});
 			  
-Textures.load("gauge_outline",
-			  "textures/gaugeoutline.png");
+Textures.load({
+	name = "gauge_outline",
+	file = "textures/gaugeoutline.png",
+	scalable = false
+});
 			  
-Textures.load("gauge_energy_mask",
-			  "textures/gaugeenergymask.png");
+Textures.load({
+	name = "gauge_energy_mask",
+	file = "textures/gaugeenergymask.png",
+	scalable = false
+});
 
-Textures.load("gauge_speed_mask",
-			  "textures/gaugespeedmask.png");
+Textures.load({
+	name = "gauge_speed_mask",
+	file = "textures/gaugespeedmask.png",
+	scalable = false
+});
 
-Textures.load("energy_mask",
-			  "textures/energymask.png");
+Textures.load({
+	name = "energy_mask",
+	file = "textures/energymask.png",
+	scalable = false
+});
 
-Textures.load("speed_mask",
-			  "textures/speedmask.png");
+Textures.load({
+	name = "speed_mask",
+	file = "textures/speedmask.png",
+	scalable = false
+});
 
-Textures.load("mask_outline2",
-			  "textures/mask_outline2.png");
+Textures.load({
+	name = "mask_outline2",
+	file = "textures/mask_outline2.png",
+	scalable = false
+});
 
-Textures.load("hudtl",
-			  "textures/hudtl.png");
+Textures.load({
+	name = "hudtl",
+	file = "textures/hudtl.png",
+	scalable = false
+});
 
-Textures.load("hudtr",
-			  "textures/hudtr.png");
+Textures.load({
+	name = "hudtr",
+	file = "textures/hudtr.png",
+	scalable = false
+});
 			  
-Textures.load("fpsbg",
-			  "textures/fpsbg.png");			  
+Textures.load({
+	name = "fpsbg",
+	file = "textures/fpsbg.png",
+	scalable = false
+});
 
 // ui elements
-Textures.load("listbox_arrows",
-			  "textures/listbox_arrows.png");
-Textures.bind("textarea_arrows","listbox_arrows");
+Textures.load({
+	name = "listbox_arrows",
+	file = "textures/listbox_arrows.png",
+	scalable = false
+});
 
-Textures.load("hscale_arrows",
-			  "textures/hscale_arrows.png");
+Textures.bind({
+	name = "textarea_arrows",
+	texture = "listbox_arrows"
+});
 
-Textures.load("mirror_button",
-			  "textures/mirror_button.png");
+Textures.load({
+	name = "hscale_arrows",
+	file = "textures/hscale_arrows.png",
+	scalable = false
+});
 
-Textures.load("conditions_button",
-			  "textures/conditions_button.png");
+Textures.load({
+	name = "mirror_button",
+	file = "textures/mirror_button.png",
+	scalable = false
+});
 
-Textures.load("snow_button",
-			  "textures/snow_button.png");
+Textures.load({
+	name = "conditions_button",
+	file = "textures/conditions_button.png",
+	scalable = false
+});
 
-Textures.load("wind_button",
-			  "textures/wind_button.png");
+Textures.load({
+	name = "snow_button",
+	file = "textures/snow_button.png",
+	scalable = false
+});
 
-Textures.load("checkmark",
-			  "textures/checkmark.png");
+Textures.load({
+	name = "wind_button",
+	file = "textures/wind_button.png",
+	scalable = false
+});
+
+Textures.load({
+	name = "checkmark",
+	file = "textures/checkmark.png",
+	scalable = false
+});
 
 // menu decorations
-Textures.load("menu_bottom_left",
-			  "textures/menu_bottom_left.png");
+Textures.load({
+	name = "menu_bottom_left",
+	file = "textures/menu_bottom_left.png",
+	scalable = false
+});
 
-Textures.load("menu_bottom_right",
-			  "textures/menu_bottom_right.png");
+Textures.load({
+	name = "menu_bottom_right",
+	file = "textures/menu_bottom_right.png",
+	scalable = false
+});
 
-Textures.load("menu_top_left",
-			  "textures/menu_top_left.png");
+Textures.load({
+	name = "menu_top_left",
+	file = "textures/menu_top_left.png",
+	scalable = false
+});
 
-Textures.load("menu_top_right",
-			  "textures/menu_top_right.png");
+Textures.load({
+	name = "menu_top_right",
+	file = "textures/menu_top_right.png",
+	scalable = false
+});
 
-Textures.load("menu_title",
-			  "textures/menu_title.png");
+Textures.load({
+	name = "menu_title",
+	file = "textures/menu_title.png",
+	scalable = false
+});
 
 // life icon
-Textures.load("life_icon",
-			  "textures/tuxlife.png");
-			  
+Textures.load({
+	name = "life_icon",
+	file = "textures/tuxlife.png",
+	scalable = false
+});
+
 // no preview image
-Textures.load("no_preview",
-			  "textures/nopreview.png");
+Textures.load({
+	name = "no_preview",
+	file = "textures/nopreview.png",
+	scalable = false
+});
 			  
 
 // audio
@@ -304,7 +389,11 @@ function pptheme::load_texture(binding, filename, repeatable)
 {
 	//todo:	add binding to global table and unload/unbind 
 	// 		the texture if a different theme is loaded
-	Textures.load(binding, filename, repeatable);
+	Textures.load({
+		name = binding,
+		file = filename,
+		repeatable =	repeatable
+	});
 }
 
 
@@ -318,7 +407,11 @@ function ppcourse::register(table)
 	table.path <- ::temp_data;	
 	
 	if("preview" in table){		
-		Textures.load(::temp_data,::temp_data+"/"+table.preview);
+		Textures.load({
+			name = ::temp_data,
+			file = ::temp_data+"/"+table.preview,
+			scalable = false
+		});
 	}
 
 	ppracer.register_course(table);	

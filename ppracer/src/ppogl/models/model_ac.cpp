@@ -149,9 +149,8 @@ ModelAC::loadTexture(const char *fileName)
 		ppogl::TextureMgr::getInstance().get(binding, false);
 
 	if(!texture){
-		ppogl::TextureMgr::getInstance().load(binding,fileName);
-		texture = ppogl::TextureMgr::getInstance().get(binding);
-		
+		texture = ppogl::TextureMgr::getInstance().load(binding,fileName, ppogl::Texture::REPEATABLE);
+	
 		if(!texture){
 			return 0;
 		}

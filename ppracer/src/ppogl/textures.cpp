@@ -25,17 +25,16 @@
 
 namespace ppogl{
 
-Texture::Texture(const std::string& filename, bool repeatable)
+Texture::Texture(const std::string& filename, int mode)
  : RefObject(),
    m_id(0),
    m_width(0),
-   m_height(0),
-   m_repeatable(repeatable)
+   m_height(0)
 {
 	int filter = translateFilter(
 		ppogl::Config::getInstance().getInt("texture_filter"));
 
-	load_texture(filename, filter);
+	load_texture(filename, filter, mode);
 }
 
 Texture::~Texture()
@@ -45,9 +44,8 @@ Texture::~Texture()
 	}	
 }
 
-
 void
-Texture::load_texture(const std::string& filename, int filter)
+Texture::load_texture(const std::string& filename, int filter, int mode)
 {
 	ppogl::Image *image = ppogl::Image::readFile(filename);
 
@@ -61,18 +59,31 @@ Texture::load_texture(const std::string& filename, int filter)
 
     gl::PixelStore(GL_UNPACK_ALIGNMENT, 4);
 
-    if(m_repeatable){
-		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    if(mode & REPEATABLE){
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }else{
-		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-		gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		// use GL_CLAMP_TO_EDGE to prevent some bad behavior at texture/polygon edges
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
-    gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    gl::TexParameter( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	
-	glu::Build2DMipmaps( GL_TEXTURE_2D, *image );
-
+	if(mode & UNFILTERED){
+		// use GL_NEAREST for textures that don't need a real filter
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    	gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}else{
+		gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    	gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	}
+		
+	// Only build mipmaps if we need them
+	if(mode & NO_MIPMAP){
+		gl::TexImage2D(GL_TEXTURE_2D, *image);
+	}else{	
+		glu::Build2DMipmaps(GL_TEXTURE_2D, *image);
+	}
+		
 	m_width = image->width;
 	m_height = image->height;
 		
@@ -104,12 +115,12 @@ Texture::translateFilter(int filter)
 PPOGL_SINGLETON(TextureMgr);
 
 TextureRef
-TextureMgr::load(const std::string& binding, const std::string& filename, bool repeatable)
+TextureMgr::load(const std::string& binding, const std::string& filename, int mode)
 {
 	PP_LOG(LogTextures, "Loading texture: " << binding << " -> " << filename);
-	
+		
 	// Create texture and put it in our binding table.
-	return m_bindings[binding] = TextureRef(new ppogl::Texture(filename,repeatable));
+	return m_bindings[binding] = TextureRef(new ppogl::Texture(filename, mode));
 }
 
 void
@@ -129,16 +140,28 @@ TextureMgr::bind(const std::string& binding, const std::string& name)
 int
 TextureMgr::sqLoad(ppogl::Script *vm)
 {
-	bool repeatable=false;
+	std::string binding = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("file");
 	
-	std::string binding = vm->getString(1);
-	std::string filename = vm->getString(2);
-
-	if(vm->getTop()==3){
-		repeatable = vm->getBool(3);
+	if(binding.empty() || filename.empty()){
+		PP_WARNING("Textures.load: Please specify name and file");
+		return vm->defaultError();
 	}
 	
-	getInstance().load(binding, filename, repeatable);
+	int mode =0;
+	
+	// is texture repeatable
+	if(vm->isKeyInTable("repeatable") && vm->getBoolFromTable("repeatable") ){
+		mode |= Texture::REPEATABLE;			
+	}
+		
+	if(vm->isKeyInTable("scalable") && !vm->getBoolFromTable("scalable") ){
+		//  we don't need mipmaps and filtersbecause texture isn't scaled
+		mode |= Texture::UNFILTERED;
+		mode |= Texture::NO_MIPMAP;
+	}	
+	
+	getInstance().load(binding, filename, mode);
 	
 	return 0;
 }
@@ -146,10 +169,15 @@ TextureMgr::sqLoad(ppogl::Script *vm)
 int
 TextureMgr::sqBind(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string name = vm->getString(2);
+	std::string name = vm->getStringFromTable("name");
+	std::string  texture = vm->getStringFromTable("texture");
 	
-	getInstance().bind(binding, name);
+	if(name.empty() || texture.empty()){
+		PP_WARNING("Textures.load: Please specify name and texture");
+		return vm->defaultError();
+	}
+	
+	getInstance().bind(name, texture);
 
 	return 0;
 }
