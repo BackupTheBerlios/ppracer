@@ -94,13 +94,11 @@ FTFont::CalculateTextureSize()
 		assert(maximumGLTextureSize); // If you hit this then you have an invalid OpenGL context.
     }
     
-    textureWidth = NextPowerOf2((remGlyphs * glyphWidth) + ( padding * 2));
+	textureWidth = NextPowerOf2( ((remGlyphs > 32 ? 32 : remGlyphs) * glyphWidth) + ( padding * 2));
     textureWidth = textureWidth > maximumGLTextureSize ? maximumGLTextureSize : textureWidth;
     
-    int h = static_cast<int>((textureWidth - ( padding * 2)) / glyphWidth);
-        
-    textureHeight = NextPowerOf2((( numGlyphs / h) + 1) * glyphHeight);
-    textureHeight = textureHeight > maximumGLTextureSize ? maximumGLTextureSize : textureHeight;
+	textureHeight = NextPowerOf2( glyphHeight);
+	textureHeight = textureHeight > maximumGLTextureSize ? maximumGLTextureSize : textureHeight;
 }
 
 GLuint

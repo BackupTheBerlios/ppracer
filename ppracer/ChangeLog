@@ -7,6 +7,9 @@
 	changed format for Texture.load()
 	changed squirrel files to new format
 	
+	* src/ppogl/font/FTFont.cpp
+	Applied patch to limit number of glyphs per texture from Keith Packard	
+
 2006-04-07  Volker Stroebel <volker@planetpenguin.de>
 	* src/squirrel/* src/sqstdlib/*
 	updated squirrel to 2.1
