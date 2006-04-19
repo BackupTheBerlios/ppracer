@@ -1582,7 +1582,7 @@ init_physical_simulation()
 
 		ycoord = find_y_coord( plyr.pos );
 		nml = find_course_normal(plyr.pos);
-		rotMat.makeRotation( -90., 'x' );
+		rotMat.makeRotation( -90., ppogl::AXIS_X );
 		init_vel = rotMat.transformVector( nml );
 		init_vel = INIT_TUX_SPEED*init_vel;
 		init_f = ppogl::Vec3d( 0., 0., 0. );

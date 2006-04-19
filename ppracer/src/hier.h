@@ -32,7 +32,7 @@ bool get_scene_node(const std::string& node_name, SceneNode **node );
 
 void reset_scene_node(const std::string& node);
 
-void rotate_scene_node(const std::string& node, char axis, double angle);
+void rotate_scene_node(const std::string& node, ppogl::Axis axis, double angle);
 void translate_scene_node(const std::string& node, const ppogl::Vec3d& trans);
 void scale_scene_node(const std::string& node, const ppogl::Vec3d& origin, const ppogl::Vec3d& factor);
 void transform_scene_node(const std::string& node, const pp::Matrix& mat, const pp::Matrix& invMat);

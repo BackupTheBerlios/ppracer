@@ -49,4 +49,15 @@
 /// This only works for static arrays in the same context
 #define PP_NUM_ELEMENTS(array) (sizeof(array) / sizeof ((array)[0]))
 
+
+namespace ppogl {
+
+enum Axis{
+	AXIS_X = 0,
+	AXIS_Y,
+	AXIS_Z
+};
+
+} //namespace ppogl
+
 #endif // PPOGL_DEFS_H_

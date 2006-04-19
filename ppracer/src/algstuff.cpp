@@ -148,7 +148,7 @@ Matrix::Matrix(const Quat& quat)
 }
 
 void
-Matrix::makeRotation(const double angle, const char axis)
+Matrix::makeRotation(const double angle, const ppogl::Axis axis)
 {
 	double sinv = sin( ANGLES_TO_RADIANS( angle ) );
     double cosv = cos( ANGLES_TO_RADIANS( angle ) );
@@ -156,21 +156,21 @@ Matrix::makeRotation(const double angle, const char axis)
     makeIdentity();
 
     switch( axis ) {
-    case 'x':
+    case ppogl::AXIS_X:
         data[1][1] = cosv;
         data[2][1] = -sinv;
         data[1][2] = sinv;
         data[2][2] = cosv;
         break;
 
-    case 'y':
+    case ppogl::AXIS_Y:
         data[0][0] = cosv;
         data[2][0] = sinv;
         data[0][2] = -sinv;
         data[2][2] = cosv;
         break;
 
-    case 'z': 
+    case ppogl::AXIS_Z: 
         data[0][0] = cosv;
         data[1][0] = -sinv;
         data[0][1] = sinv;
@@ -196,9 +196,9 @@ Matrix::makeRotationAboutVector(const ppogl::Vec3d& u, const double angle )
 
     if ( d < EPS ) {
         if ( a < 0 ) 
-            makeRotation( -angle, 'x' );
+            makeRotation( -angle, ppogl::AXIS_X );
         else
-            makeRotation( angle, 'x' );
+            makeRotation( angle, ppogl::AXIS_X );
         return;
     } 
 
@@ -227,7 +227,7 @@ Matrix::makeRotationAboutVector(const ppogl::Vec3d& u, const double angle )
     iry.data[0][2] = -a;
     iry.data[2][2] = d;
 
-    makeRotation( angle, 'z' );
+    makeRotation( angle, ppogl::AXIS_Z );
 
     *this=(*this)*ry;
     *this=(*this)*rx;

@@ -36,7 +36,10 @@ tux_rotate(ppogl::Script *vm)
 
     // obtain the axis 
     const std::string axis = vm->getString(2);
-    if ("x" != axis && "y" != axis && "z" != axis){
+	
+	const char tempaxis = axis.c_str()[0];
+
+	if(tempaxis < 'x' || tempaxis > 'z'){	
 		PP_WARNING("tux.rotate: Invalid rotation axes: " << axis);
 		return 0;
     }
@@ -44,7 +47,7 @@ tux_rotate(ppogl::Script *vm)
     // obtain the angle
 	const double angle = vm->getFloat(3);
     
-    rotate_scene_node(nodename, axis.c_str()[0], angle);
+    rotate_scene_node(nodename, static_cast<ppogl::Axis>(tempaxis-'x'), angle);
 	
     return 0;
 }

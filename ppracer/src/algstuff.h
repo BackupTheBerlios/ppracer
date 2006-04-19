@@ -26,6 +26,8 @@
 #define _ALGSTUFF_H_
 
 #include "ppogl/base/vec3d.h"
+#include "ppogl/base/defs.h"
+
 
 ///things to replace 
 namespace pp{
@@ -55,7 +57,7 @@ public:
 		}
 	}
 		
-	void makeRotation(const double angle, const char axis);
+	void makeRotation(const double angle, const ppogl::Axis axis);
 	
 	
 	void makeTranslation(const double x, const double y, const double z)

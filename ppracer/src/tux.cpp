@@ -70,57 +70,57 @@ Tux::adjustJoints( double turnFact, bool isBraking,
     flap_angle = MAX_ARM_ANGLE * (0.5 + 0.5*sin(M_PI*flap_factor*6-M_PI/2));
 
     // Adjust arms for turning 
-    rotate_scene_node( leftShoulderJoint, 'z', 
+    rotate_scene_node( leftShoulderJoint, ppogl::AXIS_Z, 
 		       MIN( braking_angle + paddling_angle + turning_angle[0],
 			    MAX_ARM_ANGLE ) + flap_angle );
-    rotate_scene_node( rightShoulderJoint, 'z',
+    rotate_scene_node( rightShoulderJoint, ppogl::AXIS_Z,
 		       MIN( braking_angle + paddling_angle + turning_angle[1], 
 			    MAX_ARM_ANGLE ) + flap_angle );
 
 
     // Adjust arms for paddling 
-    rotate_scene_node( leftShoulderJoint, 'y', -ext_paddling_angle );
-    rotate_scene_node( rightShoulderJoint, 'y', ext_paddling_angle );
+    rotate_scene_node( leftShoulderJoint, ppogl::AXIS_Y, -ext_paddling_angle );
+    rotate_scene_node( rightShoulderJoint, ppogl::AXIS_Y, ext_paddling_angle );
 
     force_angle = MAX( -20.0, MIN( 20.0, -net_force.z() / 300.0 ) );
     turn_leg_angle = turnFact * 10;
     
 	// Adjust hip joints 
     reset_scene_node( leftHipJoint );
-    rotate_scene_node( leftHipJoint, 'z', -20 + turn_leg_angle
+    rotate_scene_node( leftHipJoint, ppogl::AXIS_Z, -20 + turn_leg_angle
 		       + force_angle );
     reset_scene_node( rightHipJoint );
-    rotate_scene_node( rightHipJoint, 'z', -20 - turn_leg_angle
+    rotate_scene_node( rightHipJoint, ppogl::AXIS_Z, -20 - turn_leg_angle
 		       + force_angle );
 	
     // Adjust knees
     reset_scene_node( leftKneeJoint );
-    rotate_scene_node( leftKneeJoint, 'z', -10 + turn_leg_angle
+    rotate_scene_node( leftKneeJoint, ppogl::AXIS_Z, -10 + turn_leg_angle
 		       - MIN( 35, speed ) + kick_paddling_angle
 		       + force_angle );
     reset_scene_node( rightKneeJoint );
-    rotate_scene_node( rightKneeJoint, 'z', -10 - turn_leg_angle
+    rotate_scene_node( rightKneeJoint, ppogl::AXIS_Z, -10 - turn_leg_angle
 		       - MIN( 35, speed ) - kick_paddling_angle 
 		       + force_angle );
 
     // Adjust ankles 
     reset_scene_node( leftAnkleJoint );
-    rotate_scene_node( leftAnkleJoint, 'z', -20 + MIN(50, speed ) );
+    rotate_scene_node( leftAnkleJoint, ppogl::AXIS_Z, -20 + MIN(50, speed ) );
     reset_scene_node( rightAnkleJoint );
-    rotate_scene_node( rightAnkleJoint, 'z', -20 + MIN(50, speed ) );
+    rotate_scene_node( rightAnkleJoint, ppogl::AXIS_Z, -20 + MIN(50, speed ) );
 
 	// Turn tail 
     reset_scene_node( tailJoint );
-    rotate_scene_node( tailJoint, 'z', turnFact * 20 );
+    rotate_scene_node( tailJoint, ppogl::AXIS_Z, turnFact * 20 );
 
 	// Adjust head and neck 
     reset_scene_node( neck );
-    rotate_scene_node( neck, 'z', -50 );
+    rotate_scene_node( neck, ppogl::AXIS_Z, -50 );
     reset_scene_node( head );
-    rotate_scene_node( head, 'z', -30 );
+    rotate_scene_node( head, ppogl::AXIS_Z, -30 );
 
 	// Turn head when turning 
-    rotate_scene_node( head, 'y', -turnFact * 70 );
+    rotate_scene_node( head, ppogl::AXIS_Y, -turnFact * 70 );
 
 }
 

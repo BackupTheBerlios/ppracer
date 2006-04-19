@@ -152,7 +152,7 @@ reset_scene_node(const std::string& node)
 }
 
 void 
-rotate_scene_node(const std::string& node, char axis, double angle ) 
+rotate_scene_node(const std::string& node, ppogl::Axis axis, double angle ) 
 {
     SceneNode *nodePtr;
 

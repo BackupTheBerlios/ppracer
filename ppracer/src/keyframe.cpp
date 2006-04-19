@@ -111,26 +111,26 @@ PlayerKeyFrames::update(Player& plyr, double dt)
 	cob_mat.makeIdentity();
 
     double v = interp( frac, frames[idx-1].yaw, frames[idx].yaw );
-    rotate_scene_node( root, 'y', v );
-    rot_mat.makeRotation( v, 'y' );
+    rotate_scene_node( root, ppogl::AXIS_Y, v );
+    rot_mat.makeRotation( v, ppogl::AXIS_Y );
     cob_mat=cob_mat*rot_mat;
 
     v = interp( frac, frames[idx-1].pitch, frames[idx].pitch );
-    rotate_scene_node( root, 'x', v );
-    rot_mat.makeRotation( v, 'x' );
+    rotate_scene_node( root, ppogl::AXIS_X, v );
+    rot_mat.makeRotation( v, ppogl::AXIS_X );
     cob_mat=cob_mat*rot_mat;
 
     v = interp( frac, frames[idx-1].l_shldr, frames[idx].l_shldr );
-    rotate_scene_node( lsh, 'z', v );
+    rotate_scene_node( lsh, ppogl::AXIS_Z, v );
 
     v = interp( frac, frames[idx-1].r_shldr, frames[idx].r_shldr );
-    rotate_scene_node( rsh, 'z', v );
+    rotate_scene_node( rsh, ppogl::AXIS_Z, v );
 
     v = interp( frac, frames[idx-1].l_hip, frames[idx].l_hip );
-    rotate_scene_node( lhp, 'z', v );
+    rotate_scene_node( lhp, ppogl::AXIS_Z, v );
 
     v = interp( frac, frames[idx-1].r_hip, frames[idx].r_hip );
-    rotate_scene_node( rhp, 'z', v );
+    rotate_scene_node( rhp, ppogl::AXIS_Z, v );
 
     /* Set orientation */
     plyr.orientation = pp::Matrix( cob_mat); //make_quaternion_from_matrix( cob_mat );

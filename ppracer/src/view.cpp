@@ -474,7 +474,7 @@ update_view(Player& plyr, const float dt)
 		/* Construct view direction */
 		view_vec = view_pt - plyr.pos;
 		pp::Matrix rot_mat;
-		rot_mat.makeRotation( PLAYER_ANGLE_IN_CAMERA, 'x' );
+		rot_mat.makeRotation( PLAYER_ANGLE_IN_CAMERA, ppogl::AXIS_X );
 		view_dir = -1.0*rot_mat.transformVector( view_vec );
 
         break;
