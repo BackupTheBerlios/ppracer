@@ -390,7 +390,7 @@ CourseRenderer::drawSky(const ppogl::Vec3d& pos)
 }
 
 void
-CourseRenderer::drawFogPlane(const ppogl::Vec3d& pos)
+CourseRenderer::drawFogPlane()
 {
     if(fogPlane.isEnabled()==false){
 		return;
@@ -552,7 +552,7 @@ CourseRenderer::render(const ppogl::Vec3d& pos)
 	drawSky(pos);
     
 	//draw fog
-	drawFogPlane(pos);
+	drawFogPlane();
 
     set_gl_options( COURSE );
 

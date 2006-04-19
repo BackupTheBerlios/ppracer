@@ -46,7 +46,7 @@ protected:
 	void setupTexGen();
 
 	void drawSky(const ppogl::Vec3d& pos);
-	void drawFogPlane(const ppogl::Vec3d& pos);
+	void drawFogPlane();
 	void drawElements(const ppogl::Vec3d& pos);
 
 	void updateQuadtree(const ppogl::Vec3d& view_pos);
