@@ -39,10 +39,10 @@ public:
 		values[1]=0.0;
 	}
 
-	Vec2d(const double x, const double y)
+	Vec2d(const double _x, const double _y)
 	{
-		values[0]=x;
-		values[1]=y;
+		values[0]=_x;
+		values[1]=_y;
 	}
 
 	Vec2d(const ppogl::Vec2i& vec)

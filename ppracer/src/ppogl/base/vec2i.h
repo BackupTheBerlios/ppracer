@@ -37,10 +37,10 @@ public:
 		values[1]=0;
 	}
 
-	Vec2i(const int x, const int y)
+	Vec2i(const int _x, const int _y)
 	{
-		values[0]=x;
-		values[1]=y;
+		values[0]=_x;
+		values[1]=_y;
 	}	
 
 	int& x(){return values[0];}

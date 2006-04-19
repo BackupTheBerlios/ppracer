@@ -37,12 +37,12 @@ public:
 		values[3]=0.0f;
 	}
 	
-	Vec4f(const float x, const float y, const float z, const float w)
+	Vec4f(const float _x, const float _y, const float _z, const float _w)
 	{
-		values[0]=x;
-		values[1]=y;
-		values[2]=z;
-		values[3]=w;	
+		values[0]=_x;
+		values[1]=_y;
+		values[2]=_z;
+		values[3]=_w;	
 	}
 
 	float& x(){return values[0];}

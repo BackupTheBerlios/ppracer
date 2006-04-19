@@ -39,10 +39,10 @@ static const double ode45_error_mat[] =
 { 71./57600., 0., -71./16695., 71./1920., -17253./339200., 22./525., -1./40.};
 
 void
-ODESolver::initODEData(double init_val, double h)
+ODESolver::initODEData(double _init_val, double _h)
 {
-    this->init_val = init_val;
-    this->h = h;
+    init_val = _init_val;
+    h = _h;
 }
 
 double

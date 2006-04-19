@@ -78,9 +78,9 @@ GameMode::~GameMode()
 }
 
 void
-GameMode::setMode(GameMode::Mode mode) 
+GameMode::setMode(GameMode::Mode _mode) 
 {
-    new_mode = mode;
+    new_mode = _mode;
 }
 
 void

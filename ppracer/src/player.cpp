@@ -32,13 +32,13 @@ PlayerCourseData::PlayerCourseData()
 }
 
 bool
-PlayerCourseData::update(double time,int herring,int score, bool won)
+PlayerCourseData::update(double _time, int _herring, int _score, bool _won)
 {
-	this->won=won;
-	if(this->score<score){
-		this->time=time;
-		this->herring=herring;
-		this->score=score;
+	won=_won;
+	if(score<_score){
+		time=_time;
+		herring=_herring;
+		score=_score;
 		return true;
 	}
 	return false;
@@ -79,9 +79,9 @@ PlayerEventData::updateCupCourseData(std::string cup,
 					double time, 
 					int herring,
 					int score,
-					bool won)
+					bool _won)
 {
-	return cups[cup].updateCupCourseData(course,time,herring,score,won);
+	return cups[cup].updateCupCourseData(course,time,herring,score,_won);
 }
 
 void
@@ -150,9 +150,9 @@ PlayerCupData::updateCupCourseData(std::string course,
 					double time, 
 					int herring,
 					int score,
-					bool won)
+					bool _won)
 {
-	return courses[course].update(time,herring,score,won);
+	return courses[course].update(time,herring,score,_won);
 }
 
 void
@@ -240,11 +240,11 @@ Player::updateCupCourseData(std::string event,
 					std::string cup,
 					std::string course, 
 					double time, 
-					int herring,
-					int score,
-					bool won)
+					int _herring,
+					int _score,
+					bool _won)
 {
-	return events[event].updateCupCourseData(cup,course,time,herring,score,won);
+	return events[event].updateCupCourseData(cup,course,time,_herring,_score,_won);
 }
 
 void
@@ -294,9 +294,9 @@ Player::getOpenCourseData(std::string course, PlayerCourseData& data)
 
 bool
 Player::updateOpenCourseData(std::string course, double time, 
-								int herring, int score)
+								int _herring, int _score)
 {
-	return courses[course].update(time,herring,score);
+	return courses[course].update(time,_herring,_score);
 }
 
 bool
@@ -316,13 +316,14 @@ Player::saveData()
 	sfile << 1 << std::endl;
 	sfile << courses.size() << std::endl;
 	
-	std::map<std::string,PlayerCourseData>::iterator it;
-	
-	for(it=courses.begin(); it!=courses.end(); it++){
-		sfile << (*it).first << std::endl;
-		sfile << (*it).second.time << std::endl;
-		sfile << (*it).second.herring << std::endl;
-		sfile << (*it).second.score << std::endl;
+	{
+		std::map<std::string,PlayerCourseData>::iterator it;
+		for(it=courses.begin(); it!=courses.end(); it++){
+			sfile << (*it).first << std::endl;
+			sfile << (*it).second.time << std::endl;
+			sfile << (*it).second.herring << std::endl;
+			sfile << (*it).second.score << std::endl;
+		}
 	}
 	
 	
@@ -367,15 +368,15 @@ Player::loadData()
 	
 	for (int i=0; i<numcourses ;i++){
 		double time;
-		int herring;
-		int score;
+		int _herring;
+		int _score;
 		sfile.get();	
 		sfile.getline(buff,256);
-		sfile >> time >> herring >> score;
+		sfile >> time >> _herring >> _score;
 		PlayerCourseData& data = courses[buff];
 		data.time=time;
-		data.herring=herring;
-		data.score=score;		
+		data.herring=_herring;
+		data.score=_score;		
 	}
 	
 	int numevents;

@@ -108,10 +108,10 @@ UIManager::remove(ppogl::Widget *widget)
 }
 
 void
-UIManager::mouseEvent(const ppogl::Vec2i& position)
+UIManager::mouseEvent(const ppogl::Vec2i& _position)
 /// update mouse position and the focus state of the widgets
 {
-	m_cursorPosition = position;
+	m_cursorPosition = _position;
 	
 	std::list<ppogl::Widget*>::iterator it;
 	for(it=m_widgets.begin();it!=m_widgets.end();it++){

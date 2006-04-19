@@ -358,15 +358,15 @@ ModelAC::loadObject(FILE *f, const std::string& filename)
 			ma_palette[m_numPalette++] = m;
 	    }
 	} else if (type=="OBJECT"){
-		char type[20];
+		char _type[20];
 		char str[20];
 		ob = new ModelObject;
 
-		sscanf(ma_buff, "%s %s", str, type);
+		sscanf(ma_buff, "%s %s", str, _type);
 		
-		std::string t(type);
+		std::string _t(_type);
 		
-		ob->type = stringToObjectType(t);
+		ob->type = stringToObjectType(_t);
 	} else if (type=="data"){
 		if (getTokens(ma_buff, &m_tokc, ma_tokv) != 2){
 			PP_WARNING("Expected 'data <number>' at line " << m_line << " : " << filename);

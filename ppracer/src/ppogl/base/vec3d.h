@@ -38,11 +38,11 @@ public:
 		values[2]=0.0;
 	}
 	
-	Vec3d(const double x, const double y, const double z)
+	Vec3d(const double _x, const double _y, const double _z)
 	{
-		values[0]=x;
-		values[1]=y;
-		values[2]=z;	
+		values[0]=_x;
+		values[1]=_y;
+		values[2]=_z;	
 	}	
 
 	double& x(){return values[0];}

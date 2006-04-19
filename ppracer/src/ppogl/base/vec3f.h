@@ -37,11 +37,11 @@ public:
 		values[2]=0.0f;
 	}
 
-	Vec3f(const float x, const float y, const float z)
+	Vec3f(const float _x, const float _y, const float _z)
 	{
-		values[0]=x;
-		values[1]=y;
-		values[2]=z;	
+		values[0]=_x;
+		values[1]=_y;
+		values[2]=_z;	
 	}
 
 	float& x(){return values[0];}

@@ -267,11 +267,11 @@ HUD::time(const int i)
 }
 
 void
-HUD::speed(const int i, const double speed)
+HUD::speed(const int i, const double _speed)
 {
 	if(m_element[i].font){
 		char string[16];
-		snprintf(string, 16, m_element[i].string.c_str(), speed );
+		snprintf(string, 16, m_element[i].string.c_str(), _speed );
 		
 		ppogl::Font::utf8ToUnicode(m_element[i].u_string,string);
 		const int width = int(m_element[i].font->advance(m_element[i].u_string));
@@ -358,7 +358,7 @@ HUD::initGauge()
 }
 
 void
-HUD::gauge(const int i, const double speed, const double energy)
+HUD::gauge(const int i, const double _speed, const double energy)
 {
 	const GLfloat xplane[4] = { 1.0/m_element[i].size, 0.0, 0.0, 0.0 };
     const GLfloat yplane[4] = { 0.0, 1.0/m_element[i].size, 0.0, 0.0 };
@@ -403,30 +403,30 @@ HUD::gauge(const int i, const double speed, const double energy)
 	// Calculate the fraction of the speed bar to fill
 	double speedbar_frac = 0.0;
 
-	if ( speed > SPEEDBAR_GREEN_MAX_SPEED ) {
+	if ( _speed > SPEEDBAR_GREEN_MAX_SPEED ) {
 	    speedbar_frac = SPEEDBAR_GREEN_FRACTION;
 	    
-	    if ( speed > SPEEDBAR_YELLOW_MAX_SPEED ) {
+	    if ( _speed > SPEEDBAR_YELLOW_MAX_SPEED ) {
 		speedbar_frac += SPEEDBAR_YELLOW_FRACTION;
 		
-		if ( speed > SPEEDBAR_RED_MAX_SPEED ) {
+		if ( _speed > SPEEDBAR_RED_MAX_SPEED ) {
 		    speedbar_frac += SPEEDBAR_RED_FRACTION;
 		} else {
 		    speedbar_frac +=
-			( speed - SPEEDBAR_YELLOW_MAX_SPEED ) /
+			( _speed - SPEEDBAR_YELLOW_MAX_SPEED ) /
 			( SPEEDBAR_RED_MAX_SPEED - SPEEDBAR_YELLOW_MAX_SPEED ) *
 			SPEEDBAR_RED_FRACTION;
 		}
 
 	    } else {
 		speedbar_frac += 
-		    ( speed - SPEEDBAR_GREEN_MAX_SPEED ) /
+		    ( _speed - SPEEDBAR_GREEN_MAX_SPEED ) /
 		    ( SPEEDBAR_YELLOW_MAX_SPEED - SPEEDBAR_GREEN_MAX_SPEED ) *
 		    SPEEDBAR_YELLOW_FRACTION;
 	    }
 	    
 	} else {
-	    speedbar_frac +=  speed/SPEEDBAR_GREEN_MAX_SPEED * 
+	    speedbar_frac +=  _speed/SPEEDBAR_GREEN_MAX_SPEED * 
 		SPEEDBAR_GREEN_FRACTION;
 	}
 

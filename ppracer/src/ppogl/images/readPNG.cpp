@@ -59,11 +59,11 @@ ReadPNG::ReadPNG(const std::string& filename)
 	
 	png_read_info(png_ptr, info_ptr);
 		
-	png_uint_32 width, height;
+	png_uint_32 _width, _height;
 	int bit_depth, color_type, interlace_type;
 	
 	
-	png_get_IHDR(png_ptr, info_ptr, &width, &height,
+	png_get_IHDR(png_ptr, info_ptr, &_width, &_height,
        &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	
 	if(bit_depth == 16)
@@ -74,7 +74,7 @@ ReadPNG::ReadPNG(const std::string& filename)
 	{
 		png_set_expand(png_ptr);
 		png_read_update_info(png_ptr, info_ptr);
-		png_get_IHDR(png_ptr, info_ptr, &width, &height,
+		png_get_IHDR(png_ptr, info_ptr, &_width, &_height,
 			   &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	}
 	
@@ -82,12 +82,12 @@ ReadPNG::ReadPNG(const std::string& filename)
 		color_type == PNG_COLOR_TYPE_GRAY_ALPHA){
 		png_set_gray_to_rgb(png_ptr);
 		png_read_update_info(png_ptr, info_ptr);
-		png_get_IHDR(png_ptr, info_ptr, &width, &height,
+		png_get_IHDR(png_ptr, info_ptr, &_width, &_height,
 			   &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	}
 		
-	this->width=width;
-	this->height=height;
+	this->width=_width;
+	this->height=_height;
 	
 	if(color_type==PNG_COLOR_TYPE_RGB){
 		depth=3;
@@ -105,17 +105,17 @@ ReadPNG::ReadPNG(const std::string& filename)
 }
 
 void
-ReadPNG::loadData(png_structp png_ptr, unsigned char depth)
+ReadPNG::loadData(png_structp png_ptr, unsigned char _depth)
 /// loads rgb or rgba into the data buffer 
 {
 	png_bytep *row_pointers = new png_bytep[height];
 
 	// geht lager array to ensure nothing strange happens if 
 	// image has invalid boundaries for textures
-	data = new unsigned char[width*height*depth + 4*depth];
+	data = new unsigned char[width*height*_depth + 4*_depth];
 	
 	for(unsigned int i=0; i<height; i++){
-		row_pointers[height-1-i]=data + i*width*depth;
+		row_pointers[height-1-i]=data + i*width*_depth;
 	}
 	
 	png_read_image(png_ptr, row_pointers);
