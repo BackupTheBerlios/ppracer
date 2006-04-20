@@ -57,11 +57,10 @@
 #define MAX_ANGLE 80
 
 TerrainTex::TerrainTex()
- : type(1),
-   value(0),
-   friction(0.5),
+ : friction(0.5),
    compression(0.1),
-   wheight(150),
+   value(0),
+   wheight(150), 
    count(0),
    soundactive(false)
 {
@@ -310,7 +309,7 @@ Course::cleanup()
 }
 
 static inline int
-intensity_to_terrain(const int intensity)
+intensity_to_terrain(const unsigned int intensity)
 {
 	for(unsigned int i=0; i<Course::numTerrains; i++) {
 		if (Course::terrainTexture[i].value == intensity){
@@ -321,7 +320,6 @@ intensity_to_terrain(const int intensity)
 	Course::terrainTexture[0].count++;
 	return 0;
 }
-
 
 static int
 course_dim_cb(ppogl::Script *vm) 
@@ -502,15 +500,6 @@ terrain_tex_cb(ppogl::Script *vm)
 		PP_WARNING("pptheme.terrain_tex: Max number of terrains reached");
 		return vm->defaultError();
 	}
-	
-	// fill in values not specified with defaults
-	Course::terrainTexture[Course::numTerrains].type=1;
-	Course::terrainTexture[Course::numTerrains].value=0;
-	Course::terrainTexture[Course::numTerrains].friction=0.5;
-	Course::terrainTexture[Course::numTerrains].compression=0.1;
-	Course::terrainTexture[Course::numTerrains].soundactive=false;
-	Course::terrainTexture[Course::numTerrains].wheight=150;
-	Course::terrainTexture[Course::numTerrains].count=0;
 	
 	std::string name = vm->getStringFromTable("name");
 	std::string filename = vm->getStringFromTable("filename");

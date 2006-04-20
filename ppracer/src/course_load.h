@@ -35,17 +35,16 @@ class TerrainTex
 public:
 	TerrainTex();
 	   
-    int type;
-	int value;
-	double friction;
-	double compression;
+	float friction;
+	float compression;
 	ppogl::TextureRef texture;
 	ppogl::TextureRef particles;
 	ppogl::TextureRef envmap;
 	std::string sound;
 	struct { ppogl::TextureRef head,mark,tail; }trackmark;
-	int wheight;
-	int count;
+	unsigned int value;
+	unsigned int wheight;
+	unsigned int count;
 	bool soundactive;
 };
 
