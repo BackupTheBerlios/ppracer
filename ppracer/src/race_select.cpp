@@ -274,7 +274,7 @@ RaceSelect::updateData()
 }
 
 bool
-RaceSelect::keyReleaseEvent(SDLKey key)
+RaceSelect::keyPressEvent(SDLKey key)
 {
 	switch (key){
 		case SDLK_UP:

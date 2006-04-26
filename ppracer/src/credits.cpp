@@ -213,7 +213,7 @@ Credits::mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position)
 }
 
 bool
-Credits::keyReleaseEvent(SDLKey key)
+Credits::keyPressEvent(SDLKey key)
 {
 	setMode(GAME_TYPE_SELECT);
 	return true;

@@ -42,7 +42,7 @@ public:
 
 	void loop(float timestep);
 	bool mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position);
-	bool keyReleaseEvent(SDLKey key);
+	bool keyPressEvent(SDLKey key);
 };
 
 #endif // _CREDITS_H_

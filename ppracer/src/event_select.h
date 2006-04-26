@@ -60,7 +60,7 @@ public:
 	void back();
 	void apply();
 	
-	bool keyReleaseEvent(SDLKey key);
+	bool keyPressEvent(SDLKey key);
 };
 
 #endif // _EVENT_SELECT_H_

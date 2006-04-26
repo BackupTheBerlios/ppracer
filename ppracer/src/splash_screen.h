@@ -38,7 +38,7 @@ public:
 
 	void loop(float timeStep);	
 	bool mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position);
-	bool keyReleaseEvent(SDLKey key);
+	bool keyPressEvent(SDLKey key);
 };
 
 #endif //_SPLASH_SCREEN_H_

@@ -81,7 +81,7 @@ SplashScreen::mouseButtonReleaseEvent(int button, const ppogl::Vec2i& position)
 }
 
 bool
-SplashScreen::keyReleaseEvent(SDLKey key)
+SplashScreen::keyPressEvent(SDLKey key)
 {
 	setMode( GAME_TYPE_SELECT );
 	return true;

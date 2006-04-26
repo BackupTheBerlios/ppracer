@@ -1,6 +1,11 @@
 
 === ppracer 0.5 beta ===
 
+2006-04-26  Volker Stroebel <volker@planetpenguin.de>
+	* src/*
+	Use keyPressEvent in the UI to partially fix several 
+	keyboard problems
+
 2006-04-19  Volker Stroebel <volker@planetpenguin.de>
 	* src/ppogl/base/defs.h src/*
 	added ppogl::Axis enum

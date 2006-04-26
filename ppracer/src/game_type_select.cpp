@@ -80,7 +80,7 @@ GameTypeSelect::loop(float timeStep)
 }
 
 bool
-GameTypeSelect::keyReleaseEvent(SDLKey key)
+GameTypeSelect::keyPressEvent(SDLKey key)
 {
 	switch (key){
 		case 'q':

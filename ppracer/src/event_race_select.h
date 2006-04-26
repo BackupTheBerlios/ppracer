@@ -77,7 +77,7 @@ public:
 	void back();
 	void updateData();
 
-	bool keyReleaseEvent(SDLKey key);
+	bool keyPressEvent(SDLKey key);
 };
 
 #endif // _EVENT_RACE_SELECT_H_
