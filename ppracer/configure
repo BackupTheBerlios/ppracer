@@ -869,6 +869,7 @@ Optional Features:
   --enable-debug          Produce an executable with debugging symbols
   --enable-pedantic       Enable -pedantic (and -ansi for C) when compiling
   --enable-profile        Produce a profiled executable
+  --enable-openal         Use OpenAL for
   --disable-sdltest       Do not try to compile and run a test SDL program
        --disable-freetypetest  Do not try to compile and run a test FreeType
                           program
@@ -6501,6 +6502,54 @@ fi
 
 
 
+PKG_CONFIG="pkg-config"
+
+
+
+# Check whether --enable-openal or --disable-openal was given.
+if test "${enable_openal+set}" = set; then
+  enableval="$enable_openal"
+
+fi;
+
+if test "x$enable_openal" = "xyes" ; then
+	echo "$as_me:$LINENO: checking for OpenAL" >&5
+echo $ECHO_N "checking for OpenAL... $ECHO_C" >&6
+    if $PKG_CONFIG --exists openal ; then
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+		OPENAL_VERSION=`$PKG_CONFIG --modversion openal`
+		OPENAL_CFLAGS=`$PKG_CONFIG --cflags openal`
+		OPENAL_LIBS=`$PKG_CONFIG --libs openal`
+
+	else
+		echo "*** OpenAL not found.  Configuring without audio support."
+	fi
+
+	echo "$as_me:$LINENO: checking for FreeALUT" >&5
+echo $ECHO_N "checking for FreeALUT... $ECHO_C" >&6
+	if $PKG_CONFIG --exists freealut ; then
+       	echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+		FREEALUT_VERSION=`$PKG_CONFIG --modversion freealut`
+		FREEALUT_CFLAGS=`$PKG_CONFIG --cflags freealut`
+		FREEALUT_LIBS=`$PKG_CONFIG --libs freealut`
+
+		if test "x$OPENAL_VERSION" != "x" ; then
+			TR_CFLAGS="$TR_CFLAGS $OPENAL_CFLAGS $FREEALUT_CFLAGS"
+			TR_CXXFLAGS="$TR_CXXFLAGS $OPENAL_CFLAGS $FREEALUT_CFLAGS"
+			TR_CPPFLAGS="$TR_CPPFLAGS  -DUSE_OPENAL=1"
+			TR_LIBS="$TR_LIBS $OPENAL_LIBS $FREEALUT_LIBS"
+
+			use_openal="yes";
+		fi
+	else
+		echo "*** FreeALUT not found.  Configuring without audio support."
+	fi
+else
+	enable_openal = "no"
+fi
+
 
 #SDL_CONFIG="sdl-config"
 
@@ -6924,7 +6973,8 @@ done
 	    echo "*** Configuring without joystick support."
 	fi
 
-		echo "$as_me:$LINENO: checking for Mix_OpenAudio in -lSDL_mixer" >&5
+	if test "x$enable_openal" = "xno" ; then
+				echo "$as_me:$LINENO: checking for Mix_OpenAudio in -lSDL_mixer" >&5
 echo $ECHO_N "checking for Mix_OpenAudio in -lSDL_mixer... $ECHO_C" >&6
 if test "${ac_cv_lib_SDL_mixer_Mix_OpenAudio+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6994,11 +7044,12 @@ else
 fi
 
 
-	if test "x$have_SDL_mixer" = "xyes" ; then
-	    TR_CPPFLAGS="$TR_CPPFLAGS -DHAVE_SDL_MIXER=1"
-	    TR_LIBS="$TR_LIBS -lSDL_mixer"
-	else
-	    echo "*** SDL_mixer not found.  Configuring without audio support."
+		if test "x$have_SDL_mixer" = "xyes" ; then
+	    	TR_CPPFLAGS="$TR_CPPFLAGS -DUSE_SDL_MIXER=1"
+	    	TR_LIBS="$TR_LIBS -lSDL_mixer"
+		else
+	    	echo "*** SDL_mixer not found.  Configuring without audio support."
+		fi
 	fi
 
 	LIBS="$saved_LIBS"
@@ -8165,9 +8216,6 @@ CPPFLAGS="$saved_CPPFLAGS"
 TR_CPPFLAGS="$TR_CPPFLAGS $GL_CPPFLAGS"
 
 
-
-PKG_CONFIG="pkg-config"
-
   if test x$with_libpng != xno && test -z "$LIBPNG"; then
     echo "$as_me:$LINENO: checking for libpng12" >&5
 echo $ECHO_N "checking for libpng12... $ECHO_C" >&6
@@ -8784,6 +8832,7 @@ CPPFLAGS="$CPPFLAGS $TR_CPPFLAGS"
 CFLAGS="$CFLAGS $TR_CFLAGS"
 CXXFLAGS="$CXXFLAGS $TR_CXXFLAGS $PNG_CXXFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $TR_LIBS $PNG_LIBS $FT2_LIBS"
+
 
 
                                                                       ac_config_files="$ac_config_files Makefile src/Makefile src/squirrel/Makefile src/sqstdlib/Makefile src/ppogl/Makefile data/Makefile data/config.nut"
@@ -10249,10 +10298,29 @@ echo libpng12 ........... $PNG_VERSION
 
 echo SDL ................ $SDL_VERSION
 
-if test "x$have_SDL_mixer" = "xno" ; then
-echo SDL_Mixer........... no
+if test "x$enable_openal" = "xyes" ; then
+	if test "x$OPENAL_VERSION" != "x" ; then
+		echo OpenAL ............. $OPENAL_VERSION
+	else
+		echo OpenAL ............. no
+	fi
+
+	if test "x$FREEALUT_VERSION" != "x" ; then
+		echo FreeALUT ........... $FREEALUT_VERSION
+	else
+		echo FreeALUT ........... no
+	fi
+
+	if test "x$use_openal" != "xyes" ; then
+		echo "WARNING: Audio support is disabled"
+	fi
 else
-echo SDL_Mixer........... yes
+	if test "x$have_SDL_mixer" = "xno" ; then
+		echo SDL_Mixer........... no
+		echo "WARNING: Audio support is disabled"
+	else
+		echo SDL_Mixer........... yes
+	fi
 fi
 
 if test "x$have_SDL_joystick" = "xno" ; then

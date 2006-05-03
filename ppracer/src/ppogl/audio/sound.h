@@ -22,13 +22,12 @@
 
 #include "../base/refptr.h"
 
-#ifdef HAVE_SDL_MIXER
-	#include <SDL_mixer.h>
-#endif
+
+#ifdef USE_SDL_MIXER
+	
+#include <SDL_mixer.h>
 
 namespace ppogl{
-
-#ifdef HAVE_SDL_MIXER
 
 ///A class for playing a sound
 class Sound : public RefObject
@@ -53,8 +52,49 @@ public:
 
 typedef RefPtr<Sound> SoundRef;
 
+} //namepsace ppogl
+
 #else
-// stubs used if there is no SDL_mixer
+#ifdef USE_OPENAL
+
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
+namespace ppogl{
+	
+///A class for playing a sound
+class Sound : public RefObject
+{
+private:
+	///The buffer for this sound
+	ALuint m_buffer;
+
+	///The source for this sound
+	ALuint m_source;
+
+	///The number of channels this sound uses
+	int m_channel;
+
+	///The number of loops the current operation performs
+	int m_counter;
+
+public:	
+	Sound(const std::string &filename, bool loop);
+	~Sound();
+
+	void start(int loops=-1);
+	void stop(bool hard=false);
+};
+
+typedef RefPtr<Sound> SoundRef;
+
+} // namespace pp
+
+#else
+// stubs used if there is no audio support
+
+namespace ppogl{
 
 class Sound : public RefObject
 {
@@ -68,8 +108,9 @@ public:
 
 typedef RefPtr<Sound> SoundRef;
 
-#endif // HAVE_SDL_MIXER
-
 } //namepsace ppogl
+
+#endif // USE_OPENAL
+#endif // USE_SDL_MIXER
 
 #endif // _PPOGL_SOUND_H_

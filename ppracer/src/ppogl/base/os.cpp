@@ -212,5 +212,40 @@ getUserDir()
 	return userDir;
 }
 
+File::File(const std::string& filename)
+ : m_data(NULL),
+   m_size(0)
+/// Construct class and loads content of the file
+{
+	PP_REQUIRE(filename.empty() == false, "Filename must not be empty");
+	
+	struct stat fileinfo;
+	FILE* fz ;
+	if(isFile(filename, true) &&
+		stat(filename.c_str() , &fileinfo) != -1 &&
+		(fz = fopen(filename.c_str(), "rb"))!=NULL 
+	){
+		m_size = fileinfo.st_size;
+		PP_ASSERT(m_size>0,"File size must be > 0: " << filename);
+
+		m_data = new char[m_size];
+		PP_CHECK_ALLOC(m_data);
+		
+		fread(m_data, 1, m_size, fz);
+		fclose(fz);
+		
+		PP_ENSURE(m_data !=NULL, "Reading file failed: " << filename);
+	}else{
+		PP_WARNING("Unable to load file: " << filename);
+	}
+}
+
+File::~File()
+{
+	if(m_data!=NULL){
+		delete [] m_data;
+	}
+}
+
 } // namespace os
 } // namespace ppogl

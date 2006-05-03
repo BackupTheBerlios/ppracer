@@ -19,7 +19,7 @@
 
 #include "music.h"
 
-#ifdef HAVE_SDL_MIXER
+#ifdef USE_SDL_MIXER
 
 namespace ppogl{
 	
@@ -78,4 +78,94 @@ Music::stop()
 
 } //namepsace ppogl
 
-#endif // HAVE_SDL_MIXER
+#else
+#ifdef USE_OPENAL
+
+#include "vorbis.h"
+
+/// Position of the source sound
+static ALfloat s_sourcePos[] = { 0.0, 0.0, 0.0 };
+
+/// Velocity of the source sound
+static ALfloat s_sourceVel[] = { 0.0, 0.0, 0.0 };
+
+namespace ppogl{
+	
+Music::Music(const std::string &filename)
+ : m_buffer(0),
+   m_source(0),
+   m_playing(false)
+{
+	PP_REQUIRE(filename.empty()==false, "Cannot create music from empty filename");
+	
+	ALboolean loop = AL_TRUE;
+	
+	m_buffer = ppogl::Vorbis::CreateBufferFromFile(filename.c_str());
+	
+	if(m_buffer == AL_NONE){
+		PP_WARNING("Unable to load sound1: " << filename);
+		return;
+	}
+	
+	alGenSources(1, &m_source);
+
+	if(alGetError() != AL_NO_ERROR){
+		PP_WARNING("Unable to load sound: " << filename);
+		return;
+	}
+
+	alSourcei(m_source, AL_BUFFER, m_buffer);
+	alSourcef(m_source, AL_PITCH, 1.0);
+	alSourcef(m_source, AL_GAIN, 1.0);
+	alSourcefv(m_source, AL_POSITION, s_sourcePos);
+	alSourcefv(m_source, AL_VELOCITY, s_sourceVel);
+	alSourcei(m_source, AL_LOOPING,  loop);
+
+	if(alGetError() != AL_NO_ERROR){
+		PP_WARNING("Unable to load sound: " << filename << ": "<< alGetString(alGetError()) );
+		return;
+	}
+}
+
+Music::~Music()
+{
+	stop();
+	if(m_buffer){
+		alDeleteBuffers(1, &m_buffer);
+	}
+	
+	if(m_source){
+		alDeleteSources(1, &m_source);
+	}
+}
+
+bool
+Music::start()
+///start playing music
+{
+	if(!m_playing){
+		alSourcePlay(m_source);
+		m_playing=true;
+		return true;
+	}else{
+		return false;
+	}
+}
+	
+bool
+Music::stop()
+///stop playing music
+{
+	if(m_playing){	
+		alSourceStop(m_source);
+		m_playing=false;
+		return true;
+	}else{
+		return false;
+	}
+}
+
+} //namepsace ppogl
+
+#endif // USE_OPENAL
+#endif // USE_SDL_MIXER

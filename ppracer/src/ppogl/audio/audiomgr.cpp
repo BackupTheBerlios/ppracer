@@ -19,15 +19,14 @@
 
 #include "audiomgr.h"
 
-#ifdef HAVE_SDL_MIXER
-	#include "SDL_mixer.h"
-#endif // HAVE_SDL_MIXER
+
+#ifdef USE_SDL_MIXER
+
+#include "SDL_mixer.h"
 
 namespace ppogl{
 
 PPOGL_SINGLETON(AudioMgr);
-	
-#ifdef HAVE_SDL_MIXER
 	
 AudioMgr::AudioMgr()
  : m_initialized(false),
@@ -408,6 +407,385 @@ AudioMgr::sqBindSound(ppogl::Script *vm)
 	return 0;
 }
 
-#endif // HAVE_SDL_MIXER
+} //namepsace ppogl
+
+#else
+#ifdef USE_OPENAL
+
+
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
+// Position of the Listener.
+ALfloat s_listenerPos[] = { 0.0, 0.0, 0.0 };
+
+// Velocity of the Listener.
+ALfloat s_listenerVel[] = { 0.0, 0.0, 0.0 };
+
+// Orientation of the Listener. (first 3 elements are "at", second 3 are "up")
+// Also note that these should be units of '1'.
+ALfloat s_listenerOri[] = { 0.0, 0.0, -1.0,  0.0, 1.0, 0.0 };
+
+namespace ppogl{
+
+PPOGL_SINGLETON(AudioMgr);
+		
+AudioMgr::AudioMgr()
+ : m_initialized(false),
+   m_soundEnabled(true),
+   m_musicEnabled(true)
+{
+}
+
+AudioMgr::~AudioMgr()
+{
+	//free music and sounds before alutExit() is called
+	m_musicBindings.clear();
+	m_soundBindings.clear();
+		
+	if(m_initialized){
+		alutExit();
+	}
+}
+
+bool
+AudioMgr::init(	int freq, Format format,
+				bool stereo, int buffers)
+{
+	if(m_initialized){
+		PP_WARNING("Trying to initialize AudioMgr twice");
+		return false;
+	}
+	
+	alutInit(NULL, 0);
+	alGetError();
+		
+	alListenerfv(AL_POSITION, s_listenerPos);
+	alListenerfv(AL_VELOCITY, s_listenerVel);
+	alListenerfv(AL_ORIENTATION, s_listenerOri);
+	
+	m_initialized=true;
+	return true;
+}
+
+void
+AudioMgr::enableSound(bool enable)
+{
+	if(!enable){
+		stopAllSounds();
+	}	
+	m_soundEnabled=enable;
+}
+
+void
+AudioMgr::enableMusic(bool enable)
+{
+	if(!enable){
+		stopAllMusic();
+	}	
+	m_musicEnabled=enable;
+}
+
+void
+AudioMgr::setMusicVolume(int volume)
+{
+	if(!m_initialized) return;
+	
+	/*
+	if(volume<0) volume=0;
+	else if(volume>100) volume=100;
+	volume = MIX_MAX_VOLUME * volume/100;
+	
+	Mix_VolumeMusic(volume);
+	*/
+}
+
+void
+AudioMgr::setSoundVolume(int volume)
+{
+	if(!m_initialized) return;
+	
+	/*
+	if(volume<0) volume=0;
+	else if(volume>100) volume=100;
+	volume = MIX_MAX_VOLUME * volume/100;
+	
+	Mix_Volume(-1,volume);
+	*/
+}
+
+bool
+AudioMgr::loadMusic(const std::string &binding, const std::string &filename)
+{
+	if(!m_initialized) return true;
+	
+	PP_LOG(LogAudio,"Loading music: " << binding << " -> " << filename);
+	
+	MusicRef music = new Music(filename);
+	
+	m_musicBindings[binding]=music;
+	
+	return true;
+}
+
+bool
+AudioMgr::bindMusic(const std::string &binding, const std::string &name)
+{
+	if(!m_initialized) return true;
+	
+	PP_LOG(LogAudio,"Binding music: " << binding << " -> " << name);
+
+	std::map<std::string, MusicRef>::iterator it;
+
+	if((it=m_musicBindings.find(name))!=m_musicBindings.end()){
+		m_musicBindings[binding]=(*it).second;
+		return true;
+	}else{
+		PP_WARNING("Couldn't find music for binding: " << name);
+		return false;
+	}	
+}
+	
+bool
+AudioMgr::unbindMusic(const std::string &binding)
+{
+	if(!m_initialized) return true;
+
+	PP_LOG(LogAudio,"Unbinding music: " << binding );
+	
+	std::map<std::string, MusicRef>::iterator it;
+	
+	it = m_musicBindings.find(binding);
+	if (it != m_musicBindings.end()){
+		m_musicBindings.erase(it);
+		return true;
+	}else{
+		PP_WARNING("Cannot find for binding: " << binding);
+		return false;
+	}	
+}
+
+bool
+AudioMgr::playMusic(const std::string &binding)
+{
+	if(!m_initialized || !m_musicEnabled) return true;
+
+	
+	std::map<std::string, MusicRef>::iterator it;
+
+	if((it=m_musicBindings.find(binding))!=m_musicBindings.end()){
+		std::map<std::string, MusicRef>::iterator it2;
+		for(it2=m_musicBindings.begin();it2!=m_musicBindings.end();it2++){
+			if((*it).second!=(*it2).second) (*it2).second->stop();
+		}
+		(*it).second->start();
+		return true;
+	}else{
+		PP_WARNING("Couldn't find music for binding: " << binding);
+		return false;
+	}
+}
+
+bool 
+AudioMgr::stopMusic(const std::string &binding)
+{
+	if(!m_initialized || !m_musicEnabled) return true;
+	
+	std::map<std::string, MusicRef>::iterator it;
+
+	if((it=m_musicBindings.find(binding))!=m_musicBindings.end()){
+		(*it).second->stop();
+		return true;
+	}else{
+		PP_WARNING("Couldn't find music for binding: " << binding);
+		return false;
+	}	
+}
+
+void
+AudioMgr::stopAllMusic()
+{
+	if(!m_initialized) return;
+	
+	std::map<std::string, MusicRef>::iterator it;
+	
+	for(it=m_musicBindings.begin(); it!=m_musicBindings.end(); it++){
+		(*it).second->stop();		
+	}
+}
+
+void
+AudioMgr::pauseMusic(bool status)
+{
+	if(!m_initialized && !m_musicEnabled) return;
+	
+	/*
+	if(status){
+		Mix_PauseMusic();
+	}else{
+		Mix_ResumeMusic();
+	}
+	*/
+	PP_WARNING("AudioMgr::pauseMusic: not implemented");
+}
+
+bool
+AudioMgr::loadSound(const std::string &binding, const std::string &filename, bool loop)
+{
+	if(!m_initialized) return true;
+
+	PP_LOG(LogAudio,"Loading sound: " << binding << " -> " << filename);
+	
+	SoundRef sound =
+		new Sound(filename, loop);
+	
+	m_soundBindings[binding]=sound;
+	
+	return true;
+}
+
+bool
+AudioMgr::bindSound(const std::string &binding, const std::string &name)
+{
+	if(!m_initialized) return true;
+	
+	PP_LOG(LogAudio,"Binding sound: " << binding << " -> " << name);
+	
+	std::map<std::string, SoundRef>::iterator it;
+
+	if((it=m_soundBindings.find(name))!=m_soundBindings.end()){
+		m_soundBindings[binding]=(*it).second;
+		return true;
+	}else{
+		PP_WARNING("Couldn't find sound for binding: " << name);
+		return false;
+	}	
+}
+	
+bool
+AudioMgr::unbindSound(const std::string &binding)
+{
+	if(!m_initialized) return true;
+	
+	PP_LOG(LogAudio,"Unbinding sound: " << binding);
+	
+	std::map<std::string, SoundRef>::iterator it;
+	
+	it = m_soundBindings.find(binding);
+	if (it != m_soundBindings.end()){
+		m_soundBindings.erase(it);
+		return true;
+	}else{
+		PP_WARNING("Cannot find sound for binding: " << binding);
+		return false;
+	}	
+}
+
+bool
+AudioMgr::playSound(const std::string &binding, int loops)
+{
+	if(!m_initialized || !m_soundEnabled) return true;
+	
+	std::map<std::string, SoundRef>::iterator it;
+
+	if((it=m_soundBindings.find(binding))!=m_soundBindings.end()){
+		(*it).second->start(loops);
+		return true;
+	}else{
+		PP_WARNING("Couldn't find sound for binding: " << binding);
+		return false;
+	}
+}
+
+bool 
+AudioMgr::stopSound(const std::string &binding)
+{
+	if(!m_initialized || !m_soundEnabled) return true;
+	
+	std::map<std::string, SoundRef>::iterator it;
+
+	if((it=m_soundBindings.find(binding))!=m_soundBindings.end()){
+		(*it).second->stop();
+		return true;
+	}else{
+		PP_WARNING("Couldn't find sound for binding: " << binding);
+		return false;
+	}	
+}
+
+void
+AudioMgr::stopAllSounds()
+{
+	if(!m_initialized || !m_soundEnabled) return;
+	
+	std::map<std::string, SoundRef>::iterator it;
+	
+	for(it=m_soundBindings.begin(); it!=m_soundBindings.end(); it++){
+		(*it).second->stop(true);		
+	}
+}
+
+int
+AudioMgr::sqLoadMusic(ppogl::Script *vm)
+{
+	std::string binding = vm->getStringFromTable("name");
+	
+	#ifdef USE_SDL_MIXER
+	std::string filename = vm->getStringFromTable("file");
+	#else
+	std::string filename = vm->getStringFromTable("file2");
+	#endif
+	
+	getInstance().loadMusic(binding, filename);
+		
+	return 0;
+}
+
+int
+AudioMgr::sqBindMusic(ppogl::Script *vm)
+{
+	std::string binding = vm->getStringFromTable("name");
+	std::string name = vm->getStringFromTable("music");
+			
+	getInstance().bindMusic(binding, name);
+
+	return 0;
+}
+
+int
+AudioMgr::sqLoadSound(ppogl::Script *vm)
+{
+	std::string binding = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("file");
+		
+	bool loop = false;
+	
+	if(vm->isKeyInTable("loop")){
+		loop = vm->getBoolFromTable("loop");
+	}	
+	
+	#ifdef USE_OPENAL
+		getInstance().loadSound(binding, filename, loop);
+	#else
+		getInstance().loadSound(binding, filename);
+	#endif
+	
+	return 0;
+}
+
+int
+AudioMgr::sqBindSound(ppogl::Script *vm)
+{
+	std::string binding = vm->getStringFromTable("name");
+	std::string name = vm->getStringFromTable("sound");
+	
+	getInstance().bindSound(binding, name);
+
+	return 0;
+}
 
 } //namepsace ppogl
+
+#endif //USE_OPENAL
+#endif //USE_SDL_MIXER

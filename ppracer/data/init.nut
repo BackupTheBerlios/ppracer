@@ -306,45 +306,99 @@ Textures.load({
 			  
 
 // audio
-Audio.loadMusic("start_screen",
-				"music/start1-jt.it");
-Audio.bindMusic("splash_screen","start_screen");
-Audio.bindMusic("loading","start_screen");
+Audio.loadMusic({
+	name = "start_screen",
+	file = "music/start1-jt.it",
+	file2 = "music/start1-jt.ogg"
+});
 
-Audio.loadMusic("options_screen",
-				"music/options1-jt.it");	
-Audio.bindMusic("credits_screen", "options_screen");
+Audio.bindMusic({
+	name = "splash_screen",
+	music = "start_screen"
+});
 
-Audio.loadMusic("racing",
-				"music/race1-jt.it");
-Audio.bindMusic("intro", "racing");
-Audio.bindMusic("racing", "racing");
-Audio.bindMusic("paused", "racing");
+Audio.bindMusic({
+	name = "loading",
+	music = "start_screen"
+});
 
-Audio.loadMusic("game_over",
-				"music/wonrace1-jt.it");
+Audio.loadMusic({
+	name = "options_screen",
+	file = "music/options1-jt.it",
+	file2 = "music/options1-jt.ogg"
+});
+
+Audio.bindMusic({
+	name = "credits_screen",
+	music = "options_screen"
+});
+
+Audio.loadMusic({
+	name = "racing",
+	file = "music/race1-jt.it",
+	file2 = "music/race1-jt.ogg"
+});
+
+Audio.bindMusic({
+	name = "intro",
+	music = "racing"
+});
+
+Audio.bindMusic({
+	name = "paused",
+	music = "racing"
+});
+
+Audio.loadMusic({
+	name = "game_over",
+	file = "music/wonrace1-jt.it",
+	file2 = "music/wonrace1-jt.ogg"
+});
 		
 // sound
 
-Audio.loadSound("tree_hit",
-				"sounds/tux_hit_tree1.wav");
+Audio.loadSound({
+	name = "tree_hit",
+	file = "sounds/tux_hit_tree1.wav"
+});
 
-Audio.loadSound("item_collect",
-				"sounds/fish_pickup1.wav");
-Audio.loadSound("item_collect2",
-				"sounds/fish_pickup2.wav");
-Audio.loadSound("item_collect3",
-				"sounds/fish_pickup3.wav");
+Audio.loadSound({
+	name = "item_collect",
+	file = "sounds/fish_pickup1.wav"
+});
 
-Audio.loadSound("snow_sound",
-				"sounds/tux_on_snow1.wav");
-Audio.bindSound("flying_sound", "snow_sound");
+Audio.loadSound({
+	name = "item_collect2",
+	file = "sounds/fish_pickup2.wav"
+});
 
-Audio.loadSound("rock_sound",
-				"sounds/tux_on_rock1.wav");
+Audio.loadSound({
+	name = "item_collect3",
+	file = "sounds/fish_pickup3.wav"
+});
 
-Audio.loadSound("ice_sound",
-				"sounds/tux_on_ice1.wav");
+Audio.loadSound({
+	name = "snow_sound",
+	file = "sounds/tux_on_snow1.wav",
+	loop = true
+});
+
+Audio.bindSound({
+	name = "flying_sound",
+	sound = "snow_sound"
+});
+
+Audio.loadSound({
+	name = "rock_sound",
+	file = "sounds/tux_on_rock1.wav",
+	loop = true
+});
+
+Audio.loadSound({
+	name = "ice_sound",
+	file = "sounds/tux_on_ice1.wav",
+	loop = true
+});
 
 dofile("models/tux/model.nut");
 dofile("models/tux2/model.nut");

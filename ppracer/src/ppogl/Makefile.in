@@ -66,10 +66,10 @@ am_libppogl_a_OBJECTS = config.$(OBJEXT) font.$(OBJEXT) \
 	alignment.$(OBJEXT) checkbox.$(OBJEXT) listbox.$(OBJEXT) \
 	imagebutton.$(OBJEXT) entry.$(OBJEXT) textarea.$(OBJEXT) \
 	scale.$(OBJEXT) sound.$(OBJEXT) music.$(OBJEXT) \
-	audiomgr.$(OBJEXT) geoms.$(OBJEXT) materials.$(OBJEXT) \
-	vnc.$(OBJEXT) model.$(OBJEXT) model_ac.$(OBJEXT) \
-	FTCharmap.$(OBJEXT) FTFace.$(OBJEXT) FTFont.$(OBJEXT) \
-	FTGlyph.$(OBJEXT) FTGlyphContainer.$(OBJEXT) \
+	audiomgr.$(OBJEXT) vorbis.$(OBJEXT) geoms.$(OBJEXT) \
+	materials.$(OBJEXT) vnc.$(OBJEXT) model.$(OBJEXT) \
+	model_ac.$(OBJEXT) FTCharmap.$(OBJEXT) FTFace.$(OBJEXT) \
+	FTFont.$(OBJEXT) FTGlyph.$(OBJEXT) FTGlyphContainer.$(OBJEXT) \
 	FTLibrary.$(OBJEXT) FTSize.$(OBJEXT)
 libppogl_a_OBJECTS = $(am_libppogl_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -290,6 +290,8 @@ libppogl_a_SOURCES = \
 	audio/music.h		\
 	audio/audiomgr.cpp	\
 	audio/audiomgr.h	\
+	audio/vorbis.cpp	\
+	audio/vorbis.h		\
 	\
 	\
 	sg/sg.h			\
@@ -428,6 +430,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec3f.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vec4f.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vnc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vorbis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writePPM.Po@am__quote@
 
@@ -906,6 +909,20 @@ audiomgr.obj: audio/audiomgr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='audio/audiomgr.cpp' object='audiomgr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o audiomgr.obj `if test -f 'audio/audiomgr.cpp'; then $(CYGPATH_W) 'audio/audiomgr.cpp'; else $(CYGPATH_W) '$(srcdir)/audio/audiomgr.cpp'; fi`
+
+vorbis.o: audio/vorbis.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vorbis.o -MD -MP -MF "$(DEPDIR)/vorbis.Tpo" -c -o vorbis.o `test -f 'audio/vorbis.cpp' || echo '$(srcdir)/'`audio/vorbis.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vorbis.Tpo" "$(DEPDIR)/vorbis.Po"; else rm -f "$(DEPDIR)/vorbis.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='audio/vorbis.cpp' object='vorbis.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vorbis.o `test -f 'audio/vorbis.cpp' || echo '$(srcdir)/'`audio/vorbis.cpp
+
+vorbis.obj: audio/vorbis.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vorbis.obj -MD -MP -MF "$(DEPDIR)/vorbis.Tpo" -c -o vorbis.obj `if test -f 'audio/vorbis.cpp'; then $(CYGPATH_W) 'audio/vorbis.cpp'; else $(CYGPATH_W) '$(srcdir)/audio/vorbis.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/vorbis.Tpo" "$(DEPDIR)/vorbis.Po"; else rm -f "$(DEPDIR)/vorbis.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='audio/vorbis.cpp' object='vorbis.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vorbis.obj `if test -f 'audio/vorbis.cpp'; then $(CYGPATH_W) 'audio/vorbis.cpp'; else $(CYGPATH_W) '$(srcdir)/audio/vorbis.cpp'; fi`
 
 geoms.o: sg/geoms.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT geoms.o -MD -MP -MF "$(DEPDIR)/geoms.Tpo" -c -o geoms.o `test -f 'sg/geoms.cpp' || echo '$(srcdir)/'`sg/geoms.cpp; \

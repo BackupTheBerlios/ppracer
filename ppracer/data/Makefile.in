@@ -189,6 +189,10 @@ nobase_dist_ppdata_DATA = \
 	    music/race2-jt.it	\
 	    music/options1-jt.it	\
 	    music/start1-jt.it	\
+	    music/race1-jt.ogg	\
+	    music/wonrace1-jt.ogg	\
+	    music/options1-jt.ogg	\
+	    music/start1-jt.ogg	\
 	    music/readme	\
 	    textures/menu_top_left.png	\
 	    textures/checkmark.png	\

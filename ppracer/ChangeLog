@@ -1,6 +1,10 @@
 
 === ppracer 0.5 beta ===
 
+2006-05-03  Volker Stroebel <volker@planetpenguin.de>
+	* (*)
+	added support for OpenAL
+
 2006-04-26  Volker Stroebel <volker@planetpenguin.de>
 	* src/*
 	Use keyPressEvent in the UI to partially fix several 

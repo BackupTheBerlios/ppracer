@@ -21,14 +21,12 @@
 #define _PPOGL_MUSIC_H_
 
 #include "../base/refptr.h"
-
-#ifdef HAVE_SDL_MIXER
-	#include <SDL_mixer.h>
-#endif
-
-namespace ppogl{
 	
-#ifdef HAVE_SDL_MIXER
+#ifdef USE_SDL_MIXER
+
+#include <SDL_mixer.h>
+	
+namespace ppogl{
 	
 ///A class for playing a music file
 class Music : public RefObject
@@ -51,8 +49,46 @@ public:
 
 typedef RefPtr<Music> MusicRef;
 
+} // namespace ppogl
+
 #else
-// stubs used if there is no SDL_mixer
+#ifdef USE_OPENAL
+
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+
+namespace ppogl{
+	
+///A class for playing a music file
+class Music : public RefObject
+{
+private:
+	///The buffer for this sound
+	ALuint m_buffer;
+
+	///The source for this sound
+	ALuint m_source;
+		
+	///Whether this music is playing
+	bool m_playing;
+
+public:	
+	Music(const std::string &filename);
+	~Music();
+
+	bool start();
+	bool stop();
+};
+
+typedef RefPtr<Music> MusicRef;
+
+} // namespace ppogl
+
+#else
+// stubs used if there is no uadio support
+
+namespace pp{
 
 class Music : public RefObject
 {
@@ -64,8 +100,10 @@ public:
 };
 typedef RefPtr<Music> MusicRef;
 
-#endif
-
 } //namepsace ppogl
+
+#endif // USE_OPENAL
+#endif // USE_SDL_MIXER
+
 
 #endif // _PPOGL_MUSIC_H_

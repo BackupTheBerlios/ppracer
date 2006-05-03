@@ -60,6 +60,24 @@ std::string getHomeDir();
 void setUserDir(const std::string& dir);
 const std::string& getUserDir();
 
+///Class storing the data of a file
+class File{
+	char* m_data;
+	size_t m_size;
+	
+public:
+	File(const std::string& filename);
+	~File();
+
+	char* getData(){return m_data;}
+	size_t getSize(){return m_size;}
+
+	inline operator bool()
+	{
+		return (m_data!=NULL) && (m_size>0);
+	}
+};
+
 } // namespace os
 } // namespace ppogl
 

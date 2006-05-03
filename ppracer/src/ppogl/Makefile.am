@@ -92,6 +92,8 @@ libppogl_a_SOURCES = 		\
 	audio/music.h		\
 	audio/audiomgr.cpp	\
 	audio/audiomgr.h	\
+	audio/vorbis.cpp	\
+	audio/vorbis.h		\
 	\
 	\
 	sg/sg.h			\
