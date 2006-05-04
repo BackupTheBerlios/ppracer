@@ -334,6 +334,33 @@ Script::getBoolFromTable(const std::string& key, int index)
 	return boolean;	
 }
 
+ppogl::Color
+Script::getColorFromTable(const std::string& key, int index)
+{
+	pushString(key);
+	ppogl::Color color;
+	
+	if(get(index-1)){
+		pushNull();
+		int i=0;		
+		while(next(-2))
+		{
+			if(i>4) break;			
+			double temp = getFloat();
+			
+			PP_ASSERT(temp>=0.0 && temp<=1.0,"Invalid color value: " << temp);
+		
+			color.values[i]=temp;
+			i++;			
+			pop(2); 
+		}	
+		pop();		
+	}
+		
+	return color;	
+}
+
+
 const std::string
 Script::getString(int index)
 {

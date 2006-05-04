@@ -188,27 +188,14 @@ FontMgr::sqLoad(ppogl::Script *vm)
 {
 	ppogl::Color color=ppogl::Color::white;
 	
-	std::string binding = vm->getString(1);
-	std::string filename = vm->getString(2);
-	int size = vm->getInt(3);
-	
-	if(vm->getTop()>=4){
-		vm->pushNull();
-		int i=0;		
-		while(vm->next(4))
-		{
-			if(i>4) break;			
-			double temp = vm->getFloat();
-			
-			PP_ASSERT(temp>=0.0 && temp<=1.0,"Invalid color value: " << temp);
+	std::string binding = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("file");
+	int size = vm->getIntFromTable("size");
 		
-			color.values[i]=temp;
-			i++;			
-			vm->pop(2); 
-		}	
-		vm->pop();
+	if(vm->isKeyInTable("color")){
+		color = vm->getColorFromTable("color");
 	}
-	
+		
 	getInstance().registerFont(binding, filename, size, color);
 	return 0;
 }
@@ -216,22 +203,11 @@ FontMgr::sqLoad(ppogl::Script *vm)
 int
 FontMgr::sqBind(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string name = vm->getString(2);
+	std::string binding = vm->getStringFromTable("name");
+	std::string name = vm->getStringFromTable("font");
 	
-	if(vm->getTop()>=3){
-		ppogl::Color color=ppogl::Color::white;
-		vm->pushNull();
-		int i=0;		
-        while(vm->next(3)!= 0){
-			if(i>4) break;
-			double value = vm->getFloat();			
-  			PP_ASSERT(value>=0.0 && value<=1.0,"Invalid color value: " << value);
-			vm->pop(2);		
-			color.values[i]=value;
-			i++;
-		}
-		vm->pop();
+	if(vm->isKeyInTable("color")){
+		ppogl::Color color = vm->getColorFromTable("color");;
 		if(!getInstance().bindFont(binding, name, color)){
 			PP_WARNING("Unable to bind font: " << binding << " -> " << name);	
 		}

@@ -4,128 +4,184 @@ data_dir <- ppogl.cwd();
 dofile("hazel.nut");
 
 // fonts
-Fonts.load("button_label",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   30);
+Fonts.load({
+	name = "button_label",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 30
+});
 
-Fonts.bind("button_label_hilit",
-		   "button_label",
-		   [1.00, 0.89, 0.01]);
+Fonts.bind({
+	name = "button_label_hilit",
+	font = "button_label",
+	color = [1.00, 0.89, 0.01]
+});
 
-Fonts.bind("button_label_insensitive",
-		   "button_label",
-		   [1.0, 1.0, 1.0, 0.5]);
+Fonts.bind({
+	name = "button_label_insensitive",
+	font = "button_label",
+	color = [1.0, 1.0, 1.0, 0.5]
+});
 
-Fonts.bind("loading",
-           "button_label_hilit",
-		   [1.00, 0.89, 0.0]);
+Fonts.bind({
+	name = "loading",
+	font = "button_label_hilit",
+	color = [1.00, 0.89, 0.0]
+});
 
-Fonts.bind("button_label_disabled",
-		   "button_label",
-		   [1.0, 1.0, 1.0]);
+Fonts.bind({
+	name = "button_label_disabled",
+	font = "button_label",
+	color = [1.0, 1.0, 1.0]
+});
 
-Fonts.bind("menu_label",
-		   "button_label");
+Fonts.bind({
+	name = "menu_label",
+	font = "button_label"
+});
 
 // listbox
-Fonts.load("listbox_item",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   22,
-		   [1.00, 0.89, 0.01]);
+Fonts.load({
+	name = "listbox_item",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 22,
+	color = [1.00, 0.89, 0.01]
+});
 
-Fonts.bind("listbox_item_insensitive",
-		   "listbox_item",
-		   [1.00, 0.89, 0.01, 0.5]);
+Fonts.bind({
+	name = "listbox_item_insensitive",
+	font = "listbox_item",
+	color = [1.00, 0.89, 0.01, 0.5]
+});
 
 // race requirements
-Fonts.load("race_requirements",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   13);
+Fonts.load({
+	name = "race_requirements",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 13
+});
 
-Fonts.bind("race_requirements_label",
-		   "race_requirements",
-		   [1.00, 0.95, 0.01]);
+Fonts.bind({
+	name = "race_requirements_label",
+	font = "race_requirements",
+	color = [1.00, 0.95, 0.01]
+});
 
 // heading
-Fonts.load("heading",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   40,
-		   [1.00, 0.89, 0.01]);
+Fonts.load({
+	name = "heading",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 40,
+	color = [1.00, 0.89, 0.01]
+});
 
-Fonts.bind("paused",
-		   "heading");
+Fonts.bind({
+	name = "paused",
+	font = "heading"
+});
 
-Fonts.bind("race_over",
-		   "heading");
+Fonts.bind({
+	name = "race_over",
+	font = "heading"
+});
 
 // several stuff
-Fonts.load("textarea",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   16);
+Fonts.load({
+	name = "textarea",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 16
+});
 		   
-Fonts.bind("race_description",
-		   "textarea");
+Fonts.bind({
+	name = "race_description",
+	font = "textarea"
+});
 		   
-Fonts.bind("cup_status",
-		   "race_description",
-		   [1.00, 0.89, 0.01]);
+Fonts.bind({
+	name = "cup_status",
+	font = "race_description",
+	color = [1.00, 0.89, 0.01]
+});
 
-Fonts.load("race_stats",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   25,
-		   [1.00, 0.89, 0.01]);
+Fonts.load({
+	name = "race_stats",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 25,
+	color = [1.00, 0.89, 0.01]
+});
 
-Fonts.load("event_and_cup_label",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   22);
+Fonts.load({
+	name = "event_and_cup_label",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 22
+});
 
 // credits
-Fonts.load("credits_text",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   20);
+Fonts.load({
+	name = "credits_text",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 20
+});
 		   
-Fonts.load("credits_text_small",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   14);
+Fonts.load({
+	name = "credits_text_small",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 14
+});
 		   
-Fonts.bind("credits_h1",
-		   "button_label_hilit");
+Fonts.bind({
+	name = "credits_h1",
+	font = "button_label_hilit"
+});
 		   
-Fonts.bind("credits_h2",
-		   "credits_text",
-		   [1.00, 0.89, 0.01]);
+Fonts.bind({
+	name = "credits_h2",
+	font = "credits_text",
+	color = [1.00, 0.89, 0.01]
+});
 
 
 // we don't bind this because hud fonts need to be fast
-Fonts.load("time_label",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   20,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "time_label",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 20,
+	color = [1.0, 0.89, 0.01]
+});
 		   
-Fonts.load("herring_count",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   30,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "herring_count",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 30,
+	color = [1.0, 0.89, 0.01]
+});
 		   
-Fonts.load("fps",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   20,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "fps",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 20,
+	color = [1.0, 0.89, 0.01]
+});
 		   
-Fonts.load("time_value",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   30,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "time_value",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 30,
+	color = [1.0, 0.89, 0.01]
+});
 		   
-Fonts.load("speed_digits",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   35,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "speed_digits",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 35,
+	color = [1.0, 0.89, 0.01]
+});
 		   
-Fonts.load("speed_units",
-		   "fonts/FreeSansBoldOblique.ttf",
-		   20,
-		   [1.0, 0.89, 0.01]);
+Fonts.load({
+	name = "speed_units",
+	file = "fonts/FreeSansBoldOblique.ttf",
+	size = 20,
+	color = [1.0, 0.89, 0.01]
+});
 
 // textures
 

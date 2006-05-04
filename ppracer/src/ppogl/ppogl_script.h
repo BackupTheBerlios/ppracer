@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "base/color.h"
+
 extern "C"{
 // this is copied from squirrel.h so we don't need to include it here
 typedef struct SQVM* HSQUIRRELVM;
@@ -68,6 +70,7 @@ public:
 	double getFloatFromTable(const std::string& key, int index=-1);
 	int getIntFromTable(const std::string& key, int index=-1);
 	bool getBoolFromTable(const std::string& key, int index=-1);
+	ppogl::Color getColorFromTable(const std::string& key, int index=-1);
 
 	const std::string getString(int index=-1);
 	double getFloat(int index=-1);
