@@ -427,8 +427,6 @@ ALfloat s_listenerVel[] = { 0.0, 0.0, 0.0 };
 ALfloat s_listenerOri[] = { 0.0, 0.0, -1.0,  0.0, 1.0, 0.0 };
 
 namespace ppogl{
-
-PPOGL_SINGLETON(AudioMgr);
 		
 AudioMgr::AudioMgr()
  : m_initialized(false),
