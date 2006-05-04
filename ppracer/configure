@@ -6547,7 +6547,7 @@ echo "${ECHO_T}yes" >&6
 		echo "*** FreeALUT not found.  Configuring without audio support."
 	fi
 else
-	enable_openal = "no"
+	enable_openal="no"
 fi
 
 

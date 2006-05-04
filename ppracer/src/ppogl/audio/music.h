@@ -88,7 +88,7 @@ typedef RefPtr<Music> MusicRef;
 #else
 // stubs used if there is no uadio support
 
-namespace pp{
+namespace ppogl{
 
 class Music : public RefObject
 {

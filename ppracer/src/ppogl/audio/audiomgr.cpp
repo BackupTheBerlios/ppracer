@@ -19,14 +19,13 @@
 
 #include "audiomgr.h"
 
+PPOGL_SINGLETON(ppogl::AudioMgr);
 
 #ifdef USE_SDL_MIXER
 
 #include "SDL_mixer.h"
 
 namespace ppogl{
-
-PPOGL_SINGLETON(AudioMgr);
 	
 AudioMgr::AudioMgr()
  : m_initialized(false),
@@ -366,8 +365,8 @@ AudioMgr::stopAllSounds()
 int
 AudioMgr::sqLoadMusic(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string filename = vm->getString(2);
+	std::string binding = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("file");
 	
 	getInstance().loadMusic(binding, filename);
 	
@@ -377,8 +376,8 @@ AudioMgr::sqLoadMusic(ppogl::Script *vm)
 int
 AudioMgr::sqBindMusic(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string name = vm->getString(2);
+	std::string binding = vm->getStringFromTable("name");
+	std::string name = vm->getStringFromTable("music");
 		
 	getInstance().bindMusic(binding, name);
 
@@ -388,8 +387,8 @@ AudioMgr::sqBindMusic(ppogl::Script *vm)
 int
 AudioMgr::sqLoadSound(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string filename = vm->getString(2);
+	std::string binding = vm->getStringFromTable("name");
+	std::string filename = vm->getStringFromTable("file");
 	
 	getInstance().loadSound(binding, filename);
 	
@@ -399,8 +398,8 @@ AudioMgr::sqLoadSound(ppogl::Script *vm)
 int
 AudioMgr::sqBindSound(ppogl::Script *vm)
 {
-	std::string binding = vm->getString(1);
-	std::string name = vm->getString(2);
+	std::string binding = vm->getStringFromTable("name");
+	std::string name = vm->getStringFromTable("sound");
 	
 	getInstance().bindSound(binding, name);
 
@@ -730,12 +729,7 @@ int
 AudioMgr::sqLoadMusic(ppogl::Script *vm)
 {
 	std::string binding = vm->getStringFromTable("name");
-	
-	#ifdef USE_SDL_MIXER
-	std::string filename = vm->getStringFromTable("file");
-	#else
 	std::string filename = vm->getStringFromTable("file2");
-	#endif
 	
 	getInstance().loadMusic(binding, filename);
 		
@@ -765,12 +759,8 @@ AudioMgr::sqLoadSound(ppogl::Script *vm)
 		loop = vm->getBoolFromTable("loop");
 	}	
 	
-	#ifdef USE_OPENAL
-		getInstance().loadSound(binding, filename, loop);
-	#else
-		getInstance().loadSound(binding, filename);
-	#endif
-	
+	getInstance().loadSound(binding, filename, loop);
+		
 	return 0;
 }
 

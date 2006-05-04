@@ -148,7 +148,7 @@ if test "x$enable_openal" = "xyes" ; then
 		echo "*** FreeALUT not found.  Configuring without audio support."
 	fi
 else
-	enable_openal = "no"
+	enable_openal="no"
 fi
 
 dnl --------------------------------------------------------------------------
