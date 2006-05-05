@@ -40,6 +40,9 @@ Light::reset()
 		lights[i].constant_attenuation = 1.0;
 		lights[i].linear_attenuation = 0.0;
 		lights[i].quadratic_attenuation = 0.0;
+		lights[i].ambient = ppogl::Color::black;
+    	lights[i].diffuse = ppogl::Color::black;
+    	lights[i].specular = ppogl::Color::black;
     }
 
     // Turn off global ambient light
@@ -69,72 +72,6 @@ Light::setup()
 	}
 }
 
-/*
-static int
-course_light_cb(ppogl::Script *vm)
-{
-	const int num_args=vm->getTop();
-	
-    if(num_args<=1){
-		PP_WARNING("pptheme.course_light: Invalid number of arguments");
-		return 0;
-    }
-
-	const int light_num = int(vm->getFloat(1));
-	
-	if(light_num < 0 || light_num >= NUM_COURSE_LIGHTS ) {
-		PP_WARNING("pptheme.course_light: Invalid light number: " << light_num);
-		return 0;
-    }
-
-	// activated
-	if(num_args>=2){
-		Light::lights[light_num].enabled = vm->getBool(2);		
-	}
-	
-	// position
-	if(num_args>=3){
-		vm->pushNull();
-		for(int i=0; i<4; i++){
-			vm->next(3);
-			Light::lights[light_num].position.values[i]=vm->getFloat();
-			vm->pop(2);
-		}	
-	}
-
-	// diffuse
-	if(num_args>=4){
-		vm->pushNull();
-		for(int i=0; i<4; i++){
-			vm->next(4);
-			Light::lights[light_num].diffuse.values[i]=vm->getFloat();
-			vm->pop(2);
-		}
-	}
-	
-	// specular
-	if(num_args>=5){
-		vm->pushNull();
-		for(int i=0; i<4; i++){
-			vm->next(5);
-			Light::lights[light_num].specular.values[i]=vm->getFloat();
-			vm->pop(2);
-		}	
-	}
-	
-	// ambient
-	if(num_args>=6){
-		vm->pushNull();
-		for(int i=0; i<4; i++){
-			vm->next(6);
-			Light::lights[light_num].ambient.values[i]=vm->getFloat();
-			vm->pop(2);
-		}
-	}
-	return 0;
-}
-*/
-
 static int
 course_light_cb(ppogl::Script *vm)
 {
@@ -152,15 +89,15 @@ course_light_cb(ppogl::Script *vm)
 	}
 
 	if(vm->isKeyInTable("diffuse")){
-		Light::lights[light_num].diffuse=vm->getColorFromTable("diffuse");
+		Light::lights[light_num].diffuse = vm->getColorFromTable("diffuse");
 	}
 
 	if(vm->isKeyInTable("specular")){
-		Light::lights[light_num].specular=vm->getColorFromTable("specular");
+		Light::lights[light_num].specular = vm->getColorFromTable("specular");
 	}
 	
 	if(vm->isKeyInTable("ambient")){
-		Light::lights[light_num].ambient=vm->getColorFromTable("ambient");
+		Light::lights[light_num].ambient = vm->getColorFromTable("ambient");
 	}
 		
 	return 0;

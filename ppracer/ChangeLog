@@ -4,6 +4,9 @@
 2006-05-05  Volker Stroebel <volker@planetpenguin.de>
 	* (*)
 	use tables in squirrel several functions
+	
+	* src/ppogl/ppogl_script.cpp
+	fixes
 
 2006-05-04  Volker Stroebel <volker@planetpenguin.de>
 	* data/init.nut src/ppogl/font.cpp

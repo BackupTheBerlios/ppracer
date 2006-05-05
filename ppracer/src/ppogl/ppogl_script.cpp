@@ -342,7 +342,7 @@ Script::getColorFromTable(const std::string& key, int index)
 	
 	if(get(index-1)){
 		pushNull();
-		int i=0;		
+		int i=0;
 		while(next(-2))
 		{
 			if(i>4) break;			
@@ -351,10 +351,10 @@ Script::getColorFromTable(const std::string& key, int index)
 			PP_ASSERT(temp>=0.0 && temp<=1.0,"Invalid color value: " << temp);
 		
 			color.values[i]=temp;
-			i++;			
-			pop(2); 
+			i++;	
+			pop(2);
 		}	
-		pop();		
+		pop(2);		
 	}
 		
 	return color;	
@@ -376,7 +376,7 @@ Script::getVec3dFromTable(const std::string& key, int index)
 			i++;			
 			pop(2); 
 		}	
-		pop();		
+		pop(2);		
 	}
 		
 	return vec;	
@@ -398,7 +398,7 @@ Script::getVec4fFromTable(const std::string& key, int index)
 			i++;			
 			pop(2); 
 		}	
-		pop();		
+		pop(2);		
 	}
 		
 	return vec;	
