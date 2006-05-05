@@ -1,30 +1,29 @@
 
 
-pptheme.course_light(
-	0,							//light number
-	true,	 					//activated
-	[1, 1, 0, 0],				//position
-	[1.0, 0.9, 1.0, 1],			//diffuse
-    [0.0, 0.0, 0.0, 1],			//specular
-	[0.45, 0.53, 0.75, 1.0]); 	//ambient
+pptheme.course_light({
+	id = 0,
+	position = [1, 1, 0, 0],
+	diffuse = [1.0, 0.9, 1.0, 1],
+	specular = [0.0, 0.0, 0.0, 1],
+	ambient = [0.45, 0.53, 0.75, 1.0]
+});
 
-pptheme.course_light(
-	1,
-	true,
-	[1, 1, 2, 0],
-	[0, 0, 0, 0],
-	[0.8, 0.8, 0.8, 1],
-	[0.6, 0.5, 0.5,1]
-	); 
+pptheme.course_light({
+	id = 1,
+	position = [1, 1, 2, 0],
+	diffuse = [0, 0, 0, 0],
+	specular = [0.8, 0.8, 0.8, 1],
+	ambient = [0.6, 0.5, 0.5,1]
+});
 
-pptheme.fog(
-	true, 				//activated
-	"linear", 			//mode
-	0.005,				//density
-	[1.0, 1.0, 1.0, 1],	//color
-	10,					//start
-	ppconfig["forward_clip_distance"] //end
-	); 
+pptheme.fog({
+	enabled = true,
+	mode = "linear",
+	density = 0.005,
+	color = [1.0, 1.0, 1.0, 1],
+	start = 10,
+	end = ppconfig["forward_clip_distance"]
+}); 
  
 pptheme.load_texture("terrain_envmap", "envmap.png", false);
 

@@ -63,19 +63,13 @@ FogPlane::setup()
 static int
 fog_cb(ppogl::Script *vm)
 {
-	int num_args = vm->getTop();
-	
-    if(num_args !=6){
-		PP_WARNING("pptheme.fog: Inavalid number of arguments");
-		return 0;
-    }
-
-	// activated
-	fogPlane.setEnabled(vm->getBool(1));
+	if(vm->isKeyInTable("enabled")){
+		fogPlane.setEnabled(vm->getBoolFromTable("enabled"));
+	}
 	
 	//mode 
-	if(num_args>=2){
-		std::string mode = vm->getString(2);
+	if(vm->isKeyInTable("mode")){
+		std::string mode = vm->getStringFromTable("mode");
 			
 	    if(mode=="exp"){
 			fogPlane.setMode(GL_EXP);
@@ -90,31 +84,20 @@ fog_cb(ppogl::Script *vm)
 	    }
 	}
 	
-	//density
-	if(num_args>=3){
-		fogPlane.setDensity(vm->getFloat(3));
+	if(vm->isKeyInTable("density")){
+		fogPlane.setDensity(vm->getFloatFromTable("density"));
 	}
 
-	//color
-	if(num_args>=4){
-		ppogl::Color color;
-		vm->pushNull();
-		for(int i=0; i<4; i++){
-			vm->next(4);
-			color.values[i]=vm->getFloat();	
-			vm->pop();
-		}
-		fogPlane.setColor(color);
+	if(vm->isKeyInTable("color")){
+		fogPlane.setColor(vm->getColorFromTable("color"));
 	}
 	
-	//start
-	if(num_args>=5){
-		fogPlane.setStart(vm->getFloat(5));	
+	if(vm->isKeyInTable("start")){
+		fogPlane.setStart(vm->getFloatFromTable("start"));	
 	}
 	
-	//end
-	if(num_args>=6){
-		fogPlane.setEnd(vm->getFloat(6));	
+	if(vm->isKeyInTable("end")){
+		fogPlane.setEnd(vm->getFloatFromTable("end"));	
 	}
 
     return 0;

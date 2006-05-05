@@ -69,6 +69,7 @@ Light::setup()
 	}
 }
 
+/*
 static int
 course_light_cb(ppogl::Script *vm)
 {
@@ -130,6 +131,38 @@ course_light_cb(ppogl::Script *vm)
 			vm->pop(2);
 		}
 	}
+	return 0;
+}
+*/
+
+static int
+course_light_cb(ppogl::Script *vm)
+{
+	const int light_num = vm->getIntFromTable("id");
+	
+	if(light_num < 0 || light_num >= NUM_COURSE_LIGHTS ) {
+		PP_WARNING("pptheme.course_light: Invalid light number: " << light_num);
+		return 0;
+    }
+	
+	Light::lights[light_num].enabled = true;
+	
+	if(vm->isKeyInTable("position")){
+		Light::lights[light_num].position = vm->getVec4fFromTable("position");
+	}
+
+	if(vm->isKeyInTable("diffuse")){
+		Light::lights[light_num].diffuse=vm->getColorFromTable("diffuse");
+	}
+
+	if(vm->isKeyInTable("specular")){
+		Light::lights[light_num].specular=vm->getColorFromTable("specular");
+	}
+	
+	if(vm->isKeyInTable("ambient")){
+		Light::lights[light_num].ambient=vm->getColorFromTable("ambient");
+	}
+		
 	return 0;
 }
 

@@ -360,6 +360,51 @@ Script::getColorFromTable(const std::string& key, int index)
 	return color;	
 }
 
+ppogl::Vec3d
+Script::getVec3dFromTable(const std::string& key, int index)
+{
+	pushString(key);
+	ppogl::Vec3d vec;
+	
+	if(get(index-1)){
+		pushNull();
+		int i=0;		
+		while(next(-2))
+		{
+			if(i>3) break;			
+			vec.values[i] = getFloat();
+			i++;			
+			pop(2); 
+		}	
+		pop();		
+	}
+		
+	return vec;	
+}
+
+ppogl::Vec4f
+Script::getVec4fFromTable(const std::string& key, int index)
+{
+	pushString(key);
+	ppogl::Vec4f vec;
+	
+	if(get(index-1)){
+		pushNull();
+		int i=0;		
+		while(next(-2))
+		{
+			if(i>4) break;			
+			vec.values[i] = getFloat();
+			i++;			
+			pop(2); 
+		}	
+		pop();		
+	}
+		
+	return vec;	
+}
+
+
 
 const std::string
 Script::getString(int index)

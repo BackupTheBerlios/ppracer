@@ -1,6 +1,10 @@
 
 === ppracer 0.5 beta ===
 
+2006-05-05  Volker Stroebel <volker@planetpenguin.de>
+	* (*)
+	use tables in squirrel several functions
+
 2006-05-04  Volker Stroebel <volker@planetpenguin.de>
 	* data/init.nut src/ppogl/font.cpp
 	use tables in squirrel functions

@@ -875,20 +875,8 @@ item_spec_cb(ppogl::Script *vm)
 	}
 	
 	if(vm->isKeyInTable("normal")){
-		vm->pushString("normal");
-		if(vm->get() && vm->isArray()){
-			vm->pushNull();
-			for(int i=0; i<3; i++){
-				vm->next(-2);
-				item->normal.values[i] = vm->getFloat();
-				vm->pop(2);
-			}
-			vm->pop(2);
-			item->use_normal=true;
-		}else{
-			PP_WARNING("pptheme.item: Invalid normal in item type " << name);
-		}
-		vm->pop(2);
+		item->normal = vm->getVec3dFromTable("normal");
+		item->use_normal=true;
 	}
 
 	itemTypes[name]=item;
@@ -1159,27 +1147,7 @@ add_model_cb(ppogl::Script *vm)
 	Model model((*it).second, position);
 	
 	if(vm->isKeyInTable("scale")){
-		ppogl::Vec3d scale;
-		vm->pushString("scale");
-		if(vm->get() && vm->isArray()){
-			// position array
-			vm->pushNull();
-			vm->next(-2);
-			scale.x() = vm->getFloat();
-			vm->pop(2);
-			vm->next(-2);
-			scale.y() = vm->getFloat();
-			vm->pop(2);	
-			vm->next(-2);
-			scale.z() = vm->getFloat();
-			vm->pop(2);
-			vm->pop(2);
-		
-			model.setScale(scale);
-		}else{
-			PP_WARNING("ppcourse.add_model: Invalid scale");
-			return vm->defaultError();
-		}	
+		ppogl::Vec3d scale = vm->getVec3dFromTable("scale");
 	}
 	
 	if(vm->isKeyInTable("rotation")){
@@ -1232,21 +1200,8 @@ add_item_cb(ppogl::Script *vm)
 	ppogl::Vec3d position;
 	
 	if(vm->isKeyInTable("position")){
+		position = vm->getVec3dFromTable("position");
 		vm->pushString("position");
-		if(vm->get() && vm->isArray()){
-			// position array
-			vm->pushNull();
-			vm->next(-2);
-			position.x() = vm->getFloat();
-			vm->pop(2);
-			vm->next(-2);
-			position.z() = (-1)*vm->getFloat();
-			vm->pop(2);
-			vm->pop(2);
-		}else{
-			PP_WARNING("ppcourse.add_item: Invalid position");
-			return vm->defaultError();
-		}
 	}
 	
 	std::map<std::string,ppogl::RefPtr<ItemType> >::iterator it;
@@ -1267,18 +1222,7 @@ add_item_cb(ppogl::Script *vm)
 	Item item((*it).second, position);
 	
 	if(vm->isKeyInTable("normal")){
-		vm->pushString("normal");
-		if(vm->get() && vm->isArray()){
-			ppogl::Vec3d normal;
-			vm->pushNull();
-			for(int i=0; i<3; i++){
-				vm->next(-2);
-				normal.values[i] = vm->getFloat();
-				vm->pop(2);
-			}
-			vm->pop(2);
-			item.setNormal(normal);
-		}	
+		item.setNormal(vm->getVec3dFromTable("normal"));
 	}
 	
 	if(vm->isKeyInTable("diameter")){
