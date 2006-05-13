@@ -1,6 +1,10 @@
 
 === ppracer 0.5 beta ===
 
+2006-05-13  Volker Stroebel <volker@planetpenguin.de>
+	* src/ppogl/models/model_ac.cpp
+	removed unused code
+
 2006-05-05  Volker Stroebel <volker@planetpenguin.de>
 	* (*)
 	use tables in squirrel several functions

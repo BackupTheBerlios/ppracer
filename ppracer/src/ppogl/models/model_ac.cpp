@@ -159,25 +159,6 @@ ModelAC::loadTexture(const char *fileName)
 }
 
 void
-ModelAC::prepareRender()
-{
-
-    gl::DepthFunc(GL_LESS);
-    gl::Enable(GL_DEPTH_TEST);
-    gl::ShadeModel(GL_SMOOTH);
-
-    gl::Disable( GL_COLOR_MATERIAL ); 
-
-    gl::PixelStore(GL_UNPACK_ALIGNMENT, 1);
-    gl::TexEnv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    gl::TexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-}
-
-void
 ModelAC::render(ModelObject *ob)
 {
     int n, s, sr;
