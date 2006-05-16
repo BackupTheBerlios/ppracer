@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "FTGL.h"
+#include "../base/defs.h"
 
 namespace ppogl{
 
@@ -99,9 +100,8 @@ public:
 	{
 		if(!this->Indices){
 			this->Indices = new GlyphIndex* [FTCharToGlyphIndexMap::NumberOfBuckets];
-			for(int i=0; i<FTCharToGlyphIndexMap::NumberOfBuckets; i++){
-				this->Indices[i] = 0;
-  			}
+			// fill indices with 0
+			PP_CLEAR_ARRAY(this->Indices, FTCharToGlyphIndexMap::NumberOfBuckets);
 		}
         
 		// Find position of char code in buckets

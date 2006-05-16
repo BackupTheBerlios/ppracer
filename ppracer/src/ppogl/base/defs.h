@@ -20,6 +20,7 @@
 #ifndef _PPOGL_DEFS_H_
 #define _PPOGL_DEFS_H_
 
+#include <string.h>
 #include <math.h>
 
 #ifndef M_PI
@@ -49,6 +50,8 @@
 /// This only works for static arrays in the same context
 #define PP_NUM_ELEMENTS(array) (sizeof(array) / sizeof ((array)[0]))
 
+/// Fills given array with 0
+#define PP_CLEAR_ARRAY(array, size) memset(array, 0, size*sizeof((array)[0]))
 
 namespace ppogl {
 
